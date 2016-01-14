@@ -188,7 +188,7 @@ aeon_parser::aeon_parser()
 		{
 			if (Tok.type == aeon_token::Fn)
 			{
-				aeon_ast_function* funcDecl = parse_function();
+				ast_func* funcDecl = parse_function();
 				root->add(funcDecl);
 
 				getNextToken(); // get the next thing for the parent while
@@ -234,7 +234,7 @@ aeon_parser::aeon_parser()
 		{
 			if (Tok.type == aeon_token::Fn)
 			{
-				aeon_ast_function* funcDecl = parse_function();
+				ast_func* funcDecl = parse_function();
 				namespace_node->add(funcDecl);
 
 				getNextToken(); // get the next thing for the parent while
@@ -390,13 +390,13 @@ aeon_parser::aeon_parser()
 		else if (Tok.type == Tok.Identifier && Tok.text == classDeclNode->Name)
 		{
 			// Constructor
-			aeon_ast_function* constructorDecl = new aeon_ast_function();
-			constructorDecl->m_name = classDeclNode->Name;
+			ast_func* constructorDecl = new ast_func();
+			constructorDecl->Name = classDeclNode->Name;
 			getNextToken();
 			getNextToken();
 
-			constructorDecl->m_parameters = parse_parameter_list();
-			parseBlock(constructorDecl->m_block);
+			constructorDecl->parameters = parse_parameter_list();
+			parseBlock(constructorDecl->block);
 			classDeclNode->add(constructorDecl);
 			getNextToken();
 
@@ -407,20 +407,19 @@ aeon_parser::aeon_parser()
 		{
 			if (getNextToken().text == classDeclNode->Name)
 			{
-				aeon_ast_function* destructorDecl = new aeon_ast_function();
-				destructorDecl->m_name = std::string("~") + classDeclNode->Name;
+				ast_func* destructorDecl = new ast_func();
+				destructorDecl->Name = std::string("~") + classDeclNode->Name;
 				getNextToken();
 				getNextToken();
 				getNextToken();
-				parseBlock(destructorDecl->m_block);
+				parseBlock(destructorDecl->block);
 				classDeclNode->add(destructorDecl);
 				getNextToken();
 			}
 		}
 		else if (Tok.type == Tok.Fn)
 		{
-			aeon_ast_function* funcDecl = parse_function();
-			funcDecl->is_method = true;
+			ast_func* funcDecl = parse_function();
 			classDeclNode->add(funcDecl);
 			getNextToken();
 		}
@@ -470,11 +469,10 @@ aeon_parser::aeon_parser()
 		{
 			if (IsFunctionDecl)
 			{
-				aeon_ast_function* func_node = new aeon_ast_function();
-				func_node->m_name = SymbolName;
-				func_node->m_parameters = params;
-				//func_node->is_method = true;
-				parseBlock(func_node->m_block);
+				ast_func* func_node = new ast_func();
+				func_node->Name = SymbolName;
+				func_node->parameters = params;
+				parseBlock(func_node->block);
 				result_node = func_node;
 				getNextToken();
 			}
@@ -484,9 +482,8 @@ aeon_parser::aeon_parser()
 			// We are done early, this is a function prototype or a variable
 			if (IsFunctionDecl)
 			{
-				aeon_ast_function* func_node = new aeon_ast_function();
-				func_node->m_name = SymbolName;
-				//func_node->is_method = true;
+				ast_func* func_node = new ast_func();
+				func_node->Name = SymbolName;
 				//parseBlock(func_node->block);
 				result_node = func_node;
 				getNextToken();
@@ -573,10 +570,10 @@ aeon_parser::aeon_parser()
 		return temp;
 	}
 
-	aeon_ast_function* aeon_parser::parse_function()
+	ast_func* aeon_parser::parse_function()
 	{
-		aeon_ast_function* funcDecl = new aeon_ast_function();
-		funcDecl->m_name = getNextToken().text;
+		ast_func* funcDecl = new ast_func();
+		funcDecl->Name = getNextToken().text;
 
 		// We're now in the (
 		getNextToken();
@@ -585,22 +582,22 @@ aeon_parser::aeon_parser()
 
 		while (Tok.type != Tok.ParenClose)
 		{
-			funcDecl->m_parameters = parse_parameter_list();
+			funcDecl->parameters = parse_parameter_list();
 		}
 
 		getNextToken(); // just opened bracket
 
-		parseBlock(funcDecl->m_block);
+		parseBlock(funcDecl->block);
 
 		return funcDecl;
 	}
 
 	/// We're inside a function body scope, parse whatever is allowed in there
-	void aeon_parser::parseFunctionScope(aeon_ast_function* funcDeclNode)
+	void aeon_parser::parseFunctionScope(ast_func* funcDeclNode)
 	{
 
 		while (Tok.type != aeon_token::BracketClose)
-			parseBlock(funcDeclNode->m_block);
+			parseBlock(funcDeclNode->block);
 
 	//	Log("Function body parse complete");
 	}
@@ -641,11 +638,40 @@ aeon_parser::aeon_parser()
 			}
 			else if (Tok.type == Tok.For)
 			{
-				block->add(parseForLoop());
+				ast_for* forloop = parseForLoop();
+				block->add(forloop);
 			}
-			else if (Tok.type == Tok.While || Tok.type == Tok.Do)
+			else if (Tok.type == Tok.While || Tok.type == Tok.Do) // while or do-while
 			{
-				block->add(parseWhileLoop());
+				ast_while* astwhile = new ast_while();
+				block->add(astwhile);
+
+				if (Tok.type == Tok.While)
+				{
+					astwhile->doWhile = false;
+					getNextToken();
+					getNextToken();
+					astwhile->expr = parseExpression();
+					if (astwhile->expr)
+						astwhile->add(astwhile->expr);
+
+					getNextToken();
+					parseBlock(astwhile->block);
+				}
+				else
+				{
+					astwhile->doWhile = true;
+					getNextToken(); // reach {
+
+					parseBlock(astwhile->block);
+					getNextToken(); // reach 'while'
+					getNextToken(); // reach {
+					getNextToken(); // reach first expr token
+					astwhile->expr = parseExpression();
+					if (astwhile->expr)
+						astwhile->add(astwhile->expr);
+					getNextToken();
+				}
 			}
 			else if (Tok.type == Tok.Return) // facing a return statement
 			{
@@ -686,55 +712,14 @@ ast_for* aeon_parser::parseForLoop()
 	getNextToken();
 	getNextToken();
 
-	aeon_expression* initStatement = parseExpression();
-	if (initStatement)
-		astfor->initExpressions.push_back(initStatement);
-
-	getNextToken();
-
 	astfor->expr = parseExpression();
+	if (astfor->expr)
+		astfor->add(astfor->expr);
 
 	getNextToken();
-
-	astfor->incrExpr = parseExpression();
-	
 	parseBlock(astfor->block);
 
 	return astfor;
-}
-
-ast_while* aeon_parser::parseWhileLoop()
-{
-	ast_while* astwhile = new ast_while();
-
-	if (Tok.type == Tok.While)
-	{
-		astwhile->doWhile = false;
-		getNextToken();
-		getNextToken();
-		astwhile->expr = parseExpression();
-		if (astwhile->expr)
-			astwhile->add(astwhile->expr);
-
-		getNextToken();
-		parseBlock(astwhile->block);
-	}
-	else
-	{
-		astwhile->doWhile = true;
-		getNextToken(); // reach {
-
-		parseBlock(astwhile->block);
-		getNextToken(); // reach 'while'
-		getNextToken(); // reach {
-		getNextToken(); // reach first expr token
-		astwhile->expr = parseExpression();
-		if (astwhile->expr)
-			astwhile->add(astwhile->expr);
-		getNextToken();
-	}
-
-	return astwhile;
 }
 
 aeon_expression* aeon_parser::parseVariableDecl()

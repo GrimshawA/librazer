@@ -13,9 +13,9 @@ enum EOpCodes
 	OP_CALLMETHOD,   ///< Call non-static member function on an object
 	call_method_n, ///< Call non-static member function on a native object
 	callvirt,	   ///< Call a virtual method on an object
-	ret,           ///< Returns from a function immediately
+	OP_RETURN,           ///< Returns from a function immediately
 	jz,            ///< Jump if eax == 0 to relative address (pc += offset)
-	jmp,           ///< jmp to an absolute location pc = x
+	OP_JMP,        ///< jmp to an absolute location pc = x
 	PushArg,       ///< 
 	loadk,         ///< load a constant into stack
 	mul,           ///< mul stores in eax, ebx * ec
@@ -27,7 +27,7 @@ enum EOpCodes
 	i2f,           ///<
 	lt,            ///< compare less than, a < b
 	gt,            ///<
-	set,           ///< Assign something to something
+	OP_SET,           ///< Assign something to something
 	iload,         ///< Pushes the contents of local variable <index> to stack (integer)
 	ilocal,        ///< Pushing a new scoped local variable (integer)
 	push_obj,      ///< Pushes enough memory to stack to fit the object type
@@ -40,7 +40,35 @@ enum EOpCodes
 	newobj,        ///< Creates a new object of the selected type and pushes its objectref
 	deleteobj,     ///< Release the objectref on the stack
 	isinst,        ///< Checks if an object is an instance of class X
+	OP_MOV,
+	OP_DTEST,      ///< Just debug prints something for tests
 	Count
+};
+
+enum AeonConstants
+{
+	AEK_ESP,
+	AEK_EBP,
+};
+
+enum AeonOperatorConstants
+{
+	AE_PODCOPY,
+	AE_CUSTOMOPERATOR
+};
+
+enum AeonExpressionEvaluationRules
+{
+	AE_LVALUE,   ///< The expression must evaluate to an address that can be edited
+	AE_NOSTORE,  ///< The expression can evaluate but leave the stack with no results
+	AE_RVALUE,   ///< The expression MUST leave a result in stack
+};
+
+enum AeonAddressingModes
+{
+	AE_GLOBALS, ///< To load global objects
+	AE_LOCALS,  ///< To load objects within function scope
+	AE_OBJECT,  ///< To load objects within an object's scope
 };
 
 /// Atom VM pointer type. Whenever stack operations that need arbitrary objects happen
@@ -60,8 +88,8 @@ struct aeon_instruction
 {
 	uint8_t opcode;
 	uint8_t arg0;
-	uint8_t arg1;
-	uint8_t arg2;
+	int8_t arg1;
+	int8_t arg2;
 };
 
 void setopcode(aeon_instruction& inst, EOpCodes opcode);

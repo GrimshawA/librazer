@@ -15,8 +15,8 @@ const char* getopname(int opcode)
 	switch (opcode)
 	{
 	case EOpCodes::add: return "add"; break;
-	case EOpCodes::set: return "set"; break;
-	case EOpCodes::ret: return "ret"; break;
+	case EOpCodes::OP_SET: return "set"; break;
+	case EOpCodes::OP_RETURN: return "ret"; break;
 	case EOpCodes::loadk: return "loadk"; break;
 	case EOpCodes::iloadaddr: return "iloadaddr"; break;
 	case EOpCodes::ilocal: return "ilocal"; break;

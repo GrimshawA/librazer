@@ -1,0 +1,27 @@
+class CoreWidget : Widget
+{
+	int timeLeft;
+	int lives;
+	float helloVar;
+
+	function execute()
+	{
+		print("Hello World");
+		/*int i;
+		i = 0;
+		for(i = 0; i < 10; i = i + 1)
+		{
+			print("Loop Iteration");
+			//spr_int(i);
+		}
+
+		i = 0;
+		while(i < 10)
+		{
+			print("While Loop");
+			i = i + 1;
+		}*/
+
+		print("Done.");
+	}
+}

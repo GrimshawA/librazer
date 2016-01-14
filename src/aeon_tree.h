@@ -5,7 +5,7 @@
 #include <vector>
 #include <stdint.h>
 
-class ast_expr;
+class aeon_expression;
 class ast_codeblock;
 
 static std::string makeTabbing(int tabs)
@@ -14,7 +14,7 @@ static std::string makeTabbing(int tabs)
 	return buff;
 }
 
-class atom_ast_node
+class aeon_ast_node
 {
 public:
 
@@ -53,11 +53,11 @@ public:
 
 	int type;
 
-	std::vector<atom_ast_node*> items;
+	std::vector<aeon_ast_node*> items;
 
 public:
 
-	void add(atom_ast_node* n)
+	void add(aeon_ast_node* n)
 	{
 		items.push_back(n);
 	}
@@ -78,7 +78,7 @@ public:
 };
 
 // this is the root of every translation unit
-class ast_module : public atom_ast_node
+class ast_module : public aeon_ast_node
 {
 public:
 	ast_module()
@@ -99,7 +99,7 @@ public:
 };
 
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class ast_type : public atom_ast_node
+class ast_type : public aeon_ast_node
 {
 public:
 
@@ -118,7 +118,7 @@ public:
 	}
 };
 
-class ast_namespace : public atom_ast_node
+class ast_namespace : public aeon_ast_node
 {
 public:
 
@@ -135,7 +135,7 @@ public:
 	}
 };
 
-class ast_typedef : public atom_ast_node
+class ast_typedef : public aeon_ast_node
 {
 public:
 
@@ -154,7 +154,7 @@ public:
 };
 
 
-class ast_codeblock : public atom_ast_node
+class ast_codeblock : public aeon_ast_node
 {
 public:
 
@@ -176,7 +176,7 @@ public:
 
 
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class ast_enum : public atom_ast_node
+class ast_enum : public aeon_ast_node
 {
 public:
 
@@ -199,204 +199,19 @@ public:
 	}
 };
 
-
-
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-
-/// An expression is something that evaluates to something meaningful, a value, like what can be assigned to something, or what can be passed to a func
-class ast_expr : public atom_ast_node
+class ast_ifbranch : public aeon_ast_node
 {
 public:
-
-	ast_expr* subscriptArgument = nullptr;
-
-	virtual std::string exprstr()
-	{
-		return "";
-	}
-
-	bool isFloat()
-	{
-		return type == FloatExpr;
-	}
-
-	bool isInt()
-	{
-		return type == IntExpr;
-	}
-
-	bool isString()
-	{
-		return type == StringExpr;
-	}
-
-	int as_int();
-
-	float as_float();
-
-	std::string as_string();
-
-	std::string printtext()
-	{
-		return "Expr";
-	}
-};
-
-/// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class ast_ifbranch : public atom_ast_node
-{
-public:
-
-	ast_expr*      expr;
+	aeon_expression*      expr;
 	ast_codeblock* block;
-
-	ast_ifbranch()
-	{
-		type = IfBranch;
-
-		// we have to have an expression and block so..
-		block = new ast_codeblock();
-		add(block);
-	}
-
-	std::string printtext()
-	{
-		return "if " + expr->exprstr();
-	}
-};
-
-/// A function call can be standalone but is usually an operand
-class ast_funccall : public ast_expr
-{
 public:
-
-	/// Arguments passed on to this function call
-	std::vector<ast_expr*> args;
-
-	struct TemplateTypeArgument
-	{
-		std::string TypeString;
-	};
-
-	std::vector<TemplateTypeArgument> templateTypeArguments;
-
-	ast_funccall()
-	{
-		type = FuncCall;
-	}
-
-	std::string funcName;
-
-	virtual std::string exprstr()
-	{
-		std::string s1 = funcName;
-		if (templateTypeArguments.size() > 0)
-		{
-			s1 += "<";
-			for (std::size_t i = 0; i < templateTypeArguments.size(); ++i)
-			{
-				s1 += templateTypeArguments[i].TypeString;
-				if (i < templateTypeArguments.size() - 1)
-					s1 += ",";
-			}
-			s1 += ">";
-		}
-		s1 += "(";
-		if (args.size() > 0)
-		{
-			for (std::size_t i = 0; i < args.size(); ++i)
-			{
-				s1 += args[i]->exprstr();
-				if (i < args.size() - 1)
-					s1 += ",";
-			}
-		}
-		s1 += ")";
-
-		if (subscriptArgument)
-		{
-			s1 += "[" + subscriptArgument->exprstr() + "]";
-		}
-
-		if (items.size() > 0)
-		{
-			s1 += "." + static_cast<ast_expr*>(items[0])->exprstr();
-		}
-		return s1;
-	}
-
-	std::string printtext()
-	{
-		std::string s1 = std::string("Call ") + exprstr();
-		return s1;
-	}
-};
-
-class ast_stringexpr : public ast_expr
-{
-public:
-	ast_stringexpr()
-	{
-		type = StringExpr;
-	}
-
-	virtual std::string exprstr()
-	{
-		return "\"" + value + "\"";
-	}
-
-	std::string printtext()
-	{
-		return std::string(" string '") + value + "'";
-	}
-
-	std::string value;
+	ast_ifbranch();
+	std::string printtext();
 };
 
 
-class ast_floatexpr : public ast_expr
-{
-public:
-	ast_floatexpr()
-	{
-		type = FloatExpr;
-	}
-
-	virtual std::string exprstr()
-	{
-		return std::to_string(value);
-	}
-
-	std::string printtext()
-	{
-		return std::string("Float - ") + std::to_string(value);
-	}
-
-	float value;
-};
-
-class ast_intexpr : public ast_expr
-{
-public:
-	ast_intexpr()
-	{
-		type = IntExpr;
-	}
-
-	virtual std::string exprstr()
-	{
-		return std::to_string(value);
-	}
-
-	std::string printtext()
-	{
-		return std::string("Int - ") + std::to_string(value);
-	}
-
-	uint32_t value;
-};
-
-class ast_return : public atom_ast_node
+class ast_return : public aeon_ast_node
 {
 public:
 	ast_return()
@@ -411,7 +226,7 @@ public:
 };
 
 
-class ast_class : public atom_ast_node
+class ast_class : public aeon_ast_node
 {
 public:
 
@@ -440,206 +255,69 @@ public:
 	}
 };
 
-class ast_varexpr : public ast_expr
+/**
+	\class aeon_ast_function
+	\brief The root node of every function in the language
+
+	These can be static class functions, methods,
+	global functions.
+*/
+class aeon_ast_function : public aeon_ast_node
 {
 public:
 
-	ast_varexpr()
-	{
-		type = VarExpr;
-	}
+	std::vector<aeon_expression*> m_parameters;
+	std::string                   m_name;
+	ast_type*                     m_return;
+	ast_codeblock*                m_block;
+	bool                          is_constructor;
+	bool                          is_method;
+	bool                          is_class_static;
+	bool                          is_destructor;
+	bool                          is_global;
 
-	bool explicitDeclaration;
-
-	std::string TypeString;
-	ast_type* VarType;
-	std::string Name;
-
-	virtual std::string exprstr()
-	{
-		std::string s1 = Name;
-		if (subscriptArgument)
-		{
-			s1 += "[" + subscriptArgument->exprstr() + "]";
-		}
-
-		if (items.size() > 0)
-		{
-			s1 += "." + static_cast<ast_expr*>(items[0])->exprstr();
-		}
-		return s1;
-	}
-
-	std::string printtext()
-	{
-		return std::string("VarExpr - ") + Name;
-	}
-};
-
-class ast_func : public atom_ast_node
-{
 public:
+	aeon_ast_function();
 
-	std::vector<ast_expr*> parameters;
-	ast_codeblock* block;
-
-	ast_func()
-	{
-		type = FuncDecl;
-
-		block = new ast_codeblock();
-		add(block);
-	}
-
-	std::string TypeString;
-	std::string Name;
-
-	std::string printtext()
-	{
-		std::string s1 = std::string("Fn ") + Name + "(";
-		if (parameters.size() > 0)
-		{
-			for (std::size_t i = 0; i < parameters.size(); ++i)
-			{
-				s1 += static_cast <ast_varexpr*>(parameters[i])->TypeString;
-				if (i < parameters.size() - 1)
-					s1 += ",";
-			}
-		}
-		s1 += ")";
-		return s1;
-	}
+	std::string printtext();
 };
 
-class ast_while : public atom_ast_node
+class ast_while : public aeon_ast_node
 {
 public:
 
 	bool           doWhile;
-	ast_expr*      expr;
+	aeon_expression*      expr;
 	ast_codeblock* block;
 
-	ast_while()
-	{
-		type = WhileLoop;
+	ast_while();
 
-		doWhile = false;
-
-		block = new ast_codeblock();
-		add(block);
-	}
-
-	std::string printtext()
-	{
-		return std::string("While");
-	}
+	std::string printtext();
 };
 
-class ast_for : public atom_ast_node
+class ast_for : public aeon_ast_node
 {
 public:
-	ast_expr*      initExpr;
-	ast_expr*      expr;
-	ast_expr*      incrExpr;
+	std::vector<aeon_expression*> initExpressions; ///< The for loop can have any number of init expressions separated by comma.
+	aeon_expression*      expr;
+	aeon_expression*      incrExpr;
+
 	ast_codeblock* block;
 
-	ast_for()
-	{
-		type = ForLoop;
+	ast_for();
 
-		block = new ast_codeblock();
-		add(block);
-	}
-
-	std::string printtext()
-	{
-		return std::string("For");
-	}
+	std::string printtext();
 };
 
-// A binary op can be any expression A and B with an operator in the middle, like 5 + 10, B * C, myCall() + 5, etc
-// operands can be literals, vars and other operations
-class ast_binaryop : public ast_expr
+class ast_using : public aeon_ast_node
 {
 public:
 
-	ast_binaryop(ast_expr* opA, ast_expr* opB, std::string _oper)
-	{
-		type = BinaryOperator;
+	aeon_expression* arg = nullptr;
 
-		operandA = opA;
-		operandB = opB;
-		oper = _oper;
-	}
+	ast_using();
 
-	virtual std::string exprstr()
-	{
-		return std::string("(") + operandA->exprstr() + " " + oper + " " + operandB->exprstr() + ")";
-	}
-
-	ast_expr* operandA;
-	ast_expr* operandB;
-
-	std::string oper;
-
-	std::string printtext()
-	{
-		return exprstr();
-	}
-};
-
-/**
-	\class ast_unaryop
-
-	List unary operations:
-	-(var)
-	++var
-	--var
-	var++
-	var--
-	*var (deref)
-	typeof(operand)
-*/
-class ast_unaryop : public ast_expr
-{
-public:
-
-	std::string OperatorString;
-	ast_expr* Operand;
-
-	ast_unaryop()
-	{
-		type = UnaryOperator;
-
-		Operand = nullptr;
-	}
-
-	virtual std::string exprstr()
-	{
-		return std::string(OperatorString + Operand->exprstr());
-	}
-
-	std::string printtext()
-	{
-		return exprstr();
-	}
-};
-
-class ast_using : public atom_ast_node
-{
-public:
-
-	ast_expr* arg = nullptr;
-
-	ast_using()
-	{
-		type = Using;
-	}
-
-	std::string printtext()
-	{
-		return std::string("Using ") + arg->exprstr();
-	}
+	std::string printtext();
 };
 
 #endif // aeon_tree_h__

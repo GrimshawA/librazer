@@ -4,6 +4,7 @@
 #include "aeon_tree.h"
 #include "aeon_value.h"
 #include "aeon_lexer.h"
+#include "aeon_expression.h"
 #include <vector>
 
 class aeon_context;
@@ -67,12 +68,12 @@ class aeon_parser
 
 		/// Parses one symbol in either declarative scope like a namespace, class or global
 		/// Symbols can be: functions, function prototypes, variables, properties
-		atom_ast_node* parse_symbol();
+		aeon_ast_node* parse_symbol();
 
 		/// Parse a potentiall complex type with nested generics
 		ast_type* parse_type();
 
-		ast_expr* parseExpression();
+		aeon_expression* parseExpression();
 
 		void parseTopLevel();
 
@@ -83,6 +84,12 @@ class aeon_parser
 		/// Returns a class node. Requires the current token to be "class"
 		ast_class* parseClass();
 
+		/// With the cursor on a 'for' token, prepares the for loop node
+		ast_for* parseForLoop();
+
+		/// With the cursor on a 'while' or 'do' token, returns the ready while node
+		ast_while* parseWhileLoop();
+
 		/// We're inside a class block, last token read was {
 		void parseClassBody(ast_class* classDeclNode);
 
@@ -90,23 +97,23 @@ class aeon_parser
 		void parse_class_element(ast_class* classDeclNode);
 
 		/// Parse a identifier subexpression, any combination of func calls
-		ast_expr* parse_identifier_subexpression();
+		aeon_expression* parse_identifier_subexpression();
 
-		ast_func* parse_function();
-
-		/// Parses a list of arguments (expressions) to pass to a function for example
-		std::vector<ast_expr*> parse_argument_list();
+		aeon_ast_function* parse_function();
 
 		/// Parses a list of arguments (expressions) to pass to a function for example
-		std::vector<ast_expr*> parse_parameter_list();
+		std::vector<aeon_expression*> parse_argument_list();
+
+		/// Parses a list of arguments (expressions) to pass to a function for example
+		std::vector<aeon_expression*> parse_parameter_list();
 
 		/// We're inside a function body scope, parse whatever is allowed in there
-		void parseFunctionScope(ast_func* funcDeclNode);
+		void parseFunctionScope(aeon_ast_function* funcDeclNode);
 
 		/// We're about to read a function call, get it
 		ast_funccall* parseFunctionCall();
 
-		ast_expr* parseVariableDecl();
+		aeon_expression* parseVariableDecl();
 
 		/// Parses one block of executable code (inside a function)
 		void parseBlock(ast_codeblock* block);

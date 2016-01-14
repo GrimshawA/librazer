@@ -8,23 +8,33 @@
 
 class aeon_vm;
 class aeon_context;
+class aeon_object;
 
 struct StackFrameInfo
 {
 	int32_t base;
 	std::string name;
-	uint32_t pc;
+	uint32_t pc;               ///< So we can restore the program counter of the caller
+	unsigned char* ebp;        ///< So we can restore the base pointer of the caller
 	aeon_module* module;
 
 	/// If the function being called is a method, object contains the address of the object its called on
 	atom_objectref object;
 };
 
+/**
+	\struct ExecutionContext
+	\brief Each thread of execution gets its own context information
+
+	Each thread needs its own stack to perform operations in parallel,
+	its very own stack of calls and registers for the utility.
+*/
 struct ExecutionContext
 {
 	std::vector<unsigned char>  stack;
 	std::vector<StackFrameInfo> frames;
-	unsigned char*              sp;
+	unsigned char*              esp;
+	unsigned char*              ebp;
 };
 
 /**
@@ -38,13 +48,8 @@ class aeon_vm
 {
 	public:
 
-		aeon_context*              ctx;
-		uint64_t                   eax; // accumulator, 64 bits to be able to hold function return absolute addresses
-		uint64_t                   ebp; // base pointer, just an absolute address of our base pointer
-		uint64_t                   esp; // stack pointer, absolute address of the stack "top"
-		std::vector<unsigned char> stack;
-		unsigned char*             sp;
-		std::vector<StackFrameInfo> callstack;
+		aeon_context*              ctx;		
+		ExecutionContext           m_stk;
 
 		typedef unsigned char* SFLocalVar;
 
@@ -63,6 +68,12 @@ class aeon_vm
 		void execute();
 
 		int getStackIndex();
+
+		/// Call a method on the given script object by its name
+		void callMethod(aeon_object* object, const std::string& prototype);
+
+		/// Call a method on the given script object by the method id
+		void callMethod(aeon_object* object, uint32_t methodId);
 
 		/// Call a script function
 		void call(aeon_module& module, const char* func);
