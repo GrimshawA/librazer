@@ -113,7 +113,7 @@ class aeon_parser
 		/// We're about to read a function call, get it
 		ast_funccall* parseFunctionCall();
 
-		aeon_expression* parseVariableDecl();
+		aeon_stmt_vardecl* parseVariableDecl();
 
 		/// Parses one block of executable code (inside a function)
 		void parseBlock(ast_codeblock* block);

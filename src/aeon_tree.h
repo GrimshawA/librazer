@@ -225,11 +225,13 @@ public:
 	}
 };
 
+class aeon_type;
 
 class ast_class : public aeon_ast_node
 {
 public:
 
+	aeon_type* typeInfo;
 	std::string Name;
 
 	struct classparentinfo
@@ -316,6 +318,37 @@ public:
 	aeon_expression* arg = nullptr;
 
 	ast_using();
+
+	std::string printtext();
+};
+
+class aeon_statement : public aeon_ast_node
+{
+
+};
+
+/*
+	has_init_expr
+		When true, the compilers will just consider the size of the type for the stack/heap allocation,
+		but will leave the job of initializing for the expression.
+		When false, the compiler should immediately define the strategy to default construct the var, or
+		leave it as-is in case of POD structs.
+
+	name
+		The variable name, by which it can be referenced
+
+	type_name
+		The type of the declaration, contextual to where the declaration is.
+		Default initialization strategy will be deduced after evaluating this type.
+*/
+class aeon_stmt_vardecl : public aeon_statement
+{
+public:
+	std::string      name;
+	std::string      type_name;
+	aeon_expression* init_expr;
+
+	aeon_stmt_vardecl();
 
 	std::string printtext();
 };

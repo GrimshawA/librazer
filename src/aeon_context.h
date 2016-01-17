@@ -20,6 +20,9 @@ struct aeon_config
 	bool allowAutomaticTypeInference; ///< Anonymous variables assume a type from inference, but are immutable (and not aeon_variant), otherwise explicit inference is supported
 };
 
+typedef int aeLiteralId;
+typedef int aeFunctionId;
+
 /**
 	\class aeon_context
 	\brief Brings different modules together in a single runtime environment
@@ -70,6 +73,8 @@ public:
 	aeon_context();
 
 	void init_all();
+
+	aeLiteralId getIntegerLiteral(int64_t n);
 
 	/// Executes and evaluates an arbitrary expression and returns the value
 	aeon_value evaluate(const std::string& expression);

@@ -11,7 +11,8 @@
 
 aeon_vm::aeon_vm()
 {
-	
+	m_stk.stack.resize(512000);
+	m_stk.esp = &m_stk.stack[512000 - 1];
 }
 
 aeon_module* aeon_vm::get_current_mod()
@@ -22,36 +23,19 @@ aeon_module* aeon_vm::get_current_mod()
 void aeon_vm::callMethod(aeon_object* object, const std::string& prototype)
 {
 	m_stk.ebp = m_stk.esp;
-
-	vm_value thisPtrValue;
-	thisPtrValue.ptr = object->addr;
-	m_stk.push_value(thisPtrValue); // push 'this' ptr
-	//void* xdr = m_stk.pop_value().ptr;
-	  
-	printf("callMethod: pushing this, pointing to %x popped\n", object->addr);
-
+	m_stk.push_addr(object->addr); // push 'this' ptr
 	call(*object->getType()->getModule(), prototype.c_str());
-} 
+}
 
 void aeon_vm::callMethod(aeon_object* object, uint32_t methodId)
 {
 
 }
 
-void aeon_vm::prepare(aeFunctionId function)
-{
-
-}
-
-void aeon_vm::pushThis(void* obj)
-{
-	m_stk.push_addr(obj);
-}
-
 void aeon_vm::setContext(aeon_context* context)
 {
 	ctx = context;
-} 
+}
 
 void aeon_vm::setArgFloat(uint32_t index, float v)
 {
@@ -163,27 +147,26 @@ int32_t aeon_vm::pop_int32()
 	return value;
 }
 
+atom_objectref aeon_vm::pop_objectref()
+{
+	atom_objectref value;
+	memcpy(&value, m_stk.esp, sizeof(atom_objectref));
+	m_stk.esp += sizeof(atom_objectref);
+	return value;
+}
+
 void aeon_vm::call(aeon_module& module, const char* func)
 {
 	StackFrameInfo callinfo;
 	callinfo.name = func;
 	callinfo.object = nullptr;
 
-	aeFunctionId functionId = 0;
-
 	aeon_function* function = nullptr;
-	int i = 0;
 	for (auto& f : module.functions)
 	{
 		if (f.prototype == std::string(func))
-		{
 			function = &f;
-			functionId = i;
-		}
-		++i;
 	}
-
-	prepare(functionId);
 
 	if (function)
 	{
@@ -238,7 +221,7 @@ void aeon_vm::execute()
 				gen->vm = this;
 				// forward to generic
 				gen->args.resize(params);
-				for (int k = 0; k < params; ++k) 
+				for (int k = 0; k < params; ++k)
 					gen->args[k]._u64 = pop();
 				//Log("Stored %d in the generic before calling", params);
 
@@ -253,7 +236,7 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_CALLMETHOD)
-				//atom_objectref ref = pop_objectref();     // The object to call the method on
+				atom_objectref ref = pop_objectref();     // The object to call the method on
 				int32_t        moduleIndex = pop_int32(); // The module the type belongs to
 				int32_t        methodIndex = pop_int32(); // The method we want to call
 
@@ -417,12 +400,8 @@ void aeon_vm::execute()
 			vm_start(OP_LOAD)
 				if (inst.arg0 == AEK_THIS)
 				{
-					vm_value* thisObjAddr = reinterpret_cast<vm_value*>(m_stk.ebp - sizeof(vm_value));
-
-					vm_value varptr;
-					varptr.ptr = reinterpret_cast < unsigned char*>(thisObjAddr->ptr) + inst.arg1;
-					printf("this points to %x\n", varptr.ptr);
-					m_stk.push_value(varptr);
+					uint8_t* thisObjAddr = reinterpret_cast<uint8_t*>(&*m_stk.ebp);
+					m_stk.push_addr((void*)(thisObjAddr + inst.arg1));
 					printf("loading field addr from this->\n");
 				}
 				else if (inst.arg0 == AEK_EBP)
@@ -495,7 +474,8 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_DELETEOBJECT)
-				
+				atom_objectref obj = pop_objectref();
+				// ctx->release(obj, 0);
 			vm_end
 
 			case EOpCodes::isinst:{

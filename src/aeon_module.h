@@ -20,6 +20,13 @@ struct aeon_method
 		std::string name;   ///< The identifier for this method
 };
 
+struct ae_module_header
+{
+	bool        m_fixPtrs;
+	bool        abiIndependent;
+	std::string name;
+};
+
 /**
 	\class aeon_module
 	\brief One or more scripts are compiled into a module

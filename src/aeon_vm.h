@@ -6,9 +6,32 @@
 #include <vector>
 #include <stdint.h>
 
+#include "aeon_context.h"
+
 class aeon_vm;
-class aeon_context;
 class aeon_object;
+
+/**
+	When pushing operands to the stack they
+	must be properly aligned and padded.
+	This struct helps with this, making the code more
+	portable and easier to handle.
+*/
+struct vm_value
+{
+	union
+	{
+		uint8_t  u8;
+		int8_t   i8;
+		uint16_t u16;
+		int16_t  i16;
+		uint32_t u32;
+		int32_t  i32;
+		uint64_t u64;
+		int64_t  i64;
+		void*    ptr;
+	};
+};
 
 struct StackFrameInfo
 {
@@ -28,6 +51,10 @@ struct StackFrameInfo
 
 	Each thread needs its own stack to perform operations in parallel,
 	its very own stack of calls and registers for the utility.
+
+	Types pushable:
+	ptr
+	int32
 */
 struct ExecutionContext
 {
@@ -35,6 +62,58 @@ struct ExecutionContext
 	std::vector<StackFrameInfo> frames;
 	unsigned char*              esp;
 	unsigned char*              ebp;
+
+	ExecutionContext()
+	{
+		stack.resize(512000);
+		esp = &stack[512000 - 1];
+		ebp = esp;
+	}
+
+	void print_registers()
+	{
+		printf("[esp] %x : index %d\n", esp, stack.data() + stack.size() - esp);
+		printf("[ebp] %x : index %d\n", ebp, stack.data() + stack.size() - ebp);
+	}
+
+	void push_value(vm_value v)
+	{
+		esp -= sizeof(v);
+		*reinterpret_cast<vm_value*>(esp) = v;
+	}
+
+	vm_value pop_value()
+	{
+		vm_value v;
+		v = *reinterpret_cast<vm_value*>(esp);
+		esp += sizeof(vm_value);
+		return v;
+	}
+
+	void push_addr(void* ptr)
+	{
+		esp -= sizeof(ptr);
+		memcpy(esp, ptr, sizeof(ptr));
+	}
+
+	void* pop_addr()
+	{
+		esp += sizeof(void*);
+		return reinterpret_cast<void*>(esp - sizeof(void*));
+	}
+
+	void push_int32(int32_t v)
+	{
+		esp -= sizeof(int32_t);
+		*reinterpret_cast<int32_t*>(esp) = v;
+	}
+
+	int32_t pop_int32()
+	{
+		int32_t rv = *reinterpret_cast<int32_t*>(esp);
+		esp += sizeof(int32_t);
+		return rv;
+	}
 };
 
 /**
@@ -65,6 +144,8 @@ class aeon_vm
 
 		void setContext(aeon_context* context);
 
+		void prepare(aeFunctionId function);
+		void pushThis(void* obj);
 		void execute();
 
 		int getStackIndex();
@@ -111,8 +192,6 @@ class aeon_vm
 		double pop_double();
 
 		int32_t pop_int32();
-
-		atom_objectref pop_objectref();
 };
 
 #endif // aeon_vm_h__

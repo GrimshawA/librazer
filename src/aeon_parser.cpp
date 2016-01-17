@@ -554,24 +554,24 @@ aeon_parser::aeon_parser()
 		return temp;
 	}
 
-	/// Parses a list of arguments (expressions) to pass to a function for example
-	std::vector<aeon_expression*> aeon_parser::parse_parameter_list()
-	{
-		std::vector<aeon_expression*> temp;
 
+std::vector<aeon_expression*> aeon_parser::parse_parameter_list()
+{
+		std::vector<aeon_expression*> temp;
+		/*
 		while (Tok.type != Tok.ParenClose)
 		{
-			aeon_expression* varexpr = parseVariableDecl();
+			aeon_stmt_vardecl* varexpr = parseVariableDecl();
 			temp.push_back(varexpr);
 
 			if (Tok.type != Tok.Comma)
 				break;
 			else
 				getNextToken();
-		}
+		}*/
 
 		return temp;
-	}
+}
 
 	aeon_ast_function* aeon_parser::parse_function()
 	{
@@ -605,9 +605,9 @@ aeon_parser::aeon_parser()
 	//	Log("Function body parse complete");
 	}
 
-	/// Parse a top-level expression (inside a code execution scope, a function)
-	void aeon_parser::parseBlock(ast_codeblock* block)
-	{
+
+void aeon_parser::parseBlock(ast_codeblock* block)
+{
 		//Log("Block start");
 
 		getNextToken();
@@ -657,7 +657,7 @@ aeon_parser::aeon_parser()
 			{
 				do
 				{
-					aeon_expression* astvar = parseVariableDecl();
+					aeon_stmt_vardecl* astvar = parseVariableDecl();
 					if (astvar)
 					{
 						block->add(astvar);
@@ -677,7 +677,7 @@ aeon_parser::aeon_parser()
 			getNextToken();
 		}
 	//	Log("Reached the end of block");
-	}
+}
 
 ast_for* aeon_parser::parseForLoop()
 {
@@ -737,13 +737,18 @@ ast_while* aeon_parser::parseWhileLoop()
 	return astwhile;
 }
 
-aeon_expression* aeon_parser::parseVariableDecl()
+aeon_stmt_vardecl* aeon_parser::parseVariableDecl()
 {
+	aeon_stmt_vardecl* varDecl = new aeon_stmt_vardecl;
+	varDecl->type_name = Tok.text;
+
 	ast_varexpr* astvar = new ast_varexpr();
 	astvar->explicitDeclaration = true;
 	astvar->TypeString = Tok.text;
 	astvar->Name = getNextToken().text;
 	getNextToken();
+
+	varDecl->name = astvar->Name;
 
 	// Got an assignment on init
 	if (Tok.text == "=")
@@ -751,10 +756,10 @@ aeon_expression* aeon_parser::parseVariableDecl()
 		getNextToken();
 
 		ast_binaryop* assignment = new ast_binaryop(astvar, parseExpression(), "=");
-		return assignment;
+		varDecl->init_expr = assignment;
 	}
 
-	return astvar;
+	return varDecl;
 }
 
 	/// We're about to read a function call, get it

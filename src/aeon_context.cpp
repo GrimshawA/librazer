@@ -27,33 +27,30 @@ aeon_context::aeon_context()
 	m_config.allowMultipleInheritance = false;
 
 	register_primitive("void", 0);
-	register_primitive("int", 0);
-	register_primitive("int32", 0);
-	register_primitive("float", 0);
-
-	/*typedb.push_back(aeon_type("int8", sizeof(int8_t)));
-	typedb.push_back(aeon_type("int16", sizeof(int16_t)));
-	typedb.push_back(aeon_type("int32", sizeof(int32_t)));
-	typedb.push_back(aeon_type("int64", sizeof(int64_t)));
-
-	typedb.push_back(aeon_type("uint8", sizeof(uint8_t)));
-	typedb.push_back(aeon_type("uint16", sizeof(uint16_t)));
-	typedb.push_back(aeon_type("uint32", sizeof(uint32_t)));
-	typedb.push_back(aeon_type("uint64", sizeof(uint64_t)));
-
-	typedb.push_back(aeon_type("float", sizeof(float)));
-	typedb.push_back(aeon_type("double", sizeof(double)));
-	typedb.push_back(aeon_type("int", sizeof(int32_t)));
-	typedb.push_back(aeon_type("char", sizeof(uint8_t)));
-	typedb.push_back(aeon_type("byte", sizeof(uint8_t)));*/
+	register_primitive("bool", sizeof(int32_t));
+	register_primitive("int32", sizeof(int32_t));
+	register_primitive("uint32", sizeof(uint32_t));
+	register_primitive("float", sizeof(float));
+	register_primitive("double", sizeof(double));
 }
 
 void aeon_context::register_primitive(const std::string& name, uint32_t size)
 {
-	aeon_type* type = new aeon_type;
+	aeon_type* type = new aeon_type(name, size);
 	type->m_name = name;
-//	type->m_size = size;
 	typedb.push_back(type);
+}
+
+aeLiteralId aeon_context::getIntegerLiteral(int64_t n)
+{
+	for (std::size_t i = 0; i < int_literals.size(); ++i)
+	{
+		if (int_literals[i] == n)
+			return i;
+	}
+
+	int_literals.push_back(n);
+	return int_literals.size() - 1;
 }
 
 aeon_value aeon_context::evaluate(const std::string& expression)
@@ -81,8 +78,8 @@ void aeon_context::quick_build(const std::string& file)
 	ast_module* tree_root = parser.root;
 	tree_root->printSelf(0);
 
-	compiler.env = this;
-	compiler.mod = create_module("main");
+	compiler.m_env = this;
+	compiler.m_module = create_module("main");
 	compiler.generate(parser.root);
 }
 

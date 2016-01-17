@@ -14,10 +14,10 @@ const char* getopname(int opcode)
 {
 	switch (opcode)
 	{
-	case EOpCodes::add: return "add"; break;
+	case EOpCodes::OP_ADD: return "add"; break;
 	case EOpCodes::OP_SET: return "set"; break;
 	case EOpCodes::OP_RETURN: return "ret"; break;
-	case EOpCodes::loadk: return "loadk"; break;
+	case EOpCodes::OP_LOADK: return "loadk"; break;
 	case EOpCodes::iloadaddr: return "iloadaddr"; break;
 	case EOpCodes::ilocal: return "ilocal"; break;
 	case EOpCodes::OP_CALL: return "call"; break;
@@ -43,13 +43,6 @@ void printBits(size_t const size, void const * const ptr)
 		}
 	}
 	puts("");
-}
-
-aeon_instruction create_instruction(int opcode)
-{
-	aeon_instruction inst;
-	setopcode(inst, static_cast<EOpCodes>(opcode));
-	return inst;
 }
 
 void setopcode(aeon_instruction& inst, EOpCodes opcode)

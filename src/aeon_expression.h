@@ -105,7 +105,13 @@ public:
 	}
 };
 
-class ast_stringexpr : public aeon_expression
+class ast_literal : public aeon_expression
+{
+public:
+
+};
+
+class ast_stringexpr : public ast_literal
 {
 public:
 	ast_stringexpr()
@@ -127,7 +133,7 @@ public:
 };
 
 
-class ast_floatexpr : public aeon_expression
+class ast_floatexpr : public ast_literal
 {
 public:
 	ast_floatexpr()
@@ -148,7 +154,7 @@ public:
 	float value;
 };
 
-class ast_intexpr : public aeon_expression
+class ast_intexpr : public ast_literal
 {
 public:
 	ast_intexpr()
@@ -235,6 +241,14 @@ public:
 	{
 		return exprstr();
 	}
+};
+
+class aeon_ternary_operator_node : public aeon_expression
+{
+public:
+	aeon_expression* lhs;
+	aeon_expression* middle;
+	aeon_expression* rhs;
 };
 
 /**

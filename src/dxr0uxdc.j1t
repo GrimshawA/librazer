@@ -26,9 +26,9 @@ void aeon_vm::callMethod(aeon_object* object, const std::string& prototype)
 	vm_value thisPtrValue;
 	thisPtrValue.ptr = object->addr;
 	m_stk.push_value(thisPtrValue); // push 'this' ptr
-	//void* xdr = m_stk.pop_value().ptr;
+	void* xdr = m_stk.pop_value().ptr;
 	  
-	printf("callMethod: pushing this, pointing to %x popped\n", object->addr);
+	printf("callMethod: pushing this, pointing to %x popped as %x\n", object->addr, xdr);
 
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
@@ -417,12 +417,9 @@ void aeon_vm::execute()
 			vm_start(OP_LOAD)
 				if (inst.arg0 == AEK_THIS)
 				{
-					vm_value* thisObjAddr = reinterpret_cast<vm_value*>(m_stk.ebp - sizeof(vm_value));
-
-					vm_value varptr;
-					varptr.ptr = reinterpret_cast < unsigned char*>(thisObjAddr->ptr) + inst.arg1;
-					printf("this points to %x\n", varptr.ptr);
-					m_stk.push_value(varptr);
+					unsigned char* thisObjAddr = (m_stk.ebp - sizeof(void*));
+					printf("this points to %x\n", thisObjAddr);
+					m_stk.push_addr(reinterpret_cast<unsigned char*>(*thisObjAddr) + inst.arg1);
 					printf("loading field addr from this->\n");
 				}
 				else if (inst.arg0 == AEK_EBP)

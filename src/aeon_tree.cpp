@@ -89,3 +89,19 @@ std::string ast_using::printtext()
 {
 	return std::string("Using ") + arg->exprstr();
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+
+aeon_stmt_vardecl::aeon_stmt_vardecl()
+{
+	type = VarDecl;
+	init_expr = nullptr;
+}
+
+std::string aeon_stmt_vardecl::printtext()
+{
+	std::string strr = "Decl '" + type_name + "' '" + name + "'";
+	init_expr ? strr += " = " + init_expr->exprstr() : strr += "";
+	return strr;
+}

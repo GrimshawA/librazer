@@ -79,7 +79,6 @@ VariableStorageInfo aeon_compiler::getVariable(std::string name)
 			varStorage.type = type;
 			varStorage.mode = AE_VAR_FIELD;
 			varStorage.offset = type->getField(name)->offset;
-			varStorage.name = name;
 			return varStorage;
 		}
 	}
@@ -412,11 +411,6 @@ void aeon_compiler::emitScopeCode(ast_codeblock* codeblock)
 		else if (codeblock->items[i]->type == aeon_ast_node::VarDecl)
 		{
 			emitVarDecl(static_cast<aeon_stmt_vardecl*>(codeblock->items[i]));
-		}
-		else
-		{
-			// might be buggy to assume this
-			emitExpressionEval(static_cast<aeon_expression*>(codeblock->items[i]), ExpressionEvalContext());
 		}
 	}
 
