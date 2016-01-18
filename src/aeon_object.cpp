@@ -32,6 +32,16 @@ void aeon_object::getField(const std::string& field, int32_t& value) const
 	}
 }
 
+void* aeon_object::getFieldAddress(const std::string& field) const
+{
+	aeon_type::FieldInfo* fieldInfo = m_type->getField(field);
+	if (fieldInfo)
+	{
+		return (char*)addr + fieldInfo->offset;
+	}
+	return nullptr;
+}
+
 void aeon_object::log()
 {
 	printf("Object %s@%x\n", m_type->m_name.c_str(), addr);

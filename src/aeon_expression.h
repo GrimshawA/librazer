@@ -1,50 +1,29 @@
 #ifndef aeon_expression_h__
 #define aeon_expression_h__
 
+#include "nodes/aeNodeExpr.h"
+
 #include "aeon_tree.h"
 #include <vector>
 #include <stdint.h>
 
-
-/**
-	\class aeon_expression
-	\brief Represents an arbitrary expression like an equation
-
-	Supports infinite nesting of expressions and all kinds of different operations.
-	Can evaluate its type and even results under certain constraints.
-*/
-class aeon_expression : public aeon_ast_node
+class aeNodeThis : public aeNodeExpr
 {
 public:
-
-	aeon_expression* subscriptArgument = nullptr;
-
-public:
-
-	virtual std::string exprstr();
-
-	bool isFloat();
-
-	bool isInt();
-
-	bool isString();
-
-	int as_int();
-
-	float as_float();
-
-	std::string as_string();
-
-	std::string printtext();
+	bool        m_is_implicit;   ///< Was 'this' actually written or inferred from context 
+	aeNodeExpr* m_expr;          ///< The expression after the this
 };
 
 /// A function call can be standalone but is usually an operand
-class ast_funccall : public aeon_expression
+class aeNodeFunctionCall : public aeNodeExpr
 {
 public:
 
-	/// Arguments passed on to this function call
-	std::vector<aeon_expression*> args;
+	std::vector<aeNodeExpr*> m_args;        ///< List of arguments to this function call
+	aeNodeFunction*          m_callee;      ///< The node we are calling to execute
+	bool                     m_is_method;   ///< This node calls a method on an object or static class function
+	std::string              m_name;
+
 
 	struct TemplateTypeArgument
 	{
@@ -53,16 +32,17 @@ public:
 
 	std::vector<TemplateTypeArgument> templateTypeArguments;
 
-	ast_funccall()
+public:
+
+	aeNodeFunctionCall()
 	{
-		type = FuncCall;
+		m_type = FuncCall;
 	}
 
-	std::string funcName;
 
 	virtual std::string exprstr()
 	{
-		std::string s1 = funcName;
+		std::string s1 = m_name;
 		if (templateTypeArguments.size() > 0)
 		{
 			s1 += "<";
@@ -75,25 +55,20 @@ public:
 			s1 += ">";
 		}
 		s1 += "(";
-		if (args.size() > 0)
+		if (m_args.size() > 0)
 		{
-			for (std::size_t i = 0; i < args.size(); ++i)
+			for (std::size_t i = 0; i < m_args.size(); ++i)
 			{
-				s1 += args[i]->exprstr();
-				if (i < args.size() - 1)
+				s1 += m_args[i]->exprstr();
+				if (i < m_args.size() - 1)
 					s1 += ",";
 			}
 		}
 		s1 += ")";
 
-		if (subscriptArgument)
+		if (m_items.size() > 0)
 		{
-			s1 += "[" + subscriptArgument->exprstr() + "]";
-		}
-
-		if (items.size() > 0)
-		{
-			s1 += "." + static_cast<aeon_expression*>(items[0])->exprstr();
+			s1 += "." + static_cast<aeNodeExpr*>(m_items[0])->exprstr();
 		}
 		return s1;
 	}
@@ -105,18 +80,18 @@ public:
 	}
 };
 
-class ast_literal : public aeon_expression
+class aeNodeLiteral : public aeNodeExpr
 {
 public:
 
 };
 
-class ast_stringexpr : public ast_literal
+class aeNodeString : public aeNodeLiteral
 {
 public:
-	ast_stringexpr()
+	aeNodeString()
 	{
-		type = StringExpr;
+		m_type = StringExpr;
 	}
 
 	virtual std::string exprstr()
@@ -133,12 +108,12 @@ public:
 };
 
 
-class ast_floatexpr : public ast_literal
+class aeNodeFloat : public aeNodeLiteral
 {
 public:
-	ast_floatexpr()
+	aeNodeFloat()
 	{
-		type = FloatExpr;
+		m_type = FloatExpr;
 	}
 
 	virtual std::string exprstr()
@@ -154,12 +129,12 @@ public:
 	float value;
 };
 
-class ast_intexpr : public ast_literal
+class aeNodeInteger : public aeNodeLiteral
 {
 public:
-	ast_intexpr()
+	aeNodeInteger()
 	{
-		type = IntExpr;
+		m_type = IntExpr;
 	}
 
 	virtual std::string exprstr()
@@ -175,32 +150,28 @@ public:
 	uint32_t value;
 };
 
-class ast_varexpr : public aeon_expression
+class aeNodeVarRef : public aeNodeExpr
 {
 public:
 
-	ast_varexpr()
+	aeNodeVarRef()
 	{
-		type = VarExpr;
+		m_type = VarExpr;
 	}
 
 	bool explicitDeclaration;
 
 	std::string TypeString;
-	ast_type* VarType;
+	aeNodeTypeDecl* VarType;
 	std::string Name;
 
 	virtual std::string exprstr()
 	{
 		std::string s1 = Name;
-		if (subscriptArgument)
-		{
-			s1 += "[" + subscriptArgument->exprstr() + "]";
-		}
 
-		if (items.size() > 0)
+		if (m_items.size() > 0)
 		{
-			s1 += "." + static_cast<aeon_expression*>(items[0])->exprstr();
+			s1 += "." + static_cast<aeNodeExpr*>(m_items[0])->exprstr();
 		}
 		return s1;
 	}
@@ -214,13 +185,13 @@ public:
 
 // A binary op can be any expression A and B with an operator in the middle, like 5 + 10, B * C, myCall() + 5, etc
 // operands can be literals, vars and other operations
-class ast_binaryop : public aeon_expression
+class aeNodeBinaryOperator : public aeNodeExpr
 {
 public:
 
-	ast_binaryop(aeon_expression* opA, aeon_expression* opB, std::string _oper)
+	aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper)
 	{
-		type = BinaryOperator;
+		m_type = BinaryOperator;
 
 		operandA = opA;
 		operandB = opB;
@@ -232,8 +203,8 @@ public:
 		return std::string("(") + operandA->exprstr() + " " + oper + " " + operandB->exprstr() + ")";
 	}
 
-	aeon_expression* operandA;
-	aeon_expression* operandB;
+	aeNodeExpr* operandA;
+	aeNodeExpr* operandB;
 
 	std::string oper;
 
@@ -243,12 +214,12 @@ public:
 	}
 };
 
-class aeon_ternary_operator_node : public aeon_expression
+class aeNodeTernaryOperator : public aeNodeExpr
 {
 public:
-	aeon_expression* lhs;
-	aeon_expression* middle;
-	aeon_expression* rhs;
+	aeNodeExpr* lhs;
+	aeNodeExpr* middle;
+	aeNodeExpr* rhs;
 };
 
 /**
@@ -263,16 +234,16 @@ var--
 *var (deref)
 typeof(operand)
 */
-class ast_unaryop : public aeon_expression
+class aeNodeUnaryOperator : public aeNodeExpr
 {
 public:
 
 	std::string OperatorString;
-	aeon_expression* Operand;
+	aeNodeExpr* Operand;
 
-	ast_unaryop()
+	aeNodeUnaryOperator()
 	{
-		type = UnaryOperator;
+		m_type = UnaryOperator;
 
 		Operand = nullptr;
 	}
@@ -297,11 +268,11 @@ public:
 
 	This operator will evaluate to the return type of the chosen T::operator[] overload.
 */
-class aeon_expression_subscript : public aeon_expression
+class aeNodeSubscriptOperator : public aeNodeExpr
 {
 public:
-	aeon_expression* argument;
-	aeon_expression* subject;
+	aeNodeExpr* argument;
+	aeNodeExpr* subject;
 
 	std::string exprstr()
 	{

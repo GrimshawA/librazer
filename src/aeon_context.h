@@ -20,6 +20,12 @@ struct aeon_config
 	bool allowAutomaticTypeInference; ///< Anonymous variables assume a type from inference, but are immutable (and not aeon_variant), otherwise explicit inference is supported
 };
 
+struct aeFunctionData
+{
+	aeon_module* module;
+	uint32_t index;
+};
+
 typedef int aeLiteralId;
 typedef int aeFunctionId;
 
@@ -65,9 +71,9 @@ class aeon_context
 		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
 		std::vector<aeon_nativecall>                  native_functions;     ///< All the native functions registered
 		std::vector<aeon_nativecall>                  native_methods;       ///< All native class methods registered
-		std::vector<method_indirect>                  table_methods;         ///< Every script class method has an absolute index in this table
-		std::vector<method_indirect>                  table_functions;       ///< Every script function loaded has an absolute index to this table
-		aeon_config                                   m_config;
+		std::vector<method_indirect>                  table_methods;        ///< Every script class method has an absolute index in this table
+		std::vector<aeFunctionData>                   m_function_table;     ///< Every script function loaded has an absolute index to this table
+		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 public:
 
 	aeon_context();

@@ -8,11 +8,10 @@
 enum EOpCodes
 {
 	OP_NEW,
-	OP_CALL,		   ///< Call a global or static class function
-	OP_CALLNATIVE,	       ///< Call a native function on the host environment
-	OP_CALLMETHOD,   ///< Call non-static member function on an object
+	OP_CALL,		   ///< Call one aeon procedure, static, method, global, which assumes its input environment is already set
+	OP_CALLVIRTUAL,	   ///< Call a virtual method on an aeon object, separate to avoid overhead of checking
+	OP_CALLNATIVE,	   ///< Call a native function on the host environment
 	OP_CALLMETHOD_NAT, ///< Call non-static member function on a native object
-	callvirt,	   ///< Call a virtual method on an object
 	OP_RETURN,           ///< Returns from a function immediately
 	OP_JZ,            ///< Jump if eax == 0 to relative address (pc += offset)
 	OP_JMP,        ///< jmp to an absolute location pc = x
@@ -23,23 +22,17 @@ enum EOpCodes
 	OP_MOD,           ///<
 	OP_ADD,           ///<
 	OP_SUB,           ///<
- 	f2i,           ///<
-	i2f,           ///<
+ 	OP_C_F_I32,           ///< Built in type conversion
+	OP_C_I32_F,           ///< Built in type conversion
 	OP_LT,            ///< compare less than, a < b
 	OP_GT,            ///<
+	OP_EQ,         ///< Test equality
+	OP_NOT,        ///< Negate operand
 	OP_SET,        ///< Assign something to something
 	OP_LOAD,       ///< Pushes the contents of local variable <index> to stack (integer)
-	ilocal,        ///< Pushing a new scoped local variable (integer)
-	push_obj,      ///< Pushes enough memory to stack to fit the object type
-	pop_obj,       ///< Pop the memory of the given object type on top
-	iloadaddr,     ///< Pushes an integer local address to stack
-	poplocal,      ///< Pops stack to release local vars
 	OP_SIZEOF,     ///< Pushes the size in bytes to the stack of the given type token
-	invsign,       ///< Pops a int32 from stack and pushes back its inverse (n * -1)
-	push_thisobj,  ///< Push an objectref for the contextual this ptr
 	OP_NEWOBJECT,        ///< Creates a new object of the selected type and pushes its objectref
 	OP_DELETEOBJECT,     ///< Release the objectref on the stack
-	isinst,        ///< Checks if an object is an instance of class X
 	OP_MOV,
 	OP_DTEST,      ///< Just debug prints something for tests
 	Count

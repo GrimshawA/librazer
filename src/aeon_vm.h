@@ -29,13 +29,39 @@ struct vm_value
 		int32_t  i32;
 		uint64_t u64;
 		int64_t  i64;
+		float    fp;
+		float    dp;
 		void*    ptr;
 	};
+
+	static vm_value make_int32(int32_t v)
+	{
+		vm_value vmv; vmv.i32 = v; return vmv;
+	}
+
+	static vm_value make_uint32(uint32_t v)
+	{
+		vm_value vmv; vmv.u32 = v; return vmv;
+	}
+
+	static vm_value make_float(float v)
+	{
+		vm_value vmv; vmv.fp = v; return vmv;
+	}
+
+	static vm_value make_double(double v)
+	{
+		vm_value vmv; vmv.dp = v; return vmv;
+	}
+
+	static vm_value make_ptr(void* v)
+	{
+		vm_value vmv; vmv.ptr = v; return vmv;
+	}
 };
 
 struct StackFrameInfo
 {
-	int32_t base;
 	std::string name;
 	uint32_t pc;               ///< So we can restore the program counter of the caller
 	unsigned char* ebp;        ///< So we can restore the base pointer of the caller
@@ -88,6 +114,25 @@ struct ExecutionContext
 		v = *reinterpret_cast<vm_value*>(esp);
 		esp += sizeof(vm_value);
 		return v;
+	}
+
+	vm_value getThisPtr()
+	{
+		vm_value thisvm;
+		thisvm.ptr = reinterpret_cast<vm_value*>(ebp - int32_t(sizeof(vm_value)))->ptr;
+		//thisvm.u64 -= sizeof(vm_value);
+		//thisvm = *(vm_value*)(ebp - sizeof(vm_value));
+		printf("thisptr is %x from %x - 8\n", thisvm.ptr, ebp);
+		return thisvm;
+	}
+
+	void pushThisPtr(void* ptr)
+	{
+		vm_value v;
+		v.ptr = ptr;
+		push_value(v);
+
+		printf("pushed this %x, read %x\n", ptr, getThisPtr().ptr);
 	}
 
 	void push_addr(void* ptr)
@@ -147,8 +192,6 @@ class aeon_vm
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
 		void execute();
-
-		int getStackIndex();
 
 		/// Call a method on the given script object by its name
 		void callMethod(aeon_object* object, const std::string& prototype);

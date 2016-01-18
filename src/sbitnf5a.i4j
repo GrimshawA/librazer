@@ -23,7 +23,10 @@ void aeon_vm::callMethod(aeon_object* object, const std::string& prototype)
 {
 	m_stk.ebp = m_stk.esp;
 
-	m_stk.pushThisPtr(object->addr);
+	vm_value thisPtrValue;
+	thisPtrValue.ptr = object->addr;
+	m_stk.push_value(thisPtrValue); // push 'this' ptr
+	//void* xdr = m_stk.pop_value().ptr;
 	  
 	printf("callMethod: pushing this, pointing to %x popped\n", object->addr);
 
@@ -207,18 +210,17 @@ void aeon_vm::execute()
 		switch (inst.opcode)
 		{
 			vm_start(OP_CALL)
-				aeFunctionData& functionData = ctx->m_function_table[inst.arg0];
+				uint32_t funcid = getinst_a(inst);
+				uint32_t params = getinst_b(inst);
+				aeon_function func = cl->module->functions[funcid];
+
 				StackFrameInfo callinfo;
-				callinfo.name = "unknown";
-				callinfo.pc = functionData.index - 1;
-				callinfo.module = functionData.module;
-				callinfo.ebp = m_stk.ebp;
+				callinfo.name = func.prototype;
+				callinfo.pc = func.offset;
+				callinfo.module = cl->module;
 				m_stk.frames.push_back(callinfo);
 				cl = &m_stk.frames[m_stk.frames.size() - 1];
-			vm_end
-
-			vm_start(OP_CALLVIRTUAL)
-				// todo
+				cl->pc--;
 			vm_end
 
 			vm_start(OP_CALLNATIVE)
@@ -241,6 +243,23 @@ void aeon_vm::execute()
 					push(gen->retarg._u64);
 
 				delete gen;
+			vm_end
+
+			vm_start(OP_CALLMETHOD)
+				//atom_objectref ref = pop_objectref();     // The object to call the method on
+				int32_t        moduleIndex = pop_int32(); // The module the type belongs to
+				int32_t        methodIndex = pop_int32(); // The method we want to call
+
+				aeon_method&   methodInfo = ctx->modules[moduleIndex]->methods[methodIndex];
+				
+				StackFrameInfo callinfo;
+				callinfo.name = methodInfo.name;
+				callinfo.pc = methodInfo.offset;
+				callinfo.ebp = m_stk.ebp;
+				callinfo.module = ctx->modules[moduleIndex].get();
+				m_stk.frames.push_back(callinfo);
+				cl = &m_stk.frames[m_stk.frames.size() - 1];
+				cl->pc--;
 			vm_end
 
 			vm_start(OP_CALLMETHOD_NAT)
@@ -384,23 +403,35 @@ void aeon_vm::execute()
 				push_float(static_cast<float>(v));
 			vm_end
 
+			vm_start(OP_CALLVIRTUALMETHOD)
+				uint32_t funcid = getinst_a(inst);
+				uint32_t params = getinst_b(inst);
+				aeon_function func = cl->module->functions[funcid];
+
+				StackFrameInfo callinfo;
+				callinfo.name = func.prototype;
+				callinfo.pc = func.offset;
+				callinfo.module = cl->module;
+				m_stk.frames.push_back(callinfo);
+				cl = &m_stk.frames[m_stk.frames.size() - 1];
+				cl->pc--;
+			vm_end
+
 			vm_start(OP_LOAD)
 				if (inst.arg0 == AEK_THIS)
 				{
-					vm_value thisPtr = m_stk.getThisPtr();
-					thisPtr.ptr = (unsigned char*)thisPtr.ptr + inst.arg1;
-					/*
+					vm_value* thisObjAddr = reinterpret_cast<vm_value*>(m_stk.ebp - sizeof(vm_value));
 					vm_value offsetedAddr = *thisObjAddr;
-					offsetedAddr.ptr = (char*)offsetedAddr.ptr + inst.arg1;*/  
-					m_stk.push_value(thisPtr);
-					printf("OP_LOAD THIS = %x (offset %d)\n", m_stk.getThisPtr().ptr, inst.arg1);
+					offsetedAddr.u64 += inst.arg1;
+					printf("this = %x\n", thisObjAddr->ptr);
+					m_stk.push_value(offsetedAddr);
 				}
 				else if (inst.arg0 == AEK_EBP)
 				{
 					vm_value val;
 					val.ptr = m_stk.ebp - inst.arg1;
 					m_stk.push_value(val);
-					printf("OP_LOAD EBP address %x (offset %d)\n", val.ptr, inst.arg1);
+					printf("OP_LOAD EBP address %x\n", val.ptr);
 				}
 			vm_end
 

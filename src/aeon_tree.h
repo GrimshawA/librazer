@@ -1,12 +1,16 @@
 #ifndef aeon_tree_h__
 #define aeon_tree_h__
 
+#include "nodes/aeNodeBase.h"
+#include "nodes/aeNodeModule.h"
+#include "nodes/aeNodeStatement.h"
+
 #include <string>
 #include <vector>
 #include <stdint.h>
 
-class aeon_expression;
-class ast_codeblock;
+class aeNodeExpr;
+class aeNodeBlock;
 
 static std::string makeTabbing(int tabs)
 {
@@ -14,102 +18,31 @@ static std::string makeTabbing(int tabs)
 	return buff;
 }
 
-class aeon_ast_node
+
+/**
+	\class aeNodeEcosystem
+
+	The ecosystem harbors an arbitrary number of modules, it is used to build a complete tree with all modules in the software.
+	Allows traversing and other kinds of instrospection.
+*/
+class aeNodeEcosystem : public aeNodeBase
 {
 public:
-
-	enum NodeTypes
-	{
-		Module,
-		Namespace,
-		Using,
-		ForwardClassDecl,
-		ClassDecl,
-		VarDecl,
-		ForwardFuncDecl,
-		FuncDecl,
-		UsingNamespace,
-		StackScope,
-		NamespaceDecl,
-		PragmaDecl,
-		VisibilityMutation,
-		CharLiteral,
-		StringExpr,
-		IntExpr,
-		FloatExpr,
-		BinaryOperator,
-		UnaryOperator,
-		FuncCall,
-		IfBranch,
-		CodeBlock,
-		WhileLoop,
-		ForLoop,
-		Return,
-		VarExpr,
-		Enum,
-		Type,
-		Typedef,
-	};
-
-	int type;
-
-	std::vector<aeon_ast_node*> items;
-
-public:
-
-	void add(aeon_ast_node* n)
-	{
-		items.push_back(n);
-	}
-
-	virtual std::string printtext()
-	{
-		return ".";
-	}
-
-	virtual void printSelf(int tabs = 0)
-	{
-		printf("%s%s\n", makeTabbing(tabs).c_str(), printtext().c_str());
-		for (auto item : items)
-		{
-			item->printSelf(tabs + 1);
-		}
-	}
-};
-
-// this is the root of every translation unit
-class ast_module : public aeon_ast_node
-{
-public:
-	ast_module()
-	{
-		type = Module;
-	}
-
-	std::string ModuleName;
-
-	virtual void printSelf(int tabs)
-	{
-		printf("%sModule '%s'\n", makeTabbing(tabs).c_str(), ModuleName.c_str());
-		for (auto item : items)
-		{
-			item->printSelf(tabs + 1);
-		}
-	}
+	std::vector<aeNodeModule> modules;
 };
 
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class ast_type : public aeon_ast_node
+class aeNodeTypeDecl : public aeNodeBase
 {
 public:
 
 	std::string name;
 
-	std::vector<ast_type*> templateTypeArguments;
+	std::vector<aeNodeTypeDecl*> templateTypeArguments;
 
-	ast_type()
+	aeNodeTypeDecl()
 	{
-		type = Type;
+		m_type = Type;
 	}
 
 	std::string printtext()
@@ -118,34 +51,17 @@ public:
 	}
 };
 
-class ast_namespace : public aeon_ast_node
+class aeNodeTypedef : public aeNodeBase
 {
 public:
 
-	ast_namespace()
+	aeNodeTypedef()
 	{
-		type = Namespace;
+		m_type = Typedef;
 	}
 
-	std::string Name;
-
-	std::string printtext()
-	{
-		return "Namespace";
-	}
-};
-
-class ast_typedef : public aeon_ast_node
-{
-public:
-
-	ast_typedef()
-	{
-		type = Typedef;
-	}
-
-	ast_type* typeA;
-	ast_type* typeB;
+	aeNodeTypeDecl* typeA;
+	aeNodeTypeDecl* typeB;
 
 	std::string printtext()
 	{
@@ -154,19 +70,19 @@ public:
 };
 
 
-class ast_codeblock : public aeon_ast_node
+class aeNodeBlock : public aeNodeStatement
 {
 public:
 
-	ast_codeblock()
+	aeNodeBlock()
 	{
-		type = CodeBlock;
+		m_type = CodeBlock;
 	}
 
 	virtual void printSelf(int tabs)
 	{
 		printf("%sBlock '%s'\n", makeTabbing(tabs).c_str(), "{}");
-		for (auto item : items)
+		for (auto item : m_items)
 		{
 			item->printSelf(tabs + 1);
 		}
@@ -176,16 +92,16 @@ public:
 
 
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class ast_enum : public aeon_ast_node
+class aeNodeEnum : public aeNodeBase
 {
 public:
 
 	std::string name;
 	std::vector<std::string> members;
 
-	ast_enum()
+	aeNodeEnum()
 	{
-		type = Enum;
+		m_type = Enum;
 	}
 
 	void addField(std::string name)
@@ -200,23 +116,22 @@ public:
 };
 
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class ast_ifbranch : public aeon_ast_node
+class aeNodeBranch : public aeNodeBase
 {
 public:
-	aeon_expression*      expr;
-	ast_codeblock* block;
+	aeNodeExpr*      expr;
+	aeNodeBlock* block;
 public:
-	ast_ifbranch();
+	aeNodeBranch();
 	std::string printtext();
 };
 
-
-class ast_return : public aeon_ast_node
+class aeNodeReturn : public aeNodeBase
 {
 public:
-	ast_return()
+	aeNodeReturn()
 	{
-		type = Return;
+		m_type = Return;
 	}
 
 	std::string printtext()
@@ -227,104 +142,94 @@ public:
 
 class aeon_type;
 
-class ast_class : public aeon_ast_node
+/**
+	\class aeNodeUnion
+	\brief Each union defined in the code is represented in this structure
+*/
+class aeNodeUnion : public aeNodeBase
 {
-public:
 
-	aeon_type* typeInfo;
-	std::string Name;
-
-	struct classparentinfo
-	{
-		std::string parentClass;
-		std::string accessLevel;
-	};
-
-	std::vector<classparentinfo> parents;
-
-	ast_class()
-	{
-		type = ClassDecl;
-	}
-
-	virtual void printSelf(int tabs)
-	{
-		printf("%sClassDecl '%s' %d parents\n", makeTabbing(tabs).c_str(), Name.c_str(), parents.size());
-		for (auto item : items)
-		{
-			item->printSelf(tabs + 1);
-		}
-	}
 };
 
 /**
-	\class aeon_ast_function
-	\brief The root node of every function in the language
+	\class aeNodeFunction
+	\brief All functions are represented by this structure
 
-	These can be static class functions, methods,
-	global functions.
+	This includes:
+	- global functions
+	- class statics
+	- class methods
+	- anonymous functions / closures
 */
-class aeon_ast_function : public aeon_ast_node
+class aeNodeFunction : public aeNodeBase
 {
 public:
 
-	std::vector<aeon_expression*> m_parameters;
+	std::vector<aeNodeExpr*> m_parameters;
 	std::string                   m_name;
-	ast_type*                     m_return;
-	ast_codeblock*                m_block;
+	aeNodeTypeDecl*                     m_return;
+	aeNodeBlock*                m_block;
 	bool                          is_constructor;
 	bool                          is_method;
-	bool                          is_class_static;
 	bool                          is_destructor;
 	bool                          is_global;
+	bool                          is_static;
+	bool                          is_anon;
 
 public:
-	aeon_ast_function();
+	aeNodeFunction();
+
+	/// Is this a global function outside class scope
+	bool isGlobalFunction();
+
+	/// Is this function a non static method of a class
+	bool isNonStaticMethod();
+
+	/// Is this a static class method
+	bool isStaticMethod();
+
+	/// Is this is an anonymous function
+	bool isAnonymousFunction();
 
 	std::string printtext();
 };
 
-class ast_while : public aeon_ast_node
+class aeNodeWhile : public aeNodeBase
 {
 public:
 
 	bool           doWhile;
-	aeon_expression*      expr;
-	ast_codeblock* block;
+	aeNodeExpr*      expr;
+	aeNodeBlock* block;
 
-	ast_while();
+	aeNodeWhile();
 
 	std::string printtext();
 };
 
-class ast_for : public aeon_ast_node
+class aeNodeFor : public aeNodeBase
 {
 public:
-	std::vector<aeon_expression*> initExpressions; ///< The for loop can have any number of init expressions separated by comma.
-	aeon_expression*      expr;
-	aeon_expression*      incrExpr;
+	std::vector<aeNodeExpr*> initExpressions; ///< The for loop can have any number of init expressions separated by comma.
+	aeNodeExpr*      expr;
+	aeNodeExpr*      incrExpr;
 
-	ast_codeblock* block;
+	aeNodeBlock* block;
 
-	ast_for();
+	aeNodeFor();
 
 	std::string printtext();
 };
 
-class ast_using : public aeon_ast_node
+class aeNodeUsing : public aeNodeBase
 {
 public:
 
-	aeon_expression* arg = nullptr;
+	aeNodeExpr* arg = nullptr;
 
-	ast_using();
+	aeNodeUsing();
 
 	std::string printtext();
-};
-
-class aeon_statement : public aeon_ast_node
-{
-
 };
 
 /*
@@ -341,14 +246,14 @@ class aeon_statement : public aeon_ast_node
 		The type of the declaration, contextual to where the declaration is.
 		Default initialization strategy will be deduced after evaluating this type.
 */
-class aeon_stmt_vardecl : public aeon_statement
+class aeNodeVarDecl : public aeNodeStatement
 {
 public:
 	std::string      name;
 	std::string      type_name;
-	aeon_expression* init_expr;
+	aeNodeExpr* init_expr;
 
-	aeon_stmt_vardecl();
+	aeNodeVarDecl();
 
 	std::string printtext();
 };

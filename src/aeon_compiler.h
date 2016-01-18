@@ -56,7 +56,7 @@ struct BinaryOperatorRelationship
 
 struct ExpressionEvalContext
 {
-	aeon_expression* rootExpr;
+	aeNodeExpr* rootExpr;
 	bool is_temporary = false; ///< If the expression is isolated, it should evaluate for side effects and leave nothing on the stack
 	bool must_be_rvalue = false;
 };
@@ -80,7 +80,8 @@ public:
 		aeon_module*                        m_module;                ///< Current module being compiled
 		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
 		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
-		std::vector<ast_class*>             m_classes;               ///< Class we are compiling right now
+		std::vector<aeNodeClass*>             m_classes;               ///< Class we are compiling right now
+		aeNodeFunction*                  m_caller;
 		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
 		std::vector<TypeConversionStrategy> m_typeConversionTable;   ///< Table that defines what can be converted to what and how
 
@@ -95,7 +96,7 @@ public:
 		int findLocalObject(const std::string& refname);
 
 		/// Emit byte code for the passed AST
-		void generate(aeon_ast_node* root);
+		void generate(aeNodeBase* root);
 
 		/// Get the cursor position, aka the index of the last added instruction
 		int32_t cursor();
@@ -103,7 +104,7 @@ public:
 public:
 
 		/// Emit an instruction
-		void emitInstruction(aeon_instruction instr);
+		uint32_t emitInstruction(aeon_instruction instr);
 
 		/// Emits an instruction at the cursor from premade arguments
 		uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
@@ -121,13 +122,10 @@ public:
 		void emit_local_construct_object(int32_t size);
 
 		/// Emits code to pop a scoped variable, considering all its type traits
-		void emit_local_destruct(VariableStorageInfo& var);
+		void destructLocalVar(VariableStorageInfo& var);
 
 		/// Emit a local destruction of an OBJECT variable
 		void emit_local_destruct_object(int32_t size);
-
-		/// Emit a local destruction of a POD variable
-		void emit_local_destruct_pod(int32_t size);
 
 		/// Get the variable info by its identifier name (respects the current compilation scope)
 		VariableStorageInfo getVariable(std::string name);
@@ -135,10 +133,10 @@ public:
 		/// Evaluates the type of the expression/variable, taking into account the scope of the cursor
 		/// Any given variable 'x' can have different types depending from where its referenced.
 		/// Returns nullptr if it couldn't evaluate the scope
-		aeon_type* evaluateType(aeon_expression* expr);
+		aeon_type* evaluateType(aeNodeExpr* expr);
 
 		/// Evaluates the class node to an actual type
-		aeon_type* evaluateType(ast_class* class_node);
+		aeon_type* evaluateType(aeNodeClass* class_node);
 
 		/// Evaluates a typename to a real type depending on context
 		aeon_type* evaluateType(const std::string& type_name);
@@ -147,29 +145,29 @@ public:
 		bool canConvertType(aeon_type* typeA, aeon_type* typeB);
 
 		// High level constructs compilation
-		void emitClassCode(ast_class* clss);
-		void emitFunctionCode(aeon_ast_function* func);
-		void emitNamespaceCode(ast_namespace* namespace_node);
-		void emitGlobalVarCode(ast_varexpr* global_var);
+		void emitClassCode(aeNodeClass* clss);
+		void emitFunctionCode(aeNodeFunction* func);
+		void emitNamespaceCode(aeNodeNamespace* namespace_node);
+		void emitGlobalVarCode(aeNodeVarRef* global_var);
 
 		// Statement compilation
-		void emitScopeCode(ast_codeblock* codeblock);
-		void emitReturnCode(ast_return* ret);
-		void emitBranchCode(ast_ifbranch* cond);
-		void emitWhileLoop(ast_while* whileloop);
-		void emitForLoop(ast_for* forloop);
-		void emitVarDecl(aeon_stmt_vardecl* varDecl);
+		void emitScopeCode(aeNodeBlock* codeblock);
+		void emitReturnCode(aeNodeReturn* ret);
+		void emitBranchCode(aeNodeBranch* cond);
+		void emitWhileLoop(aeNodeWhile* whileloop);
+		void emitForLoop(aeNodeFor* forloop);
+		void emitVarDecl(aeNodeVarDecl* varDecl);
 
 		// Expression evaluation
-		void emitExpressionEval(aeon_expression* expr, ExpressionEvalContext exprContext);
-		void emitAssignOp(aeon_expression* lhs, aeon_expression* rhs);
-		void emitPrefixIncrOp(ast_unaryop* expr);
-		void emitBinaryOp(ast_binaryop* operation);
-		void emitConditionalOp(ast_binaryop* operation);
-		void emitFunctionCall(ast_funccall* funccall, ExpressionEvalContext ctx);
-		void emitVarExpr(ast_varexpr* var);
-		void emitLoadAddress(aeon_expression* expr);
-		void emitLoadLiteral(ast_literal* lt);
+		void emitExpressionEval(aeNodeExpr* expr, ExpressionEvalContext exprContext);
+		void emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs);
+		void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
+		void emitBinaryOp(aeNodeBinaryOperator* operation);
+		void emitConditionalOp(aeNodeBinaryOperator* operation);
+		void emitFunctionCall(aeNodeFunctionCall* funccall, ExpressionEvalContext ctx);
+		void emitVarExpr(aeNodeVarRef* var);
+		void emitLoadAddress(aeNodeExpr* expr);
+		void emitLoadLiteral(aeNodeLiteral* lt);
 		void emitConversion(aeon_type* typeA, aeon_type* typeB);
 };
 

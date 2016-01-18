@@ -1,31 +1,8 @@
 #include "aeon_bytecode.h"
 
 std::array<const char*, static_cast<int32_t>(EOpCodes::Count)> EOpCodeNames = {
-	"hello",
-	"Call",
-	"CallNativeFunc",
-	"Return",
-	"Jump",
-	"PushArg",
-	"mul"
+	
 };
-
-const char* getopname(int opcode)
-{
-	switch (opcode)
-	{
-	case EOpCodes::OP_ADD: return "add"; break;
-	case EOpCodes::OP_SET: return "set"; break;
-	case EOpCodes::OP_RETURN: return "ret"; break;
-	case EOpCodes::OP_LOADK: return "loadk"; break;
-	case EOpCodes::iloadaddr: return "iloadaddr"; break;
-	case EOpCodes::ilocal: return "ilocal"; break;
-	case EOpCodes::OP_CALL: return "call"; break;
-	case EOpCodes::OP_CALLNATIVE: return "ncall"; break;
-	}
-
-	return "unk";
-}
 
 void printBits(size_t const size, void const * const ptr)
 {

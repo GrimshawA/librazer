@@ -48,7 +48,7 @@ class aeon_parser
 		aeon_lexer*   lex = nullptr;
 		aeon_token    Tok;              ///< Current token cursor
 		aeon_context* ctx;              ///< The context of the application/library
-		ast_module*   root;
+		aeNodeModule*   root;
 		aeon_value*   mDataValue;
 
 	public:
@@ -68,55 +68,55 @@ class aeon_parser
 
 		/// Parses one symbol in either declarative scope like a namespace, class or global
 		/// Symbols can be: functions, function prototypes, variables, properties
-		aeon_ast_node* parse_symbol();
+		aeNodeBase* parse_symbol();
 
 		/// Parse a potentiall complex type with nested generics
-		ast_type* parse_type();
+		aeNodeTypeDecl* parse_type();
 
-		aeon_expression* parseExpression();
+		aeNodeExpr* parseExpression();
 
 		void parseTopLevel();
 
-		ast_namespace* parse_namespace();
+		aeNodeNamespace* parse_namespace();
 
-		ast_enum* parse_enum();
+		aeNodeEnum* parse_enum();
 
 		/// Returns a class node. Requires the current token to be "class"
-		ast_class* parseClass();
+		aeNodeClass* parseClass();
 
 		/// With the cursor on a 'for' token, prepares the for loop node
-		ast_for* parseForLoop();
+		aeNodeFor* parseForLoop();
 
 		/// With the cursor on a 'while' or 'do' token, returns the ready while node
-		ast_while* parseWhileLoop();
+		aeNodeWhile* parseWhileLoop();
 
 		/// We're inside a class block, last token read was {
-		void parseClassBody(ast_class* classDeclNode);
+		void parseClassBody(aeNodeClass* classDeclNode);
 
 		/// Parses one thing inside the class body
-		void parse_class_element(ast_class* classDeclNode);
+		void parse_class_element(aeNodeClass* classDeclNode);
 
 		/// Parse a identifier subexpression, any combination of func calls
-		aeon_expression* parse_identifier_subexpression();
+		aeNodeExpr* parse_identifier_subexpression();
 
-		aeon_ast_function* parse_function();
-
-		/// Parses a list of arguments (expressions) to pass to a function for example
-		std::vector<aeon_expression*> parse_argument_list();
+		aeNodeFunction* parse_function();
 
 		/// Parses a list of arguments (expressions) to pass to a function for example
-		std::vector<aeon_expression*> parse_parameter_list();
+		std::vector<aeNodeExpr*> parse_argument_list();
+
+		/// Parses a list of arguments (expressions) to pass to a function for example
+		std::vector<aeNodeExpr*> parse_parameter_list();
 
 		/// We're inside a function body scope, parse whatever is allowed in there
-		void parseFunctionScope(aeon_ast_function* funcDeclNode);
+		void parseFunctionScope(aeNodeFunction* funcDeclNode);
 
 		/// We're about to read a function call, get it
-		ast_funccall* parseFunctionCall();
+		aeNodeFunctionCall* parseFunctionCall();
 
-		aeon_stmt_vardecl* parseVariableDecl();
+		aeNodeVarDecl* parseVariableDecl();
 
 		/// Parses one block of executable code (inside a function)
-		void parseBlock(ast_codeblock* block);
+		void parseBlock(aeNodeBlock* block);
 
 		bool checkForFunction();
 

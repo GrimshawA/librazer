@@ -1,43 +1,65 @@
 #include "aeon_tree.h"
 #include "aeon_expression.h"
 
-ast_ifbranch::ast_ifbranch()
+aeNodeBranch::aeNodeBranch()
 {
-	type = IfBranch;
+	m_type = IfBranch;
 
 	// we have to have an expression and block so..
-	block = new ast_codeblock();
+	block = new aeNodeBlock();
 	add(block);
 }
 
-std::string ast_ifbranch::printtext()
+std::string aeNodeBranch::printtext()
 {
 	return "if " + expr->exprstr();
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-aeon_ast_function::aeon_ast_function()
+aeNodeFunction::aeNodeFunction()
 {
-	type = FuncDecl;
+	m_type = AEN_FUNCTION;
 
-	m_block = new ast_codeblock();
+	m_block = new aeNodeBlock();
 	add(m_block);
 
 	is_global = false;
 	is_method = false;
+	is_static = false;
 	is_destructor = false;
 	is_constructor = false;
+	is_anon = false;
 }
 
-std::string aeon_ast_function::printtext()
+bool aeNodeFunction::isNonStaticMethod()
+{
+	return is_method && !is_static;
+}
+
+bool aeNodeFunction::isGlobalFunction()
+{
+	return !is_method && is_global;
+}
+
+bool aeNodeFunction::isStaticMethod()
+{
+	return is_method && is_static;
+}
+
+bool aeNodeFunction::isAnonymousFunction()
+{
+	return is_anon;
+}
+
+std::string aeNodeFunction::printtext()
 {
 	std::string s1 = std::string("Fn ") + m_name + "(";
 	if (m_parameters.size() > 0)
 	{
 		for (std::size_t i = 0; i < m_parameters.size(); ++i)
 		{
-			s1 += static_cast <ast_varexpr*>(m_parameters[i])->TypeString;
+			s1 += static_cast <aeNodeVarRef*>(m_parameters[i])->TypeString;
 			if (i < m_parameters.size() - 1)
 				s1 += ",";
 		}
@@ -48,44 +70,44 @@ std::string aeon_ast_function::printtext()
 
 //////////////////////////////////////////////////////////////////////////
 
-ast_while::ast_while()
+aeNodeWhile::aeNodeWhile()
 {
-	type = WhileLoop;
+	m_type = WhileLoop;
 
 	doWhile = false;
 
-	block = new ast_codeblock();
+	block = new aeNodeBlock();
 	add(block);
 }
 
-std::string ast_while::printtext()
+std::string aeNodeWhile::printtext()
 {
 	return std::string("While");
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-ast_for::ast_for()
+aeNodeFor::aeNodeFor()
 {
-	type = ForLoop;
+	m_type = ForLoop;
 
-	block = new ast_codeblock();
+	block = new aeNodeBlock();
 	add(block);
 }
 
-std::string ast_for::printtext()
+std::string aeNodeFor::printtext()
 {
 	return std::string("For ") + expr->printtext() + ";" + incrExpr->printtext();
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-ast_using::ast_using()
+aeNodeUsing::aeNodeUsing()
 {
-	type = Using;
+	m_type = AEN_USING;
 }
 
-std::string ast_using::printtext()
+std::string aeNodeUsing::printtext()
 {
 	return std::string("Using ") + arg->exprstr();
 }
@@ -93,13 +115,13 @@ std::string ast_using::printtext()
 
 //////////////////////////////////////////////////////////////////////////
 
-aeon_stmt_vardecl::aeon_stmt_vardecl()
+aeNodeVarDecl::aeNodeVarDecl()
 {
-	type = VarDecl;
+	m_type = AEN_VARDECL;
 	init_expr = nullptr;
 }
 
-std::string aeon_stmt_vardecl::printtext()
+std::string aeNodeVarDecl::printtext()
 {
 	std::string strr = "Decl '" + type_name + "' '" + name + "'";
 	init_expr ? strr += " = " + init_expr->exprstr() : strr += "";

@@ -33,6 +33,8 @@ public:
 
 		void getField(const std::string& field, int32_t& value) const;
 
+		void* getFieldAddress(const std::string& field) const;
+
 		void log();
 };
 
