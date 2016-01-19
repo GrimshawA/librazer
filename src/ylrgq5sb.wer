@@ -3,12 +3,15 @@
 #include "aeon_vm.h"
 #include "aeon_context.h"
 #include "aeon_expression.h"
+#include "nodes/aeNodeClass.h"
+#include "nodes/aeNodeNamespace.h"
 
 #include <cassert>
 
 aeon_compiler::aeon_compiler()
 {
 	m_OffsetFromBasePtr = 0;
+	m_caller = nullptr;
 }
 
 int32_t aeon_compiler::cursor()
@@ -16,10 +19,15 @@ int32_t aeon_compiler::cursor()
 	return m_cursor;
 }
 
-void aeon_compiler::emitInstruction(aeon_instruction instr)
+void aeon_compiler::emitDebugPrint(const std::string& message)
+{
+	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
+}
+
+uint32_t aeon_compiler::emitInstruction(aeon_instruction instr)
 {
 	m_module->instructions.push_back(instr);
-	m_cursor++;
+	return m_cursor++;
 }
 
 uint32_t aeon_compiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
@@ -46,7 +54,7 @@ void aeon_compiler::pop_scope()
 	ScopeLocalData& top = m_scopes.back();
 	for (auto& it = top.locals.rbegin(); it != top.locals.rend(); ++it)
 	{
-		emit_local_destruct(*it);
+		destructLocalVar(*it);
 	}
 	m_scopes.pop_back();
 }
@@ -69,7 +77,7 @@ VariableStorageInfo aeon_compiler::getVariable(std::string name)
 	// Let's see if this is a local variable
 	if (m_classes.size() > 0)
 	{
-		ast_class* classNode = m_classes[m_classes.size() - 1];
+		aeNodeClass* classNode = m_classes[m_classes.size() - 1];
 		aeon_type* type = evaluateType(classNode);
 
 		if (type->getField(name))
@@ -79,6 +87,7 @@ VariableStorageInfo aeon_compiler::getVariable(std::string name)
 			varStorage.type = type;
 			varStorage.mode = AE_VAR_FIELD;
 			varStorage.offset = type->getField(name)->offset;
+			varStorage.name = name;
 			return varStorage;
 		}
 	}
@@ -86,17 +95,17 @@ VariableStorageInfo aeon_compiler::getVariable(std::string name)
 	return VariableStorageInfo();
 }
 
-void aeon_compiler::emit_local_destruct(VariableStorageInfo& var)
+void aeon_compiler::destructLocalVar(VariableStorageInfo& var)
 {
-	emitInstruction(OP_MOV, AEK_ESP, var.type->getSize());
+	if (var.type->is_native)
+	{
+
+	}
+	emitDebugPrint("Destroying a " + var.name);
+	emitInstruction(OP_MOV, AEK_ESP, sizeof(vm_value));
 }
 
 void aeon_compiler::emit_local_construct_pod(int32_t size)
-{
-
-}
-
-void aeon_compiler::emit_local_destruct_pod(int32_t size)
 {
 
 }
@@ -106,74 +115,69 @@ void aeon_compiler::emit_local_construct_object(int32_t size)
 
 }
 
-void aeon_compiler::emit_local_destruct_object(int32_t size)
+void aeon_compiler::generate(aeNodeBase* root)
 {
-
-}
-
-void aeon_compiler::generate(aeon_ast_node* root)
-{
-	for (std::size_t i = 0; i < root->items.size(); ++i)
+	for (std::size_t i = 0; i < root->m_items.size(); ++i)
 	{
-		if (root->items[i]->type == aeon_ast_node::FuncDecl)
+		if (root->m_items[i]->m_type == AEN_FUNCTION)
 		{
-			emitFunctionCode(static_cast<aeon_ast_function*>(root->items[i]));
+			emitFunctionCode(static_cast<aeNodeFunction*>(root->m_items[i]));
 		}
-		else if (root->items[i]->type == aeon_ast_node::ClassDecl)
+		else if (root->m_items[i]->m_type == AEN_CLASS)
 		{
-			emitClassCode(static_cast<ast_class*>(root->items[i]));
+			emitClassCode(static_cast<aeNodeClass*>(root->m_items[i]));
 		}
-		else if (root->items[i]->type == aeon_ast_node::Namespace)
+		else if (root->m_items[i]->m_type == AEN_NAMESPACE)
 		{
-			emitNamespaceCode(static_cast<ast_namespace*>(root->items[i]));
+			emitNamespaceCode(static_cast<aeNodeNamespace*>(root->m_items[i]));
 		}
-		else if (root->items[i]->type == aeon_ast_node::VarExpr)
+		else if (root->m_items[i]->m_type == VarExpr)
 		{
-			emitGlobalVarCode(static_cast<ast_varexpr*>(root->items[i]));
+			emitGlobalVarCode(static_cast<aeNodeVarRef*>(root->m_items[i]));
 		}
 	}
 }
 
-void aeon_compiler::emitNamespaceCode(ast_namespace* namespace_node)
+void aeon_compiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 {
-	for (std::size_t i = 0; i < namespace_node->items.size(); ++i)
+	for (std::size_t i = 0; i < namespace_node->m_items.size(); ++i)
 	{
-			if (namespace_node->items[i]->type == aeon_ast_node::FuncDecl)
+			if (namespace_node->m_items[i]->m_type == AEN_FUNCTION)
 			{
-				emitFunctionCode(static_cast<aeon_ast_function*>(namespace_node->items[i]));
+				emitFunctionCode(static_cast<aeNodeFunction*>(namespace_node->m_items[i]));
 			}
-			else if (namespace_node->items[i]->type == aeon_ast_node::ClassDecl)
+			else if (namespace_node->m_items[i]->m_type == AEN_CLASS)
 			{
-				emitClassCode(static_cast<ast_class*>(namespace_node->items[i]));
+				emitClassCode(static_cast<aeNodeClass*>(namespace_node->m_items[i]));
 			}
-			else if (namespace_node->items[i]->type == aeon_ast_node::Namespace)
+			else if (namespace_node->m_items[i]->m_type == AEN_NAMESPACE)
 			{
-				emitNamespaceCode(static_cast<ast_namespace*>(namespace_node->items[i]));
+				emitNamespaceCode(static_cast<aeNodeNamespace*>(namespace_node->m_items[i]));
 			}
-			else if (namespace_node->items[i]->type == aeon_ast_node::VarExpr)
+			else if (namespace_node->m_items[i]->m_type == VarExpr)
 			{
-				emitGlobalVarCode(static_cast<ast_varexpr*>(namespace_node->items[i]));
+				emitGlobalVarCode(static_cast<aeNodeVarRef*>(namespace_node->m_items[i]));
 			}
 	 }
 }
 
-void aeon_compiler::emitGlobalVarCode(ast_varexpr* global_var)
+void aeon_compiler::emitGlobalVarCode(aeNodeVarRef* global_var)
 {
 	
 }
 
-void aeon_compiler::emitClassCode(ast_class* clss)
+void aeon_compiler::emitClassCode(aeNodeClass* clss)
 {
 	m_classes.push_back(clss);
 
 	if (clss->parents.size() > 1 && !m_env->m_config.allowMultipleInheritance)
 	{
-		throwError("The class '" + clss->Name + "' can't inherit from multiple classes.");
+		throwError("The class '" + clss->m_name + "' can't inherit from multiple classes.");
 		return;
 	}
 
 	aeon_type* typeInfo = new aeon_type();
-	typeInfo->m_name = clss->Name;
+	typeInfo->m_name = clss->m_name;
 	typeInfo->m_module = m_module;
 	m_env->typedb.push_back(typeInfo);
 	m_module->types.push_back(*typeInfo);
@@ -181,7 +185,7 @@ void aeon_compiler::emitClassCode(ast_class* clss)
 	objectHeap.type = typeInfo;
 	m_env->object_heaps.push_back(objectHeap);
 
-	clss->typeInfo = typeInfo;
+	clss->m_typeInfo = typeInfo;
 
 	printf("Compiled type %s\n", typeInfo->m_name.c_str());
 
@@ -194,19 +198,19 @@ void aeon_compiler::emitClassCode(ast_class* clss)
 		}
 	}
 
-	for (std::size_t i = 0; i < clss->items.size(); ++i)
+	for (std::size_t i = 0; i < clss->m_items.size(); ++i)
 	{
-		if (clss->items[i]->type == aeon_ast_node::FuncDecl)
+		if (clss->m_items[i]->m_type == AEN_FUNCTION)
 		{
-			emitFunctionCode(static_cast<aeon_ast_function*>(clss->items[i]));
+			emitFunctionCode(static_cast<aeNodeFunction*>(clss->m_items[i]));
 		}
-		else if (clss->items[i]->type == aeon_ast_node::ClassDecl)
+		else if (clss->m_items[i]->m_type == AEN_CLASS)
 		{
-			emitClassCode(static_cast<ast_class*>(clss->items[i]));
+			emitClassCode(static_cast<aeNodeClass*>(clss->m_items[i]));
 		}
-		else if (clss->items[i]->type == aeon_ast_node::VarExpr)
+		else if (clss->m_items[i]->m_type == VarExpr)
 		{
-			ast_varexpr* varDecl = (ast_varexpr*)clss->items[i];
+			aeNodeVarRef* varDecl = (aeNodeVarRef*)clss->m_items[i];
 
 			aeon_type* fieldType = m_env->getTypeInfo(varDecl->VarType->name);
 			if (!fieldType)
@@ -231,10 +235,10 @@ void aeon_compiler::throwError(const std::string& message)
 	printf("CXXX: %s\n", message.c_str());
 }
 
-void aeon_compiler::emitBranchCode(ast_ifbranch* cond)
+void aeon_compiler::emitBranchCode(aeNodeBranch* cond)
 {
-	aeon_expression* test_expr = cond->expr;
-	ast_codeblock* nested_code = cond->block;
+	/*aeNodeExpr* test_expr = cond->m_expression;
+	aeNodeBlock* nested_code = cond->m_block;
 
 	// The expression must evaluate first
 	emitExpressionEval(test_expr, ExpressionEvalContext());
@@ -250,7 +254,7 @@ void aeon_compiler::emitBranchCode(ast_ifbranch* cond)
 	emitScopeCode(nested_code);
 
 	// make sure the if jmp goes to the end of the block if it fails
-	setinst_a(m_module->instructions[jmptestpc], (m_cursor - 1) - jmptestpc);
+	setinst_a(m_module->instructions[jmptestpc], (m_cursor - 1) - jmptestpc);*/
 }
 
 int aeon_compiler::findLocalObject(const std::string& refname)
@@ -263,14 +267,14 @@ int aeon_compiler::findLocalObject(const std::string& refname)
 	return -1;
 }
 
-void aeon_compiler::emitPrefixIncrOp(ast_unaryop* expr)
+void aeon_compiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
 {
 
 }
 
-void aeon_compiler::emitForLoop(ast_for* forloop)
+void aeon_compiler::emitForLoop(aeNodeFor* forloop)
 {
-	push_scope();
+	/*push_scope();
 
 	// Emit the code that initializes the control vars
 	// They are automatically scoped and are destructed in the end of the loop
@@ -301,13 +305,13 @@ void aeon_compiler::emitForLoop(ast_for* forloop)
 	// if the expression evaluates false, jump to after the for
 	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
 
-	pop_scope();
+	pop_scope();*/
 }
 
 
-void aeon_compiler::emitWhileLoop(ast_while* whileloop)
+void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 {
-	int pc_expreval = cursor();
+	/*int pc_expreval = cursor();
 
 	ExpressionEvalContext ectx;
 	emitExpressionEval(whileloop->expr, ectx);
@@ -321,17 +325,19 @@ void aeon_compiler::emitWhileLoop(ast_while* whileloop)
 	emitInstruction(OP_JMP, pc_expreval - 1);
 
 	// if the expression evaluates false, jump to after the while
-	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
+	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);*/
 }
 
-void aeon_compiler::emitFunctionCode(aeon_ast_function* func)
+void aeon_compiler::emitFunctionCode(aeNodeFunction* func)
 {
 	m_OffsetFromBasePtr = 0;
+	m_caller = func;
 
 	// If we are a method, we reserve space for the THIS ptr
-	if (m_classes.size() > 0)
+	if (func->isNonStaticMethod())
 	{
-		m_OffsetFromBasePtr += sizeof(void*);
+		m_OffsetFromBasePtr += sizeof(vm_value);
+		printf("Compiling non static method %s\n", func->m_name.c_str());
 	}
 
 	aeon_function functiondata;
@@ -339,90 +345,55 @@ void aeon_compiler::emitFunctionCode(aeon_ast_function* func)
 	functiondata.prototype = func->m_name;
 	m_module->functions.push_back(functiondata);
 
+	aeFunctionData g_functionData;
+	g_functionData.index = m_cursor;
+	g_functionData.module = m_module;
+	m_env->m_function_table.push_back(g_functionData);
+
 	// let's just generate code for the executable block
-	emitScopeCode(func->m_block);
+	emitScopeCode(func->m_block.get());
 
 	emitReturnCode(nullptr);
+	m_caller = nullptr;
 }
 
-void aeon_compiler::emitFunctionCall(ast_funccall* funccall, ExpressionEvalContext exprCtx)
-{
-		// Each child of the funccall is one argument to generate code for
-		int j = funccall->args.size() - 1;
-		while (j >= 0)
-		{
-			aeon_expression* expr = static_cast<aeon_expression*>(funccall->args[j]);
-			ExpressionEvalContext ectx;
-			emitExpressionEval(expr, ectx);
-
-			--j;
-		}
-
-		int funcId = m_env->getNativeFunctionIndex(funccall->funcName);
-		if (funcId >= 0)
-		{
-			// Now the actual call
-			aeon_instruction fcallinst;
-			setopcode(fcallinst, EOpCodes::OP_CALLNATIVE);
-			setinst_a(fcallinst, funcId);
-			setinst_b(fcallinst, funccall->args.size());
-			emitInstruction(fcallinst);
-		}
-		else
-		{
-			if (m_module->getFunctionIndexByName(funccall->funcName) < 0)
-			{
-				throwError("Function '" + funccall->funcName + "' not found!");
-			}
-			else
-			{
-				// we'll need to call a nested func
-				aeon_instruction fcallinst;
-				setopcode(fcallinst, EOpCodes::OP_CALL);
-				setinst_a(fcallinst, m_module->getFunctionIndexByName(funccall->funcName));
-				setinst_b(fcallinst, funccall->items.size());
-				emitInstruction(fcallinst);
-			}
-		}
-}
-
-void aeon_compiler::emitScopeCode(ast_codeblock* codeblock)
+void aeon_compiler::emitScopeCode(aeNodeBlock* codeblock)
 {
 	push_scope();
 
-	for (std::size_t i = 0; i < codeblock->items.size(); ++i)
+	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{
-		if (codeblock->items[i]->type == aeon_ast_node::FuncCall)
+		if (codeblock->m_items[i]->m_type == FuncCall)
 		{
-			emitFunctionCall(static_cast<ast_funccall*>(codeblock->items[i]), ExpressionEvalContext());
+			emitFunctionCall(static_cast<aeNodeFunctionCall*>(codeblock->m_items[i]), ExpressionEvalContext());
 		}
-		else if (codeblock->items[i]->type == aeon_ast_node::IfBranch)
+		else if (codeblock->m_items[i]->m_type == IfBranch)
 		{
-			emitBranchCode(static_cast<ast_ifbranch*>(codeblock->items[i]));
+			emitBranchCode(static_cast<aeNodeBranch*>(codeblock->m_items[i]));
 		}
-		else if (codeblock->items[i]->type == aeon_ast_node::WhileLoop)
+		else if (codeblock->m_items[i]->m_type == WhileLoop)
 		{
-			emitWhileLoop(static_cast<ast_while*>(codeblock->items[i]));
+			emitWhileLoop(static_cast<aeNodeWhile*>(codeblock->m_items[i]));
 		}
-		else if (codeblock->items[i]->type == aeon_ast_node::ForLoop)
+		else if (codeblock->m_items[i]->m_type == ForLoop)
 		{
-			emitForLoop(static_cast<ast_for*>(codeblock->items[i]));
+			emitForLoop(static_cast<aeNodeFor*>(codeblock->m_items[i]));
 		}
-		else if (codeblock->items[i]->type == aeon_ast_node::VarDecl)
+		else if (codeblock->m_items[i]->m_type == AEN_VARDECL)
 		{
-			emitVarDecl(static_cast<aeon_stmt_vardecl*>(codeblock->items[i]));
+			emitVarDecl(static_cast<aeNodeVarDecl*>(codeblock->m_items[i]));
 		}
 		else
 		{
 			// might be buggy to assume this
-			emitExpressionEval(static_cast<aeon_expression*>(codeblock->items[i]));
+			emitExpressionEval(static_cast<aeNodeExpr*>(codeblock->m_items[i]), ExpressionEvalContext());
 		}
 	}
 
 	pop_scope();
 }
 
-void aeon_compiler::emitVarDecl(aeon_stmt_vardecl* varDecl)
+void aeon_compiler::emitVarDecl(aeNodeVarDecl* varDecl)
 {
 	aeon_type* varType = evaluateType(varDecl->type_name);
 	if (!varType)
@@ -442,26 +413,27 @@ void aeon_compiler::emitVarDecl(aeon_stmt_vardecl* varDecl)
 	scope.locals.push_back(localObject);
 
 	scope.offset += localObject.type->getSize();
-	m_OffsetFromBasePtr += localObject.type->getSize();
+	m_OffsetFromBasePtr += sizeof(vm_value);
 
+	emitDebugPrint("Constructing " + varDecl->type_name);
 	// Emit the stack allocation code
-	emitInstruction(OP_MOV, AEK_ESP, -varType->getSize());
+	emitInstruction(OP_MOV, AEK_ESP, -sizeof(vm_value));
 
 	// Now the variable is initialized and part of its scope, initialize it
 	if (varDecl->init_expr)
 	{
-		emitExpressionEval(varDecl->init_expr, ExpressionEvalContext());
+		emitExpressionEval(varDecl->init_expr.get(), ExpressionEvalContext());
 	}
-} 
+}
 
-void aeon_compiler::emitReturnCode(ast_return* ret)
+void aeon_compiler::emitReturnCode(aeNodeReturn* ret)
 {
 	emitInstruction(OP_RETURN);
 }
 
-aeon_type* aeon_compiler::evaluateType(aeon_expression* expr)
+aeon_type* aeon_compiler::evaluateType(aeNodeExpr* expr)
 {
-	ast_varexpr* var = (ast_varexpr*)expr;
+	aeNodeVarRef* var = (aeNodeVarRef*)expr;
 	return evaluateType(var->Name);
 }
 
@@ -484,7 +456,7 @@ aeon_type* aeon_compiler::evaluateType(const std::string& type_name)
 	// In that case we probably want a member variable
 	if (!m_classes.empty())
 	{
-		ast_class* container_class = m_classes[m_classes.size() - 1];
+		aeNodeClass* container_class = m_classes[m_classes.size() - 1];
 		aeon_type* class_type = evaluateType(container_class);
 
 		// todo
@@ -497,7 +469,7 @@ aeon_type* aeon_compiler::evaluateType(const std::string& type_name)
 	return type;
 }
 
-aeon_type* aeon_compiler::evaluateType(ast_class* class_node)
+aeon_type* aeon_compiler::evaluateType(aeNodeClass* class_node)
 {
-	return class_node->typeInfo;
+	return class_node->m_typeInfo;
 }

@@ -35,6 +35,7 @@ enum EOpCodes
 	OP_DELETEOBJECT,     ///< Release the objectref on the stack
 	OP_MOV,
 	OP_DTEST,      ///< Just debug prints something for tests
+	OP_DEBUG,       ///< Dirty tricks for debug mode
 	Count
 };
 

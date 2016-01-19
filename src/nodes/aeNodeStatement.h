@@ -4,7 +4,6 @@
 #include "aeNodeBase.h"
 
 #include <map>
-#include <memory>
 
 class aeNodeStatement : public aeNodeBase
 {

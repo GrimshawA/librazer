@@ -1,5 +1,9 @@
 #include "aeon_parser.h"
 #include "aeon_lexer.h"
+#include "nodes/aeNodeClass.h"
+#include "nodes/aeNodeModule.h"
+#include "nodes/aeNodeNamespace.h"
+#include "aeon_lexer.h"
 #include <map>
 
 std::map<std::string, int> mOperatorTable = {
@@ -175,8 +179,8 @@ aeon_parser::aeon_parser()
 	// Go through all the tokens and build an AST along the way
 	void aeon_parser::parse(aeon_lexer& lexer)
 	{
-		root = new ast_module();
-		root->ModuleName = "main";
+		root = new aeNodeModule();
+		root->m_name = "main";
 
 		lex = &lexer;
 		i = 0;
@@ -188,7 +192,7 @@ aeon_parser::aeon_parser()
 		{
 			if (Tok.type == aeon_token::Fn)
 			{
-				ast_func* funcDecl = parse_function();
+				aeNodeFunction* funcDecl = parse_function();
 				root->add(funcDecl);
 
 				getNextToken(); // get the next thing for the parent while
@@ -196,25 +200,25 @@ aeon_parser::aeon_parser()
 
 			else if (Tok.type == Tok.Class || Tok.type == Tok.Struct)
 			{
-				ast_class* classDecl = parseClass();
+				aeNodeClass* classDecl = parseClass();
 				root->add(classDecl);
 			}
 			else if (Tok.type == Tok.Namespace)
 			{
-				ast_namespace* namespace_node = parse_namespace();
+				aeNodeNamespace* namespace_node = parse_namespace();
 				root->add(namespace_node);
 			}
 			else if (Tok.type == Tok.Using)
 			{
-				ast_using* using_node = new ast_using();
+				/*aeNodeUsing* using_node = new aeNodeUsing();
 				getNextToken();
 				using_node->arg = parse_identifier_subexpression();
 				getNextToken();
-				root->add(using_node);
+				root->add(using_node);*/
 			}
 			else
 			{
-				aeon_ast_node* symbol = parse_symbol();
+				aeNodeBase* symbol = parse_symbol();
 				if (symbol)
 				{
 					root->add(symbol);
@@ -223,10 +227,10 @@ aeon_parser::aeon_parser()
 		}
 	}
 
-	ast_namespace* aeon_parser::parse_namespace()
+	aeNodeNamespace* aeon_parser::parse_namespace()
 	{
-		ast_namespace* namespace_node = new ast_namespace;
-		namespace_node->Name = getNextToken().text;
+		aeNodeNamespace* namespace_node = new aeNodeNamespace;
+		namespace_node->m_name = getNextToken().text;
 
 		getNextToken(); getNextToken();
 
@@ -234,24 +238,24 @@ aeon_parser::aeon_parser()
 		{
 			if (Tok.type == aeon_token::Fn)
 			{
-				ast_func* funcDecl = parse_function();
+				aeNodeFunction* funcDecl = parse_function();
 				namespace_node->add(funcDecl);
 
 				getNextToken(); // get the next thing for the parent while
 			}
 			else if (Tok.type == aeon_token::Class)
 			{
-				ast_class* classDecl = parseClass();
+				aeNodeClass* classDecl = parseClass();
 				namespace_node->add(classDecl);
 			}
 			else if (Tok.type == Tok.Namespace)
 			{
-				ast_namespace* namespace_node = parse_namespace();
+				aeNodeNamespace* namespace_node = parse_namespace();
 				namespace_node->add(namespace_node);
 			}
 			else
 			{
-				aeon_ast_node* symbol = parse_symbol();
+				aeNodeBase* symbol = parse_symbol();
 				if (symbol)
 				{
 					namespace_node->add(symbol);
@@ -265,10 +269,10 @@ aeon_parser::aeon_parser()
 	}
 
 	// Assumes the current token is "class" and stops the token after the ; at the end
-	ast_class* aeon_parser::parseClass()
+	aeNodeClass* aeon_parser::parseClass()
 	{
-		ast_class* classDecl = new ast_class();
-		classDecl->Name = getNextToken().text;
+		aeNodeClass* classDecl = new aeNodeClass();
+		classDecl->m_name = getNextToken().text;
 
 		// Will be either a : or a { depending on whether the class inherits stuff
 		getNextToken();
@@ -278,7 +282,7 @@ aeon_parser::aeon_parser()
 		{
 			do
 			{
-				ast_class::classparentinfo cpi;
+				aeNodeClass::classparentinfo cpi;
 
 				// Let's get the first keyword, can be either a access level or the identifier
 				getNextToken();
@@ -308,7 +312,7 @@ aeon_parser::aeon_parser()
 	}
 
 	/// We're inside a class block, last token read was {
-	void aeon_parser::parseClassBody(ast_class* classDeclNode)
+	void aeon_parser::parseClassBody(aeNodeClass* classDeclNode)
 	{
 		std::string currentDefaultAccessLevel = "public";
 
@@ -340,9 +344,9 @@ aeon_parser::aeon_parser()
 		}
 	}
 
-	ast_enum* aeon_parser::parse_enum()
+	aeNodeEnum* aeon_parser::parse_enum()
 	{
-		ast_enum* enum_code = new ast_enum;
+		aeNodeEnum* enum_code = new aeNodeEnum;
 		enum_code->name = getNextToken().text;
 		getNextToken(); getNextToken();
 
@@ -367,36 +371,36 @@ aeon_parser::aeon_parser()
 	}
 
 	/// Parses one thing inside the class body
-	void aeon_parser::parse_class_element(ast_class* classDeclNode)
+	void aeon_parser::parse_class_element(aeNodeClass* classDeclNode)
 	{
 		if (Tok.type == Tok.Class || Tok.type == Tok.Struct)
 		{
-			ast_class* classDecl = parseClass();
+			aeNodeClass* classDecl = parseClass();
 			classDeclNode->add(classDecl);
 		}
 		else if (Tok.type == Tok.Enum)
 		{
-			ast_enum* enum_node = parse_enum();
+			aeNodeEnum* enum_node = parse_enum();
 			classDeclNode->add(enum_node);
 		}
 		else if (Tok.type == Tok.Typedef)
 		{
 			getNextToken();
-			ast_typedef* typedef_node = new ast_typedef;
+			aeNodeTypedef* typedef_node = new aeNodeTypedef;
 			typedef_node->typeA = parse_type();
 			typedef_node->typeB = parse_type();
 			classDeclNode->add(typedef_node);
 		}
-		else if (Tok.type == Tok.Identifier && Tok.text == classDeclNode->Name)
+		else if (Tok.type == Tok.Identifier && Tok.text == classDeclNode->m_name)
 		{
 			// Constructor
-			ast_func* constructorDecl = new ast_func();
-			constructorDecl->Name = classDeclNode->Name;
+			aeNodeFunction* constructorDecl = new aeNodeFunction();
+			constructorDecl->m_name = classDeclNode->m_name;
 			getNextToken();
 			getNextToken();
 
-			constructorDecl->parameters = parse_parameter_list();
-			parseBlock(constructorDecl->block);
+			constructorDecl->m_parameters = parse_parameter_list();
+			parseBlock(constructorDecl->m_block);
 			classDeclNode->add(constructorDecl);
 			getNextToken();
 
@@ -405,45 +409,47 @@ aeon_parser::aeon_parser()
 		}
 		else if (Tok.type == Tok.Tilde)
 		{
-			if (getNextToken().text == classDeclNode->Name)
+			if (getNextToken().text == classDeclNode->m_name)
 			{
-				ast_func* destructorDecl = new ast_func();
-				destructorDecl->Name = std::string("~") + classDeclNode->Name;
+				aeNodeFunction* destructorDecl = new aeNodeFunction();
+				destructorDecl->m_name = std::string("~") + classDeclNode->m_name;
 				getNextToken();
 				getNextToken();
 				getNextToken();
-				parseBlock(destructorDecl->block);
+				parseBlock(destructorDecl->m_block);
 				classDeclNode->add(destructorDecl);
 				getNextToken();
 			}
 		}
 		else if (Tok.type == Tok.Fn)
 		{
-			ast_func* funcDecl = parse_function();
+			aeNodeFunction* funcDecl = parse_function();
+			funcDecl->is_method = true;
+			funcDecl->is_static = false;
 			classDeclNode->add(funcDecl);
 			getNextToken();
 		}
 		else
 		{
-			aeon_ast_node* symbol = parse_symbol();
+			aeNodeBase* symbol = parse_symbol();
 			classDeclNode->add(symbol);
 		}
 	}
 
 	/// Parses one symbol, either a variable or a function declaration
-	aeon_ast_node* aeon_parser::parse_symbol()
+	aeNodeBase* aeon_parser::parse_symbol()
 	{
-		aeon_ast_node* result_node = nullptr;
+		aeNodeBase* result_node = nullptr;
 		bool IsFunctionDecl = false;
 		bool IsConst = false;
-		std::vector<aeon_expression*> params;
+		std::vector<aeNodeExpr*> params;
 
 		if (Tok.type == Tok.Public || Tok.type == Tok.Protected || Tok.type == Tok.Private)
 		{
 			getNextToken();
 		}
 
-		ast_type* type_node = parse_type();
+		aeNodeTypeDecl* type_node = parse_type();
 
 		std::string SymbolName = Tok.text;
 
@@ -469,10 +475,13 @@ aeon_parser::aeon_parser()
 		{
 			if (IsFunctionDecl)
 			{
-				ast_func* func_node = new ast_func();
-				func_node->Name = SymbolName;
-				func_node->parameters = params;
-				parseBlock(func_node->block);
+				aeNodeFunction* func_node = new aeNodeFunction();
+				func_node->m_name = SymbolName;
+				func_node->m_parameters = params;
+				func_node->is_static = false;
+				func_node->is_method = true;
+				//func_node->is_method = true;
+				parseBlock(func_node->m_block);
 				result_node = func_node;
 				getNextToken();
 			}
@@ -482,15 +491,17 @@ aeon_parser::aeon_parser()
 			// We are done early, this is a function prototype or a variable
 			if (IsFunctionDecl)
 			{
-				ast_func* func_node = new ast_func();
-				func_node->Name = SymbolName;
+				aeNodeFunction* func_node = new aeNodeFunction();
+				func_node->m_name = SymbolName;
+				func_node->is_method = true;
+				func_node->is_static = false;
 				//parseBlock(func_node->block);
 				result_node = func_node;
 				getNextToken();
 			}
 			else
 			{
-				ast_varexpr* var_node = new ast_varexpr;
+				aeNodeVarRef* var_node = new aeNodeVarRef;
 				var_node->Name = SymbolName;
 				var_node->VarType = type_node;
 				result_node = var_node;
@@ -502,9 +513,9 @@ aeon_parser::aeon_parser()
 	}
 
 	/// Parse a potentiall complex type with nested generics
-	ast_type* aeon_parser::parse_type()
+	aeNodeTypeDecl* aeon_parser::parse_type()
 	{
-		ast_type* type_node = new ast_type();
+		aeNodeTypeDecl* type_node = new aeNodeTypeDecl();
 		type_node->name = Tok.text;
 		getNextToken();
 
@@ -515,7 +526,7 @@ aeon_parser::aeon_parser()
 
 			while (Tok.type != Tok.MarkClose)
 			{
-				ast_type* template_type_node = parse_type();
+				aeNodeTypeDecl* template_type_node = parse_type();
 
 				type_node->templateTypeArguments.push_back(template_type_node);
 
@@ -531,11 +542,11 @@ aeon_parser::aeon_parser()
 
 	/// Parses a list of arguments (expressions) to pass to a function for example
 	/// Assumes to be already on the first token of the argument list
-	std::vector<aeon_expression*> aeon_parser::parse_argument_list()
+	std::vector<aeNodeExpr*> aeon_parser::parse_argument_list()
 	{
-		std::vector<aeon_expression*> temp;
+		std::vector<aeNodeExpr*> temp;
 
-		aeon_expression* argExpr = nullptr;
+		aeNodeExpr* argExpr = nullptr;
 		while (argExpr = parseExpression())
 		{
 			temp.push_back(argExpr);
@@ -551,29 +562,29 @@ aeon_parser::aeon_parser()
 		return temp;
 	}
 
-	/// Parses a list of arguments (expressions) to pass to a function for example
-	std::vector<aeon_expression*> aeon_parser::parse_parameter_list()
-	{
-		std::vector<aeon_expression*> temp;
 
+std::vector<aeNodeExpr*> aeon_parser::parse_parameter_list()
+{
+		std::vector<aeNodeExpr*> temp;
+		/*
 		while (Tok.type != Tok.ParenClose)
 		{
-			aeon_expression* varexpr = parseVariableDecl();
+			aeon_stmt_vardecl* varexpr = parseVariableDecl();
 			temp.push_back(varexpr);
 
 			if (Tok.type != Tok.Comma)
 				break;
 			else
 				getNextToken();
-		}
+		}*/
 
 		return temp;
-	}
+}
 
-	ast_func* aeon_parser::parse_function()
+	aeNodeFunction* aeon_parser::parse_function()
 	{
-		ast_func* funcDecl = new ast_func();
-		funcDecl->Name = getNextToken().text;
+		aeNodeFunction* funcDecl = new aeNodeFunction();
+		funcDecl->m_name = getNextToken().text;
 
 		// We're now in the (
 		getNextToken();
@@ -582,29 +593,29 @@ aeon_parser::aeon_parser()
 
 		while (Tok.type != Tok.ParenClose)
 		{
-			funcDecl->parameters = parse_parameter_list();
+			funcDecl->m_parameters = parse_parameter_list();
 		}
 
 		getNextToken(); // just opened bracket
 
-		parseBlock(funcDecl->block);
+		parseBlock(funcDecl->m_block);
 
 		return funcDecl;
 	}
 
 	/// We're inside a function body scope, parse whatever is allowed in there
-	void aeon_parser::parseFunctionScope(ast_func* funcDeclNode)
+	void aeon_parser::parseFunctionScope(aeNodeFunction* funcDeclNode)
 	{
 
 		while (Tok.type != aeon_token::BracketClose)
-			parseBlock(funcDeclNode->block);
+			parseBlock(funcDeclNode->m_block);
 
 	//	Log("Function body parse complete");
 	}
 
-	/// Parse a top-level expression (inside a code execution scope, a function)
-	void aeon_parser::parseBlock(ast_codeblock* block)
-	{
+
+void aeon_parser::parseBlock(aeNodeBlock* block)
+{
 		//Log("Block start");
 
 		getNextToken();
@@ -621,61 +632,32 @@ aeon_parser::aeon_parser()
 				//Log("Parsing if () {}");
 
 				getNextToken();
-				ast_ifbranch* ifbranch = new ast_ifbranch();
+				aeNodeBranch* ifbranch = new aeNodeBranch();
 				block->add(ifbranch);
 
 				getNextToken(); // go into the first part of the expression
-				ifbranch->expr = parseExpression();
-				if (ifbranch->expr)
-					ifbranch->add(ifbranch->expr);
+				ifbranch->m_expression = parseExpression();
+				if (ifbranch->m_expression)
+					ifbranch->add(ifbranch->m_expression);
 
 				//Log("Parsing now the if nested block");
 
 				getNextToken();  //getNextToken(); // consume the {
-				parseBlock(ifbranch->block);
+				parseBlock(ifbranch->m_block);
 
 				//getNextToken(); // advance to next statement
 			}
 			else if (Tok.type == Tok.For)
 			{
-				ast_for* forloop = parseForLoop();
-				block->add(forloop);
+				block->add(parseForLoop());
 			}
-			else if (Tok.type == Tok.While || Tok.type == Tok.Do) // while or do-while
+			else if (Tok.type == Tok.While || Tok.type == Tok.Do)
 			{
-				ast_while* astwhile = new ast_while();
-				block->add(astwhile);
-
-				if (Tok.type == Tok.While)
-				{
-					astwhile->doWhile = false;
-					getNextToken();
-					getNextToken();
-					astwhile->expr = parseExpression();
-					if (astwhile->expr)
-						astwhile->add(astwhile->expr);
-
-					getNextToken();
-					parseBlock(astwhile->block);
-				}
-				else
-				{
-					astwhile->doWhile = true;
-					getNextToken(); // reach {
-
-					parseBlock(astwhile->block);
-					getNextToken(); // reach 'while'
-					getNextToken(); // reach {
-					getNextToken(); // reach first expr token
-					astwhile->expr = parseExpression();
-					if (astwhile->expr)
-						astwhile->add(astwhile->expr);
-					getNextToken();
-				}
+				block->add(parseWhileLoop());
 			}
 			else if (Tok.type == Tok.Return) // facing a return statement
 			{
-				ast_return* astreturn = new ast_return();
+				aeNodeReturn* astreturn = new aeNodeReturn();
 				block->add(astreturn);
 				getNextToken();
 			}
@@ -683,7 +665,7 @@ aeon_parser::aeon_parser()
 			{
 				do
 				{
-					aeon_expression* astvar = parseVariableDecl();
+					aeNodeVarDecl* astvar = parseVariableDecl();
 					if (astvar)
 					{
 						block->add(astvar);
@@ -692,7 +674,7 @@ aeon_parser::aeon_parser()
 			}
 			else
 			{
-				aeon_expression* expr = parseExpression();
+				aeNodeExpr* expr = parseExpression();
 				if (expr)
 				{
 					block->add(expr);
@@ -703,57 +685,102 @@ aeon_parser::aeon_parser()
 			getNextToken();
 		}
 	//	Log("Reached the end of block");
-	}
+}
 
-ast_for* aeon_parser::parseForLoop()
+aeNodeFor* aeon_parser::parseForLoop()
 {
-	ast_for* astfor = new ast_for();
+	aeNodeFor* astfor = new aeNodeFor();
 
 	getNextToken();
 	getNextToken();
 
-	aeon_expression* initStatement = parseExpression();
+	aeNodeExpr* initStatement = parseExpression();
 	if (initStatement)
 		astfor->initExpressions.push_back(initStatement);
 
+	getNextToken();
+
+	astfor->expr = parseExpression();
 
 	getNextToken();
+
+	astfor->incrExpr = parseExpression();
+	
 	parseBlock(astfor->block);
 
 	return astfor;
 }
 
-aeon_expression* aeon_parser::parseVariableDecl()
+aeNodeWhile* aeon_parser::parseWhileLoop()
 {
-	ast_varexpr* astvar = new ast_varexpr();
+	aeNodeWhile* astwhile = new aeNodeWhile();
+
+	if (Tok.type == Tok.While)
+	{
+		astwhile->doWhile = false;
+		getNextToken();
+		getNextToken();
+		astwhile->expr = parseExpression();
+		if (astwhile->expr)
+			astwhile->add(astwhile->expr);
+
+		getNextToken();
+		parseBlock(astwhile->block);
+	}
+	else
+	{
+		astwhile->doWhile = true;
+		getNextToken(); // reach {
+
+		parseBlock(astwhile->block);
+		getNextToken(); // reach 'while'
+		getNextToken(); // reach {
+		getNextToken(); // reach first expr token
+		astwhile->expr = parseExpression();
+		if (astwhile->expr)
+			astwhile->add(astwhile->expr);
+		getNextToken();
+	}
+
+	return astwhile;
+}
+
+aeNodeVarDecl* aeon_parser::parseVariableDecl()
+{
+	aeNodeVarDecl* varDecl = new aeNodeVarDecl;
+	varDecl->type_name = Tok.text;
+
+	aeNodeVarRef* astvar = new aeNodeVarRef();
 	astvar->explicitDeclaration = true;
 	astvar->TypeString = Tok.text;
 	astvar->Name = getNextToken().text;
 	getNextToken();
+
+	varDecl->name = astvar->Name;
 
 	// Got an assignment on init
 	if (Tok.text == "=")
 	{
 		getNextToken();
 
-		ast_binaryop* assignment = new ast_binaryop(astvar, parseExpression(), "=");
-		return assignment;
+		aeNodeBinaryOperator* assignment = new aeNodeBinaryOperator(astvar, parseExpression(), "=");
+		varDecl->init_expr = assignment;
 	}
 
-	return astvar;
+	return varDecl;
 }
 
 	/// We're about to read a function call, get it
-	ast_funccall* aeon_parser::parseFunctionCall()
+	aeNodeFunctionCall* aeon_parser::parseFunctionCall()
 	{
-		ast_funccall* funccall = new ast_funccall();
-		funccall->funcName = Tok.text;
+		aeNodeFunctionCall* funccall = new aeNodeFunctionCall();
+		funccall->m_name = Tok.text;
 		getNextToken();
 
 		// let's advance to the first token of the expression (arg)
 		getNextToken();
 
-		aeon_expression* argExpr = nullptr;
+		aeNodeExpr* argExpr = nullptr;
 		while (argExpr = parseExpression())
 		{
 			funccall->add(argExpr);
@@ -781,7 +808,7 @@ aeon_expression* aeon_parser::parseVariableDecl()
 		return funccall;
 	}
 
-	aeon_expression* aeon_parser::parseExpression()
+	aeNodeExpr* aeon_parser::parseExpression()
 	{
 		// no way we can get a valid expression here
 		if (Tok.type == Tok.ParenClose || Tok.type == Tok.SemiColon || Tok.type == Tok.Comma)
@@ -790,7 +817,7 @@ aeon_expression* aeon_parser::parseVariableDecl()
 
 		// var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
 
-		std::vector<aeon_expression*> operands;
+		std::vector<aeNodeExpr*> operands;
 		std::vector<aeon_token> operators;
 
 		do
@@ -803,31 +830,31 @@ aeon_expression* aeon_parser::parseVariableDecl()
 				getNextToken();
 			}
 
-			ast_unaryop* unary_wrapper = nullptr;
+			aeNodeUnaryOperator* unary_wrapper = nullptr;
 
 			// Unary operators prefix
 			if (Tok.type == Tok.Operator && Tok.text == "-")
 			{
-				unary_wrapper = new ast_unaryop();
+				unary_wrapper = new aeNodeUnaryOperator();
 				unary_wrapper->OperatorString = "-";
 				getNextToken();
 			}
 
 			if (Tok.type == Tok.Decrement) // prefix decrement
 			{
-				unary_wrapper = new ast_unaryop();
+				unary_wrapper = new aeNodeUnaryOperator();
 				unary_wrapper->OperatorString = "--";
 				getNextToken();
 			}
 
 			if (Tok.type == Tok.Increment) // prefix increment
 			{
-				unary_wrapper = new ast_unaryop();
+				unary_wrapper = new aeNodeUnaryOperator();
 				unary_wrapper->OperatorString = "++";
 				getNextToken();
 			}
 
-			aeon_expression* leafexpr = nullptr;
+			aeNodeExpr* leafexpr = nullptr;
 
 			// Operands
 
@@ -840,33 +867,33 @@ aeon_expression* aeon_parser::parseVariableDecl()
 			}
 			else if (Tok.type == Tok.Identifier)  // var or func call or any combination of them
 			{
-				aeon_expression* subexpr = parse_identifier_subexpression();
+				aeNodeExpr* subexpr = parse_identifier_subexpression();
 				leafexpr = subexpr;
 			}
 			else if (Tok.type == Tok.IntLiteral)
 			{
-				ast_intexpr* expr = new ast_intexpr;
+				aeNodeInteger* expr = new aeNodeInteger;
 				expr->value = atoi(Tok.text.c_str());
 				leafexpr = expr;
 				getNextToken();
 			}
 			else if (Tok.type == Tok.FloatLiteral)
 			{
-				ast_floatexpr* expr = new ast_floatexpr;
+				aeNodeFloat* expr = new aeNodeFloat;
 				expr->value = atof(Tok.text.c_str());
 				leafexpr = expr;
 				getNextToken();
 			}
 			else if (Tok.type == Tok.DoubleLiteral)
 			{
-				ast_floatexpr* expr = new ast_floatexpr;
+				aeNodeFloat* expr = new aeNodeFloat;
 				expr->value = atof(Tok.text.c_str());
 				leafexpr = expr;
 				getNextToken();
 			}
 			else if (Tok.type == Tok.StringLiteral)
 			{
-				ast_stringexpr* expr = new ast_stringexpr;
+				aeNodeString* expr = new aeNodeString;
 				expr->value = Tok.extract_stringliteral();
 				leafexpr = expr;
 				getNextToken();
@@ -889,25 +916,25 @@ aeon_expression* aeon_parser::parseVariableDecl()
 		//Log("generating ast for %d ops and %d operands", operators.size(), operands.size());
 
 		// Let's generate the hierarchy
-		aeon_expression* lhs = operands[0];
+		aeNodeExpr* lhs = operands[0];
 		for (int i = 0; i < operators.size(); ++i)
 		{
-			aeon_expression* rhs = operands[i + 1];
+			aeNodeExpr* rhs = operands[i + 1];
 
 			if (i == operators.size() - 1)
 			{
 				// last op
-				lhs = new ast_binaryop(lhs, rhs, operators[i].text);
+				lhs = new aeNodeBinaryOperator(lhs, rhs, operators[i].text);
 			}
 			else if (mOperatorTable[operators[i].text] >= mOperatorTable[operators[i + 1].text])
 			{
-				aeon_expression* rhs = operands[i + 1];
-				lhs = new ast_binaryop(lhs, rhs, operators[i].text);
+				aeNodeExpr* rhs = operands[i + 1];
+				lhs = new aeNodeBinaryOperator(lhs, rhs, operators[i].text);
 			}
 			else
 			{
-				aeon_expression* rhs = new ast_binaryop(operands[i + 1], operands[i + 2], operators[i + 1].text);
-				lhs = new ast_binaryop(lhs, rhs, operators[i].text);
+				aeNodeExpr* rhs = new aeNodeBinaryOperator(operands[i + 1], operands[i + 2], operators[i + 1].text);
+				lhs = new aeNodeBinaryOperator(lhs, rhs, operators[i].text);
 				i++;
 			}
 		}
@@ -917,9 +944,9 @@ aeon_expression* aeon_parser::parseVariableDecl()
 	}
 
 	/// Parse a identifier subexpression, any combination of func calls
-	aeon_expression* aeon_parser::parse_identifier_subexpression()
+	aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 	{
-		aeon_expression* result_expr = nullptr;
+		aeNodeExpr* result_expr = nullptr;
 
 		aeon_token identifier = Tok;
 
@@ -949,15 +976,15 @@ aeon_expression* aeon_parser::parseVariableDecl()
 		{
 			IsFunctionCall = true;
 
-			ast_funccall* funccall = new ast_funccall();
-			funccall->funcName = identifier.text;
+			aeNodeFunctionCall* funccall = new aeNodeFunctionCall();
+			funccall->m_name = identifier.text;
 			result_expr = funccall;
 
 			if (IsTemplated)
 			{
 				for (std::size_t i = 0; i < TemplateTypeString.size(); ++i)
 				{
-					ast_funccall::TemplateTypeArgument tta;
+					aeNodeFunctionCall::TemplateTypeArgument tta;
 					tta.TypeString = TemplateTypeString[i];
 					funccall->templateTypeArguments.push_back(tta);
 				}
@@ -968,7 +995,7 @@ aeon_expression* aeon_parser::parseVariableDecl()
 
 			if (Tok.type != Tok.ParenClose)
 			{
-				funccall->args = parse_argument_list();
+				funccall->m_args = parse_argument_list();
 				//getNextToken();
 			}
 
@@ -976,17 +1003,17 @@ aeon_expression* aeon_parser::parseVariableDecl()
 		}
 		else
 		{
-			ast_varexpr* var = new ast_varexpr;
+			aeNodeVarRef* var = new aeNodeVarRef;
 			var->Name = identifier.text;
 			result_expr = var;
 		}
 
 		// Now we might have an array subscript
-		if (Tok.type == Tok.SqBracketOpen)
+		/*if (Tok.type == Tok.SqBracketOpen)
 		{
 			getNextToken();
 
-			aeon_expression* subscript_expression = parseExpression();
+			aeNodeExpr* subscript_expression = parseExpression();
 			if (subscript_expression)
 			{
 				result_expr->subscriptArgument = subscript_expression;
@@ -994,13 +1021,13 @@ aeon_expression* aeon_parser::parseVariableDecl()
 
 			// Go beyond the ]
 			getNextToken();
-		}
+		}*/
 
 		if (Tok.type == Tok.Period)
 		{
 			// There is more!
 			getNextToken();
-			aeon_expression* structmember = parse_identifier_subexpression();
+			aeNodeExpr* structmember = parse_identifier_subexpression();
 			result_expr->add(structmember);
 		}
 

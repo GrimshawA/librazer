@@ -2,6 +2,8 @@
 #define aeNodeBase_h__
 
 #include <vector>
+#include <memory>
+
 
 enum NodeTypes
 {

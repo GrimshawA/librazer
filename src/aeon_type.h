@@ -8,6 +8,13 @@
 #include <stdint.h>
 
 class aeon_module;
+class aeon_context;
+
+typedef void(*aeBindMethod)(aeon_vm*);
+typedef void(*aeDestructorMethod)(void*);
+typedef void(*aeConstructorMethod)(void*, aeon_vm*);
+
+#define 	aeOFFSET(s, m)   ((size_t)(&reinterpret_cast<s*>(100000)->m)-100000)
 
 /**
 	\class aeon_type
@@ -20,6 +27,7 @@ class aeon_module;
 class aeon_type
 {
 	public:
+		friend class aeon_context;
 
 		enum ETypeFlags
 		{
@@ -47,10 +55,8 @@ class aeon_type
 
 			union
 			{
-				struct native
-				{
-					void* funptr;
-				};
+				aeBindMethod methodCallback;
+				aeConstructorMethod constructorCallback;
 
 				struct script
 				{
@@ -94,6 +100,8 @@ class aeon_type
 		std::vector<NestedTypeInfo> m_structs;
 		std::vector<ProtocolInfo>   m_protocols;
 		aeon_module*                m_module;
+		bool is_native = false;
+		aeDestructorMethod          m_destructor;
 
 	public:
 

@@ -210,11 +210,11 @@ aeon_parser::aeon_parser()
 			}
 			else if (Tok.type == Tok.Using)
 			{
-				aeNodeUsing* using_node = new aeNodeUsing();
+				/*aeNodeUsing* using_node = new aeNodeUsing();
 				getNextToken();
 				using_node->arg = parse_identifier_subexpression();
 				getNextToken();
-				root->add(using_node);
+				root->add(using_node);*/
 			}
 			else
 			{
@@ -400,7 +400,7 @@ aeon_parser::aeon_parser()
 			getNextToken();
 
 			constructorDecl->m_parameters = parse_parameter_list();
-			parseBlock(constructorDecl->m_block);
+			parseBlock(constructorDecl->m_block.get());
 			classDeclNode->add(constructorDecl);
 			getNextToken();
 
@@ -416,7 +416,7 @@ aeon_parser::aeon_parser()
 				getNextToken();
 				getNextToken();
 				getNextToken();
-				parseBlock(destructorDecl->m_block);
+				parseBlock(destructorDecl->m_block.get());
 				classDeclNode->add(destructorDecl);
 				getNextToken();
 			}
@@ -481,7 +481,7 @@ aeon_parser::aeon_parser()
 				func_node->is_static = false;
 				func_node->is_method = true;
 				//func_node->is_method = true;
-				parseBlock(func_node->m_block);
+				parseBlock(func_node->m_block.get());
 				result_node = func_node;
 				getNextToken();
 			}
@@ -598,7 +598,7 @@ std::vector<aeNodeExpr*> aeon_parser::parse_parameter_list()
 
 		getNextToken(); // just opened bracket
 
-		parseBlock(funcDecl->m_block);
+		parseBlock(funcDecl->m_block.get());
 
 		return funcDecl;
 	}
@@ -608,7 +608,7 @@ std::vector<aeNodeExpr*> aeon_parser::parse_parameter_list()
 	{
 
 		while (Tok.type != aeon_token::BracketClose)
-			parseBlock(funcDeclNode->m_block);
+			parseBlock(funcDeclNode->m_block.get());
 
 	//	Log("Function body parse complete");
 	}
@@ -630,21 +630,21 @@ void aeon_parser::parseBlock(aeNodeBlock* block)
 			{
 				// if (expr) { block }
 				//Log("Parsing if () {}");
-
+				/*
 				getNextToken();
 				aeNodeBranch* ifbranch = new aeNodeBranch();
 				block->add(ifbranch);
 
 				getNextToken(); // go into the first part of the expression
-				ifbranch->expr = parseExpression();
-				if (ifbranch->expr)
-					ifbranch->add(ifbranch->expr);
+				ifbranch->m_expression = parseExpression();
+				if (ifbranch->m_expression)
+					ifbranch->add(ifbranch->m_expression);
 
 				//Log("Parsing now the if nested block");
 
 				getNextToken();  //getNextToken(); // consume the {
-				parseBlock(ifbranch->block);
-
+				parseBlock(ifbranch->m_block);
+				*/
 				//getNextToken(); // advance to next statement
 			}
 			else if (Tok.type == Tok.For)
@@ -700,13 +700,13 @@ aeNodeFor* aeon_parser::parseForLoop()
 
 	getNextToken();
 
-	astfor->expr = parseExpression();
+	astfor->expr.reset(parseExpression());
 
 	getNextToken();
 
-	astfor->incrExpr = parseExpression();
+	//astfor->incrExpr = parseExpression();
 	
-	parseBlock(astfor->block);
+	//parseBlock(astfor->block);
 
 	return astfor;
 }
@@ -717,7 +717,7 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 
 	if (Tok.type == Tok.While)
 	{
-		astwhile->doWhile = false;
+		/*astwhile->doWhile = false;
 		getNextToken();
 		getNextToken();
 		astwhile->expr = parseExpression();
@@ -725,11 +725,11 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 			astwhile->add(astwhile->expr);
 
 		getNextToken();
-		parseBlock(astwhile->block);
+		parseBlock(astwhile->block);*/
 	}
 	else
 	{
-		astwhile->doWhile = true;
+		/*astwhile->doWhile = true;
 		getNextToken(); // reach {
 
 		parseBlock(astwhile->block);
@@ -739,7 +739,7 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 		astwhile->expr = parseExpression();
 		if (astwhile->expr)
 			astwhile->add(astwhile->expr);
-		getNextToken();
+		getNextToken();*/
 	}
 
 	return astwhile;
@@ -764,7 +764,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 		getNextToken();
 
 		aeNodeBinaryOperator* assignment = new aeNodeBinaryOperator(astvar, parseExpression(), "=");
-		varDecl->init_expr = assignment;
+		varDecl->init_expr.reset(assignment);
 	}
 
 	return varDecl;

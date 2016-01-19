@@ -1,6 +1,7 @@
 #ifndef aeon_compiler_h__
 #define aeon_compiler_h__
 
+#include "nodes/aeNodeFunction.h"
 #include "aeon_module.h"
 #include "aeon_tree.h"
 #include "aeon_expression.h"
@@ -140,6 +141,9 @@ public:
 
 		/// Evaluates a typename to a real type depending on context
 		aeon_type* evaluateType(const std::string& type_name);
+
+		/// All the dirty tricks
+		void emitDebugPrint(const std::string& message);
 
 		/// Regarding scope, tries to deduce if we know how to convert typeB to typeA
 		bool canConvertType(aeon_type* typeA, aeon_type* typeB);

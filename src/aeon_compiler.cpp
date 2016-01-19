@@ -19,6 +19,11 @@ int32_t aeon_compiler::cursor()
 	return m_cursor;
 }
 
+void aeon_compiler::emitDebugPrint(const std::string& message)
+{
+	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
+}
+
 uint32_t aeon_compiler::emitInstruction(aeon_instruction instr)
 {
 	m_module->instructions.push_back(instr);
@@ -92,6 +97,11 @@ VariableStorageInfo aeon_compiler::getVariable(std::string name)
 
 void aeon_compiler::destructLocalVar(VariableStorageInfo& var)
 {
+	if (var.type->is_native)
+	{
+
+	}
+	emitDebugPrint("Destroying a " + var.name);
 	emitInstruction(OP_MOV, AEK_ESP, sizeof(vm_value));
 }
 
@@ -227,8 +237,8 @@ void aeon_compiler::throwError(const std::string& message)
 
 void aeon_compiler::emitBranchCode(aeNodeBranch* cond)
 {
-	aeNodeExpr* test_expr = cond->expr;
-	aeNodeBlock* nested_code = cond->block;
+	/*aeNodeExpr* test_expr = cond->m_expression;
+	aeNodeBlock* nested_code = cond->m_block;
 
 	// The expression must evaluate first
 	emitExpressionEval(test_expr, ExpressionEvalContext());
@@ -244,7 +254,7 @@ void aeon_compiler::emitBranchCode(aeNodeBranch* cond)
 	emitScopeCode(nested_code);
 
 	// make sure the if jmp goes to the end of the block if it fails
-	setinst_a(m_module->instructions[jmptestpc], (m_cursor - 1) - jmptestpc);
+	setinst_a(m_module->instructions[jmptestpc], (m_cursor - 1) - jmptestpc);*/
 }
 
 int aeon_compiler::findLocalObject(const std::string& refname)
@@ -264,7 +274,7 @@ void aeon_compiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
 
 void aeon_compiler::emitForLoop(aeNodeFor* forloop)
 {
-	push_scope();
+	/*push_scope();
 
 	// Emit the code that initializes the control vars
 	// They are automatically scoped and are destructed in the end of the loop
@@ -295,13 +305,13 @@ void aeon_compiler::emitForLoop(aeNodeFor* forloop)
 	// if the expression evaluates false, jump to after the for
 	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
 
-	pop_scope();
+	pop_scope();*/
 }
 
 
 void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 {
-	int pc_expreval = cursor();
+	/*int pc_expreval = cursor();
 
 	ExpressionEvalContext ectx;
 	emitExpressionEval(whileloop->expr, ectx);
@@ -315,7 +325,7 @@ void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 	emitInstruction(OP_JMP, pc_expreval - 1);
 
 	// if the expression evaluates false, jump to after the while
-	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
+	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);*/
 }
 
 void aeon_compiler::emitFunctionCode(aeNodeFunction* func)
@@ -341,7 +351,7 @@ void aeon_compiler::emitFunctionCode(aeNodeFunction* func)
 	m_env->m_function_table.push_back(g_functionData);
 
 	// let's just generate code for the executable block
-	emitScopeCode(func->m_block);
+	emitScopeCode(func->m_block.get());
 
 	emitReturnCode(nullptr);
 	m_caller = nullptr;
@@ -405,13 +415,14 @@ void aeon_compiler::emitVarDecl(aeNodeVarDecl* varDecl)
 	scope.offset += localObject.type->getSize();
 	m_OffsetFromBasePtr += sizeof(vm_value);
 
+	emitDebugPrint("Constructing " + varDecl->type_name);
 	// Emit the stack allocation code
 	emitInstruction(OP_MOV, AEK_ESP, -sizeof(vm_value));
 
 	// Now the variable is initialized and part of its scope, initialize it
 	if (varDecl->init_expr)
 	{
-		emitExpressionEval(varDecl->init_expr, ExpressionEvalContext());
+		emitExpressionEval(varDecl->init_expr.get(), ExpressionEvalContext());
 	}
 }
 

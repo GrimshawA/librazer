@@ -1,0 +1,19 @@
+#ifndef aeNodeEcosystem_h__
+#define aeNodeEcosystem_h__
+
+#include "aeNodeBase.h"
+
+class aeNodeModule;
+
+/**
+	\class aeNodeEcosystem
+
+	The ecosystem harbors an arbitrary number of modules, it is used to build a complete tree with all modules in the software.
+	Allows traversing and other kinds of introspection.
+*/
+class aeNodeEcosystem : public aeNodeBase
+{
+public:
+	std::vector<std::unique_ptr<aeNodeModule>> m_modules;
+};
+#endif // aeNodeEcosystem_h__

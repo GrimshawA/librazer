@@ -428,6 +428,10 @@ void aeon_vm::execute()
 				printf("TEST VALUE %d\n", inst.arg0);
 			vm_end
 
+			vm_start(OP_DEBUG)
+				printf("DEBUG: %s\n", ctx->string_literals[inst.arg1].c_str());
+			vm_end
+
 		} // end of switch
 	}
 }

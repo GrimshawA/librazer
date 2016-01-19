@@ -20,6 +20,10 @@ struct aeon_config
 	bool allowAutomaticTypeInference; ///< Anonymous variables assume a type from inference, but are immutable (and not aeon_variant), otherwise explicit inference is supported
 };
 
+typedef void(*aeBindMethod)(aeon_vm*);
+typedef void(*aeDestructorMethod)(void*);
+typedef void(*aeConstructorMethod)(void*, aeon_vm*);
+
 struct aeFunctionData
 {
 	aeon_module* module;
@@ -81,6 +85,7 @@ public:
 	void init_all();
 
 	aeLiteralId getIntegerLiteral(int64_t n);
+	aeLiteralId getStringLiteral(const std::string& s);
 
 	/// Executes and evaluates an arbitrary expression and returns the value
 	aeon_value evaluate(const std::string& expression);
@@ -93,9 +98,12 @@ public:
 
 	void registerFunction(const char* proto, void* f);
 
-	void register_type(const std::string& name, std::size_t size);
-
-	void register_method(const std::string& name, aeon_type* atype, void* funptr);
+	/// Registers a native type to work with the language
+	void registerType(const std::string& name, std::size_t size, const std::string& namespc = "");
+	void registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method);
+	void registerTypeConstructor(const std::string& typeName, aeConstructorMethod dest);
+	void registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest);
+	void registerTypeField(const std::string& typeName, const std::string& decl, int offset);
 
 	int32_t getNativeFunctionIndex(const std::string& name);
 

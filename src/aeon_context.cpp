@@ -53,6 +53,18 @@ aeLiteralId aeon_context::getIntegerLiteral(int64_t n)
 	return int_literals.size() - 1;
 }
 
+aeLiteralId aeon_context::getStringLiteral(const std::string& s)
+{
+	for (std::size_t i = 0; i < string_literals.size(); ++i)
+	{
+		if (string_literals[i] == s)
+			return i;
+	}
+
+	string_literals.push_back(s);
+	return string_literals.size() - 1;
+}
+
 aeon_value aeon_context::evaluate(const std::string& expression)
 {
 	aeon_value value;
@@ -89,11 +101,6 @@ void aeon_context::registerFunction(const char* proto, void* f)
 	nf.f = static_cast<void (*)(atom_generic*)>(f);
 	nf.prototype = proto;
 	native_functions.push_back(nf);
-}
-
-void aeon_context::register_method(const std::string& name, aeon_type* atype, void* funptr)
-{
-
 }
 
 aeon_module* aeon_context::getModule(const std::string name)
@@ -158,11 +165,45 @@ aeon_module* aeon_context::create_module(const std::string& name)
 	return mod;
 }
 
-void aeon_context::register_type(const std::string& name, std::size_t size)
+void aeon_context::registerType(const std::string& name, std::size_t size, const std::string& namespc)
 {
 	aeon_type* objinfo = new aeon_type(name, size);
 	objinfo->m_id = typedb.size() + 1;
+	objinfo->is_native = true;
 	typedb.push_back(objinfo);
+}
+
+void aeon_context::registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method)
+{
+	auto typeInfo = getTypeInfo(typeName);
+	aeon_type::MethodInfo info;
+	info.methodCallback = method;
+	info.name = name;
+	typeInfo->m_methods.push_back(info);
+}
+
+void aeon_context::registerTypeConstructor(const std::string& typeName, aeConstructorMethod constructor)
+{
+	auto typeInfo = getTypeInfo(typeName);
+	aeon_type::MethodInfo info;
+	info.constructorCallback = constructor;
+	info.name = "constructor";
+	typeInfo->m_methods.push_back(info);
+}
+
+void aeon_context::registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest)
+{
+	auto typeInfo = getTypeInfo(typeName);
+	typeInfo->m_destructor = dest;
+}
+
+void aeon_context::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
+{
+	auto typeInfo = getTypeInfo(typeName);
+	aeon_type::FieldInfo info;
+	info.name = decl;
+	info.offset = offset;
+	typeInfo->m_fields.push_back(info);
 }
 
 aeon_type* aeon_context::getTypeInfo(const std::string& name)
