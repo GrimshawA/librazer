@@ -4,7 +4,7 @@
 #include "aeNodeBase.h"
 
 class aeNodeExpr;
-class aeNodeTypeDecl;
+class aeQualType;
 class aeNodeBlock;
 
 /**
@@ -21,10 +21,10 @@ class aeNodeFunction : public aeNodeBase
 {
 public:
 
-	std::vector<aeNodeExpr*> m_parameters;
+	std::vector<aeNodeExpr*>      m_parameters;
 	std::string                   m_name;
-	aeNodeTypeDecl*                     m_return;
-	std::unique_ptr<aeNodeBlock>                m_block;
+	aeQualType                    m_returnType;
+	std::unique_ptr<aeNodeBlock>  m_block;
 	bool                          is_constructor;
 	bool                          is_method;
 	bool                          is_destructor;

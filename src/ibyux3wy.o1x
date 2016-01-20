@@ -222,7 +222,7 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_CALLNATIVE)
-				/*uint32_t funcid = getinst_a(inst);
+				uint32_t funcid = getinst_a(inst);
 				uint32_t params = getinst_b(inst);
 
 				atom_generic* gen = new atom_generic();
@@ -240,11 +240,12 @@ void aeon_vm::execute()
 				if (gen->hasRet)
 					push(gen->retarg._u64);
 
-				delete gen;*/
-			vm_end
+				delete gen;
+				vm_end
 
 			vm_start(OP_CALLMETHOD_NAT)
-				ctx->m_table_nmethods[inst.arg0].fn(this);
+				int mIndex = inst.arg0;
+				ctx->m_table_nmethods[mIndex].
 			vm_end
 
 			vm_start(OP_RETURN)
@@ -407,7 +408,6 @@ void aeon_vm::execute()
 					vm_value v;
 					v.ptr = m_stk.esp;
 					m_stk.push_value(v);
-					printf("OP_LOAD ESP address %x\n", v.ptr);
 				}
 			vm_end
 

@@ -2,6 +2,7 @@
 #define aeon_compiler_h__
 
 #include "nodes/aeNodeFunction.h"
+#include "nodes/aeNodeAccessOperator.h"
 #include "aeon_module.h"
 #include "aeon_tree.h"
 #include "aeon_expression.h"
@@ -150,7 +151,7 @@ public:
 
 		// High level constructs compilation
 		void emitClassCode(aeNodeClass* clss);
-		void emitFunctionCode(aeNodeFunction* func);
+		void emitFunction(aeNodeFunction* func);
 		void emitNamespaceCode(aeNodeNamespace* namespace_node);
 		void emitGlobalVarCode(aeNodeVarRef* global_var);
 
@@ -160,7 +161,7 @@ public:
 		void emitBranchCode(aeNodeBranch* cond);
 		void emitWhileLoop(aeNodeWhile* whileloop);
 		void emitForLoop(aeNodeFor* forloop);
-		void emitVarDecl(aeNodeVarDecl* varDecl);
+		void emitVarDecl(const aeNodeVarDecl& varDecl);
 
 		// Expression evaluation
 		void emitExpressionEval(aeNodeExpr* expr, ExpressionEvalContext exprContext);
@@ -172,6 +173,7 @@ public:
 		void emitVarExpr(aeNodeVarRef* var);
 		void emitLoadAddress(aeNodeExpr* expr);
 		void emitLoadLiteral(aeNodeLiteral* lt);
+		void emitAccessOp(aeNodeAccessOperator* acs);
 		void emitConversion(aeon_type* typeA, aeon_type* typeB);
 };
 

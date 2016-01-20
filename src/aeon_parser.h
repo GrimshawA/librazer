@@ -70,10 +70,13 @@ class aeon_parser
 		/// Symbols can be: functions, function prototypes, variables, properties
 		aeNodeBase* parse_symbol();
 
-		/// Parse a potentiall complex type with nested generics
-		aeNodeTypeDecl* parse_type();
+		/// Parses one qualified type
+		aeQualType parseQualType();
 
 		aeNodeExpr* parseExpression();
+		aeNodeExpr* parsePrimaryExpression();
+		aeNodeAccessOperator* parseMemberAccess(aeNodeExpr* left);
+		aeNodeExpr* parseIdentityExpression();
 
 		void parseTopLevel();
 

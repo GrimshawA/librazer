@@ -2,7 +2,7 @@
 
 aeNodeBlock::aeNodeBlock()
 {
-	m_type = CodeBlock;
+	m_nodeType = CodeBlock;
 }
 
 void aeNodeBlock::printSelf(int tabs)

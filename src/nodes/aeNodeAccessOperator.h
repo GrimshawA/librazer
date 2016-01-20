@@ -27,13 +27,15 @@ public:
 		DerefAccess
 	};
 
-	std::unique_ptr<aeNodeExpr>   m_a;
-	std::unique_ptr<aeNodeExpr>   m_b;
+	aeNodeExpr*   m_a;
+	aeNodeExpr*   m_b;
 	AccessOperatorType            m_accessType;
 
 public:
 
 	aeNodeAccessOperator();
+
+	std::string exprstr();
 };
 
 #endif // aeNodeAccessOperator_h__

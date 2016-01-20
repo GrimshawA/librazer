@@ -46,7 +46,6 @@ void aeon_compiler::emitExpressionEval(aeNodeExpr* expr, ExpressionEvalContext e
 
 void aeon_compiler::emitFunctionCall(aeNodeFunctionCall* fnCall, ExpressionEvalContext exprCtx)
 {
-
 	int funcId = m_env->getNativeBehaviorIndex("GameObject", fnCall->m_name);
 	if (funcId >= 0)
 	{
@@ -209,8 +208,6 @@ void aeon_compiler::emitAccessOp(aeNodeAccessOperator* acs)
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
 		emitFunctionCall(static_cast<aeNodeFunctionCall*>(acs->m_b), ExpressionEvalContext());
 	}
-
-
 }
 
 void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)

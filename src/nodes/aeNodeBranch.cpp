@@ -4,7 +4,7 @@
 
 aeNodeBranch::aeNodeBranch()
 {
-	m_type = IfBranch;
+	m_nodeType = IfBranch;
 }
 
 std::string aeNodeBranch::printtext()

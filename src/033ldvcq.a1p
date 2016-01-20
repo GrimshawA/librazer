@@ -407,7 +407,7 @@ void aeon_vm::execute()
 					vm_value v;
 					v.ptr = m_stk.esp;
 					m_stk.push_value(v);
-					printf("OP_LOAD ESP address %x\n", v.ptr);
+					printf("OP_LOAD ESP address %x\n", m_stk.esp);
 				}
 			vm_end
 

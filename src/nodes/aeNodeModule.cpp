@@ -5,7 +5,7 @@
 
 aeNodeModule::aeNodeModule()
 {
-	m_type = AEN_MODULE;
+	m_nodeType = AEN_MODULE;
 }
 
 void aeNodeModule::printSelf(int tabs)

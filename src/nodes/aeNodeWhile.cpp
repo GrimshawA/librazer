@@ -3,7 +3,7 @@
 
 aeNodeWhile::aeNodeWhile()
 {
-	m_type = WhileLoop;
+	m_nodeType = WhileLoop;
 
 	doWhile = false;
 

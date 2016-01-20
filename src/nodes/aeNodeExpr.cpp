@@ -23,12 +23,12 @@ int aeNodeExpr::as_int()
 
 bool aeNodeExpr::isInt()
 {
-	return m_type == IntExpr;
+	return m_nodeType == IntExpr;
 }
 
 bool aeNodeExpr::isString()
 {
-	return m_type == StringExpr;
+	return m_nodeType == StringExpr;
 }
 
 std::string aeNodeExpr::printtext()
@@ -43,5 +43,5 @@ std::string aeNodeExpr::exprstr()
 
 bool aeNodeExpr::isFloat()
 {
-	return m_type == FloatExpr;
+	return m_nodeType == FloatExpr;
 }

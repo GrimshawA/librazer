@@ -65,7 +65,7 @@ class aeon_token
 			In,
 			Goto,
 			As,
-			Period,
+			Dot,
 			MarkOpen,
 			MarkClose,
 			SqBracketOpen,

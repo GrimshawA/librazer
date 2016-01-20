@@ -3,7 +3,7 @@
 aeNodeEnum::aeNodeEnum()
 : aeNodeBase()
 {
-	m_type = Enum;
+	m_nodeType = Enum;
 }
 
 void aeNodeEnum::addField(std::string name)

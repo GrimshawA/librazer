@@ -43,11 +43,10 @@ class aeon_context
 
 		struct aeon_nativecall
 		{
-			typedef void(*func)(atom_generic*);
-			func f;
 			/// Just the function name
 			std::string prototype;
-			uint32_t    mask;
+			std::string typeName;
+			aeBindMethod fn;
 		};
 
 		struct method_indirect
@@ -74,7 +73,7 @@ class aeon_context
 		std::vector<double>                           double_literals;      ///< All the loaded double literals
 		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
 		std::vector<aeon_nativecall>                  native_functions;     ///< All the native functions registered
-		std::vector<aeon_nativecall>                  native_methods;       ///< All native class methods registered
+		std::vector<aeon_nativecall>                  m_table_nmethods;     ///< Instant lookup table for all native methods
 		std::vector<method_indirect>                  table_methods;        ///< Every script class method has an absolute index in this table
 		std::vector<aeFunctionData>                   m_function_table;     ///< Every script function loaded has an absolute index to this table
 		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
@@ -101,11 +100,13 @@ public:
 	/// Registers a native type to work with the language
 	void registerType(const std::string& name, std::size_t size, const std::string& namespc = "");
 	void registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method);
-	void registerTypeConstructor(const std::string& typeName, aeConstructorMethod dest);
+	void registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod dest);
 	void registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest);
 	void registerTypeField(const std::string& typeName, const std::string& decl, int offset);
 
 	int32_t getNativeFunctionIndex(const std::string& name);
+
+	aeFunctionId getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior);
 
 	aeon_type* getTypeInfo(const std::string& name);
 

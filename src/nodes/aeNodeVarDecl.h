@@ -22,13 +22,15 @@ class aeNodeExpr;
 class aeNodeVarDecl : public aeNodeStatement
 {
 public:
-	std::string      name;
-	std::string      type_name;
-	std::unique_ptr<aeNodeExpr> init_expr;
+	std::string                 m_name;
+	aeQualType                  m_type;
+	std::unique_ptr<aeNodeExpr> m_initExpr;
+
+public:
 
 	aeNodeVarDecl();
 
-	std::string printtext();
+	std::string printtext() const;
 };
 
 #endif // aeNodeVarDecl_h__

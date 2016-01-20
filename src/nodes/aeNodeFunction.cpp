@@ -4,7 +4,7 @@
 
 aeNodeFunction::aeNodeFunction()
 {
-	m_type = AEN_FUNCTION;
+	m_nodeType = AEN_FUNCTION;
 
 	m_block.reset(new aeNodeBlock());
 	//add(m_block);

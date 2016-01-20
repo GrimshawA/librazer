@@ -3,13 +3,13 @@
 
 aeNodeVarDecl::aeNodeVarDecl()
 {
-	m_type = AEN_VARDECL;
-	init_expr = nullptr;
+	m_nodeType = AEN_VARDECL;
+	m_initExpr = nullptr;
 }
 
-std::string aeNodeVarDecl::printtext()
+std::string aeNodeVarDecl::printtext() const
 {
-	std::string strr = "Decl '" + type_name + "' '" + name + "'";
-	init_expr ? strr += " = " + init_expr->exprstr() : strr += "";
+	std::string strr = "Decl '" + m_type.str() + "' '" + m_name + "'";
+	m_initExpr ? strr += " = " + m_initExpr->exprstr() : strr += "";
 	return strr;
 }

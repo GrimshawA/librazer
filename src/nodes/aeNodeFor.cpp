@@ -4,7 +4,7 @@
 
 aeNodeFor::aeNodeFor()
 {
-	m_type = ForLoop;
+	m_nodeType = ForLoop;
 
 	//block = new aeNodeBlock();
 	//add(block);

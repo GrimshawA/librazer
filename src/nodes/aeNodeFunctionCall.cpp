@@ -3,7 +3,7 @@
 
 aeNodeFunctionCall::aeNodeFunctionCall()
 {
-	m_type = FuncCall;
+	m_nodeType = AEN_FUNCTIONCALL;
 }
 
 std::string aeNodeFunctionCall::exprstr()

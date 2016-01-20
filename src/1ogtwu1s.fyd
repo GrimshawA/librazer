@@ -813,56 +813,17 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 
 aeNodeExpr* aeon_parser::parsePrimaryExpression()
 {
-	aeNodeExpr* idnt = parseIdentityExpression();
 	if (Tok.type == Tok.Dot)
 	{
-		return parseMemberAccess(idnt);
+		aeNodeAccessOperator* dotOp = parseMemberAccess();
 	}
-	return idnt;
 }
 
-aeNodeAccessOperator* aeon_parser::parseMemberAccess(aeNodeExpr* left)
+aeNodeExpr* aeon_parser::parseMemberAccess(aeNodeExpr* left)
 {
 	// We are on a '.', which HAS to form an operator
-	getNextToken();
-
 	aeNodeAccessOperator* dotOp = new aeNodeAccessOperator();
-	dotOp->m_a = left;
-	dotOp->m_b = parseIdentityExpression();
-
-	if (Tok.type == Tok.Dot)
-	{
-		return parseMemberAccess(dotOp);
-	}
-	else
-		return dotOp;
-}
-
-aeNodeExpr* aeon_parser::parseIdentityExpression()
-{
-	aeNodeExpr* result = nullptr;
-	std::string name = Tok.text;
-	getNextToken();
-
-	printf("IDENTITY IS %s\n", name.c_str());
-
-	if (Tok.type == Tok.ParenOpen)
-	{
-		getNextToken();
-		getNextToken();
 		
-		aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
-		fCall->m_name = name;
-		result = fCall;
-	}
-	else
-	{
-		aeNodeVarRef* varRef = new aeNodeVarRef;
-		varRef->Name = name;
-		result = varRef;
-	}
-
-	return result;
 }
 
 aeNodeExpr* aeon_parser::parseExpression()
@@ -871,8 +832,6 @@ aeNodeExpr* aeon_parser::parseExpression()
 		if (Tok.type == Tok.ParenClose || Tok.type == Tok.SemiColon || Tok.type == Tok.Comma)
 			return nullptr;
 
-		aeNodeExpr* primaryExpr = parsePrimaryExpression();
-		return primaryExpr;
 
 		// var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
 
@@ -926,7 +885,7 @@ aeNodeExpr* aeon_parser::parseExpression()
 			}
 			else if (Tok.type == Tok.Identifier)  // var or func call or any combination of them
 			{
-				aeNodeExpr* subexpr = parseIdentityExpression();
+				aeNodeExpr* subexpr = parse_identifier_subexpression();
 				leafexpr = subexpr;
 			}
 			else if (Tok.type == Tok.IntLiteral)
@@ -1064,8 +1023,6 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 			aeNodeVarRef* var = new aeNodeVarRef;
 			var->Name = identifier.text;
 			result_expr = var;
-
-			//getNextToken();
 		}
 
 		// Now we might have an array subscript
@@ -1085,7 +1042,10 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 
 		if (Tok.type == Tok.Dot)
 		{
-			result_expr = parseMemberAccess(result_expr);
+			// There is more!
+			getNextToken();
+			aeNodeExpr* RightOfDot = parse_identifier_subexpression();
+			result_expr->add(structmember);
 		}
 
 		return result_expr;

@@ -1,9 +1,10 @@
 #ifndef aeNodeBase_h__
 #define aeNodeBase_h__
 
+#include "aeQualType.h"
+
 #include <vector>
 #include <memory>
-
 
 enum NodeTypes
 {
@@ -16,6 +17,7 @@ enum NodeTypes
 	AEN_FUNCTION,
 	AEN_BLOCK,
 	AEN_DIRECTIVE,
+	AEN_ACCESSOPERATOR,
 	VisibilityMutation,
 	CharLiteral,
 	StringExpr,
@@ -23,7 +25,7 @@ enum NodeTypes
 	FloatExpr,
 	BinaryOperator,
 	UnaryOperator,
-	FuncCall,
+	AEN_FUNCTIONCALL,
 	IfBranch,
 	CodeBlock,
 	WhileLoop,
@@ -39,7 +41,7 @@ class aeNodeBase
 {
 public:
 	
-	int                      m_type;
+	int                      m_nodeType;
 	std::vector<aeNodeBase*> m_items;
 
 public:

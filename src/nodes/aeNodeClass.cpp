@@ -2,5 +2,5 @@
 
 aeNodeClass::aeNodeClass()
 {
-	m_type = AEN_CLASS;
+	m_nodeType = AEN_CLASS;
 }

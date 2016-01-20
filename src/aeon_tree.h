@@ -11,6 +11,7 @@
 #include "nodes/aeNodeFor.h"
 #include "nodes/aeNodeBranch.h"
 #include "nodes/aeNodeVarDecl.h"
+#include "nodes/aeNodeAccessOperator.h"
 #include "nodes/aeNodeUnaryOperator.h"
 #include "nodes/aeNodeBinaryOperator.h"
 #include "nodes/aeNodeTernaryOperator.h"
@@ -31,24 +32,7 @@ static std::string makeTabbing(int tabs)
 }
 
 /// The if in code, spawns an ifbranch with two children, the expr and the block of code
-class aeNodeTypeDecl : public aeNodeBase
-{
-public:
 
-	std::string name;
-
-	std::vector<aeNodeTypeDecl*> templateTypeArguments;
-
-	aeNodeTypeDecl()
-	{
-		m_type = Type;
-	}
-
-	std::string printtext()
-	{
-		return "Type " + name;
-	}
-};
 
 class aeNodeTypedef : public aeNodeBase
 {
@@ -56,11 +40,11 @@ public:
 
 	aeNodeTypedef()
 	{
-		m_type = Typedef;
+		m_nodeType = Typedef;
 	}
 
-	aeNodeTypeDecl* typeA;
-	aeNodeTypeDecl* typeB;
+	aeQualType* typeA;
+	aeQualType* typeB;
 
 	std::string printtext()
 	{
@@ -74,7 +58,7 @@ class aeNodeReturn : public aeNodeBase
 public:
 	aeNodeReturn()
 	{
-		m_type = Return;
+		m_nodeType = Return;
 	}
 
 	std::string printtext()

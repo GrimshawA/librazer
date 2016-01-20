@@ -1,6 +1,5 @@
 #include "aeon_parser.h"
 #include "aeon_lexer.h"
-#include "aeon_context.h"
 #include "nodes/aeNodeClass.h"
 #include "nodes/aeNodeModule.h"
 #include "nodes/aeNodeNamespace.h"
@@ -66,9 +65,9 @@ aeon_parser::aeon_parser()
 
 		// Found a member-of property
 		std::vector<std::string> ObjectSubProperties;
-		if (Tok.type == Tok.Dot)
+		if (Tok.type == Tok.Period)
 		{
-			while (Tok.type == Tok.Dot)
+			while (Tok.type == Tok.Period)
 			{
 				getNextToken();
 				ObjectSubProperties.push_back(Tok.text);
@@ -516,7 +515,7 @@ aeon_parser::aeon_parser()
 aeQualType aeon_parser::parseQualType()
 {
 	aeQualType type;
-	type.m_type = ctx->getTypeInfo(Tok.text);
+	type->m_type = ctx->getTypeInfo(Tok.text);
 	getNextToken();
 
 		/*type_node->name = Tok.text;
@@ -751,7 +750,7 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 aeNodeVarDecl* aeon_parser::parseVariableDecl()
 {
 	aeNodeVarDecl* varDecl = new aeNodeVarDecl;
-	varDecl->m_type.m_type = ctx->getTypeInfo(Tok.text);
+	varDecl->type_name = Tok.text;
 
 	aeNodeVarRef* astvar = new aeNodeVarRef();
 	astvar->explicitDeclaration = true;
@@ -759,7 +758,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 	astvar->Name = getNextToken().text;
 	getNextToken();
 
-	varDecl->m_name = astvar->Name;
+	varDecl->name = astvar->Name;
 
 	// Got an assignment on init
 	if (Tok.text == "=")
@@ -767,7 +766,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 		getNextToken();
 
 		aeNodeBinaryOperator* assignment = new aeNodeBinaryOperator(astvar, parseExpression(), "=");
-		varDecl->m_initExpr.reset(assignment);
+		varDecl->init_expr.reset(assignment);
 	}
 
 	return varDecl;
@@ -811,68 +810,12 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 		return funccall;
 	}
 
-aeNodeExpr* aeon_parser::parsePrimaryExpression()
-{
-	aeNodeExpr* idnt = parseIdentityExpression();
-	if (Tok.type == Tok.Dot)
+	aeNodeExpr* aeon_parser::parseExpression()
 	{
-		return parseMemberAccess(idnt);
-	}
-	return idnt;
-}
-
-aeNodeAccessOperator* aeon_parser::parseMemberAccess(aeNodeExpr* left)
-{
-	// We are on a '.', which HAS to form an operator
-	getNextToken();
-
-	aeNodeAccessOperator* dotOp = new aeNodeAccessOperator();
-	dotOp->m_a = left;
-	dotOp->m_b = parseIdentityExpression();
-
-	if (Tok.type == Tok.Dot)
-	{
-		return parseMemberAccess(dotOp);
-	}
-	else
-		return dotOp;
-}
-
-aeNodeExpr* aeon_parser::parseIdentityExpression()
-{
-	aeNodeExpr* result = nullptr;
-	std::string name = Tok.text;
-	getNextToken();
-
-	printf("IDENTITY IS %s\n", name.c_str());
-
-	if (Tok.type == Tok.ParenOpen)
-	{
-		getNextToken();
-		getNextToken();
-		
-		aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
-		fCall->m_name = name;
-		result = fCall;
-	}
-	else
-	{
-		aeNodeVarRef* varRef = new aeNodeVarRef;
-		varRef->Name = name;
-		result = varRef;
-	}
-
-	return result;
-}
-
-aeNodeExpr* aeon_parser::parseExpression()
-{
 		// no way we can get a valid expression here
 		if (Tok.type == Tok.ParenClose || Tok.type == Tok.SemiColon || Tok.type == Tok.Comma)
 			return nullptr;
 
-		aeNodeExpr* primaryExpr = parsePrimaryExpression();
-		return primaryExpr;
 
 		// var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
 
@@ -926,7 +869,7 @@ aeNodeExpr* aeon_parser::parseExpression()
 			}
 			else if (Tok.type == Tok.Identifier)  // var or func call or any combination of them
 			{
-				aeNodeExpr* subexpr = parseIdentityExpression();
+				aeNodeExpr* subexpr = parse_identifier_subexpression();
 				leafexpr = subexpr;
 			}
 			else if (Tok.type == Tok.IntLiteral)
@@ -1002,8 +945,9 @@ aeNodeExpr* aeon_parser::parseExpression()
 		return lhs;
 	}
 
-aeNodeExpr* aeon_parser::parse_identifier_subexpression()
-{
+	/// Parse a identifier subexpression, any combination of func calls
+	aeNodeExpr* aeon_parser::parse_identifier_subexpression()
+	{
 		aeNodeExpr* result_expr = nullptr;
 
 		aeon_token identifier = Tok;
@@ -1064,8 +1008,6 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 			aeNodeVarRef* var = new aeNodeVarRef;
 			var->Name = identifier.text;
 			result_expr = var;
-
-			//getNextToken();
 		}
 
 		// Now we might have an array subscript
@@ -1083,13 +1025,16 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 			getNextToken();
 		}*/
 
-		if (Tok.type == Tok.Dot)
+		if (Tok.type == Tok.Period)
 		{
-			result_expr = parseMemberAccess(result_expr);
+			// There is more!
+			getNextToken();
+			aeNodeExpr* structmember = parse_identifier_subexpression();
+			result_expr->add(structmember);
 		}
 
 		return result_expr;
-}
+	}
 
 	bool aeon_parser::checkForFunction()
 	{

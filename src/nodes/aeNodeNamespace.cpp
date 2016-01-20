@@ -4,7 +4,7 @@
 
 aeNodeNamespace::aeNodeNamespace()
 {
-	m_type = AEN_NAMESPACE;
+	m_nodeType = AEN_NAMESPACE;
 }
 
 std::string aeNodeNamespace::printtext()

@@ -2,7 +2,7 @@
 
 aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper)
 {
-	m_type = BinaryOperator;
+	m_nodeType = BinaryOperator;
 
 	operandA = opA;
 	operandB = opB;

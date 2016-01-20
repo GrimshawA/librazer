@@ -99,10 +99,10 @@ void aeon_context::quick_build(const std::string& file)
 
 void aeon_context::registerFunction(const char* proto, void* f)
 {
-/*	aeon_nativecall nf;
+	aeon_nativecall nf;
 	nf.f = static_cast<void (*)(atom_generic*)>(f);
 	nf.prototype = proto;
-	native_functions.push_back(nf);*/
+	native_functions.push_back(nf);
 }
 
 aeon_module* aeon_context::getModule(const std::string name)
@@ -182,26 +182,21 @@ void aeon_context::registerTypeMethod(const std::string& typeName, const std::st
 	info.methodCallback = method;
 	info.name = name;
 	typeInfo->m_methods.push_back(info);
-
-	aeon_nativecall ncall;
-	ncall.prototype = name;
-	ncall.fn = method;
-	ncall.typeName = typeName;
-	m_table_nmethods.push_back(ncall);
 }
 
-void aeon_context::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
+void aeon_context::registerTypeConstructor(const std::string& typeName, aeConstructorMethod constructor)
 {
 	auto typeInfo = getTypeInfo(typeName);
 	aeon_type::MethodInfo info;
-	//info.constructorCallback = constructor;
+	info.constructorCallback = constructor;
 	info.name = "constructor";
 	typeInfo->m_methods.push_back(info);
 
 	aeon_nativecall ncall;
-	ncall.prototype = behavName;
+	ncall.module = typeInfo->getModule();
+	ncall.index = typeInfo->m_methods.size() - 1;
+	ncall.prototype = "f";
 	ncall.fn = constructor;
-	ncall.typeName = typeName;
 	m_table_nmethods.push_back(ncall);
 }
 
@@ -224,7 +219,7 @@ aeFunctionId aeon_context::getNativeBehaviorIndex(const std::string& typeName, c
 {
 	for (std::size_t i = 0; i < m_table_nmethods.size(); ++i)
 	{
-		if (m_table_nmethods[i].prototype == behavior && m_table_nmethods[i].typeName == typeName)
+		if (m_table_nmethods[i].prototype == behavior && m_table_nmethods[i]->typeName == typeName)
 		{
 			return i;
 		}

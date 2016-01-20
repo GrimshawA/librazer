@@ -368,7 +368,7 @@ void aeon_compiler::emitScopeCode(aeNodeBlock* codeblock)
 
 	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{
-		if (codeblock->m_items[i]->m_nodeType == AEN_FUNCTIONCALL)
+		if (codeblock->m_items[i]->m_nodeType == FuncCall)
 		{
 			emitFunctionCall(static_cast<aeNodeFunctionCall*>(codeblock->m_items[i]), ExpressionEvalContext());
 		}
@@ -391,9 +391,6 @@ void aeon_compiler::emitScopeCode(aeNodeBlock* codeblock)
 		else
 		{
 			// might be buggy to assume this
-
-			printf("Compiling expression '%s'\n", static_cast<aeNodeExpr*>(codeblock->m_items[i])->exprstr().c_str());
-
 			emitExpressionEval(static_cast<aeNodeExpr*>(codeblock->m_items[i]), ExpressionEvalContext());
 		}
 	}
@@ -415,9 +412,9 @@ void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	scope.locals.push_back(localObject);
 
 	scope.offset += localObject.type->getSize();
-	m_OffsetFromBasePtr += localObject.type->getSize();
+	m_OffsetFromBasePtr += sizeof(vm_value);
 
-	//emitDebugPrint("Constructing " + varDecl.m_type.str());
+	emitDebugPrint("Constructing " + varDecl.m_type.str());
 	// Emit the stack allocation code
 	emitInstruction(OP_MOV, AEK_ESP, -varType->getSize());
 

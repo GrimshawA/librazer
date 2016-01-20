@@ -26,7 +26,7 @@ class aeNodeString : public aeNodeLiteral
 public:
 	aeNodeString()
 	{
-		m_type = StringExpr;
+		m_nodeType = StringExpr;
 	}
 
 	virtual std::string exprstr()
@@ -48,7 +48,7 @@ class aeNodeFloat : public aeNodeLiteral
 public:
 	aeNodeFloat()
 	{
-		m_type = FloatExpr;
+		m_nodeType = FloatExpr;
 	}
 
 	virtual std::string exprstr()
@@ -69,7 +69,7 @@ class aeNodeInteger : public aeNodeLiteral
 public:
 	aeNodeInteger()
 	{
-		m_type = IntExpr;
+		m_nodeType = IntExpr;
 	}
 
 	virtual std::string exprstr()
@@ -91,13 +91,13 @@ public:
 
 	aeNodeVarRef()
 	{
-		m_type = VarExpr;
+		m_nodeType = VarExpr;
 	}
 
 	bool explicitDeclaration;
 
 	std::string TypeString;
-	aeNodeTypeDecl* VarType;
+	aeQualType VarType;
 	std::string Name;
 
 	virtual std::string exprstr()
