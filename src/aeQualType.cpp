@@ -4,7 +4,12 @@
 aeQualType::aeQualType()
 : m_type(nullptr)
 {
-	
+
+}
+
+bool aeQualType::isPrimitive() const
+{
+	return m_type->
 }
 
 bool aeQualType::isVoid() const
