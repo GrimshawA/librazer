@@ -1,7 +1,7 @@
 #ifndef aeNodeBase_h__
 #define aeNodeBase_h__
 
-#include "aeQualType.h"
+#include "../aeQualType.h"
 
 #include <vector>
 #include <memory>

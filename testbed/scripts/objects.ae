@@ -1,27 +1,20 @@
 class CoreWidget : Widget
 {
-	int timeLeft;
-	int lives;
-	float helloVar;
+	/*int32 m_health;
+	int32 timeLeft;
+	int32 lives;
+	int32 myValue;
+	int32 myOtherValue;
+	int32 superMonster;*/
 
 	function execute()
 	{
-		print("Hello World");
-		/*int i;
-		i = 0;
-		for(i = 0; i < 10; i = i + 1)
-		{
-			print("Loop Iteration");
-			//spr_int(i);
-		}
+		GameObject monster;
+		monster.setHealth();
+	}
 
-		i = 0;
-		while(i < 10)
-		{
-			print("While Loop");
-			i = i + 1;
-		}*/
-
-		print("Done.");
+	function setHealth()
+	{
+		
 	}
 }

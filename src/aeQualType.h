@@ -4,6 +4,7 @@
 class aeon_type;
 
 #include <vector>
+#include <stdint.h>
 #include <string>
 
 /**
@@ -22,13 +23,13 @@ class aeQualType
 {
 public:
 
-	aeon_type*  m_type;
-	bool        m_const;
-	bool        m_ref;
-	bool        m_ptr;
-	bool        m_volatile;
-	bool        m_templated;
-	std::vector<aeQualType*> templateTypeArguments;
+	aeon_type*              m_type;
+	bool                    m_const;
+	bool                    m_ref;
+	bool                    m_ptr;
+	bool                    m_volatile;
+	bool                    m_templated;
+	std::vector<aeQualType> m_templateArgs;
 
 public:
 
