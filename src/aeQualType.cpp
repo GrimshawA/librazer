@@ -55,10 +55,15 @@ bool aeQualType::isVoid() const
 	return m_type == nullptr;
 }
 
+AEPrimitive aeQualType::getPrimitive() const
+{
+	return AE_PFLOAT; //todo
+}
+
 std::string aeQualType::str() const
 {
 	if (isVoid())
 		return "void";
 	else
-		return "Type " + m_type->getName();
+		return m_type->getName();
 }

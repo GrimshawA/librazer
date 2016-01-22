@@ -1,11 +1,13 @@
 #ifndef aeon_compiler_h__
 #define aeon_compiler_h__
 
+#include "aeCompilerConv.h"
 #include "nodes/aeNodeFunction.h"
 #include "nodes/aeNodeAccessOperator.h"
+#include "nodes/aeNodeSubscript.h"
 #include "aeon_module.h"
 #include "aeon_tree.h"
-#include "aeon_expression.h"
+#include "aeNodeNew.h"
 #include <vector>
 #include <stack>
 #include <stdint.h>
@@ -26,24 +28,8 @@ struct VariableStorageInfo
 	int mode = AE_VAR_INVALID;
 	int offset = 0;
 	int offset_bp = 0;
-	aeon_type* type;
+	aeon_type* type = nullptr;
 	std::string name;
-};
-
-struct TypeConversionStrategy
-{
-	enum ConversionModes
-	{
-		Primitive,
-		CustomOverload,
-		NativeCustomOverload,
-	};
-
-	bool allow_implicit;
-	bool two_ways;
-	aeon_type* typeA;
-	aeon_type* typeB;
-	int conversion_mode;
 };
 
 struct BinaryOperatorRelationship
@@ -56,8 +42,14 @@ struct BinaryOperatorRelationship
 	int priority;     ///< to keep it sorted by precedence, so we can ensure certain overloads are used instead of others
 };
 
-struct ExpressionEvalContext
+/*
+	\class aeExprContext
+	\brief Context for compiling expressions passed from node to node
+*/
+struct aeExprContext
 {
+	aeQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
+
 	aeNodeExpr* rootExpr;
 	bool is_temporary = false; ///< If the expression is isolated, it should evaluate for side effects and leave nothing on the stack
 	bool must_be_rvalue = false;
@@ -85,7 +77,7 @@ public:
 		std::vector<aeNodeClass*>             m_classes;               ///< Class we are compiling right now
 		aeNodeFunction*                  m_caller;
 		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
-		std::vector<TypeConversionStrategy> m_typeConversionTable;   ///< Table that defines what can be converted to what and how
+		std::vector<ConversionProcedure> m_typeConversionTable;   ///< Table that defines what can be converted to what and how
 
 	public:
 
@@ -105,6 +97,12 @@ public:
 
 public:
 
+	/// Builds a qualified type identifier based on context
+	aeQualType buildQualifiedType(const std::string& type);
+
+	/// Find the qualified type of a given expression
+	aeQualType buildQualifiedType(aeNodeExpr* e);
+		
 		/// Emit an instruction
 		uint32_t emitInstruction(aeon_instruction instr);
 
@@ -154,6 +152,7 @@ public:
 		void emitFunction(aeNodeFunction* func);
 		void emitNamespaceCode(aeNodeNamespace* namespace_node);
 		void emitGlobalVarCode(aeNodeVarRef* global_var);
+		void emitStatement(aeNodeStatement* stmt);
 
 		// Statement compilation
 		void emitScopeCode(aeNodeBlock* codeblock);
@@ -164,17 +163,19 @@ public:
 		void emitVarDecl(const aeNodeVarDecl& varDecl);
 
 		// Expression evaluation
-		void emitExpressionEval(aeNodeExpr* expr, ExpressionEvalContext exprContext);
+		void emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext);
 		void emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs);
 		void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
 		void emitBinaryOp(aeNodeBinaryOperator* operation);
 		void emitConditionalOp(aeNodeBinaryOperator* operation);
-		void emitFunctionCall(aeNodeFunctionCall* funccall, ExpressionEvalContext ctx);
+		void emitFunctionCall(aeNodeFunctionCall* funccall, aeExprContext ctx);
 		void emitVarExpr(aeNodeVarRef* var);
 		void emitLoadAddress(aeNodeExpr* expr);
 		void emitLoadLiteral(aeNodeLiteral* lt);
 		void emitAccessOp(aeNodeAccessOperator* acs);
 		void emitConversion(aeon_type* typeA, aeon_type* typeB);
+		void emitNew(aeNodeNew* newExpr);
+		void emitSubscriptOp(aeNodeSubscript* subscript);
 };
 
 #endif // aeon_compiler_h__

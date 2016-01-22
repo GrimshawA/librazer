@@ -1,31 +1,30 @@
-#include "aeon_variant.h"
+#include "aeDynamicType.h"
 
-
-aeon_variant vmvalue_from_float(float v)
+aeDynamicType vmvalue_from_float(float v)
 {
-	aeon_variant rv;
-	rv.type = aeon_variant::eFloat;
+	aeDynamicType rv;
+	rv.type = aeDynamicType::eFloat;
 	rv._fp = v;
 	return rv;
 }
 
-aeon_variant vmvalue_from_stringindex(uint32_t poolIndex)
+aeDynamicType vmvalue_from_stringindex(uint32_t poolIndex)
 {
-	aeon_variant rv;
-	rv.type = aeon_variant::eU32;
+	aeDynamicType rv;
+	rv.type = aeDynamicType::eU32;
 	rv._u32 = poolIndex;
 	return rv;
 }
 
-aeon_variant vmvalue_from_bool(bool b)
+aeDynamicType vmvalue_from_bool(bool b)
 {
-	aeon_variant rv;
-	rv.type = aeon_variant::eU32;
+	aeDynamicType rv;
+	rv.type = aeDynamicType::eU32;
 	rv._u32 = static_cast<uint32_t>(b);
 	return rv;
 }
 
-void vmvalue_print(aeon_variant v)
+void vmvalue_print(aeDynamicType v)
 {
 	/*switch (v.type)
 	{

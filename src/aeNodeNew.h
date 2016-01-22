@@ -1,5 +1,5 @@
-#ifndef aeon_expression_h__
-#define aeon_expression_h__
+#ifndef aeNodeNew_h__
+#define aeNodeNew_h__
 
 #include "nodes/aeNodeExpr.h"
 
@@ -7,13 +7,33 @@
 #include <vector>
 #include <stdint.h>
 
+/**
+	\class aeNodeNew
+	\brief Represents a new MyClass expression
+
+	It always evaluates to reference to MyClass.
+*/
+class aeNodeNew : public aeNodeExpr
+{
+public:
+	aeQualType m_instanceType;
+};
+
+/*
+	Always evaluates to string
+*/
+class aeNodeNameOf : public aeNodeExpr
+{
+public:
+	std::string m_name;
+};
+
 class aeNodeThis : public aeNodeExpr
 {
 public:
 	bool        m_is_implicit;   ///< Was 'this' actually written or inferred from context 
 	aeNodeExpr* m_expr;          ///< The expression after the this
 };
-
 
 class aeNodeLiteral : public aeNodeExpr
 {
@@ -26,7 +46,7 @@ class aeNodeString : public aeNodeLiteral
 public:
 	aeNodeString()
 	{
-		m_nodeType = StringExpr;
+		m_nodeType = AEN_STRING;
 	}
 
 	virtual std::string exprstr()
@@ -48,7 +68,7 @@ class aeNodeFloat : public aeNodeLiteral
 public:
 	aeNodeFloat()
 	{
-		m_nodeType = FloatExpr;
+		m_nodeType = AEN_FLOAT;
 	}
 
 	virtual std::string exprstr()
@@ -69,7 +89,7 @@ class aeNodeInteger : public aeNodeLiteral
 public:
 	aeNodeInteger()
 	{
-		m_nodeType = IntExpr;
+		m_nodeType = AEN_INTEGER;
 	}
 
 	virtual std::string exprstr()
@@ -91,18 +111,19 @@ public:
 
 	aeNodeVarRef()
 	{
-		m_nodeType = VarExpr;
+		m_nodeType = AEN_REF;
 	}
 
 	bool explicitDeclaration;
 
-	std::string TypeString;
 	aeQualType VarType;
-	std::string Name;
+	std::string m_name;
+
+	virtual aeQualType getQualifiedType(aeon_compiler* c);
 
 	virtual std::string exprstr()
 	{
-		std::string s1 = Name;
+		std::string s1 = m_name;
 
 		if (m_items.size() > 0)
 		{
@@ -113,29 +134,8 @@ public:
 
 	std::string printtext()
 	{
-		return std::string("VarExpr - ") + Name;
+		return std::string("VarExpr - ") + m_name;
 	}
 };
 
-/**
-	\class aeon_expression_subscript
-	\brief The subscript operator in the form (subject)[argument]
-
-	The subject can be a complex expression, evaluating to type T.
-	The argument has to be compatible with any of the T::operator[] overloads.
-
-	This operator will evaluate to the return type of the chosen T::operator[] overload.
-*/
-class aeNodeSubscriptOperator : public aeNodeExpr
-{
-public:
-	aeNodeExpr* argument;
-	aeNodeExpr* subject;
-
-	std::string exprstr()
-	{
-		return "(" + subject->exprstr() + ")[" + argument->exprstr() + "]";
-	}
-};
-
-#endif // aeon_expression_h__
+#endif // aeNodeNew_h__

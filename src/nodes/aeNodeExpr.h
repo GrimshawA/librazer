@@ -6,6 +6,8 @@
 #include <map>
 #include <memory>
 
+class aeon_compiler;
+
 /**
 	\class aeNodeExpr
 	\brief Represents an arbitrary expression like an equation
@@ -22,6 +24,8 @@ public:
 public:
 
 	aeNodeExpr();
+
+	virtual aeQualType getQualifiedType(aeon_compiler* c);
 
 	virtual std::string exprstr();
 

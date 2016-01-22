@@ -4,7 +4,7 @@
 #include <vector>
 #include <stdint.h>
 
-#include "aeon_variant.h"
+#include "aeDynamicType.h"
 
 class aeon_vm;
 
@@ -22,13 +22,13 @@ class aeon_vm;
 		void setarg_float(uint32_t index, float v)
 		{
 			args.resize(index + 1);
-			args[index] = aeon_variant(v);
+			args[index] = aeDynamicType(v);
 		}
 
 		std::string getarg_string(uint32_t index);
 
-		aeon_variant retarg;
-		std::vector<aeon_variant> args;
+		aeDynamicType retarg;
+		std::vector<aeDynamicType> args;
 		bool hasRet = false;
 	};
 

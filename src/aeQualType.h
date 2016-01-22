@@ -7,6 +7,16 @@ class aeon_type;
 #include <stdint.h>
 #include <string>
 
+enum AEPrimitive
+{
+	AE_PFLOAT,
+	AE_PDOUBLE,
+	AE_INT32,
+	AE_UINT32,
+	AE_PTR,
+	AE_REF,
+};
+
 /**
 	\class aeQualType
 	\brief A qualified type is the sum of a base declared type with additional qualifiers
@@ -64,6 +74,9 @@ public:
 
 	/// Check if the type is a void
 	bool isVoid() const;
+
+	/// Get the primitive type in an enum
+	AEPrimitive getPrimitive() const;
 
 	/// Returns a formatted string for the type qualifier syntax
 	std::string str() const;

@@ -19,18 +19,6 @@ int32_t aeon_compiler::cursor()
 	return m_cursor;
 }
 
-aeQualType aeon_compiler::buildQualifiedType(const std::string& type)
-{
-	aeQualType qtype;
-	qtype.m_type = m_env->getTypeInfo(type);
-	return qtype;
-}
-
-aeQualType aeon_compiler::buildQualifiedType(aeNodeExpr* e)
-{
-	return e->getQualifiedType(this);
-}
-
 void aeon_compiler::emitDebugPrint(const std::string& message)
 {
 	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
@@ -153,8 +141,6 @@ void aeon_compiler::generate(aeNodeBase* root)
 			emitGlobalVarCode(static_cast<aeNodeVarRef*>(root->m_items[i]));
 		}
 	}
-
-	printf("======================= COMPILER FINISHED =================\n");
 }
 
 void aeon_compiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
@@ -239,7 +225,7 @@ void aeon_compiler::emitClassCode(aeNodeClass* clss)
 			else
 			{
 				aeon_type::FieldInfo fieldInfo;
-				fieldInfo.name = varDecl->m_name;
+				fieldInfo.name = varDecl->Name;
 				fieldInfo.size = 4;
 				typeInfo->createField(fieldInfo);
 			}
@@ -382,57 +368,37 @@ void aeon_compiler::emitScopeCode(aeNodeBlock* codeblock)
 
 	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{
-		emitStatement(static_cast<aeNodeStatement*>(codeblock->m_items[i]));
+		if (codeblock->m_items[i]->m_nodeType == AEN_FUNCTIONCALL)
+		{
+			emitFunctionCall(static_cast<aeNodeFunctionCall*>(codeblock->m_items[i]), ExpressionEvalContext());
+		}
+		else if (codeblock->m_items[i]->m_nodeType == AEN_BRANCH)
+		{
+			emitBranchCode(static_cast<aeNodeBranch*>(codeblock->m_items[i]));
+		}
+		else if (codeblock->m_items[i]->m_nodeType == AEN_WHILE)
+		{
+			emitWhileLoop(static_cast<aeNodeWhile*>(codeblock->m_items[i]));
+		}
+		else if (codeblock->m_items[i]->m_nodeType == AEN_FOR)
+		{
+			emitForLoop(static_cast<aeNodeFor*>(codeblock->m_items[i]));
+		}
+		else if (codeblock->m_items[i]->m_nodeType == AEN_VARDECL)
+		{
+			emitVarDecl(*static_cast<aeNodeVarDecl*>(codeblock->m_items[i]));
+		}
+		else
+		{
+			// might be buggy to assume this
+
+			printf("Compiling expression '%s'\n", static_cast<aeNodeExpr*>(codeblock->m_items[i])->exprstr().c_str());
+
+			emitExpressionEval(static_cast<aeNodeExpr*>(codeblock->m_items[i]), ExpressionEvalContext());
+		}
 	}
 
 	pop_scope();
-}
-
-void aeon_compiler::emitStatement(aeNodeStatement* stmt)
-{
-	/*
-		List of statements accepted as "standalone" within blocks of code
-		- switch
-		- for
-		- while
-		- if
-		- assignment
-		- function calls (f(x) or (...).f(X)
-		- declaration statement
-	*/
-
-	if (stmt->m_nodeType == AEN_FUNCTIONCALL)
-	{
-		emitFunctionCall(static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
-	}
-	else if (stmt->m_nodeType == AEN_BRANCH)
-	{
-		emitBranchCode(static_cast<aeNodeBranch*>(stmt));
-	}
-	else if (stmt->m_nodeType == AEN_WHILE)
-	{
-		emitWhileLoop(static_cast<aeNodeWhile*>(stmt));
-	}
-	else if (stmt->m_nodeType == AEN_FOR)
-	{
-		emitForLoop(static_cast<aeNodeFor*>(stmt));
-	}
-	else if (stmt->m_nodeType == AEN_VARDECL)
-	{
-		emitVarDecl(*static_cast<aeNodeVarDecl*>(stmt));
-	}
-	else if (stmt->m_nodeType == AEN_BINARYOP && ((aeNodeBinaryOperator*)stmt)->oper == "=")
-	{
-		emitAssignOp(((aeNodeBinaryOperator*)stmt)->operandA, ((aeNodeBinaryOperator*)stmt)->operandB);
-	}
-	else if (stmt->m_nodeType == AEN_ACCESSOPERATOR && ((aeNodeAccessOperator*)stmt)->m_b->m_nodeType == AEN_FUNCTIONCALL)
-	{
-		emitAccessOp(((aeNodeAccessOperator*)stmt));
-	}
-	else
-	{
-		printf("NOT compiling other expression '%s'\n", ((aeNodeExpr*)stmt)->exprstr().c_str());
-	}
 }
 
 void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
@@ -458,7 +424,7 @@ void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	// Now the variable is initialized and part of its scope, initialize it
 	if (varDecl.m_initExpr)
 	{
-		emitExpressionEval(varDecl.m_initExpr.get(), aeExprContext());
+		emitExpressionEval(varDecl.m_initExpr.get(), ExpressionEvalContext());
 	}
 	else
 	{

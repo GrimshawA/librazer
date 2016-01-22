@@ -52,24 +52,24 @@ void aeon_vm::setContext(aeon_context* context)
 
 void aeon_vm::setArgFloat(uint32_t index, float v)
 {
-	*(m_stk.esp - sizeof(aeon_variant)* index) = v;
+	*(m_stk.esp - sizeof(aeDynamicType)* index) = v;
 }
 
 float aeon_vm::getArgFloat(uint32_t index)
 {
-	return *(m_stk.esp - index * sizeof(aeon_variant));
+	return *(m_stk.esp - index * sizeof(aeDynamicType));
 }
 
-void aeon_vm::setArg(uint32_t index, aeon_variant v)
+void aeon_vm::setArg(uint32_t index, aeDynamicType v)
 {
 	uint64_t* argAddress = reinterpret_cast<uint64_t*>((m_stk.esp - sizeof(uint64_t)* index));
 	*argAddress = v._u64;
 }
 
-aeon_variant aeon_vm::getArg(uint32_t index)
+aeDynamicType aeon_vm::getArg(uint32_t index)
 {
 	uint64_t* argAddress = reinterpret_cast<uint64_t*>((m_stk.esp - sizeof(uint64_t)* index));
-	aeon_variant v;
+	aeDynamicType v;
 	v._u64 = *argAddress;
 	return v;
 }
@@ -291,7 +291,7 @@ void aeon_vm::execute()
 				uint32_t argType = getinst_b(inst);
 				// uint64_t argValue = cl->module->instructions[++cl->pc];
 				uint64_t argValue = 0;
-				aeon_variant  argVariant; argVariant._u64 = argValue; argVariant.type = argType;
+				aeDynamicType  argVariant; argVariant._u64 = argValue; argVariant.type = argType;
 
 				setArg(argIndex, argVariant);
 			vm_end
@@ -310,6 +310,13 @@ void aeon_vm::execute()
 				//Log("[lt] %d < %d = %d", opa, opb, static_cast<int>(opa < opb));
 			vm_end
 
+			vm_start(OP_LTE)
+				int opb = pop();
+				int opa = pop();
+				push(static_cast<int>(opa < opb));
+				//Log("[lt] %d < %d = %d", opa, opb, static_cast<int>(opa < opb));
+			vm_end
+
 			vm_start(OP_GT)
 				int opb = pop();
 				int opa = pop();
@@ -317,7 +324,21 @@ void aeon_vm::execute()
 				// Log("[gt] %d > %d = %d", opa, opb, static_cast<int>(opa < opb));
 			vm_end
 
+			vm_start(OP_GTE)
+				int opb = pop();
+				int opa = pop();
+				push(static_cast<int>(opa > opb));
+				// Log("[gt] %d > %d = %d", opa, opb, static_cast<int>(opa < opb));
+			vm_end
+
 			vm_start(OP_EQ)
+				vm_value opb = m_stk.pop_value();
+				vm_value opa = m_stk.pop_value();
+				vm_value opr; opr.i64 = opb.i64 == opa.i64;
+				m_stk.push_value(opr);
+			vm_end
+
+			vm_start(OP_NEQ)
 				vm_value opb = m_stk.pop_value();
 				vm_value opa = m_stk.pop_value();
 				vm_value opr; opr.i64 = opb.i64 == opa.i64;
@@ -414,12 +435,12 @@ void aeon_vm::execute()
 			vm_start(OP_SIZEOF)
 				uint32_t type_token = getinst_a(inst);
 				push(ctx->typedb[type_token]->getSize());
-			vm_end
+				vm_end
 
 			vm_start(OP_NEWOBJECT)
-				int32_t objtype = getinst_a(inst);
-				// atom_objectref obj = ctx->alloc(objtype);
-				// push_objectref(obj);
+				vm_value newObjectPtr;
+				newObjectPtr.ptr = new aeon_vm();
+				m_stk.push_value(newObjectPtr);
 			vm_end
 
 			vm_start(OP_DELETEOBJECT)

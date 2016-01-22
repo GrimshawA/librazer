@@ -1,12 +1,12 @@
 #ifndef aeNodeFor_h__
 #define aeNodeFor_h__
 
-#include "aeNodeBase.h"
+#include "aeNodeStatement.h"
 
 class aeNodeExpr;
 class aeNodeBlock;
 
-class aeNodeFor : public aeNodeBase
+class aeNodeFor : public aeNodeStatement
 {
 public:
 	std::vector<aeNodeExpr*> initExpressions; ///< The for loop can have any number of init expressions separated by comma.

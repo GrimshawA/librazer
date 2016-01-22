@@ -40,7 +40,7 @@ public:
 
 	aeNodeTypedef()
 	{
-		m_nodeType = Typedef;
+		m_nodeType = AEN_TYPEDEF;
 	}
 
 	aeQualType* typeA;
@@ -58,7 +58,7 @@ class aeNodeReturn : public aeNodeBase
 public:
 	aeNodeReturn()
 	{
-		m_nodeType = Return;
+		m_nodeType = AEN_RETURN;
 	}
 
 	std::string printtext()

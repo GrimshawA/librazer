@@ -2,6 +2,7 @@
 #define aeon_context_h__
 
 #include "aeon_generics.h"
+#include "aeUnit.h"
 #include "aeon_type.h"
 #include "aeon_value.h"
 #include <vector>
@@ -41,6 +42,7 @@ class aeon_context
 {
 	public:
 
+
 		struct aeon_nativecall
 		{
 			/// Just the function name
@@ -66,6 +68,7 @@ class aeon_context
 			std::vector<aeon_object*> objects;
 		};
 
+		std::vector<aeUnit>                           m_units;
 		std::vector<aeon_type*>                       typedb;               ///< All the types on the context
 		std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
 		std::vector<std::unique_ptr<aeon_module> >    modules;              ///< All the loaded modules

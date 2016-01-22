@@ -15,20 +15,23 @@ enum EOpCodes
 	OP_RETURN,           ///< Returns from a function immediately
 	OP_JZ,            ///< Jump if eax == 0 to relative address (pc += offset)
 	OP_JMP,        ///< jmp to an absolute location pc = x
-	OP_PUSHARG,       ///< 
-	OP_LOADK,         ///< load a constant into stack
-	OP_MUL,           ///< mul stores in eax, ebx * ec
-	OP_DIV,           ///< 
-	OP_MOD,           ///<
-	OP_ADD,           ///<
-	OP_SUB,           ///<
- 	OP_C_F_I32,           ///< Built in type conversion
-	OP_C_I32_F,           ///< Built in type conversion
-	OP_LT,            ///< compare less than, a < b
-	OP_GT,            ///<
-	OP_EQ,         ///< Test equality
-	OP_NOT,        ///< Negate operand
-	OP_SET,        ///< Assign something to something
+	OP_PUSHARG,        ///< 
+	OP_LOADK,          ///< load a constant into stack
+	OP_MUL,            ///< mul stores in eax, ebx * ec
+	OP_DIV,            ///< 
+	OP_MOD,            ///<
+	OP_ADD,            ///<
+	OP_SUB,            ///<
+ 	OP_C_F_I32,        ///< Built in type conversion
+	OP_C_I32_F,        ///< Built in type conversion
+	OP_LT,             ///< compare less than, a < b
+	OP_LTE,            ///< compare less than, a < b
+	OP_GT,             ///<
+	OP_GTE,            ///<
+	OP_EQ,             ///< Test equality
+	OP_NEQ,            ///< Test for inequality
+	OP_NOT,            ///< Negate operand
+	OP_SET,            ///< Assign something to something
 	OP_LOAD,       ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_SIZEOF,     ///< Pushes the size in bytes to the stack of the given type token
 	OP_NEWOBJECT,        ///< Creates a new object of the selected type and pushes its objectref

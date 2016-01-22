@@ -345,17 +345,16 @@ aeon_parser::aeon_parser()
 		}
 	}
 
-	aeNodeEnum* aeon_parser::parse_enum()
+aeNodeEnum* aeon_parser::parse_enum()
+{
+	aeNodeEnum* enum_code = new aeNodeEnum;
+	enum_code->name = getNextToken().text;
+	getNextToken(); getNextToken();
+
+	while (Tok.type != Tok.BracketClose)
 	{
-		aeNodeEnum* enum_code = new aeNodeEnum;
-		enum_code->name = getNextToken().text;
-		getNextToken(); getNextToken();
-
-		while (Tok.type != Tok.BracketClose)
-		{
-			std::string EnumMember = Tok.text;
-
-			if (getNextToken().type == Tok.Comma)
+		std::string EnumMember = Tok.text;
+		if (getNextToken().type == Tok.Comma)
 			{
 				enum_code->addField(EnumMember);
 				getNextToken();
@@ -364,12 +363,12 @@ aeon_parser::aeon_parser()
 			{
 				enum_code->addField(EnumMember);
 			}
-		}
-
-		getNextToken();
-
-		return enum_code;
 	}
+
+	getNextToken();
+
+	return enum_code;
+}
 
 	/// Parses one thing inside the class body
 	void aeon_parser::parse_class_element(aeNodeClass* classDeclNode)
@@ -503,7 +502,7 @@ aeon_parser::aeon_parser()
 			else
 			{
 				aeNodeVarRef* var_node = new aeNodeVarRef;
-				var_node->Name = SymbolName;
+				var_node->m_name = SymbolName;
 				var_node->VarType = type_node;
 				result_node = var_node;
 				getNextToken();
@@ -755,11 +754,10 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 
 	aeNodeVarRef* astvar = new aeNodeVarRef();
 	astvar->explicitDeclaration = true;
-	astvar->TypeString = Tok.text;
-	astvar->Name = getNextToken().text;
+	astvar->m_name = getNextToken().text;
 	getNextToken();
 
-	varDecl->m_name = astvar->Name;
+	varDecl->m_name = astvar->m_name;
 
 	// Got an assignment on init
 	if (Tok.text == "=")
@@ -858,7 +856,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 	else
 	{
 		aeNodeVarRef* varRef = new aeNodeVarRef;
-		varRef->Name = name;
+		varRef->m_name = name;
 		result = varRef;
 	}
 
@@ -870,9 +868,6 @@ aeNodeExpr* aeon_parser::parseExpression()
 		// no way we can get a valid expression here
 		if (Tok.type == Tok.ParenClose || Tok.type == Tok.SemiColon || Tok.type == Tok.Comma)
 			return nullptr;
-
-		aeNodeExpr* primaryExpr = parsePrimaryExpression();
-		return primaryExpr;
 
 		// var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
 
@@ -926,8 +921,8 @@ aeNodeExpr* aeon_parser::parseExpression()
 			}
 			else if (Tok.type == Tok.Identifier)  // var or func call or any combination of them
 			{
-				aeNodeExpr* subexpr = parseIdentityExpression();
-				leafexpr = subexpr;
+				aeNodeExpr* primaryExpr = parsePrimaryExpression();
+				leafexpr = primaryExpr;
 			}
 			else if (Tok.type == Tok.IntLiteral)
 			{
@@ -1062,7 +1057,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 		else
 		{
 			aeNodeVarRef* var = new aeNodeVarRef;
-			var->Name = identifier.text;
+			var->m_name = identifier.text;
 			result_expr = var;
 
 			//getNextToken();

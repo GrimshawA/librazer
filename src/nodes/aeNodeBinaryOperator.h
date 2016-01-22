@@ -22,6 +22,10 @@ public:
 
 	aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper);
 
+	bool isBooleanOperator();
+
+	virtual aeQualType getQualifiedType(aeon_compiler* c);
+
 	virtual std::string exprstr();
 
 	std::string printtext();

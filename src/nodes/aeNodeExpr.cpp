@@ -1,9 +1,15 @@
 #include "aeNodeExpr.h"
-#include "../aeon_expression.h"
+#include "../aeon_compiler.h"
+#include "../aeNodeNew.h"
 
 aeNodeExpr::aeNodeExpr()
 {
 	m_parentExpr = nullptr;
+}
+
+aeQualType aeNodeExpr::getQualifiedType(aeon_compiler* c)
+{
+	return aeQualType::fromString("void");
 }
 
 float aeNodeExpr::as_float()
@@ -23,12 +29,12 @@ int aeNodeExpr::as_int()
 
 bool aeNodeExpr::isInt()
 {
-	return m_nodeType == IntExpr;
+	return m_nodeType == AEN_INTEGER;
 }
 
 bool aeNodeExpr::isString()
 {
-	return m_nodeType == StringExpr;
+	return m_nodeType == AEN_STRING;
 }
 
 std::string aeNodeExpr::printtext()
@@ -43,5 +49,5 @@ std::string aeNodeExpr::exprstr()
 
 bool aeNodeExpr::isFloat()
 {
-	return m_nodeType == FloatExpr;
+	return m_nodeType == AEN_FLOAT;
 }

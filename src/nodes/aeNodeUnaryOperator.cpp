@@ -2,7 +2,7 @@
 
 aeNodeUnaryOperator::aeNodeUnaryOperator()
 {
-	m_nodeType = UnaryOperator;
+	m_nodeType = AEN_UNARYOP;
 
 	Operand = nullptr;
 }

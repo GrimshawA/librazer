@@ -205,9 +205,9 @@ class aeon_vm
 		void setArgFloat(uint32_t index, float v);
 
 		/// Set any arg directly from a variant
-		void setArg(uint32_t index, aeon_variant v);
+		void setArg(uint32_t index, aeDynamicType v);
 
-		aeon_variant getArg(uint32_t index);
+		aeDynamicType getArg(uint32_t index);
 
 		float getArgFloat(uint32_t index);
 

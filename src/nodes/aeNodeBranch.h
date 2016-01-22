@@ -14,7 +14,7 @@ class aeNodeBlock;
 	the last branch may or may not have an expression, if it 
 	doesn't, its a single else clause.
 */
-class aeNodeBranch : public aeNodeBase
+class aeNodeBranch : public aeNodeStatement
 {
 public:
 	std::unique_ptr<aeNodeExpr>                 m_expression;
