@@ -129,7 +129,7 @@ aeon_parser::aeon_parser()
 				{
 					getNextToken();
 					std::vector<aeon_token> args;
-					do 
+					do
 					{
 						TheStringLiteral += " " + Tok.extract_stringliteral();
 
@@ -138,7 +138,7 @@ aeon_parser::aeon_parser()
 						if (Tok.type == Tok.Comma)
 							getNextToken();
 
-					} while (Tok.type != Tok.ParenClose);				
+					} while (Tok.type != Tok.ParenClose);
 					getNextToken();
 
 				}
@@ -344,6 +344,29 @@ aeon_parser::aeon_parser()
 			//}
 		}
 	}
+
+aeNodeFunction* aeon_parser::parseLambdaFunction()
+{
+	/*
+		Assumes we are on a =>
+	*/
+	aeNodeFunction* function = new aeNodeFunction();
+	function->is_lambda = true;
+
+	getNextToken();
+	if(Tok.text == Tok.BracketOpen)
+	{
+		function->body = parseBlock();
+	}
+	else
+	{
+		// Inline anon expression
+		function->body = new aeNodeBlock();
+		aeNodeExpr* expr = parseExpression();
+	}
+
+	return function;
+}
 
 aeNodeEnum* aeon_parser::parse_enum()
 {
@@ -707,7 +730,7 @@ aeNodeFor* aeon_parser::parseForLoop()
 	getNextToken();
 
 	//astfor->incrExpr = parseExpression();
-	
+
 	//parseBlock(astfor->block);
 
 	return astfor;
@@ -848,7 +871,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 	{
 		getNextToken();
 		getNextToken();
-		
+
 		aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
 		fCall->m_name = name;
 		result = fCall;

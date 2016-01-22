@@ -35,6 +35,8 @@ public:
 
 	aeNodeAccessOperator();
 
+	virtual aeQualType getQualifiedType(aeon_compiler* c);
+
 	std::string exprstr();
 };
 

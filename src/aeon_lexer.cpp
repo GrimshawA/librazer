@@ -50,7 +50,6 @@ void aeon_lexer::tokenize(std::string src)
 			return token;
 		}
 
-
 		// Check for // comments
 		if (LastChar == '/')
 		{
@@ -193,6 +192,13 @@ void aeon_lexer::tokenize(std::string src)
 				token.text = "--";
 				return token;
 			}
+		}
+
+		if (LastChar == '=' && program_source[i + 1] == '>')
+		{
+			token.type = aeon_token::AETK_LAMBDA;
+			token.text = "=>";
+			return token;
 		}
 
 		// operators

@@ -70,39 +70,26 @@ class aeon_parser
 		/// Symbols can be: functions, function prototypes, variables, properties
 		aeNodeBase* parse_symbol();
 
-		/// Parses one qualified type
-		aeQualType parseQualType();
-
-		aeNodeExpr* parseExpression();
-		aeNodeExpr* parsePrimaryExpression();
+		aeQualType            parseQualType();
+		aeNodeExpr*           parseExpression();
+		aeNodeExpr*           parsePrimaryExpression();
 		aeNodeAccessOperator* parseMemberAccess(aeNodeExpr* left);
-		aeNodeExpr* parseIdentityExpression();
-
-		void parseTopLevel();
-
-		aeNodeNamespace* parse_namespace();
-
-		aeNodeEnum* parse_enum();
-
-		/// Returns a class node. Requires the current token to be "class"
-		aeNodeClass* parseClass();
-
-		/// With the cursor on a 'for' token, prepares the for loop node
-		aeNodeFor* parseForLoop();
-
-		/// With the cursor on a 'while' or 'do' token, returns the ready while node
-		aeNodeWhile* parseWhileLoop();
-
-		/// We're inside a class block, last token read was {
-		void parseClassBody(aeNodeClass* classDeclNode);
-
-		/// Parses one thing inside the class body
-		void parse_class_element(aeNodeClass* classDeclNode);
+		void                  parseTopLevel();
+		aeNodeExpr*           parseIdentityExpression();
+		aeNodeNamespace*      parse_namespace();
+		aeNodeEnum*           parse_enum();
+		aeNodeClass*          parseClass();
+		aeNodeFor*            parseForLoop();
+		aeNodeWhile*          parseWhileLoop();
+		void                  parseClassBody(aeNodeClass* classDeclNode);
+		aeNodeFunction*       parseLambdaFunction();
+		void                  parse_class_element(aeNodeClass* classDeclNode);
+		void                  parseBlock(aeNodeBlock* block);
+		aeNodeFunction*       parse_function();
 
 		/// Parse a identifier subexpression, any combination of func calls
 		aeNodeExpr* parse_identifier_subexpression();
 
-		aeNodeFunction* parse_function();
 
 		/// Parses a list of arguments (expressions) to pass to a function for example
 		std::vector<aeNodeExpr*> parse_argument_list();
@@ -117,9 +104,6 @@ class aeon_parser
 		aeNodeFunctionCall* parseFunctionCall();
 
 		aeNodeVarDecl* parseVariableDecl();
-
-		/// Parses one block of executable code (inside a function)
-		void parseBlock(aeNodeBlock* block);
 
 		bool checkForFunction();
 

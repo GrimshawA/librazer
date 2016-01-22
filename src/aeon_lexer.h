@@ -81,6 +81,7 @@ class aeon_token
 			Asm,
 			Increment,
 			Decrement,
+			AETK_LAMBDA, //< =>
 			Unknown
 		};
 
