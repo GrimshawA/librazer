@@ -17,6 +17,9 @@
 #include "nodes/aeNodeTernaryOperator.h"
 #include "nodes/aeNodeClass.h"
 #include "nodes/aeNodeBlock.h"
+#include "nodes/aeNodeReturn.h"
+#include "nodes/aeNodeRef.h"
+#include "nodes/aeNodeLiterals.h"
 
 #include <string>
 #include <vector>
@@ -46,24 +49,9 @@ public:
 	aeQualType* typeA;
 	aeQualType* typeB;
 
-	std::string printtext()
+	std::string str()
 	{
 		return "Typedef";
-	}
-};
-
-
-class aeNodeReturn : public aeNodeBase
-{
-public:
-	aeNodeReturn()
-	{
-		m_nodeType = AEN_RETURN;
-	}
-
-	std::string printtext()
-	{
-		return std::string("Return");
 	}
 };
 

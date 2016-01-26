@@ -28,80 +28,6 @@ aeon_parser::aeon_parser()
 	pass = Gather;
 }
 
-aeNodeStatement* aeon_parser::parseStatement()
-{
-	switch (Tok.type)
-	{
-	case AETK_IF:
-		return parseBranch();
-		break;
-
-	case AETK_FOR:
-		return parseForLoop();
-		break;
-
-	case AETK_WHILE:
-		return parseWhileLoop();
-		break;
-
-	case AETK_DO:
-		return parseWhileLoop();
-		break;
-
-	case AETK_RETURN:
-		return parseReturn();
-		break;
-
-	case AETK_OPENBRACKET:
-		return parseBlock();
-		break;
-
-	case AETK_IDENTIFIER:
-	{
-		if (peekAhead(0).type == AETK_IDENTIFIER)
-		{			
-			return parseVariableDecl();
-		}	
-	}
-	default:
-	{
-		return parseExpression();
-	}
-		
-	}
-}
-
-aeNodeReturn* aeon_parser::parseReturn()
-{
-	aeNodeReturn* returnNode = new aeNodeReturn;
-	getNextToken();
-	return returnNode;
-}
-
-aeNodeBranch* aeon_parser::parseBranch()
-{
-	aeNodeBranch* branchNode = new aeNodeBranch;
-	// if (expr) { block }
-	//Log("Parsing if () {}");
-	/*
-	getNextToken();
-	aeNodeBranch* ifbranch = new aeNodeBranch();
-	block->add(ifbranch);
-
-	getNextToken(); // go into the first part of the expression
-	ifbranch->m_expression = parseExpression();
-	if (ifbranch->m_expression)
-	ifbranch->add(ifbranch->m_expression);
-
-	//Log("Parsing now the if nested block");
-
-	getNextToken();  //getNextToken(); // consume the {
-	parseBlock(ifbranch->m_block);
-	*/
-	//getNextToken(); // advance to next statement
-	return branchNode;
-}
-
 	void aeon_parser::parseValue(aeon_lexer& lexer, aeon_value& rootValue)
 	{
 		if (lexer.tokens.size() == 0)
@@ -116,7 +42,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 
 		Tok = getNextToken();
 
-		while (Tok.type != AETK_EOF)
+		while (Tok.type != aeon_token::EndOfFile)
 		{
 			aeon_value ParsedValue = parseDataObject();
 			rootValue.properties.push_back(ParsedValue);
@@ -132,7 +58,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 		// we are on the first token of a data definition
 
 		std::string ObjectType;
-		if (Tok.type == AETK_IDENTIFIER)
+		if (Tok.type == Tok.Identifier)
 		{
 			ObjectType = Tok.text;
 			getNextToken();
@@ -140,9 +66,9 @@ aeNodeBranch* aeon_parser::parseBranch()
 
 		// Found a member-of property
 		std::vector<std::string> ObjectSubProperties;
-		if (Tok.type == AETK_DOT)
+		if (Tok.type == Tok.Dot)
 		{
-			while (Tok.type == AETK_DOT)
+			while (Tok.type == Tok.Dot)
 			{
 				getNextToken();
 				ObjectSubProperties.push_back(Tok.text);
@@ -151,7 +77,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 		}
 
 		std::string ObjectName;
-		if (Tok.type == AETK_DIRECTIVE)
+		if (Tok.type == Tok.Directive)
 		{
 			getNextToken();
 			ObjectName = Tok.text;
@@ -161,11 +87,11 @@ aeNodeBranch* aeon_parser::parseBranch()
 		}
 
 		// Property assigned
-		if ((Tok.type == AETK_BINOP && Tok.text == "="))
+		if (Tok.type == Tok.InitAssignment || (Tok.type == Tok.Operator && Tok.text == "="))
 		{
 			getNextToken();
 
-			if (Tok.type == AETK_INTLITERAL || Tok.type == AETK_FLOATLITERAL)
+			if (Tok.type == Tok.IntLiteral || Tok.type == Tok.DoubleLiteral || Tok.type == Tok.FloatLiteral)
 			{
 				std::string NumberLiteralString = Tok.text;
 				getNextToken();
@@ -173,33 +99,33 @@ aeNodeBranch* aeon_parser::parseBranch()
 				objectValue.SetNumber(ObjectType, NumberLiteralString);
 				//Log("Float PROP: %s %s", ObjectType.c_str(), NumberLiteralString.c_str());
 
-				if (Tok.type == AETK_BINOP && Tok.text == "%")
+				if (Tok.type == Tok.Operator && Tok.text == "%")
 				{
 					// This is a percentage!!
 					getNextToken();
 				}
 			}
-			else if (Tok.type == AETK_FALSE)
+			else if (Tok.type == Tok.False)
 			{
 				objectValue.mRawValue = "false";
 				getNextToken();
 			}
-			else if (Tok.type == AETK_TRUE)
+			else if (Tok.type == Tok.True)
 			{
 				objectValue.mRawValue = "true";
 				getNextToken();
 			}
-			else if (Tok.type == AETK_IDENTIFIER || Tok.type == AETK_STRINGLITERAL)
+			else if (Tok.type == Tok.Identifier || Tok.type == Tok.StringLiteral)
 			{
 
-				bool IsIdentifier = Tok.type == AETK_IDENTIFIER;
+				bool IsIdentifier = Tok.type == Tok.Identifier;
 
 				std::string TheStringLiteral = Tok.extract_stringliteral();
 				getNextToken();
 				//Log("STRING: %s", TheStringLiteral.c_str());
 
 				// We're in the token after the identifier on RHS
-				if (IsIdentifier && Tok.type == AETK_OPENPAREN)
+				if (IsIdentifier && Tok.type == Tok.ParenOpen)
 				{
 					getNextToken();
 					std::vector<aeon_token> args;
@@ -209,10 +135,10 @@ aeNodeBranch* aeon_parser::parseBranch()
 
 						getNextToken();
 
-						if (Tok.type == AETK_COMMA)
+						if (Tok.type == Tok.Comma)
 							getNextToken();
 
-					} while (Tok.type != AETK_CLOSEPAREN);
+					} while (Tok.type != Tok.ParenClose);
 					getNextToken();
 
 				}
@@ -221,7 +147,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 
 			}
 		}
-		else if (Tok.type == AETK_OPENBRACKET)
+		else if (Tok.type == Tok.BracketOpen)
 		{
 			getNextToken();
 
@@ -242,7 +168,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 			objectValue.SetString("Type", ObjectType);
 		}
 
-		if (Tok.type == AETK_COMMA || Tok.type == AETK_SEMICOLON)
+		if (Tok.type == Tok.Comma || Tok.type == Tok.SemiColon)
 		{
 			getNextToken();
 		}
@@ -263,9 +189,9 @@ aeNodeBranch* aeon_parser::parseBranch()
 		Tok = getNextToken();
 
 		/// Eventually we will arrive at the end of file, when all nested levels consume their tokens properly
-		while (Tok.type != AETK_EOF)
+		while (Tok.type != aeon_token::EndOfFile)
 		{
-			if (Tok.type == AETK_FUNCTION)
+			if (Tok.type == aeon_token::Fn)
 			{
 				aeNodeFunction* funcDecl = parseFunction();
 				root->add(funcDecl);
@@ -273,17 +199,17 @@ aeNodeBranch* aeon_parser::parseBranch()
 				getNextToken(); // get the next thing for the parent while
 			}
 
-			else if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
+			else if (Tok.type == Tok.Class || Tok.type == Tok.Struct)
 			{
 				aeNodeClass* classDecl = parseClass();
 				root->add(classDecl);
 			}
-			else if (Tok.type == AETK_NAMESPACE)
+			else if (Tok.type == Tok.Namespace)
 			{
 				aeNodeNamespace* namespace_node = parseNamespace();
 				root->add(namespace_node);
 			}
-			else if (Tok.type == AETK_USING)
+			else if (Tok.type == Tok.Using)
 			{
 				/*aeNodeUsing* using_node = new aeNodeUsing();
 				getNextToken();
@@ -309,21 +235,21 @@ aeNodeBranch* aeon_parser::parseBranch()
 
 		getNextToken(); getNextToken();
 
-		while (Tok.type != AETK_CLOSEBRACKET)
+		while (Tok.type != Tok.BracketClose)
 		{
-			if (Tok.type == AETK_FUNCTION)
+			if (Tok.type == aeon_token::Fn)
 			{
 				aeNodeFunction* funcDecl = parseFunction();
 				namespace_node->add(funcDecl);
 
 				getNextToken(); // get the next thing for the parent while
 			}
-			else if (Tok.type == AETK_CLASS)
+			else if (Tok.type == aeon_token::Class)
 			{
 				aeNodeClass* classDecl = parseClass();
 				namespace_node->add(classDecl);
 			}
-			else if (Tok.type == AETK_NAMESPACE)
+			else if (Tok.type == Tok.Namespace)
 			{
 				aeNodeNamespace* namespace_node = parseNamespace();
 				namespace_node->add(namespace_node);
@@ -353,7 +279,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 		getNextToken();
 
 		// Get the inheritance fathers
-		if (Tok.type == AETK_COLON)
+		if (Tok.type == Tok.InitAssignment)
 		{
 			do
 			{
@@ -362,7 +288,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 				// Let's get the first keyword, can be either a access level or the identifier
 				getNextToken();
 
-				if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
+				if (Tok.type == Tok.Public || Tok.type == Tok.Protected || Tok.type == Tok.Private)
 				{
 					cpi.accessLevel = Tok.text;
 					cpi.parentClass = getNextToken().text;
@@ -376,7 +302,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 				getNextToken();
 
 				classDecl->parents.push_back(cpi);
-			} while (Tok.type == AETK_COMMA);
+			} while (Tok.type == Tok.Comma);
 		}
 
 		parseClassBody(classDecl);
@@ -394,7 +320,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 		getNextToken(); // get first token
 
 		// Parse on element at a time until the end of class shows
-		while (Tok.type != AETK_CLOSEBRACKET)
+		while (Tok.type != Tok.BracketClose)
 		{
 			/*if (Tok.type == Tok.Public || Tok.type == Tok.Protected || Tok.type == Tok.Private)
 			{
@@ -425,17 +351,17 @@ aeNodeFunction* aeon_parser::parseLambdaFunction()
 		Assumes we are on a =>
 	*/
 	aeNodeFunction* function = new aeNodeFunction();
-	function->is_anon = true;
+	function->is_lambda = true;
 
 	getNextToken();
-	if(Tok.type == AETK_OPENBRACKET)
+	if(Tok.text == Tok.BracketOpen)
 	{
-		function->m_block.reset(parseBlock());
+		function->body = parseBlock();
 	}
 	else
 	{
 		// Inline anon expression
-		function->m_block.reset(new aeNodeBlock());
+		function->body = new aeNodeBlock();
 		aeNodeExpr* expr = parseExpression();
 	}
 
@@ -448,15 +374,15 @@ aeNodeEnum* aeon_parser::parseEnum()
 	enum_code->name = getNextToken().text;
 	getNextToken(); getNextToken();
 
-	while (Tok.type != AETK_CLOSEBRACKET)
+	while (Tok.type != Tok.BracketClose)
 	{
 		std::string EnumMember = Tok.text;
-		if (getNextToken().type == AETK_COMMA)
+		if (getNextToken().type == Tok.Comma)
 			{
 				enum_code->addField(EnumMember);
 				getNextToken();
 			}
-			else if (Tok.type == AETK_CLOSEBRACKET)
+			else if (Tok.type == Tok.BracketClose)
 			{
 				enum_code->addField(EnumMember);
 			}
@@ -470,17 +396,17 @@ aeNodeEnum* aeon_parser::parseEnum()
 	/// Parses one thing inside the class body
 	void aeon_parser::parseClassMember(aeNodeClass* classDeclNode)
 	{
-		if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
+		if (Tok.type == Tok.Class || Tok.type == Tok.Struct)
 		{
 			aeNodeClass* classDecl = parseClass();
 			classDeclNode->add(classDecl);
 		}
-		else if (Tok.type == AETK_ENUM)
+		else if (Tok.type == Tok.Enum)
 		{
 			aeNodeEnum* enum_node = parseEnum();
 			classDeclNode->add(enum_node);
 		}
-		else if (Tok.type == AETK_TYPEDEF)
+		else if (Tok.type == Tok.Typedef)
 		{
 			/*getNextToken();
 			aeNodeTypedef* typedef_node = new aeNodeTypedef;
@@ -488,7 +414,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 			typedef_node->typeB = parseQualType();
 			classDeclNode->add(typedef_node);*/
 		}
-		else if (Tok.type == AETK_IDENTIFIER && Tok.text == classDeclNode->m_name)
+		else if (Tok.type == Tok.Identifier && Tok.text == classDeclNode->m_name)
 		{
 			// Constructor
 			aeNodeFunction* constructorDecl = new aeNodeFunction();
@@ -497,14 +423,14 @@ aeNodeEnum* aeon_parser::parseEnum()
 			getNextToken();
 
 			constructorDecl->m_parameters = parseParamsList();
-			constructorDecl->m_block.reset(parseBlock());
+			parseBlock(constructorDecl->m_block.get());
 			classDeclNode->add(constructorDecl);
 			getNextToken();
 
 			//Log("After constructor %s", Tok.text.c_str());
 
 		}
-		else if (Tok.type == AETK_TILDE)
+		else if (Tok.type == Tok.Tilde)
 		{
 			if (getNextToken().text == classDeclNode->m_name)
 			{
@@ -513,12 +439,12 @@ aeNodeEnum* aeon_parser::parseEnum()
 				getNextToken();
 				getNextToken();
 				getNextToken();
-				destructorDecl->m_block.reset(parseBlock());
+				parseBlock(destructorDecl->m_block.get());
 				classDeclNode->add(destructorDecl);
 				getNextToken();
 			}
 		}
-		else if (Tok.type == AETK_FUNCTION)
+		else if (Tok.type == Tok.Fn)
 		{
 			aeNodeFunction* funcDecl = parseFunction();
 			funcDecl->is_method = true;
@@ -541,7 +467,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 		bool IsConst = false;
 		std::vector<aeNodeExpr*> params;
 
-		if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
+		if (Tok.type == Tok.Public || Tok.type == Tok.Protected || Tok.type == Tok.Private)
 		{
 			getNextToken();
 		}
@@ -553,7 +479,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 		getNextToken();
 
 		// Let's check if we got a function
-		if (Tok.type == AETK_OPENPAREN)
+		if (Tok.type == Tok.ParenOpen)
 		{
 			IsFunctionDecl = true;
 			getNextToken();
@@ -561,14 +487,14 @@ aeNodeEnum* aeon_parser::parseEnum()
 			getNextToken();
 		}
 
-		if (Tok.type == AETK_CONST)
+		if (Tok.type == Tok.Const)
 		{
 			IsConst = true;
 			getNextToken();
 		}
 
 		// If the brackets are opening, can only be a property or a function body definition
-		if (Tok.type == AETK_OPENBRACKET)
+		if (Tok.type == Tok.BracketOpen)
 		{
 			if (IsFunctionDecl)
 			{
@@ -578,12 +504,12 @@ aeNodeEnum* aeon_parser::parseEnum()
 				func_node->is_static = false;
 				func_node->is_method = true;
 				//func_node->is_method = true;
-				func_node->m_block.reset(parseBlock());
+				parseBlock(func_node->m_block.get());
 				result_node = func_node;
 				getNextToken();
 			}
 		}
-		else if (Tok.type == AETK_SEMICOLON)
+		else if (Tok.type == Tok.SemiColon)
 		{
 			// We are done early, this is a function prototype or a variable
 			if (IsFunctionDecl)
@@ -598,7 +524,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 			}
 			else
 			{
-				aeNodeRef* var_node = new aeNodeRef;
+				aeNodeVarRef* var_node = new aeNodeVarRef;
 				var_node->m_name = SymbolName;
 				var_node->VarType = type_node;
 				result_node = var_node;
@@ -650,7 +576,7 @@ aeQualType aeon_parser::parseQualType()
 		{
 			temp.push_back(argExpr);
 
-			if (Tok.type != AETK_COMMA)
+			if (Tok.type != Tok.Comma)
 			{
 				break;
 			}
@@ -700,31 +626,75 @@ void aeon_parser::print()
 
 		getNextToken();
 
-		while (Tok.type != AETK_CLOSEPAREN)
+		while (Tok.type != Tok.ParenClose)
 		{
 			funcDecl->m_parameters = parseParamsList();
 		}
 
 		getNextToken(); // just opened bracket
 
-		funcDecl->m_block.reset(parseBlock());
+		parseBlock(funcDecl->m_block.get());
 
 		return funcDecl;
 	}
 
-aeNodeBlock* aeon_parser::parseBlock()
+void aeon_parser::parseBlock(aeNodeBlock* block)
 {
-	aeNodeBlock* block = new aeNodeBlock;
-	getNextToken();
+		//Log("Block start");
 
-	while (Tok.type != AETK_CLOSEBRACKET)
-	{
-		block->add(parseStatement());
+		getNextToken();
 
-			
-			if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_IDENTIFIER) // facing a var declaration
+		//Log("First Tok %s", Tok.str());
+
+
+		// Let's parse statements
+		while (Tok.type != Tok.BracketClose)
+		{
+			if (Tok.type == Tok.If)
 			{
-				
+				// if (expr) { block }
+				//Log("Parsing if () {}");
+				/*
+				getNextToken();
+				aeNodeBranch* ifbranch = new aeNodeBranch();
+				block->add(ifbranch);
+
+				getNextToken(); // go into the first part of the expression
+				ifbranch->m_expression = parseExpression();
+				if (ifbranch->m_expression)
+					ifbranch->add(ifbranch->m_expression);
+
+				//Log("Parsing now the if nested block");
+
+				getNextToken();  //getNextToken(); // consume the {
+				parseBlock(ifbranch->m_block);
+				*/
+				//getNextToken(); // advance to next statement
+			}
+			else if (Tok.type == Tok.For)
+			{
+				block->add(parseForLoop());
+			}
+			else if (Tok.type == Tok.While || Tok.type == Tok.Do)
+			{
+				block->add(parseWhileLoop());
+			}
+			else if (Tok.type == Tok.Return) // facing a return statement
+			{
+				aeNodeReturn* astreturn = new aeNodeReturn();
+				block->add(astreturn);
+				getNextToken();
+			}
+			else if (Tok.type == Tok.Identifier && peekAhead(0).type == Tok.Identifier) // facing a var declaration
+			{
+				do
+				{
+					aeNodeVarDecl* astvar = parseVariableDecl();
+					if (astvar)
+					{
+						block->add(astvar);
+					}
+				} while (Tok.type == Tok.Comma);
 			}
 			else
 			{
@@ -739,8 +709,6 @@ aeNodeBlock* aeon_parser::parseBlock()
 			getNextToken();
 		}
 	//	Log("Reached the end of block");
-
-	return block;
 }
 
 aeNodeFor* aeon_parser::parseForLoop()
@@ -771,7 +739,7 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 {
 	aeNodeWhile* astwhile = new aeNodeWhile();
 
-	if (Tok.type == AETK_WHILE)
+	if (Tok.type == Tok.While)
 	{
 		/*astwhile->doWhile = false;
 		getNextToken();
@@ -806,25 +774,21 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 	aeNodeVarDecl* varDecl = new aeNodeVarDecl;
 	varDecl->m_type.m_type = ctx->getTypeInfo(Tok.text);
 
-	std::string varName = getNextToken().text;
+	aeNodeVarRef* astvar = new aeNodeVarRef();
+	astvar->explicitDeclaration = true;
+	astvar->m_name = getNextToken().text;
 	getNextToken();
+
+	varDecl->m_name = astvar->m_name;
 
 	// Got an assignment on init
 	if (Tok.text == "=")
 	{
 		getNextToken();
 
-		aeNodeRef* astvar = new aeNodeRef();
-		astvar->explicitDeclaration = true;
-		astvar->m_name = varName;
-
 		aeNodeBinaryOperator* assignment = new aeNodeBinaryOperator(astvar, parseExpression(), "=");
-		//varDecl->m_initExpr.reset(assignment);
+		varDecl->m_initExpr.reset(assignment);
 	}
-
-	aeNodeVarDecl::Decl varDef;
-	varDef.m_name = varName;
-	varDecl->m_decls.push_back(varDef);
 
 	return varDecl;
 }
@@ -844,7 +808,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 		{
 			funccall->add(argExpr);
 
-			if (peekAhead(0).type == AETK_COMMA)
+			if (peekAhead(0).type == Tok.Comma)
 			{
 				getNextToken();
 			}
@@ -859,7 +823,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 
 		getNextToken();
 
-		if (Tok.type != AETK_EOF)
+		if (Tok.type != Tok.EndOfFile)
 		{
 			//Log("im on %s", Tok.text.c_str());
 			//Log("parsed function call '%s'", funccall->funcName.c_str());
@@ -870,7 +834,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 aeNodeExpr* aeon_parser::parsePrimaryExpression()
 {
 	aeNodeExpr* idnt = parseIdentityExpression();
-	if (Tok.type == AETK_DOT)
+	if (Tok.type == Tok.Dot)
 	{
 		return parseMemberAccess(idnt);
 	}
@@ -886,7 +850,7 @@ aeNodeAccessOperator* aeon_parser::parseMemberAccess(aeNodeExpr* left)
 	dotOp->m_a = left;
 	dotOp->m_b = parseIdentityExpression();
 
-	if (Tok.type == AETK_DOT)
+	if (Tok.type == Tok.Dot)
 	{
 		return parseMemberAccess(dotOp);
 	}
@@ -902,7 +866,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 
 	printf("IDENTITY IS %s\n", name.c_str());
 
-	if (Tok.type == AETK_OPENPAREN)
+	if (Tok.type == Tok.ParenOpen)
 	{
 		getNextToken();
 		getNextToken();
@@ -913,7 +877,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 	}
 	else
 	{
-		aeNodeRef* varRef = new aeNodeRef;
+		aeNodeVarRef* varRef = new aeNodeVarRef;
 		varRef->m_name = name;
 		result = varRef;
 	}
@@ -924,7 +888,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 aeNodeExpr* aeon_parser::parseExpression()
 {
 		// no way we can get a valid expression here
-		if (Tok.type == AETK_CLOSEPAREN || Tok.type == AETK_SEMICOLON || Tok.type == AETK_COMMA)
+		if (Tok.type == Tok.ParenClose || Tok.type == Tok.SemiColon || Tok.type == Tok.Comma)
 			return nullptr;
 
 		// var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
@@ -945,21 +909,21 @@ aeNodeExpr* aeon_parser::parseExpression()
 			aeNodeUnaryOperator* unary_wrapper = nullptr;
 
 			// Unary operators prefix
-			if (Tok.type == AETK_BINOP && Tok.text == "-")
+			if (Tok.type == Tok.Operator && Tok.text == "-")
 			{
 				unary_wrapper = new aeNodeUnaryOperator();
 				unary_wrapper->OperatorString = "-";
 				getNextToken();
 			}
 
-			if (Tok.type == AETK_DECREMENT) // prefix decrement
+			if (Tok.type == Tok.Decrement) // prefix decrement
 			{
 				unary_wrapper = new aeNodeUnaryOperator();
 				unary_wrapper->OperatorString = "--";
 				getNextToken();
 			}
 
-			if (Tok.type == AETK_INCREMENT) // prefix increment
+			if (Tok.type == Tok.Increment) // prefix increment
 			{
 				unary_wrapper = new aeNodeUnaryOperator();
 				unary_wrapper->OperatorString = "++";
@@ -970,33 +934,40 @@ aeNodeExpr* aeon_parser::parseExpression()
 
 			// Operands
 
-			if (Tok.type == AETK_OPENPAREN)
+			if (Tok.type == Tok.ParenOpen)
 			{
 				getNextToken();
 				leafexpr = parseExpression();
 			//	Log("subexpr result: %s", leafexpr->exprstr().c_str());
 				getNextToken();
 			}
-			else if (Tok.type == AETK_IDENTIFIER)  // var or func call or any combination of them
+			else if (Tok.type == Tok.Identifier)  // var or func call or any combination of them
 			{
 				aeNodeExpr* primaryExpr = parsePrimaryExpression();
 				leafexpr = primaryExpr;
 			}
-			else if (Tok.type == AETK_INTLITERAL)
+			else if (Tok.type == Tok.IntLiteral)
 			{
 				aeNodeInteger* expr = new aeNodeInteger;
 				expr->value = atoi(Tok.text.c_str());
 				leafexpr = expr;
 				getNextToken();
 			}
-			else if (Tok.type == AETK_FLOATLITERAL)
+			else if (Tok.type == Tok.FloatLiteral)
 			{
 				aeNodeFloat* expr = new aeNodeFloat;
 				expr->value = atof(Tok.text.c_str());
 				leafexpr = expr;
 				getNextToken();
 			}
-			else if (Tok.type == AETK_STRINGLITERAL)
+			else if (Tok.type == Tok.DoubleLiteral)
+			{
+				aeNodeFloat* expr = new aeNodeFloat;
+				expr->value = atof(Tok.text.c_str());
+				leafexpr = expr;
+				getNextToken();
+			}
+			else if (Tok.type == Tok.StringLiteral)
 			{
 				aeNodeString* expr = new aeNodeString;
 				expr->value = Tok.extract_stringliteral();
@@ -1013,7 +984,7 @@ aeNodeExpr* aeon_parser::parseExpression()
 
 			operands.push_back(leafexpr);
 
-		} while (Tok.type == AETK_BINOP);
+		} while (Tok.type == Tok.Operator);
 
 		if (operands.size() == 1)
 			return operands[0];
@@ -1076,7 +1047,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 		}*/
 
 		bool IsFunctionCall = false;
-		if (Tok.type == AETK_OPENPAREN)
+		if (Tok.type == Tok.ParenOpen)
 		{
 			IsFunctionCall = true;
 
@@ -1097,7 +1068,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 			// Go to the first token of the expression
 			getNextToken();
 
-			if (Tok.type != AETK_CLOSEPAREN)
+			if (Tok.type != Tok.ParenClose)
 			{
 				funccall->m_args = parseArgsList();
 				//getNextToken();
@@ -1107,7 +1078,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 		}
 		else
 		{
-			aeNodeRef* var = new aeNodeRef;
+			aeNodeVarRef* var = new aeNodeVarRef;
 			var->m_name = identifier.text;
 			result_expr = var;
 
@@ -1129,7 +1100,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 			getNextToken();
 		}*/
 
-		if (Tok.type == AETK_DOT)
+		if (Tok.type == Tok.Dot)
 		{
 			result_expr = parseMemberAccess(result_expr);
 		}
@@ -1140,7 +1111,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 	bool aeon_parser::checkForFunction()
 	{
 		// So, the statement is not started, getNextToken() should be returning the return type
-		return peekAhead(2).type == AETK_OPENPAREN;
+		return peekAhead(2).type == aeon_token::ParenOpen;
 	}
 
 
@@ -1153,12 +1124,12 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 
 	aeon_token aeon_parser::getNextToken()
 	{
-		if (Tok.type == AETK_EOF)
+		if (Tok.type == Tok.EndOfFile)
 			return Tok;;
 
 		Tok = lex->tokens[i++];
 
-		while (Tok.type == AETK_LINECOMMENT || Tok.type == AETK_MULTICOMMENT)
+		while (Tok.type == aeon_token::CommentSingle || Tok.type == aeon_token::CommentMulti)
 			Tok = getNextToken();
 
 		return Tok;

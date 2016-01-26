@@ -11,7 +11,7 @@ void aeNodeEnum::addField(std::string name)
 	members.push_back(name);
 }
 
-std::string aeNodeEnum::printtext()
+std::string aeNodeEnum::str()
 {
 	return "Enum " + name;
 }

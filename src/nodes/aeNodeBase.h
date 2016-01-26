@@ -48,7 +48,7 @@ public:
 
 	void add(aeNodeBase* n);
 
-	virtual std::string printtext();
+	virtual std::string str() const;
 
 	virtual void printSelf(int tabs = 0);
 };

@@ -4,12 +4,15 @@
 aeNodeVarDecl::aeNodeVarDecl()
 {
 	m_nodeType = AEN_VARDECL;
-	m_initExpr = nullptr;
 }
 
-std::string aeNodeVarDecl::printtext() const
+std::string aeNodeVarDecl::str() const
 {
-	std::string strr = "Decl '" + m_type.str() + "' '" + m_name + "'";
-	m_initExpr ? strr += " = " + m_initExpr->exprstr() : strr += "";
-	return strr;
+	std::string s = m_type.str();
+	s += " " + m_decls[0].m_name;
+	/* = "Decl '" + m_type.str() + "' '" + m_name + "'"*/;
+
+
+	//m_initExpr ? strr += " = " + m_initExpr->exprstr() : strr += "";
+	return s;
 }

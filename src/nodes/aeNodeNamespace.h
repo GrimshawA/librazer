@@ -14,7 +14,7 @@ public:
 public:
 	aeNodeNamespace();
 
-	std::string printtext();
+	std::string str();
 };
 
 #endif // aeNodeNamespace_h__

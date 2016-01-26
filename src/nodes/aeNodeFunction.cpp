@@ -37,7 +37,7 @@ bool aeNodeFunction::isAnonymousFunction()
 	return is_anon;
 }
 
-std::string aeNodeFunction::printtext()
+std::string aeNodeFunction::str()
 {
 	std::string s1 = std::string("Fn ") + m_name + "(";
 	/*if (m_parameters.size() > 0)

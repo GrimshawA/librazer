@@ -6,6 +6,9 @@
 class aeNodeExpr;
 
 /*
+	\class aeNodeVarDecl
+	\brief Represents initialization of one or more variables of the same type
+
 	has_init_expr
 	When true, the compilers will just consider the size of the type for the stack/heap allocation,
 	but will leave the job of initializing for the expression.
@@ -22,15 +25,20 @@ class aeNodeExpr;
 class aeNodeVarDecl : public aeNodeStatement
 {
 public:
-	std::string                 m_name;
-	aeQualType                  m_type;
-	std::unique_ptr<aeNodeExpr> m_initExpr;
+	struct Decl
+	{
+		std::string                 m_name;
+		//std::unique_ptr<aeNodeExpr> m_initExpr;
+	};
+
+	aeQualType        m_type;
+	std::vector<Decl> m_decls;
 
 public:
 
 	aeNodeVarDecl();
 
-	std::string printtext() const;
+	std::string str() const;
 };
 
 #endif // aeNodeVarDecl_h__

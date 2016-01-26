@@ -10,7 +10,7 @@ aeNodeFor::aeNodeFor()
 	//add(block);
 }
 
-std::string aeNodeFor::printtext()
+std::string aeNodeFor::str()
 {
-	return std::string("For ") + expr->printtext() + ";" + incrExpr->printtext();
+	return std::string("For ") + expr->str() + ";" + incrExpr->str();
 }

@@ -23,7 +23,7 @@ void aeon_lexer::tokenize(std::string src)
 		i = -1;
 
 		aeon_token token = getToken();
-		while (token.type != AETK_EOF)
+		while (token.type != aeon_token::AETK_EOF)
 		{
 			tokens.push_back(token);
 			token = getToken();
@@ -45,7 +45,7 @@ void aeon_lexer::tokenize(std::string src)
 		// If i is already at the end, we give back the end of file token, which finishes the stream
 		if (i >= (program_source.size() - 1))
 		{
-			token.type = AETK_EOF;
+			token.type = aeon_token::AETK_EOF;
 			token.text = "EOF";
 			return token;
 		}
@@ -63,7 +63,7 @@ void aeon_lexer::tokenize(std::string src)
 					token.text += LastChar;
 				}
 
-				token.type = AETK_LINECOMMENT;
+				token.type = aeon_token::AETK_LINECOMMENT;
 				return token;
 			}
 			else if (program_source[i + 1] == '*')
@@ -79,7 +79,7 @@ void aeon_lexer::tokenize(std::string src)
 					if (LastChar == '*' && program_source[i + 1] == '/')
 					{
 						++i;
-						token.type = AETK_MULTICOMMENT;
+						token.type = aeon_token::AETK_MULTICOMMENT;
 						return token;
 					}
 
@@ -91,83 +91,83 @@ void aeon_lexer::tokenize(std::string src)
 		if (LastChar == '(')
 		{
 			token.text = "(";
-			token.type = AETK_OPENPAREN;
+			token.type = aeon_token::AETK_OPENPAREN;
 			return token;
 		}
 
 		if (LastChar == ')')
 		{
 			token.text = ")";
-			token.type = AETK_CLOSEPAREN;
+			token.type = aeon_token::AETK_CLOSEPAREN;
 			return token;
 		}
 
 		if (LastChar == ':')
 		{
 			token.text = ":";
-			token.type = AETK_COLON;
+			token.type = aeon_token::InitAssignment;
 			return token;
 		}
 
 		if (LastChar == '.')
 		{
 			token.text = ".";
-			token.type = AETK_DOT;
+			token.type = aeon_token::AETK_DOT;
 			return token;
 		}
 
 		if (LastChar == '[')
 		{
 			token.text = "[";
-			token.type = AETK_OPENSQBRACKET;
+			token.type = aeon_token::AETK_OPENSQBRACKET;
 			return token;
 		}
 
 		if (LastChar == ']')
 		{
 			token.text = "]";
-			token.type = AETK_CLOSESQBRACKET;
+			token.type = aeon_token::AETK_CLOSESQBRACKET;
 			return token;
 		}
 
 		if (LastChar == ',')
 		{
 			token.text = ",";
-			token.type = AETK_COMMA;
+			token.type = aeon_token::AETK_COMMA;
 			return token;
 		}
 
 		if (LastChar == '~')
 		{
 			token.text = "~";
-			token.type = AETK_TILDE;
+			token.type = aeon_token::AETK_TILDE;
 			return token;
 		}
 
 		if (LastChar == '{')
 		{
 			token.text = "{";
-			token.type = AETK_OPENBRACKET;
+			token.type = aeon_token::AETK_OPENBRACKET;
 			return token;
 		}
 
 		if (LastChar == '}')
 		{
 			token.text = "}";
-			token.type = AETK_CLOSEBRACKET;
+			token.type = aeon_token::AETK_CLOSEBRACKET;
 			return token;
 		}
 
 		if (LastChar == ';')
 		{
-			token.type = AETK_SEMICOLON;
+			token.type = aeon_token::AETK_SEMICOLON;
 			token.text = ";";
 			return token;
 		}
 
 		if (LastChar == '#')
 		{
-			token.type = AETK_DIRECTIVE;
+			token.type = aeon_token::AETK_DIRECTIVE;
 			token.text = "#";
 			return token;
 		}
@@ -177,7 +177,7 @@ void aeon_lexer::tokenize(std::string src)
 			if (program_source[i + 1] == '+')
 			{
 				i++;
-				token.type = AETK_INCREMENT;
+				token.type = aeon_token::AETK_INCREMENT;
 				token.text = "++";
 				return token;
 			}
@@ -188,7 +188,7 @@ void aeon_lexer::tokenize(std::string src)
 			if (program_source[i + 1] == '-')
 			{
 				i++;
-				token.type = AETK_DECREMENT;
+				token.type = aeon_token::AETK_DECREMENT;
 				token.text = "--";
 				return token;
 			}
@@ -196,7 +196,7 @@ void aeon_lexer::tokenize(std::string src)
 
 		if (LastChar == '=' && program_source[i + 1] == '>')
 		{
-			token.type = AETK_LAMBDA;
+			token.type = aeon_token::AETK_LAMBDA;
 			token.text = "=>";
 			return token;
 		}
@@ -205,7 +205,7 @@ void aeon_lexer::tokenize(std::string src)
 		if (LastChar == '>' || LastChar == '<' || LastChar == '+' || LastChar == '-' || LastChar == '*' || LastChar == '/' || LastChar == '^' ||
 			LastChar == '=' || LastChar == '%')
 		{
-			token.type = AETK_BINOP;
+			token.type = aeon_token::AETK_BINOP;
 			token.text += LastChar;
 			return token;
 		}
@@ -213,7 +213,7 @@ void aeon_lexer::tokenize(std::string src)
 		// We're facing a string literal
 		if (LastChar == '"')
 		{
-			token.type = AETK_STRINGLITERAL;
+			token.type = aeon_token::AETK_STRINGLITERAL;
 			token.text += LastChar;
 			while ((LastChar = program_source[++i]) != '"')
 			{
@@ -243,16 +243,16 @@ void aeon_lexer::tokenize(std::string src)
 				}
 				if (LastChar == 'f') // Float
 				{
-					token.type = AETK_FLOATLITERAL;
+					token.type = aeon_token::AETK_FLOATLITERAL;
 				}
 				else // double
 				{
-					token.type = AETK_FLOATLITERAL;
+					token.type = aeon_token::DoubleLiteral;
 				}
 			}
 			else
 			{
-				token.type = AETK_INTLITERAL;
+				token.type = aeon_token::AETK_INTLITERAL;
 			}
 
 			--i;
@@ -273,95 +273,95 @@ void aeon_lexer::tokenize(std::string src)
 			// backtrack i by 1, so the next character read is the relevant item
 			i--;
 			if (token.text == "class")
-				token.type = AETK_CLASS;
+				token.type = aeon_token::AETK_CLASS;
 			else if (token.text == "struct")
-				token.type = AETK_STRUCT;
+				token.type = aeon_token::AETK_STRUCT;
 			else if (token.text == "null" || token.text == "nullptr")
-				token.type = AETK_NULL;
+				token.type = aeon_token::AETK_NULL;
 			else if (token.text == "fn")
-				token.type = AETK_FUNCTION;
+				token.type = aeon_token::AETK_FUNCTION;
 			else if (token.text == "function")
-				token.type = AETK_FUNCTION;
+				token.type = aeon_token::AETK_FUNCTION;
 			else if (token.text == "enum")
-				token.type = AETK_ENUM;
+				token.type = aeon_token::AETK_ENUM;
 			else if (token.text == "union")
-				token.type = AETK_UNION;
+				token.type = aeon_token::AETK_UNION;
 			else if (token.text == "cast")
-				token.type = AETK_CAST;
+				token.type = aeon_token::AETK_CAST;
 			else if (token.text == "if")
-				token.type = AETK_IF;
+				token.type = aeon_token::AETK_IF;
 			else if (token.text == "else")
-				token.type = AETK_ELSE;
+				token.type = aeon_token::AETK_ELSE;
 			else if (token.text == "while")
-				token.type = AETK_WHILE;
+				token.type = aeon_token::AETK_WHILE;
 			else if (token.text == "do")
-				token.type = AETK_DO;
+				token.type = aeon_token::AETK_DO;
 			else if (token.text == "const")
-				token.type = AETK_CONST;
+				token.type = aeon_token::AETK_CONST;
 			else if (token.text == "new")
-				token.type = AETK_NEW;
+				token.type = aeon_token::AETK_NEW;
 			else if (token.text == "delete")
-				token.type = AETK_DELETE;
+				token.type = aeon_token::AETK_DELETE;
 			else if (token.text == "sizeof")
-				token.type = AETK_SIZEOF;
+				token.type = aeon_token::AETK_SIZEOF;
 			else if (token.text == "typeof")
-				token.type = AETK_TYPEOF;
+				token.type = aeon_token::AETK_TYPEOF;
 			else if (token.text == "operator")
-				token.type = AETK_OPERATOR;
+				token.type = aeon_token::AETK_OPERATOR;
 			else if (token.text == "for")
-				token.type = AETK_FOR;
+				token.type = aeon_token::AETK_FOR;
 			else if (token.text == "foreach")
-				token.type = AETK_FOREACH;
+				token.type = aeon_token::AETK_FOREACH;
 			else if (token.text == "asm")
-				token.type = AETK_ASM;
+				token.type = aeon_token::AETK_ASM;
 			else if (token.text == "auto")
-				token.type = AETK_AUTO;
+				token.type = aeon_token::AETK_AUTO;
 			else if (token.text == "true")
-				token.type = AETK_TRUE;
+				token.type = aeon_token::AETK_TRUE;
 			else if (token.text == "false")
-				token.type = AETK_FALSE;
+				token.type = aeon_token::AETK_FALSE;
 			else if (token.text == "return")
-				token.type = AETK_RETURN;
+				token.type = aeon_token::AETK_RETURN;
 			else if (token.text == "public")
-				token.type = AETK_PUBLIC;
+				token.type = aeon_token::AETK_PUBLIC;
 			else if (token.text == "protected")
-				token.type = AETK_PROTECTED;
+				token.type = aeon_token::AETK_PROTECTED;
 			else if (token.text == "private")
-				token.type = AETK_PRIVATE;
+				token.type = aeon_token::AETK_PRIVATE;
 			else if (token.text == "namespace")
-				token.type = AETK_NAMESPACE;
+				token.type = aeon_token::AETK_NAMESPACE;
 			else if (token.text == "using")
-				token.type = AETK_USING;
+				token.type = aeon_token::AETK_USING;
 			else if (token.text == "break")
-				token.type = AETK_BREAK;
+				token.type = aeon_token::AETK_BREAK;
 			else if (token.text == "goto")
-				token.type = AETK_GOTO;
+				token.type = aeon_token::AETK_GOTO;
 			else if (token.text == "continue")
-				token.type = AETK_CONTINUE;
+				token.type = aeon_token::AETK_CONTINUE;
 			else if (token.text == "as")
-				token.type = AETK_AS;
+				token.type = aeon_token::AETK_AS;
 			else if (token.text == "in")
-				token.type = AETK_IN;
+				token.type = aeon_token::AETK_IN;
 			else if (token.text == "switch")
-				token.type = AETK_SWITCH;
+				token.type = aeon_token::AETK_SWITCH;
 			else if (token.text == "case")
-				token.type = AETK_CASE;
+				token.type = aeon_token::AETK_CASE;
 			else if (token.text == "default")
-				token.type = AETK_DEFAULT;
+				token.type = aeon_token::AETK_DEFAULT;
 			else if (token.text == "static")
-				token.type = AETK_STATIC;
+				token.type = aeon_token::AETK_STATIC;
 			else if (token.text == "typedef")
-				token.type = AETK_TYPEDEF;
+				token.type = aeon_token::AETK_TYPEDEF;
 			else if (token.text == "and")
-				token.type = AETK_AND;
+				token.type = aeon_token::AETK_AND;
 			else if (token.text == "is")
-				token.type = AETK_IS;
+				token.type = aeon_token::AETK_IS;
 			else if (token.text == "isnt")
-				token.type = AETK_ISNOT;
+				token.type = aeon_token::AETK_ISNOT;
 			else if (token.text == "not")
-				token.type = AETK_NOT;
+				token.type = aeon_token::AETK_NOT;
 			else
-				token.type = AETK_IDENTIFIER;
+				token.type = aeon_token::AETK_IDENTIFIER;
 			return token;
 		}
 

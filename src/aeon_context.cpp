@@ -87,7 +87,7 @@ void aeon_context::quick_build(const std::string& file)
 	lexer.tokenize(source);
 
 	parser.ctx = this;
-	parser.parse(lexer);
+	parser.startParse(lexer);
 
 	aeNodeModule* tree_root = parser.root;
 	tree_root->printSelf(0);

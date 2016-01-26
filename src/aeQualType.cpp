@@ -67,3 +67,8 @@ std::string aeQualType::str() const
 	else
 		return m_type->getName();
 }
+
+aeQualType::operator bool() const
+{
+	return m_type != nullptr;
+}

@@ -19,7 +19,7 @@ public:
 
 	void addField(std::string name);
 
-	std::string printtext();
+	std::string str();
 };
 
 #endif // aeNodeEnum_h__

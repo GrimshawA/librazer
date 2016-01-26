@@ -12,7 +12,7 @@ aeQualType aeNodeAccessOperator::getQualifiedType(aeon_compiler* c)
 	return m_b->getQualifiedType(c);
 }
 
-std::string aeNodeAccessOperator::exprstr()
+std::string aeNodeAccessOperator::str() const
 {
-	return "(" + m_a->exprstr() + "." + m_b->exprstr() + ")";
+	return "(" + m_a->str() + "." + m_b->str() + ")";
 }

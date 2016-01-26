@@ -9,10 +9,10 @@ aeNodeUnaryOperator::aeNodeUnaryOperator()
 
 std::string aeNodeUnaryOperator::exprstr()
 {
-	return std::string(OperatorString + Operand->exprstr());
+	return std::string(OperatorString + Operand->str());
 }
 
-std::string aeNodeUnaryOperator::printtext()
+std::string aeNodeUnaryOperator::str()
 {
 	return exprstr();
 }

@@ -32,12 +32,7 @@ aeQualType aeNodeBinaryOperator::getQualifiedType(aeon_compiler* c)
 	return qt;
 }
 
-std::string aeNodeBinaryOperator::exprstr()
+std::string aeNodeBinaryOperator::str() const
 {
-	return std::string("(") + operandA->exprstr() + " " + oper + " " + operandB->exprstr() + ")";
-}
-
-std::string aeNodeBinaryOperator::printtext()
-{
-	return exprstr();
+	return std::string("(") + operandA->str() + " " + oper + " " + operandB->str() + ")";
 }

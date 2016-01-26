@@ -80,6 +80,9 @@ public:
 
 	/// Returns a formatted string for the type qualifier syntax
 	std::string str() const;
+
+	/// Checks for validity
+	operator bool() const;
 };
 
 #endif // aeQualType_h__

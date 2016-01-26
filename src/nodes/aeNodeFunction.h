@@ -47,7 +47,7 @@ public:
 	/// Is this is an anonymous function
 	bool isAnonymousFunction();
 
-	std::string printtext();
+	std::string str();
 };
 
 #endif // aeNodeFunction_h__

@@ -26,9 +26,7 @@ public:
 
 	virtual aeQualType getQualifiedType(aeon_compiler* c);
 
-	virtual std::string exprstr();
-
-	std::string printtext();
+	std::string str() const;
 };
 
 #endif // aeNodeBinaryOperator_h__

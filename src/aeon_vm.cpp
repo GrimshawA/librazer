@@ -197,6 +197,28 @@ void aeon_vm::call(aeon_module& module, const char* func)
 	}
 }
 
+void DoAdd(aeon_vm* vm, AeonPrimitiveType ptype)
+{
+	vm_value a = vm->m_stk.pop_value();
+	vm_value b = vm->m_stk.pop_value();
+
+	switch (ptype)
+	{
+	case AEP_DOUBLE: a.dp = a.dp + b.dp; break;
+	case AEP_FLOAT: a.fp = a.fp + b.fp; break;
+	case AEP_UINT8: a.u8 = a.u8 + b.u8; break;
+	case AEP_INT8: a.i8 = a.i8 + b.i8; break;
+	case AEP_UINT16: a.u16 = a.u16 + b.u16; break;
+	case AEP_INT16: a.i16 = a.i16 + b.i16; break;
+	case AEP_UINT32: a.u32 = a.u32 + b.u32; break;
+	case AEP_INT32: a.i32 = a.i32 + b.i32; break;
+	case AEP_UINT64: a.u64 = a.u64 + b.u64; break;
+	case AEP_INT64: a.i64 = a.i64 + b.i64; break;
+	}
+
+	vm->m_stk.push_value(a);
+}
+
 void aeon_vm::execute()
 {
 	StackFrameInfo* cl = &m_stk.frames[m_stk.frames.size() - 1];
@@ -379,13 +401,10 @@ void aeon_vm::execute()
 				int opa = pop();
 				push(opa % opb);
 				// Log("[mod] %d % %d", opa, opb);
-			vm_end
+				vm_end
 
 			vm_start(OP_ADD)
-				uint64_t opa = pop();
-				uint64_t opb = pop();
-				push(opa + opb);
-				// Log("[add] two values %d and %d = %d", opa, opb, opa + opb);
+				DoAdd(this, inst.arg0);
 			vm_end
 
 			vm_start(OP_SUB)

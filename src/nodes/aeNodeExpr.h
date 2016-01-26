@@ -27,8 +27,6 @@ public:
 
 	virtual aeQualType getQualifiedType(aeon_compiler* c);
 
-	virtual std::string exprstr();
-
 	bool isFloat();
 
 	bool isInt();
@@ -41,7 +39,7 @@ public:
 
 	std::string as_string();
 
-	std::string printtext();
+	std::string str() const;
 };
 
 #endif // aeNodeExpr_h__

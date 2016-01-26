@@ -4,7 +4,6 @@
 #include "aeon_tree.h"
 #include "aeon_value.h"
 #include "aeon_lexer.h"
-#include "aeNodeNew.h"
 #include <vector>
 
 class aeon_context;
@@ -48,72 +47,59 @@ class aeon_parser
 		aeon_lexer*   lex = nullptr;
 		aeon_token    Tok;              ///< Current token cursor
 		aeon_context* ctx;              ///< The context of the application/library
-		aeNodeModule*   root;
+		aeNodeModule* root;
 		aeon_value*   mDataValue;
 
 	public:
 
 		aeon_parser();
 
-		/// Parse the AST for gather pass only
-		void parse_gather_pass(aeon_lexer& lexer);
+		void                     startGather(aeon_lexer& lexer);
+		void                     startParse(aeon_lexer& lexer);
+		void                     parseValue(aeon_lexer& lexer, aeon_value& rootValue);
+		aeNodeStatement*         parseStatement();
+		aeNodeBranch*            parseBranch();
+		aeNodeBase*              parseSymbol();
+		aeon_value               parseDataObject();
+		aeQualType               parseQualType();
+		aeNodeExpr*              parseExpression();
+		aeNodeExpr*              parsePrimaryExpression();
+		aeNodeAccessOperator*    parseMemberAccess(aeNodeExpr* left);
+		void                     parseTopLevel();
+		aeNodeExpr*              parseIdentityExpression();
+		aeNodeNamespace*         parseNamespace();
+		aeNodeEnum*              parseEnum();
+		aeNodeClass*             parseClass();
+		aeNodeFor*               parseForLoop();
+		aeNodeWhile*             parseWhileLoop();
+		void                     parseClassBody(aeNodeClass* classDeclNode);
+		aeNodeFunction*          parseLambdaFunction();
+		void                     parseClassMember(aeNodeClass* classDeclNode);
+		aeNodeReturn*            parseReturn();
+		aeNodeBlock*             parseBlock();
+		aeNodeFunction*          parseFunction();
+		aeNodeVarDecl*           parseVariableDecl();
+		std::vector<aeNodeExpr*> parseArgsList();
+		std::vector<aeNodeExpr*> parseParamsList();
 
-		/// Parse the full AST with context sensitivity
-		void parse(aeon_lexer& lexer);
-
-		void parseValue(aeon_lexer& lexer, aeon_value& rootValue);
-
-		/// Parses the {} data object
-		aeon_value parseDataObject();
-
-		/// Parses one symbol in either declarative scope like a namespace, class or global
-		/// Symbols can be: functions, function prototypes, variables, properties
-		aeNodeBase* parse_symbol();
-
-		aeQualType            parseQualType();
-		aeNodeExpr*           parseExpression();
-		aeNodeExpr*           parsePrimaryExpression();
-		aeNodeAccessOperator* parseMemberAccess(aeNodeExpr* left);
-		void                  parseTopLevel();
-		aeNodeExpr*           parseIdentityExpression();
-		aeNodeNamespace*      parse_namespace();
-		aeNodeEnum*           parse_enum();
-		aeNodeClass*          parseClass();
-		aeNodeFor*            parseForLoop();
-		aeNodeWhile*          parseWhileLoop();
-		void                  parseClassBody(aeNodeClass* classDeclNode);
-		aeNodeFunction*       parseLambdaFunction();
-		void                  parse_class_element(aeNodeClass* classDeclNode);
-		void                  parseBlock(aeNodeBlock* block);
-		aeNodeFunction*       parse_function();
+		void                     serialize(const std::string& filename);
+		void                     print();
 
 		/// Parse a identifier subexpression, any combination of func calls
 		aeNodeExpr* parse_identifier_subexpression();
 
-
-		/// Parses a list of arguments (expressions) to pass to a function for example
-		std::vector<aeNodeExpr*> parse_argument_list();
-
-		/// Parses a list of arguments (expressions) to pass to a function for example
-		std::vector<aeNodeExpr*> parse_parameter_list();
-
-		/// We're inside a function body scope, parse whatever is allowed in there
-		void parseFunctionScope(aeNodeFunction* funcDeclNode);
-
 		/// We're about to read a function call, get it
 		aeNodeFunctionCall* parseFunctionCall();
-
-		aeNodeVarDecl* parseVariableDecl();
 
 		bool checkForFunction();
 
 		void printAST();
 
-	private:
+private:
 
-		/// Peeks ahead from 1 to N tokens
-		aeon_token peekAhead(int count);
+	/// Peeks ahead from 1 to N tokens
+	aeon_token peekAhead(int count);
 
-		aeon_token getNextToken();
+	aeon_token getNextToken();
 };
 #endif // aeon_parser_h__

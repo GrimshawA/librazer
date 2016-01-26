@@ -407,8 +407,6 @@ void aeon_compiler::emitStatement(aeNodeStatement* stmt)
 		- declaration statement
 	*/
 
-	printf("Compiling statement '%s'\n", stmt->str().c_str());
-
 	if (stmt->m_nodeType == AEN_FUNCTIONCALL)
 	{
 		emitFunctionCall(static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
@@ -439,7 +437,7 @@ void aeon_compiler::emitStatement(aeNodeStatement* stmt)
 	}
 	else
 	{
-		printf("NOT compiling other expression '%s'\n", ((aeNodeExpr*)stmt)->str().c_str());
+		printf("NOT compiling other expression '%s'\n", ((aeNodeExpr*)stmt)->exprstr().c_str());
 	}
 }
 

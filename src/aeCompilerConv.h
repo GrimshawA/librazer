@@ -49,17 +49,30 @@ struct ConversionProcedure
 
 /*
 	\class OperatorOverloadInfo
-	\brief 
+	\brief Each built-in operator overload is registered here and compiled from here
 
 	helper to get operator overload information and quickly decide which one to use.
 */
 struct OperatorOverloadInfo
 {
+	enum OverloadableOperatorType
+	{
+		Addition,
+		Subtraction,
+		Multiplication,
+		Division,
+	};
 
+	int         m_type;
+	aeQualType  m_returnType;
+	aeQualType  m_t1;
+	aeQualType  m_t2;
+	ICGenerator m_function;
 };
 
 struct OperatorOverloadTable
 {
+	std::vector<OperatorOverloadInfo> m_table;
 
 	/// We ask the table to give us the right overload for the types we have
 	/// The response can be invalid in failure

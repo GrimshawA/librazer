@@ -6,7 +6,7 @@ aeNodeFunctionCall::aeNodeFunctionCall()
 	m_nodeType = AEN_FUNCTIONCALL;
 }
 
-std::string aeNodeFunctionCall::exprstr()
+std::string aeNodeFunctionCall::str() const
 {
 	std::string s1 = m_name;
 	if (templateTypeArguments.size() > 0)
@@ -25,7 +25,7 @@ std::string aeNodeFunctionCall::exprstr()
 	{
 		for (std::size_t i = 0; i < m_args.size(); ++i)
 		{
-			s1 += m_args[i]->exprstr();
+			s1 += m_args[i]->str();
 			if (i < m_args.size() - 1)
 				s1 += ",";
 		}
@@ -34,13 +34,7 @@ std::string aeNodeFunctionCall::exprstr()
 
 	if (m_items.size() > 0)
 	{
-		s1 += "." + static_cast<aeNodeExpr*>(m_items[0])->exprstr();
+		s1 += "." + static_cast<aeNodeExpr*>(m_items[0])->str();
 	}
-	return s1;
-}
-
-std::string aeNodeFunctionCall::printtext()
-{
-	std::string s1 = std::string("Call ") + exprstr();
 	return s1;
 }

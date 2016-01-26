@@ -2,7 +2,7 @@
 #include "aeon_bytecode.h"
 #include "aeon_vm.h"
 #include "aeon_context.h"
-#include "aeNodeNew.h"
+#include "nodes/aeNodeNew.h"
 
 #include <cassert>
 
@@ -12,7 +12,7 @@ void aeon_compiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprConte
 	if (expr->m_nodeType == AEN_REF)
 	{
 		// Load the var address into the stack
-		emitVarExpr(static_cast<aeNodeVarRef*>(expr));
+		emitVarExpr(static_cast<aeNodeRef*>(expr));
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
@@ -115,7 +115,7 @@ void aeon_compiler::emitLoadAddress(aeNodeExpr* expr)
 		throwError("emitLoadAddress: Only know how to load a variable ref");
 		return;
 	}
-	aeNodeVarRef* varExpr = (aeNodeVarRef*)expr;
+	aeNodeRef* varExpr = (aeNodeRef*)expr;
 
 	auto varStorage = getVariable(varExpr->m_name);
 	if (varStorage.mode == AE_VAR_LOCAL)
@@ -205,10 +205,19 @@ void aeon_compiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 
 void aeon_compiler::emitAccessOp(aeNodeAccessOperator* acs)
 {
-	printf("Compiling operator.()\n");
+	/**
+		We are compiling a.b
+		b must be a part of a so it can be used
+	*/
 
-	/*aeQualType Atype = getExpressionQualType(acs->m_a);
-	aeQualType Btype = getExpressionQualType(acs->m_a);*/
+	//printf("Compiling operator.()\n");
+
+	aeQualType Ta = buildQualifiedType(acs->m_a);
+	if (!Ta)
+	{
+		throwError("Cannot find the type of '" + acs->m_a->str() + "'");
+		return;
+	}
 
 	emitExpressionEval(acs->m_a, aeExprContext());
 
@@ -216,6 +225,10 @@ void aeon_compiler::emitAccessOp(aeNodeAccessOperator* acs)
 	{
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
 		emitFunctionCall(static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
+	}
+	else
+	{
+
 	}
 }
 
@@ -263,7 +276,7 @@ void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void aeon_compiler::emitVarExpr(aeNodeVarRef* var)
+void aeon_compiler::emitVarExpr(aeNodeRef* var)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto& varInfo = getVariable(var->m_name);

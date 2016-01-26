@@ -1,6 +1,6 @@
 #include "aeNodeExpr.h"
+#include "aeNodeLiterals.h"
 #include "../aeon_compiler.h"
-#include "../aeNodeNew.h"
 
 aeNodeExpr::aeNodeExpr()
 {
@@ -37,14 +37,9 @@ bool aeNodeExpr::isString()
 	return m_nodeType == AEN_STRING;
 }
 
-std::string aeNodeExpr::printtext()
+std::string aeNodeExpr::str() const
 {
-	return "Expr";
-}
-
-std::string aeNodeExpr::exprstr()
-{
-	return "";
+	return "nullexpr";
 }
 
 bool aeNodeExpr::isFloat()

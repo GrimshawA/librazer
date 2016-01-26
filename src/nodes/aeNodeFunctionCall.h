@@ -30,9 +30,7 @@ public:
 
 	aeNodeFunctionCall();
 
-	virtual std::string exprstr();
-
-	std::string printtext();
+	std::string str() const;
 };
 
 #endif // aeNodeFunctionCall_h__

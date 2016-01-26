@@ -17,7 +17,7 @@ public:
 public:
 	aeNodeFor();
 
-	std::string printtext();
+	std::string str();
 };
 
 #endif // aeNodeFor_h__

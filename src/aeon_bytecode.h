@@ -49,6 +49,21 @@ enum AeonConstants
 	AEK_THIS,
 };
 
+enum AeonPrimitiveType
+{
+	AEP_UINT8,
+	AEP_INT8,
+	AEP_UINT16,
+	AEP_INT16,
+	AEP_UINT32,
+	AEP_INT32,
+	AEP_UINT64,
+	AEP_INT64,
+	AEP_FLOAT,
+	AEP_DOUBLE,
+	AEP_PTR,
+};
+
 enum AeonOperatorConstants
 {
 	AE_PODCOPY,

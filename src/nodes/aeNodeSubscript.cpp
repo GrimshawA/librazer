@@ -7,5 +7,5 @@ aeNodeSubscript::aeNodeSubscript()
 
 std::string aeNodeSubscript::exprstr()
 {
-	return "(" + subject->exprstr() + ")[" + argument->exprstr() + "]";
+	return "(" + subject->str() + ")[" + argument->str() + "]";
 }

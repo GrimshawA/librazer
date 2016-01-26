@@ -23,7 +23,7 @@ public:
 
 public:
 	aeNodeBranch();
-	std::string printtext();
+	std::string str();
 };
 
 #endif // aeNodeBranch_h__
