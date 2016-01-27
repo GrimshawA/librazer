@@ -355,90 +355,32 @@ inline static void DoLoad(aeon_vm* vm, int addressMode, int offset, int x)
 {
 	if (addressMode == AEK_THIS)
 	{
-		vm_value thisPtr = vm->m_stk.getThisPtr();
-		thisPtr.ptr = (unsigned char*)thisPtr.ptr + offset;
+		vm_value thisPtr = m_stk.getThisPtr();
+		thisPtr.ptr = (unsigned char*)thisPtr.ptr + inst.arg1;
 		/*
 		vm_value offsetedAddr = *thisObjAddr;
 		offsetedAddr.ptr = (char*)offsetedAddr.ptr + inst.arg1;*/
-		vm->m_stk.push_value(thisPtr);
-		printf("OP_LOAD THIS = %x (offset %d)\n", vm->m_stk.getThisPtr().ptr, offset);
+		m_stk.push_value(thisPtr);
+		printf("OP_LOAD THIS = %x (offset %d)\n", m_stk.getThisPtr().ptr, inst.arg1);
 	}
 	else if (addressMode == AEK_EBP)
 	{
 		vm_value val;
-		val.ptr = vm->m_stk.ebp - offset;
-		vm->m_stk.push_value(val);
-		printf("OP_LOAD EBP address %x (offset %d)\n", val.ptr, offset);
+		val.ptr = m_stk.ebp - inst.arg1;
+		m_stk.push_value(val);
+		printf("OP_LOAD EBP address %x (offset %d)\n", val.ptr, inst.arg1);
 	}
 	else if (addressMode == AEK_ESP)
 	{
 		vm_value v;
-		v.ptr = vm->m_stk.esp;
-		vm->m_stk.push_value(v);
+		v.ptr = m_stk.esp;
+		m_stk.push_value(v);
 		printf("OP_LOAD ESP address %x\n", v.ptr);
 	}
-	else if (addressMode == 5)
+	else if (addressMode == AEK_ESP)
 	{
 
 	}
-}
-
-inline static void DoLogicalNot(aeon_vm* vm)
-{
-	vm_value a = vm->m_stk.pop_value();
-	a.i64 = !a.i64;
-	vm->m_stk.push_value(a);
-}
-
-inline static void DoNewObject(aeon_vm* vm, int type)
-{
-	vm_value obj;
-	obj.ptr = nullptr;
-	vm->m_stk.push_value(obj);
-}
-
-inline static void DoLessThan(aeon_vm* vm, AeonPrimitiveType ptype)
-{
-	vm_value a = vm->m_stk.pop_value();
-	vm_value b = vm->m_stk.pop_value();
-
-	switch (ptype)
-	{
-	case AEP_DOUBLE: a.dp = a.dp < b.dp; break;
-	case AEP_FLOAT: a.fp = a.fp < b.fp; break;
-	case AEP_UINT8: a.u8 = a.u8 < b.u8; break;
-	case AEP_INT8: a.i8 = a.i8 < b.i8; break;
-	case AEP_UINT16: a.u16 = a.u16 < b.u16; break;
-	case AEP_INT16: a.i16 = a.i16 < b.i16; break;
-	case AEP_UINT32: a.u32 = a.u32 < b.u32; break;
-	case AEP_INT32: a.i32 = a.i32 < b.i32; break;
-	case AEP_UINT64: a.u64 = a.u64 < b.u64; break;
-	case AEP_INT64: a.i64 = a.i64 < b.i64; break;
-	}
-
-	vm->m_stk.push_value(a);
-}
-
-inline static void DoGreaterThan(aeon_vm* vm, AeonPrimitiveType ptype)
-{
-	vm_value a = vm->m_stk.pop_value();
-	vm_value b = vm->m_stk.pop_value();
-
-	switch (ptype)
-	{
-	case AEP_DOUBLE: a.dp = a.dp > b.dp; break;
-	case AEP_FLOAT: a.fp = a.fp > b.fp; break;
-	case AEP_UINT8: a.u8 = a.u8 > b.u8; break;
-	case AEP_INT8: a.i8 = a.i8 > b.i8; break;
-	case AEP_UINT16: a.u16 = a.u16 > b.u16; break;
-	case AEP_INT16: a.i16 = a.i16 > b.i16; break;
-	case AEP_UINT32: a.u32 = a.u32 > b.u32; break;
-	case AEP_INT32: a.i32 = a.i32 > b.i32; break;
-	case AEP_UINT64: a.u64 = a.u64 > b.u64; break;
-	case AEP_INT64: a.i64 = a.i64 > b.i64; break;
-	}
-
-	vm->m_stk.push_value(a);
 }
 
 void aeon_vm::execute()
@@ -548,7 +490,10 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_LT)
-				DoLessThan(this, (AeonPrimitiveType)inst.arg0);
+				int opb = pop();
+				int opa = pop();
+				push(static_cast<int>(opa < opb));
+				//Log("[lt] %d < %d = %d", opa, opb, static_cast<int>(opa < opb));
 			vm_end
 
 			vm_start(OP_LTE)
@@ -559,7 +504,10 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_GT)
-				DoGreaterThan(this, (AeonPrimitiveType)inst.arg0);
+				int opb = pop();
+				int opa = pop();
+				push(static_cast<int>(opa > opb));
+				// Log("[gt] %d > %d = %d", opa, opb, static_cast<int>(opa < opb));
 			vm_end
 
 			vm_start(OP_GTE)
@@ -578,7 +526,7 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_NOT)
-				DoLogicalNot(this);
+				
 			vm_end
 
 			vm_start(OP_SET)
@@ -629,7 +577,9 @@ void aeon_vm::execute()
 				vm_end
 
 			vm_start(OP_NEWOBJECT)
-				DoNewObject(this, inst.arg0);				
+				vm_value newObjectPtr;
+				newObjectPtr.ptr = new aeon_vm();
+				m_stk.push_value(newObjectPtr);
 			vm_end
 
 			vm_start(OP_DELETEOBJECT)

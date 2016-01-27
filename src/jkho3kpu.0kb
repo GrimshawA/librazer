@@ -390,57 +390,6 @@ inline static void DoLogicalNot(aeon_vm* vm)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoNewObject(aeon_vm* vm, int type)
-{
-	vm_value obj;
-	obj.ptr = nullptr;
-	vm->m_stk.push_value(obj);
-}
-
-inline static void DoLessThan(aeon_vm* vm, AeonPrimitiveType ptype)
-{
-	vm_value a = vm->m_stk.pop_value();
-	vm_value b = vm->m_stk.pop_value();
-
-	switch (ptype)
-	{
-	case AEP_DOUBLE: a.dp = a.dp < b.dp; break;
-	case AEP_FLOAT: a.fp = a.fp < b.fp; break;
-	case AEP_UINT8: a.u8 = a.u8 < b.u8; break;
-	case AEP_INT8: a.i8 = a.i8 < b.i8; break;
-	case AEP_UINT16: a.u16 = a.u16 < b.u16; break;
-	case AEP_INT16: a.i16 = a.i16 < b.i16; break;
-	case AEP_UINT32: a.u32 = a.u32 < b.u32; break;
-	case AEP_INT32: a.i32 = a.i32 < b.i32; break;
-	case AEP_UINT64: a.u64 = a.u64 < b.u64; break;
-	case AEP_INT64: a.i64 = a.i64 < b.i64; break;
-	}
-
-	vm->m_stk.push_value(a);
-}
-
-inline static void DoGreaterThan(aeon_vm* vm, AeonPrimitiveType ptype)
-{
-	vm_value a = vm->m_stk.pop_value();
-	vm_value b = vm->m_stk.pop_value();
-
-	switch (ptype)
-	{
-	case AEP_DOUBLE: a.dp = a.dp > b.dp; break;
-	case AEP_FLOAT: a.fp = a.fp > b.fp; break;
-	case AEP_UINT8: a.u8 = a.u8 > b.u8; break;
-	case AEP_INT8: a.i8 = a.i8 > b.i8; break;
-	case AEP_UINT16: a.u16 = a.u16 > b.u16; break;
-	case AEP_INT16: a.i16 = a.i16 > b.i16; break;
-	case AEP_UINT32: a.u32 = a.u32 > b.u32; break;
-	case AEP_INT32: a.i32 = a.i32 > b.i32; break;
-	case AEP_UINT64: a.u64 = a.u64 > b.u64; break;
-	case AEP_INT64: a.i64 = a.i64 > b.i64; break;
-	}
-
-	vm->m_stk.push_value(a);
-}
-
 void aeon_vm::execute()
 {
 	StackFrameInfo* cl = &m_stk.frames[m_stk.frames.size() - 1];
@@ -548,7 +497,10 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_LT)
-				DoLessThan(this, (AeonPrimitiveType)inst.arg0);
+				int opb = pop();
+				int opa = pop();
+				push(static_cast<int>(opa < opb));
+				//Log("[lt] %d < %d = %d", opa, opb, static_cast<int>(opa < opb));
 			vm_end
 
 			vm_start(OP_LTE)
@@ -559,7 +511,10 @@ void aeon_vm::execute()
 			vm_end
 
 			vm_start(OP_GT)
-				DoGreaterThan(this, (AeonPrimitiveType)inst.arg0);
+				int opb = pop();
+				int opa = pop();
+				push(static_cast<int>(opa > opb));
+				// Log("[gt] %d > %d = %d", opa, opb, static_cast<int>(opa < opb));
 			vm_end
 
 			vm_start(OP_GTE)
