@@ -58,10 +58,7 @@ class aeon_type
 				aeBindMethod methodCallback;
 				aeConstructorMethod constructorCallback;
 
-				struct script
-				{
-					int index;
-				};
+				
 			};
 		};
 

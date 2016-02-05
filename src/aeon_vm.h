@@ -60,12 +60,13 @@ struct vm_value
 	}
 };
 
-struct StackFrameInfo
+struct aeStackFrame
 {
-	std::string name;
-	uint32_t pc;               ///< So we can restore the program counter of the caller
-	unsigned char* ebp;        ///< So we can restore the base pointer of the caller
-	aeon_module* module;
+	aeFunction*    function;      ///< The function this frame represents
+	std::string    name;          ///< Name?
+	uint32_t       pc;            ///< So we can restore the program counter of the caller
+	unsigned char* ebp;           ///< So we can restore the base pointer of the caller
+	aeon_module*   module;
 
 	/// If the function being called is a method, object contains the address of the object its called on
 	atom_objectref object;
@@ -85,7 +86,7 @@ struct StackFrameInfo
 struct ExecutionContext
 {
 	std::vector<unsigned char>  stack;
-	std::vector<StackFrameInfo> frames;
+	std::vector<aeStackFrame> frames;
 	unsigned char*              esp;
 	unsigned char*              ebp;
 

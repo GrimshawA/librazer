@@ -2,7 +2,7 @@
 #define aeNodeLiterals_h__
 
 #include "aeNodeExpr.h"
-
+#include <string>
 
 
 
@@ -44,12 +44,13 @@ public:
 
 	virtual std::string exprstr()
 	{
-		return std::to_string(value);
+		return ".";
+		//return std::to_string(value);
 	}
 
 	std::string str()
 	{
-		return std::string("Float - ") + std::to_string(value);
+		return std::string("Float - ")/* + std::to_string(value)*/;
 	}
 
 	float value;
@@ -65,15 +66,16 @@ public:
 
 	virtual std::string exprstr()
 	{
+		return ";";
+		//return std::to_string(value);
+	}
+
+	std::string str() const
+	{
 		return std::to_string(value);
 	}
 
-	std::string str()
-	{
-		return std::string("Int - ") + std::to_string(value);
-	}
-
 	uint32_t value;
-}; 
+};
 
 #endif // aeNodeLiterals_h__

@@ -28,7 +28,7 @@ public:
 	struct Decl
 	{
 		std::string                 m_name;
-		//std::unique_ptr<aeNodeExpr> m_initExpr;
+		aeNodeExpr*                 m_init = nullptr;
 	};
 
 	aeQualType        m_type;

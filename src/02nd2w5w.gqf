@@ -12,7 +12,6 @@ aeon_compiler::aeon_compiler()
 {
 	m_logAllocs = true;
 	m_logExprStmt = true;
-	m_logExprOps = true;
 
 	m_OffsetFromBasePtr = 0;
 	m_caller = nullptr;
@@ -354,15 +353,13 @@ void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 
 void aeon_compiler::emitFunction(aeNodeFunction* func)
 {
-	m_module->functions.push_back(aeFunction());
-	aeFunction* function = &m_module->functions[m_module->functions.size() - 1];
-
+	aeFunction functiondata;
 	aeQualType returnType = func->getReturnType();
 
 	m_OffsetFromBasePtr = 0;
 
 	// The function must be aware how much time it needs for the return value
-	function->returnValueSize = returnType.getSize();
+	functiondata.returnValueSize = returnType.getSize();
 
 	m_caller = func;
 
@@ -373,11 +370,13 @@ void aeon_compiler::emitFunction(aeNodeFunction* func)
 		printf("Compiling non static method %s\n", func->m_name.c_str());
 	}
 
-	function->offset = m_cursor;
-	function->m_absoluteName = func->m_name;
-	function->m_module = m_module;
+	functiondata.offset = m_cursor;
+	functiondata.m_absoluteName = func->m_name;
 
-	m_env->m_function_table.push_back(function);
+	aeFunctionData g_functionData;
+	g_functionData.index = m_cursor;
+	g_functionData.module = m_module;
+	m_env->m_function_table.push_back(g_functionData);
 
 	// let's just generate code for the executable block
 	emitBlock(func->m_block.get());
@@ -385,6 +384,7 @@ void aeon_compiler::emitFunction(aeNodeFunction* func)
 	emitReturnCode(nullptr);
 	m_caller = nullptr;
 
+	m_module->functions.push_back(functiondata);
 }
 
 void aeon_compiler::emitLambdaFunction(aeNodeFunction* function)
@@ -480,15 +480,14 @@ void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	if (m_logAllocs)
 		emitDebugPrint("Allocating " + localObject.name);
 
+	//emitDebugPrint("Constructing " + varDecl.m_type.str());
+	// Emit the stack allocation code
 	emitInstruction(OP_MOV, AEK_ESP, -varType->getSize());
 
 	// Now the variable is initialized and part of its scope, initialize it
 	if (varDecl.m_decls[0].m_init)
 	{
-		if (m_logAllocs)
-			emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
-
-		emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
+		emitExpressionEval(varDecl.m_decls[0].m_init.get(), aeExprContext());
 	}
 	else
 	{

@@ -2,7 +2,7 @@
 #define aeon_context_h__
 
 #include "aeon_generics.h"
-#include "aeUnit.h"
+#include "aeCodeFile.h"
 #include "aeon_type.h"
 #include "aeon_value.h"
 #include <vector>
@@ -25,14 +25,10 @@ typedef void(*aeBindMethod)(aeon_vm*);
 typedef void(*aeDestructorMethod)(void*);
 typedef void(*aeConstructorMethod)(void*, aeon_vm*);
 
-struct aeFunctionData
-{
-	aeon_module* module;
-	uint32_t index;
-};
-
 typedef int aeLiteralId;
 typedef int aeFunctionId;
+
+class aeFunction;
 
 /**
 	\class aeon_context
@@ -78,7 +74,7 @@ class aeon_context
 		std::vector<aeon_nativecall>                  native_functions;     ///< All the native functions registered
 		std::vector<aeon_nativecall>                  m_table_nmethods;     ///< Instant lookup table for all native methods
 		std::vector<method_indirect>                  table_methods;        ///< Every script class method has an absolute index in this table
-		std::vector<aeFunctionData>                   m_function_table;     ///< Every script function loaded has an absolute index to this table
+		std::vector<aeFunction*>                      m_function_table;     ///< Every script function loaded has an absolute index to this table
 		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 public:
 
@@ -98,7 +94,6 @@ public:
 
 	aeon_module* create_module(const std::string& name);
 
-	void registerFunction(const char* proto, void* f);
 
 	/// Registers a native type to work with the language
 	void registerType(const std::string& name, std::size_t size, const std::string& namespc = "");
@@ -106,6 +101,7 @@ public:
 	void registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod dest);
 	void registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest);
 	void registerTypeField(const std::string& typeName, const std::string& decl, int offset);
+	void registerFunction(const std::string& decl, aeBindMethod func);
 
 	int32_t getNativeFunctionIndex(const std::string& name);
 

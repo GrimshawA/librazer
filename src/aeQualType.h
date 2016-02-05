@@ -51,6 +51,9 @@ public:
 	/// Initializes to void which means a null type or invalid state
 	aeQualType();
 
+	/// Get the static size of this type
+	uint32_t getSize();
+
 	/// Get the number of template arguments in the type
 	uint32_t getNumTemplateArgs() const;
 

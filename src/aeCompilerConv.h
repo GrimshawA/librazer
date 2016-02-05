@@ -35,15 +35,15 @@ struct ConversionProcedure
 
 	union
 	{
-		struct builtin
+		struct
 		{
 			ICGenerator generatorFunc;
-		};
+		} builtin;
 
-		struct userdefined
+		struct
 		{
 			int methodId;
-		};
+		} userdefined;
 	};
 };
 

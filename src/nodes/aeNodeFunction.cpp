@@ -52,3 +52,8 @@ std::string aeNodeFunction::str()
 	s1 += ")";*/
 	return s1;
 }
+
+aeQualType aeNodeFunction::getReturnType()
+{
+	return m_returnType;
+}

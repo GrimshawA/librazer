@@ -78,6 +78,9 @@ public:
 		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
 		std::vector<ConversionProcedure>    m_typeConversionTable;   ///< Table that defines what can be converted to what and how
 		aeReportManager                     m_reporter;
+		bool                                m_logAllocs;
+		bool                                m_logExprStmt;
+		bool                                m_logExprOps;
 
 	public:
 

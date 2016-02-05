@@ -6,6 +6,7 @@
 #include "nodes/aeNodeNamespace.h"
 #include "aeon_lexer.h"
 #include <map>
+#include <cstdlib>
 
 std::map<std::string, int> mOperatorTable = {
 		{ "=", 0 },
@@ -59,9 +60,9 @@ aeNodeStatement* aeon_parser::parseStatement()
 	case AETK_IDENTIFIER:
 	{
 		if (peekAhead(0).type == AETK_IDENTIFIER)
-		{			
+		{
 			return parseVariableDecl();
-		}	
+		}
 	}
 	default:
 	{
@@ -806,6 +807,10 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 	std::string varName = getNextToken().text;
 	getNextToken();
 
+	aeNodeVarDecl::Decl varDef;
+	varDef.m_name = varName;
+	varDecl->m_decls.push_back(varDef);
+
 	// Got an assignment on init
 	if (Tok.text == "=")
 	{
@@ -816,12 +821,8 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 		astvar->m_name = varName;
 
 		aeNodeBinaryOperator* assignment = new aeNodeBinaryOperator(astvar, parseExpression(), "=");
-		//varDecl->m_initExpr.reset(assignment);
+		varDecl->m_decls[0].m_init = (assignment);
 	}
-
-	aeNodeVarDecl::Decl varDef;
-	varDef.m_name = varName;
-	varDecl->m_decls.push_back(varDef);
 
 	return varDecl;
 }
@@ -901,10 +902,17 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 
 	if (Tok.type == AETK_OPENPAREN)
 	{
-		getNextToken();
+		aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
+
 		getNextToken();
 
-		aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
+		if (Tok.type != AETK_CLOSEPAREN)
+		{
+			fCall->m_args = parseArgsList();
+		}
+
+		getNextToken();
+
 		fCall->m_name = name;
 		result = fCall;
 	}

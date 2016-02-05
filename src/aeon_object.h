@@ -2,6 +2,7 @@
 #define aeon_object_h__
 
 #include <vector>
+#include <string>
 #include <stdint.h>
 
 class aeon_type;

@@ -464,17 +464,15 @@ void aeon_vm::execute()
 		switch (inst.opcode)
 		{
 			vm_start(OP_PREPARE)
-				aeFunction* functionData = ctx->m_function_table[inst.arg0];
-				m_stk.esp -= functionData->returnValueSize;
+
 			vm_end
 
 			vm_start(OP_CALL)
-				aeFunction* functionData = ctx->m_function_table[inst.arg0];
-
+				aeFunctionData& functionData = ctx->m_function_table[inst.arg0];
 				aeStackFrame callinfo;
 				callinfo.name = "unknown";
-				callinfo.pc = functionData->offset - 1;
-				callinfo.module = functionData->m_module;
+				callinfo.pc = functionData.index - 1;
+				callinfo.module = functionData.module;
 				callinfo.ebp = m_stk.ebp;
 				m_stk.frames.push_back(callinfo);
 				cl = &m_stk.frames[m_stk.frames.size() - 1];

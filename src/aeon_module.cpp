@@ -87,7 +87,7 @@ int aeon_module::getFunctionIndexByName(const std::string& name)
 {
 		for (std::size_t i = 0; i < functions.size(); ++i)
 		{
-			if (functions[i].prototype == name)
+			if (functions[i].m_absoluteName == name)
 			{
 				return i;
 			}

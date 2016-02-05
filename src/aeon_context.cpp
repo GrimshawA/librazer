@@ -97,14 +97,6 @@ void aeon_context::quick_build(const std::string& file)
 	compiler.generate(parser.root);
 }
 
-void aeon_context::registerFunction(const char* proto, void* f)
-{
-/*	aeon_nativecall nf;
-	nf.f = static_cast<void (*)(atom_generic*)>(f);
-	nf.prototype = proto;
-	native_functions.push_back(nf);*/
-}
-
 aeon_module* aeon_context::getModule(const std::string name)
 {
 	for (auto& mod : modules)
@@ -178,6 +170,7 @@ void aeon_context::registerType(const std::string& name, std::size_t size, const
 void aeon_context::registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method)
 {
 	auto typeInfo = getTypeInfo(typeName);
+
 	aeon_type::MethodInfo info;
 	info.methodCallback = method;
 	info.name = name;
@@ -188,6 +181,14 @@ void aeon_context::registerTypeMethod(const std::string& typeName, const std::st
 	ncall.fn = method;
 	ncall.typeName = typeName;
 	m_table_nmethods.push_back(ncall);
+}
+
+void aeon_context::registerFunction(const std::string& decl, aeBindMethod func)
+{
+	aeon_nativecall nf;
+	nf.fn = func;
+	nf.prototype = decl;
+	m_table_nmethods.push_back(nf);
 }
 
 void aeon_context::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)

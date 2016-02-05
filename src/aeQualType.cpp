@@ -15,6 +15,14 @@ aeQualType::aeQualType()
 
 }
 
+uint32_t aeQualType::getSize()
+{
+	if (m_type)
+		return m_type->getSize();
+	else
+		return 0;
+}
+
 uint32_t aeQualType::getNumTemplateArgs() const
 {
 	return m_templateArgs.size();

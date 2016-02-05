@@ -7,15 +7,18 @@
 
 enum EOpCodes
 {
-	OP_NEW,
+	OP_NEW,            ///< Allocate a new instance of a type
+	OP_PREPARE,        ///< Prepares the vm for a subsequent call
 	OP_CALL,		   ///< Call one aeon procedure, static, method, global, which assumes its input environment is already set
 	OP_CALLVIRTUAL,	   ///< Call a virtual method on an aeon object, separate to avoid overhead of checking
 	OP_CALLNATIVE,	   ///< Call a native function on the host environment
 	OP_CALLMETHOD_NAT, ///< Call non-static member function on a native object
-	OP_RETURN,           ///< Returns from a function immediately
-	OP_JZ,            ///< Jump if eax == 0 to relative address (pc += offset)
-	OP_JMP,        ///< jmp to an absolute location pc = x
+	OP_RETURN,         ///< Returns from a function immediately
+	OP_JZ,             ///< Jump if eax == 0 to relative address (pc += offset)
+	OP_JMP,            ///< jmp to an absolute location pc = x
 	OP_PUSHARG,        ///< 
+	OP_LOAD,           ///< Pushes the contents of local variable <index> to stack (integer)
+	OP_LOADADDR,           ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADK,          ///< load a constant into stack
 	OP_MUL,            ///< mul stores in eax, ebx * ec
 	OP_DIV,            ///< 
@@ -32,7 +35,6 @@ enum EOpCodes
 	OP_NEQ,            ///< Test for inequality
 	OP_NOT,            ///< Negate operand
 	OP_SET,            ///< Assign something to something
-	OP_LOAD,       ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_SIZEOF,     ///< Pushes the size in bytes to the stack of the given type token
 	OP_NEWOBJECT,        ///< Creates a new object of the selected type and pushes its objectref
 	OP_DELETEOBJECT,     ///< Release the objectref on the stack

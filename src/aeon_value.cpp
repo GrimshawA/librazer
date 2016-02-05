@@ -1,4 +1,5 @@
 #include "aeon_value.h"
+#include <cstdlib>
 
 aeon_value::aeon_value()
 {
@@ -17,9 +18,9 @@ void aeon_value::CreateFloat(const std::string& name, float value)
 {
 		aeon_value v;
 		v.mRawProperty = name;
-		v.mRawValue = std::to_string(value);
+		//v.mRawValue = std::to_string(value);
 		properties.push_back(v);
-	}
+}
 
 	void aeon_value::CreateNumber(const std::string& name, const std::string& number)
 	{

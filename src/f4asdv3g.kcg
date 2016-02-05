@@ -10,10 +10,6 @@
 
 aeon_compiler::aeon_compiler()
 {
-	m_logAllocs = true;
-	m_logExprStmt = true;
-	m_logExprOps = true;
-
 	m_OffsetFromBasePtr = 0;
 	m_caller = nullptr;
 }
@@ -354,16 +350,10 @@ void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 
 void aeon_compiler::emitFunction(aeNodeFunction* func)
 {
-	m_module->functions.push_back(aeFunction());
-	aeFunction* function = &m_module->functions[m_module->functions.size() - 1];
-
+	aeon_function functiondata;
 	aeQualType returnType = func->getReturnType();
 
 	m_OffsetFromBasePtr = 0;
-
-	// The function must be aware how much time it needs for the return value
-	function->returnValueSize = returnType.getSize();
-
 	m_caller = func;
 
 	// If we are a method, we reserve space for the THIS ptr
@@ -373,11 +363,13 @@ void aeon_compiler::emitFunction(aeNodeFunction* func)
 		printf("Compiling non static method %s\n", func->m_name.c_str());
 	}
 
-	function->offset = m_cursor;
-	function->m_absoluteName = func->m_name;
-	function->m_module = m_module;
+	functiondata.offset = m_cursor;
+	functiondata.prototype = func->m_name;
 
-	m_env->m_function_table.push_back(function);
+	aeFunctionData g_functionData;
+	g_functionData.index = m_cursor;
+	g_functionData.module = m_module;
+	m_env->m_function_table.push_back(g_functionData);
 
 	// let's just generate code for the executable block
 	emitBlock(func->m_block.get());
@@ -385,6 +377,7 @@ void aeon_compiler::emitFunction(aeNodeFunction* func)
 	emitReturnCode(nullptr);
 	m_caller = nullptr;
 
+	m_module->functions.push_back(functiondata);
 }
 
 void aeon_compiler::emitLambdaFunction(aeNodeFunction* function)
@@ -441,16 +434,10 @@ void aeon_compiler::emitStatement(aeNodeStatement* stmt)
 	}
 	else if (stmt->m_nodeType == AEN_BINARYOP && ((aeNodeBinaryOperator*)stmt)->oper == "=")
 	{
-		if (m_logExprStmt)
-			emitDebugPrint("Evaluating " + stmt->str());
-
 		emitAssignOp(((aeNodeBinaryOperator*)stmt)->operandA, ((aeNodeBinaryOperator*)stmt)->operandB);
 	}
 	else if (stmt->m_nodeType == AEN_ACCESSOPERATOR && ((aeNodeAccessOperator*)stmt)->m_b->m_nodeType == AEN_FUNCTIONCALL)
 	{
-		if (m_logExprStmt)
-			emitDebugPrint("Evaluating " + stmt->str());
-
 		emitAccessOp(((aeNodeAccessOperator*)stmt));
 	}
 	else
@@ -477,18 +464,14 @@ void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	scope.offset += localObject.type->getSize();
 	m_OffsetFromBasePtr += localObject.type->getSize();
 
-	if (m_logAllocs)
-		emitDebugPrint("Allocating " + localObject.name);
-
+	//emitDebugPrint("Constructing " + varDecl.m_type.str());
+	// Emit the stack allocation code
 	emitInstruction(OP_MOV, AEK_ESP, -varType->getSize());
 
 	// Now the variable is initialized and part of its scope, initialize it
-	if (varDecl.m_decls[0].m_init)
+/*	if (varDecl.m_initExpr)
 	{
-		if (m_logAllocs)
-			emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
-
-		emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
+		emitExpressionEval(varDecl.m_initExpr.get(), aeExprContext());
 	}
 	else
 	{
@@ -498,7 +481,7 @@ void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 			emitInstruction(OP_LOAD, AEK_ESP);
 			emitInstruction(OP_CALLMETHOD_NAT, m_env->getNativeBehaviorIndex(varType->getName(), "f"));
 		}
-	}
+	}*/
 }
 
 void aeon_compiler::emitReturnCode(aeNodeReturn* ret)

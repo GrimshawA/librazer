@@ -35,6 +35,8 @@ public:
 public:
 	aeNodeFunction();
 
+	aeQualType getReturnType();
+
 	/// Is this a global function outside class scope
 	bool isGlobalFunction();
 

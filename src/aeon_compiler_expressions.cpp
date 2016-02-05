@@ -92,6 +92,9 @@ void aeon_compiler::emitFunctionCall(aeNodeFunctionCall* fnCall, aeExprContext e
 
 void aeon_compiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 {
+	if (m_logExprOps)
+		emitDebugPrint("OP " + operation->oper + " " + operation->operandA->str() + " " + operation->operandB->str());
+
 	if (operation->oper == "=")
 	{
 		emitAssignOp(operation->operandA, operation->operandB);
@@ -279,7 +282,7 @@ void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 void aeon_compiler::emitVarExpr(aeNodeRef* var)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
-	auto& varInfo = getVariable(var->m_name);
+	auto varInfo = getVariable(var->m_name);
 	emitInstruction(OP_LOAD, AEK_EBP, varInfo.offset_bp);
 }
 

@@ -3,15 +3,23 @@
 
 #include "aeon_bytecode.h"
 #include "aeon_type.h"
+#include "aeCodeFile.h"
 #include <vector>
 #include <array>
 #include <stdint.h>
 
-// Useful stuff for a function defined in atom
-struct aeon_function
+/**
+	\class aeFunction
+*/
+class aeFunction
 {
-		uint32_t offset; ///< which instruction this function starts in the code
-		std::string   prototype;
+public:
+	uint32_t    returnValueSize;   ///< Size the function reserves for the return value
+	uint32_t    numParams;         ///< Number of parameters
+	uint32_t    paramsStorageSize; ///< The amount of storage needed to push the params
+	uint32_t    offset;            ///< which instruction this function starts in the code
+	std::string m_absoluteName;    ///< Full name of this symbol (myModule.myNamespace.myClass.myFunction)
+	aeon_module* m_module;
 };
 
 struct aeon_method
@@ -53,13 +61,14 @@ class aeon_module
 	public:
 
 		std::string                   name;         ///< Every module must have a name like stdlib.io or nephilim.core.graphics
-		std::vector<aeon_function>    functions;    ///< Every static class function and global is listed here
+		std::vector<aeFunction>    functions;    ///< Every static class function and global is listed here
 		std::vector<aeon_method>      methods;      ///< Every non-static class function is listed here
 		std::vector<aeon_type>        types;
 		std::vector<std::string>      stringPool;
 		std::vector<double>           double_literals;
 		std::vector<std::string>      auto_import_modules;  ///<  
 		std::vector<aeon_instruction> instructions;         ///< The entire module's bytecode
+		//std::vector<aeCodeFile>       m_files; ///< Files compiled to this module (for hot reloading code)
 
 	public:
 

@@ -17,17 +17,17 @@ struct aeon_ir_instruction
 
 	union
 	{
-		struct assignment
+		struct 
 		{
 			int32_t var0;
 			int32_t var1;
 			int32_t var2;
-		};
+		}assignment;
 
-		struct stk_offset
+		struct 
 		{
 			int32_t off;
-		};
+		}stk_offset;
 	};
 
 	int type;
