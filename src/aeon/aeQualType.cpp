@@ -101,12 +101,17 @@ std::string aeQualType::str() const
 		if (m_const)
 			str = "const ";
 
-		str += m_type->m_name;
+		str += m_type->getSymbolName();
 
 		if (m_handle)
 			str += "@";
 	}
 	return str;
+}
+
+const char* aeQualType::c_str()
+{
+	return str().c_str();
 }
 
 aeQualType::operator bool() const

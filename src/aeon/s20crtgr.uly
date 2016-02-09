@@ -98,7 +98,6 @@ void aeon_compiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCal
 
 	if (func->m_native)
 	{
-		emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
 		emitInstruction(OP_CALLMETHOD_NAT, functionIndex);
 	}
 	else

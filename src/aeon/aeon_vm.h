@@ -11,6 +11,8 @@
 class aeon_vm;
 class aeon_object;
 
+#define STATE_ASSERT (assert((esp > m_stack.data() + m_stack.size()); assert((esp < m_stack.data())); 
+
 /**
 	When pushing operands to the stack they
 	must be properly aligned and padded.
@@ -104,7 +106,7 @@ public:
 	void push_value(vm_value v)
 	{
 		esp -= sizeof(v);
-		*reinterpret_cast<vm_value*>(esp) = v;
+		*reinterpret_cast<vm_value*>(esp) = v;	
 	}
 
 	vm_value pop_value()
@@ -112,6 +114,7 @@ public:
 		vm_value v;
 		v = *reinterpret_cast<vm_value*>(esp);
 		esp += sizeof(vm_value);
+	
 		return v;
 	}
 

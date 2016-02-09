@@ -25,7 +25,7 @@ void aeon_vm::callMethod(aeon_object* object, const std::string& prototype)
 
 	m_stk.pushThisPtr(object->addr);
 	  
-	printf("callMethod: pushing this, pointing to %x popped\n", object->addr);
+	printf("callMethod: %s. pushing this, pointing to %x popped\n", prototype.c_str(), object->addr);
 
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
@@ -412,7 +412,7 @@ inline static void DoLoad(aeon_vm* vm, int addressMode, int offset, int kind)
 		if (kind == AEP_PTR)
 		{
 			vm_value v;
-			v.ptr = static_cast<void*>(dataPtr);
+			memcpy(&v.ptr, dataPtr, sizeof(void*));
 			vm->m_stk.push_value(v);
 			printf("Loading ptr %x\n", v.ptr);
 		}
@@ -556,6 +556,7 @@ void aeon_vm::execute(const aeThreadState& thread)
 				callinfo.pc = functionData->offset - 1;
 				callinfo.module = functionData->m_module;
 				callinfo.ebp = m_stk.ebp;
+				callinfo.function = functionData;
 				m_stk.frames.push_back(callinfo);
 				cl = &m_stk.frames[m_stk.frames.size() - 1];
 			vm_end
@@ -733,6 +734,10 @@ void aeon_vm::execute(const aeThreadState& thread)
 
 			vm_start(OP_MOV)
 				m_stk.esp += inst.arg1;
+			vm_end
+
+			vm_start(OP_BREAKPOINT)
+				__asm int 3;
 			vm_end
 
 			vm_start(OP_DTEST)

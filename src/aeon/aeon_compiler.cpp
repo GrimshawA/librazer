@@ -126,14 +126,19 @@ void aeon_compiler::destructLocalVar(VariableStorageInfo& var)
 	if (var.type.getType()->is_native)
 	{
 		//emitDebugPrint("Destroying a " + var.name);
-		emitInstruction(OP_LOAD, AEK_ESP);
-		emitInstruction(OP_CALLMETHOD_NAT, m_env->getNativeBehaviorIndex(var.type.getName(), "~f"));
-		emitInstruction(OP_MOV, AEK_ESP, sizeof(vm_value));
+		//emitInstruction(OP_LOAD, AEK_ESP);
+		//emitInstruction(OP_CALLMETHOD_NAT, m_env->getNativeBehaviorIndex(var.type.getName(), "~f"));
+		emitInstruction(OP_MOV, AEK_ESP, var.type.getSize());
 	}
 	else
 	{
-		emitInstruction(OP_MOV, AEK_ESP, sizeof(vm_value));
+		emitInstruction(OP_MOV, AEK_ESP, var.type.getSize());
 	}
+}
+
+void aeon_compiler::emitBreakpoint()
+{
+	emitInstruction(OP_BREAKPOINT);
 }
 
 void aeon_compiler::emit_local_construct_pod(int32_t size)
@@ -148,6 +153,9 @@ void aeon_compiler::emit_local_construct_object(int32_t size)
 
 void aeon_compiler::generate(aeNodeBase* root)
 {
+	// Entry point, let's set a proper offset
+	m_cursor = m_module->instructions.size();
+
 	for (std::size_t i = 0; i < root->m_items.size(); ++i)
 	{
 		if (root->m_items[i]->m_nodeType == AEN_FUNCTION)
@@ -167,8 +175,6 @@ void aeon_compiler::generate(aeNodeBase* root)
 			emitGlobalVarCode(static_cast<aeNodeRef*>(root->m_items[i]));
 		}
 	}
-
-	printf("======================= COMPILER FINISHED =================\n");
 }
 
 void aeon_compiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
@@ -405,6 +411,8 @@ void aeon_compiler::emitFunction(aeNodeFunction* func)
 	// let's just generate code for the executable block
 	emitBlock(func->m_block.get());
 
+	//emitBreakpoint();
+
 	emitReturnCode(nullptr);
 	m_caller = nullptr;
 	m_currentFunction = nullptr;
@@ -423,7 +431,7 @@ void aeon_compiler::emitBlock(aeNodeBlock* codeblock)
 	{
 		emitStatement(static_cast<aeNodeStatement*>(codeblock->m_items[i]));
 	}
-
+	
 	pop_scope();
 }
 
@@ -484,8 +492,6 @@ void aeon_compiler::emitStatement(aeNodeStatement* stmt)
 
 void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 {
-	printf("Var Declration\n");
-
 	aeType* varType = varDecl.m_type.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1]; 
 

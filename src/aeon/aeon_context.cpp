@@ -38,6 +38,7 @@ void aeon_context::register_primitive(const std::string& name, uint32_t size)
 {
 	aeType* type = new aeType(name, size);
 	type->m_name = name;
+	type->m_absoluteName = name;
 	typedb.push_back(type);
 }
 
@@ -96,16 +97,19 @@ void aeon_context::quick_build(const std::string& file)
 	aeon_compiler compiler;
 	std::string source = getFileSource(file);
 
+	if (source.empty())
+		return;
+
 	lexer.tokenize(source);
 
 	parser.ctx = this;
 	parser.startParse(lexer);
 
 	aeNodeModule* tree_root = parser.root;
-	tree_root->printSelf(0);
+	//tree_root->printSelf(0);
 
 	compiler.m_env = this;
-	compiler.m_module = create_module("main");
+	compiler.m_module = createModule("main");
 	compiler.generate(parser.root);
 }
 
@@ -189,7 +193,7 @@ uint32_t aeon_context::getFunctionIndexByName(const std::string& name)
 	return -1;
 }
 
-aeon_module* aeon_context::create_module(const std::string& name)
+aeon_module* aeon_context::createModule(const std::string& name)
 {
 	if (getModule(name))
 		return getModule(name);
@@ -206,23 +210,40 @@ void aeon_context::registerType(const std::string& name, std::size_t size, const
 	aeType* objinfo = new aeType(name, size);
 	objinfo->m_id = typedb.size() + 1;
 	objinfo->is_native = true;
+	objinfo->m_absoluteName = name;
 	typedb.push_back(objinfo);
 }
 
-void aeon_context::registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method)
+void aeon_context::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
 {
+	aeon_lexer lex; lex.tokenize(decl);
+	aeon_parser parser; parser.lex = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
+
 	auto typeInfo = getTypeInfo(typeName);
 
 	aeType::MethodInfo info;
 	info.methodCallback = method;
-	info.name = name;
+	info.name = decl;
 	typeInfo->m_methods.push_back(info);
 
-	aeFunction* ncall = new aeFunction;
-	ncall->decl = name;
-	ncall->fn = method;
-	ncall->m_native = true;
-	m_functionTable.push_back(ncall);
+	aeFunction* fn = new aeFunction;
+	fn->returnType = parser.parseQualType();
+	fn->m_absoluteName = typeName + "." + parser.Tok.text;
+	fn->decl = decl;
+	fn->fn = method;
+	fn->m_native = true;
+	parser.getNextToken(); parser.getNextToken();
+	while (parser.Tok.text != ")")
+	{
+		aeQualType paramType = parser.parseQualType();
+		fn->params.push_back(paramType);
+		printf("param %s\n", paramType.str().c_str());
+		if (parser.getNextToken().text != ",")
+			break;
+	}
+	m_functionTable.push_back(fn);
+
+	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void aeon_context::registerFunction(const std::string& decl, aeBindMethod func)
@@ -230,25 +251,25 @@ void aeon_context::registerFunction(const std::string& decl, aeBindMethod func)
 	aeon_lexer lex; lex.tokenize(decl);
 	aeon_parser parser; parser.lex = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
-	aeFunction* nf = new aeFunction;
-	nf->fn = func;
-	nf->decl = decl;
-	nf->m_native = true;
-	nf->returnType = parser.parseQualType();
-	nf->m_absoluteName = parser.Tok.text;
+	aeFunction* fn = new aeFunction;
+	fn->fn = func;
+	fn->decl = decl;
+	fn->m_native = true;
+	fn->returnType = parser.parseQualType();
+	fn->m_absoluteName = parser.Tok.text;
 	parser.getNextToken(); parser.getNextToken();
 	while (parser.Tok.text != ")")
 	{
 		aeQualType paramType = parser.parseQualType();
-		nf->params.push_back(paramType);
+		fn->params.push_back(paramType);
 		printf("param %s\n", paramType.str().c_str());
 		if (parser.getNextToken().text != ",")
 			break;
 	}
 
-	m_functionTable.push_back(nf);
+	m_functionTable.push_back(fn);
 
-	printf("EXPORTED %s: returns %s\n", nf->m_absoluteName.c_str(), nf->returnType.str().c_str());
+	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void aeon_context::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
@@ -298,7 +319,7 @@ aeType* aeon_context::getTypeInfo(const std::string& name)
 {
 	for (auto& obj : typedb)
 	{
-		if (obj->m_name == name)
+		if (obj->m_absoluteName == name)
 			return obj;
 	}
 

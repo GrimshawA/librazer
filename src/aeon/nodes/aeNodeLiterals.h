@@ -25,9 +25,9 @@ public:
 		return "\"" + value + "\"";
 	}
 
-	std::string str()
+	std::string str() const
 	{
-		return std::string(" string '") + value + "'";
+		return "\"" + value + "\"";
 	}
 
 	std::string value;

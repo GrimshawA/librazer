@@ -90,6 +90,9 @@ public:
 	/// Returns a formatted string for the type qualifier syntax
 	std::string str() const;
 
+	/// Get the c string version
+	const char* c_str();
+
 	/// Checks for validity
 	operator bool() const;
 

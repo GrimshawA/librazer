@@ -78,7 +78,7 @@ public:
 
 	aeon_module* getModule(const std::string name);
 
-	aeon_module* create_module(const std::string& name);
+	aeon_module* createModule(const std::string& name);
 
 
 	/// Registers a native type to work with the language

@@ -39,6 +39,7 @@ enum EOpCodes
 	OP_NEWOBJECT,        ///< Creates a new object of the selected type and pushes its objectref
 	OP_DELETEOBJECT,     ///< Release the objectref on the stack
 	OP_MOV,
+	OP_BREAKPOINT,
 	OP_DTEST,      ///< Just debug prints something for tests
 	OP_DEBUG,       ///< Dirty tricks for debug mode
 	Count

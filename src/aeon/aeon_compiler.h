@@ -160,6 +160,7 @@ public:
 	void emitNamespaceCode(aeNodeNamespace* namespace_node);
 	void emitGlobalVarCode(aeNodeRef* global_var);
 	void emitStatement(aeNodeStatement* stmt);
+	void emitBreakpoint();
 
 	// Statement compilation
 	void emitBlock(aeNodeBlock* codeblock);

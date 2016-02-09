@@ -810,7 +810,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 	aeNodeVarDecl* varDecl = new aeNodeVarDecl;
 	varDecl->m_type = parseQualType();
 
-	printf("var decl type %s\n", varDecl->m_type.str().c_str());
+	//printf("var decl type %s\n", varDecl->m_type.str().c_str());
 
 	std::string varName = Tok.text;
 	getNextToken();
@@ -906,7 +906,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 	std::string name = Tok.text;
 	getNextToken();
 
-	printf("IDENTITY IS %s\n", name.c_str());
+	//printf("IDENTITY IS %s\n", name.c_str());
 
 	if (Tok.type == AETK_OPENPAREN)
 	{
