@@ -10,7 +10,7 @@
 #include <memory>
 #include <stdint.h>
 
-class aeon_vm;
+class aeVM;
 class aeon_module;
 class aeon_object;
 
@@ -22,9 +22,9 @@ struct aeon_config
 	bool allowAutomaticTypeInference; ///< Anonymous variables assume a type from inference, but are immutable (and not aeon_variant), otherwise explicit inference is supported
 };
 
-typedef void(*aeBindMethod)(aeon_vm*);
+typedef void(*aeBindMethod)(aeVM*);
 typedef void(*aeDestructorMethod)(void*);
-typedef void(*aeConstructorMethod)(void*, aeon_vm*);
+typedef void(*aeConstructorMethod)(void*, aeVM*);
 
 typedef int aeLiteralId;
 typedef int aeFunctionId;

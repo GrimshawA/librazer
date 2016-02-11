@@ -5,12 +5,19 @@
 aeNodeFor::aeNodeFor()
 {
 	m_nodeType = AEN_FOR;
-
-	//block = new aeNodeBlock();
-	//add(block);
 }
 
-std::string aeNodeFor::str()
+std::string aeNodeFor::str() const
 {
-	return std::string("For ") + expr->str() + ";" + incrExpr->str();
+	std::string s = "for(";
+	if (initStatement)
+		s += initStatement->str();
+	s += ";";
+	if (expr)
+		s += expr->str();
+	s += ";";
+	if (incrExpr)
+		s += incrExpr->str();
+	s += ")";
+	return s;
 }

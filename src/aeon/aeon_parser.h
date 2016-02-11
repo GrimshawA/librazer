@@ -56,6 +56,9 @@ class aeon_parser
 
 		void                     startGather(aeon_lexer& lexer);
 		void                     startParse(aeon_lexer& lexer);
+
+		bool                     matchesVarDecl();
+
 		void                     parseValue(aeon_lexer& lexer, aeon_value& rootValue);
 		aeNodeStatement*         parseStatement();
 		aeNodeBranch*            parseBranch();

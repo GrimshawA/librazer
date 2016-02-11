@@ -16,6 +16,15 @@ aeQualType::aeQualType()
 
 }
 
+aeQualType::aeQualType(aeType* type)
+: m_type(type)
+, m_templated(false)
+, m_const(false)
+, m_handle(false)
+{
+
+}
+
 void aeQualType::parse(const std::string& str, aeon_context* ctx)
 {
 
@@ -102,6 +111,16 @@ std::string aeQualType::str() const
 			str = "const ";
 
 		str += m_type->getSymbolName();
+
+		if (m_templateArgs.size() > 0)
+		{
+			str += "<";
+			for (auto& i : m_templateArgs)
+			{
+				str += i.str();
+			}
+			str += ">";
+		}
 
 		if (m_handle)
 			str += "@";

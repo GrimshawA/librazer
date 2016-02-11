@@ -6,11 +6,11 @@
 
 #include "aeDynamicType.h"
 
-class aeon_vm;
+class aeVM;
 
 	struct atom_generic
 	{
-		aeon_vm* vm;
+		aeVM* vm;
 
 		int getarg_int(uint32_t index)
 		{

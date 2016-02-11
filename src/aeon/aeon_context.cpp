@@ -1,6 +1,6 @@
 #include "aeon_context.h"
 #include "aeon_object.h"
-#include "aeon_vm.h"
+#include <aeon/aeVM.h>
 #include "aeon_parser.h"
 #include "aeon_lexer.h"
 #include "aeon_compiler.h"
@@ -296,7 +296,7 @@ void aeon_context::registerTypeDestructor(const std::string& typeName, aeDestruc
 void aeon_context::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
 {
 	auto typeInfo = getTypeInfo(typeName);
-	aeType::FieldInfo info;
+	aeField info;
 	info.name = decl;
 	info.offset = offset;
 	typeInfo->m_fields.push_back(info);

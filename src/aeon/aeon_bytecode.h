@@ -16,7 +16,6 @@ enum EOpCodes
 	OP_RETURN,         ///< Returns from a function immediately
 	OP_JZ,             ///< Jump if eax == 0 to relative address (pc += offset)
 	OP_JMP,            ///< jmp to an absolute location pc = x
-	OP_PUSHARG,        ///< 
 	OP_LOAD,           ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADADDR,           ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADK,          ///< load a constant into stack

@@ -11,9 +11,10 @@ class aeNodeWhile : public aeNodeStatement
 public:
 
 	bool           doWhile;
-	aeNodeExpr*      expr;
+	std::unique_ptr<aeNodeExpr>  expr;
 	std::unique_ptr<aeNodeBlock> block;
 
+public:
 	aeNodeWhile();
 
 	std::string str();

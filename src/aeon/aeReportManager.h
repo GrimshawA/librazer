@@ -2,7 +2,7 @@
 #define aeReportManager_h__
 
 #include "aeon_bytecode.h"
-#include "aeon_vm.h"
+#include <aeon/aeVM.h>
 
 #include <vector>
 

@@ -1,6 +1,6 @@
 #include "aeon_compiler.h"
 #include "aeon_bytecode.h"
-#include <aeon/aeVM.h>
+#include "aeon_vm.h"
 #include "aeon_context.h"
 #include "nodes/aeNodeNew.h"
 #include "nodes/aeNodeClass.h"
@@ -281,13 +281,11 @@ void aeon_compiler::throwError(const std::string& message)
 
 void aeon_compiler::emitBranchCode(aeNodeBranch* cond)
 {
-	aeNodeExpr* test_expr = cond->m_expression.get();
-	aeNodeBlock* nested_code = cond->m_block.get();
+	aeNodeExpr* test_expr = cond->m_expression;
+	aeNodeBlock* nested_code = cond->m_block;
 
 	// The expression must evaluate first
-	aeExprContext exprContext;
-	exprContext.expectedResult = aeQualType(m_env->getTypeInfo("bool"));
-	emitExpressionEval(test_expr, aeExprContext());
+	emitExpressionEval(test_expr, ExpressionEvalContext());
 
 	// Now that the expression is evaluated and stored in a register, let's set the jmp
 	emitInstruction(OP_JZ, 0, 0);
@@ -317,55 +315,58 @@ void aeon_compiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
 
 void aeon_compiler::emitForLoop(aeNodeFor* forloop)
 {
-	push_scope();
+	/*push_scope();
 
 	// Emit the code that initializes the control vars
 	// They are automatically scoped and are destructed in the end of the loop
-	emitStatement(forloop->initStatement.get());
+	for (auto& initExpr : forloop->initExpressions)
+	{
+		ExpressionEvalContext ectx;
+		emitExpressionEval(initExpr, ectx);
+		emitInstruction(OP_DTEST, 4);
+	}
 
 	int pc_expreval = cursor(); // track the first instruction of this while, to jump back to evaluation each iteration
 
-	aeExprContext ectx;
-	ectx.must_be_rvalue = true;
-	emitExpressionEval(forloop->expr.get(), ectx);
+	ExpressionEvalContext ectx;
+	emitExpressionEval(forloop->expr, ectx);
 
 	// Evaluate the expression
-	int jzInstrIndex = emitInstruction(OP_JZ, 0, 0, 0);
+	int jmptestpc = emitInstruction(OP_JZ, 0, 0, 0);
 
-	emitBlock(forloop->block.get());
+	emitScopeCode(forloop->block);
 
 	// After the code executes, apply the update expression
-	emitExpressionEval(forloop->incrExpr.get(), ectx);
+	emitExpressionEval(forloop->incrExpr, ectx);
 
 	// After the block terminates normally, we always go back up to expression evaluation
 	// when the expression fails, it will jump right away to after this
-	emitInstruction(OP_JMP, pc_expreval - 1);
+	emitInstruction(OP_JMP, pc_expreval);
 
 	// if the expression evaluates false, jump to after the for
-	setinst_a(m_module->instructions[jzInstrIndex], cursor() - jzInstrIndex - 1);
+	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
 
-	pop_scope();
+	pop_scope();*/
 }
 
 
 void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 {
-	int pc_expreval = cursor();
+	/*int pc_expreval = cursor();
 
-	aeExprContext ectx;
-	ectx.must_be_rvalue = true;
-	emitExpressionEval(whileloop->expr.get(), ectx);
+	ExpressionEvalContext ectx;
+	emitExpressionEval(whileloop->expr, ectx);
 
 	int jmptestpc = emitInstruction(OP_JZ, 0, 0, 0);
 
-	emitBlock(whileloop->block.get());
+	emitScopeCode(whileloop->block);
 
 	// After the block terminates normally, we always go back up to expression evaluation
 	// when the expression fails, it will jump right away to after this
 	emitInstruction(OP_JMP, pc_expreval - 1);
 
 	// if the expression evaluates false, jump to after the while
-	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
+	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);*/
 }
 
 void aeon_compiler::emitFunction(aeNodeFunction* func)

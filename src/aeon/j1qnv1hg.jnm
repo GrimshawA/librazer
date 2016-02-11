@@ -1,6 +1,6 @@
 #include "aeon_compiler.h"
 #include "aeon_bytecode.h"
-#include <aeon/aeVM.h>
+#include "aeon_vm.h"
 #include "aeon_context.h"
 #include "nodes/aeNodeNew.h"
 
@@ -124,10 +124,6 @@ void aeon_compiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 	if (operation->oper == "+" || operation->oper == "-" || operation->oper == "*" || operation->oper == "/")
 	{
 		emitArithmeticOp(operation, aeExprContext());
-	}
-	if (operation->isRelational())
-	{
-		emitConditionalOp(operation/*, aeExprContext()*/);
 	}
 }
 
@@ -345,13 +341,8 @@ void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 		context denies it.
 		The result is either true or false, represented as bool.
 	*/
-	aeExprContext contextA;
-	contextA.rx_value = true;
-	emitExpressionEval(operation->operandA, contextA);
-
-	aeExprContext contextB;
-	contextB.rx_value = true;
-	emitExpressionEval(operation->operandB, contextB);
+	emitExpressionEval(operation->operandA, aeExprContext());
+	emitExpressionEval(operation->operandB, aeExprContext());
 
 	if (operation->oper == ">")
 	{
@@ -360,8 +351,7 @@ void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 
 	if (operation->oper == "<")
 	{
-		emitDebugPrint("OP_LT " + operation->operandA->str() + " " + operation->operandB->str());
-		emitInstruction(OP_LT, AEP_INT32);
+		emitInstruction(OP_LT, 0);
 	}
 
 	if (operation->oper == ">=")
@@ -412,11 +402,11 @@ void aeon_compiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprC
 		if (parentExprContext.expectedResult.m_handle)
 			kind = AEP_PTR;
 
-		emitInstruction(OP_LOAD, loadFrom, offsetOnRefFrame, kind);
+		emitInstruction(OP_LOAD, loadFrom, varInfo.offset_bp, kind);
 	}
 	else
 	{
-		emitInstruction(OP_LOADADDR, loadFrom, offsetOnRefFrame);
+		emitInstruction(OP_LOADADDR, loadFrom, varInfo.offset_bp);
 	}
 }
 

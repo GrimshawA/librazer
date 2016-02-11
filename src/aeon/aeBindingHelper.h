@@ -1,19 +1,19 @@
 #ifndef aeBindingHelper_h__
 #define aeBindingHelper_h__
 
-#include "aeon_vm.h"
+#include <aeon/aeVM.h>
 
 template<typename T>
 class aeBindingHelper
 {
 public:
-	static void DefaultConstructor(aeon_vm* vm)
+	static void DefaultConstructor(aeVM* vm)
 	{
 		void* memory = vm->m_stk.pop_value().ptr;
 		new (memory) T();
 	}
 
-	static void Destructor(aeon_vm* vm)
+	static void Destructor(aeVM* vm)
 	{
 		void* memory = vm->m_stk.pop_value().ptr;
 		static_cast<T*>(memory)->~T();

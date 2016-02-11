@@ -17,7 +17,7 @@
 #include <stack>
 #include <stdint.h>
 
-class aeon_vm;
+class aeVM;
 class aeon_context;
 
 /**

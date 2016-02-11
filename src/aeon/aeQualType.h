@@ -54,6 +54,9 @@ public:
 	/// Initializes to void which means a null type or invalid state
 	aeQualType();
 
+	/// Initialize from a type
+	aeQualType(aeType* type);
+
 	/// Get the static size of this type
 	uint32_t getSize();
 

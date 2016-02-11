@@ -1,5 +1,5 @@
 #include "aeon_generics.h"
-#include "aeon_vm.h"
+#include <aeon/aeVM.h>
 
 float atom_generic::getArgFloat(uint32_t index)
 {

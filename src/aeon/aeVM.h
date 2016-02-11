@@ -8,7 +8,7 @@
 
 #include "aeon_context.h"
 
-class aeon_vm;
+class aeVM;
 class aeon_object;
 
 #define STATE_ASSERT (assert((esp > m_stack.data() + m_stack.size()); assert((esp < m_stack.data())); 
@@ -89,6 +89,7 @@ public:
 	unsigned char*              esp;
 	unsigned char*              ebp;
 	int                         pc;
+	aeStackFrame*               cl;
 
 	aeThreadState()
 	{
@@ -124,7 +125,7 @@ public:
 		thisvm.ptr = reinterpret_cast<vm_value*>(ebp - int32_t(sizeof(vm_value)))->ptr;
 		//thisvm.u64 -= sizeof(vm_value);
 		//thisvm = *(vm_value*)(ebp - sizeof(vm_value));
-		printf("thisptr is %x from %x - 8\n", thisvm.ptr, ebp);
+		//printf("thisptr is %x from %x - 8\n", thisvm.ptr, ebp);
 		return thisvm;
 	}
 
@@ -134,7 +135,7 @@ public:
 		v.ptr = ptr;
 		push_value(v);
 
-		printf("pushed this %x, read %x\n", ptr, getThisPtr().ptr);
+		//printf("pushed this %x, read %x\n", ptr, getThisPtr().ptr);
 	}
 
 	void push_addr(void* ptr)
@@ -170,22 +171,16 @@ public:
 	Its job is simply to take a starting member function or global, and execute it 
 	and its nested calls until it ends.
 */
-class aeon_vm
+class aeVM
 {
 	public:
 
-		aeon_context*              ctx;		
+		aeon_context*           m_ctx;
 		aeThreadState           m_stk;
-
-		typedef unsigned char* SFLocalVar;
-
-		/// Every global and local variable gets its own entry here
-		/// The vm uses these to do memory management
-		std::vector<SFLocalVar> localsStack;
 
 	public:
 
-		aeon_vm();
+		aeVM();
 
 		aeon_module* get_current_mod();
 
@@ -193,7 +188,7 @@ class aeon_vm
 
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
-		void execute(const aeThreadState& thread);
+		void execute(aeThreadState& threadInfo);
 
 		/// Call a method on the given script object by its name
 		void callMethod(aeon_object* object, const std::string& prototype);

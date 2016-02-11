@@ -11,7 +11,7 @@ aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std
 	oper = _oper;
 }
 
-bool aeNodeBinaryOperator::isBooleanOperator()
+bool aeNodeBinaryOperator::isRelational()
 {
 	return (oper == ">") || (oper == ">=") || (oper == "<") || (oper == "<=")
 		|| (oper == "==") || (oper == "!=");
@@ -25,7 +25,7 @@ bool aeNodeBinaryOperator::isArithmetic()
 aeQualType aeNodeBinaryOperator::getQualifiedType(aeon_compiler* c)
 {
 	aeQualType qt;
-	if (isBooleanOperator())
+	if (isRelational())
 	{
 		qt.m_type = c->m_env->getTypeInfo("bool");
 	}

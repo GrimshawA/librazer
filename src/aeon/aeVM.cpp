@@ -1,4 +1,4 @@
-#include "aeon_vm.h"
+#include <aeon/aeVM.h>
 #include "aeon_bytecode.h"
 #include "aeon_context.h"
 #include "aeon_object.h"
@@ -8,65 +8,67 @@
 
 #define LOGVM(x, a, b, c) printf("[vm] %s %d %d %d\n", #x, a, b, c);
 
+#define VMLOGLEVEL 5
+#define vm_log(tag, level, STR) if(level > VMLOGLEVEL) printf("%s: %s\n", tag, STR);
 
-aeon_vm::aeon_vm()
+aeVM::aeVM()
 {
 	
 }
 
-aeon_module* aeon_vm::get_current_mod()
+aeon_module* aeVM::get_current_mod()
 {
 	return m_stk.frames[m_stk.frames.size() - 1].module;
 }
 
-void aeon_vm::callMethod(aeon_object* object, const std::string& prototype)
+void aeVM::callMethod(aeon_object* object, const std::string& prototype)
 {
 	m_stk.ebp = m_stk.esp;
 
 	m_stk.pushThisPtr(object->addr);
 	  
-	printf("callMethod: %s. pushing this, pointing to %x popped\n", prototype.c_str(), object->addr);
+	//printf("callMethod: %s. pushing this, pointing to %x popped\n", prototype.c_str(), object->addr);
 
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
 
-void aeon_vm::callMethod(aeon_object* object, uint32_t methodId)
+void aeVM::callMethod(aeon_object* object, uint32_t methodId)
 {
 
 }
 
-void aeon_vm::prepare(aeFunctionId function)
+void aeVM::prepare(aeFunctionId function)
 {
 
 }
 
-void aeon_vm::pushThis(void* obj)
+void aeVM::pushThis(void* obj)
 {
 	m_stk.push_addr(obj);
 }
 
-void aeon_vm::setContext(aeon_context* context)
+void aeVM::setContext(aeon_context* context)
 {
-	ctx = context;
+	m_ctx = context;
 } 
 
-void aeon_vm::setArgFloat(uint32_t index, float v)
+void aeVM::setArgFloat(uint32_t index, float v)
 {
 	*(m_stk.esp - sizeof(aeDynamicType)* index) = v;
 }
 
-float aeon_vm::getArgFloat(uint32_t index)
+float aeVM::getArgFloat(uint32_t index)
 {
 	return *(m_stk.esp - index * sizeof(aeDynamicType));
 }
 
-void aeon_vm::setArg(uint32_t index, aeDynamicType v)
+void aeVM::setArg(uint32_t index, aeDynamicType v)
 {
 	uint64_t* argAddress = reinterpret_cast<uint64_t*>((m_stk.esp - sizeof(uint64_t)* index));
 	*argAddress = v._u64;
 }
 
-aeDynamicType aeon_vm::getArg(uint32_t index)
+aeDynamicType aeVM::getArg(uint32_t index)
 {
 	uint64_t* argAddress = reinterpret_cast<uint64_t*>((m_stk.esp - sizeof(uint64_t)* index));
 	aeDynamicType v;
@@ -92,43 +94,43 @@ void printBits2(size_t const size, void const * const ptr)
 		puts("");
 }
 
-void aeon_vm::push(uint64_t n)
+void aeVM::push(uint64_t n)
 {
 	m_stk.esp -= 8;
 	memcpy(m_stk.esp, &n, sizeof(n));
 	//Log("Pushed to stack: %d", n);
 }
 
-void aeon_vm::push_float(float value)
+void aeVM::push_float(float value)
 {
 	m_stk.esp -= sizeof(value);
 	memcpy(m_stk.esp, &value, sizeof(value));
 }
 
-void aeon_vm::push_double(double value)
+void aeVM::push_double(double value)
 {
 	m_stk.esp -= sizeof(value);
 	memcpy(m_stk.esp, &value, sizeof(value));
 }
 
-void aeon_vm::push_int32(int32_t value)
+void aeVM::push_int32(int32_t value)
 {
 	m_stk.esp -= sizeof(value);
 	memcpy(m_stk.esp, &value, sizeof(value));
 }
 
-void aeon_vm::push_bytes(uint32_t bytes)
+void aeVM::push_bytes(uint32_t bytes)
 {
 	m_stk.esp -= bytes;
 }
 
-void aeon_vm::push_objectref(atom_objectref ref)
+void aeVM::push_objectref(atom_objectref ref)
 {
 	m_stk.esp -= sizeof(ref);
 	memcpy(m_stk.esp, &ref, sizeof(ref));
 }
 
-uint64_t aeon_vm::pop()
+uint64_t aeVM::pop()
 {
 	uint64_t stacktop;
 	memcpy(&stacktop, m_stk.esp, sizeof(uint64_t));
@@ -136,7 +138,7 @@ uint64_t aeon_vm::pop()
 	return stacktop;
 }
 
-float aeon_vm::pop_float()
+float aeVM::pop_float()
 {
 	float value;
 	memcpy(&value, m_stk.esp, sizeof(float));
@@ -144,7 +146,7 @@ float aeon_vm::pop_float()
 	return value;
 }
 
-double aeon_vm::pop_double()
+double aeVM::pop_double()
 {
 	double value;
 	memcpy(&value, m_stk.esp, sizeof(double));
@@ -152,7 +154,7 @@ double aeon_vm::pop_double()
 	return value;
 }
 
-int32_t aeon_vm::pop_int32()
+int32_t aeVM::pop_int32()
 {
 	int32_t value;
 	memcpy(&value, m_stk.esp, sizeof(int32_t));
@@ -160,7 +162,7 @@ int32_t aeon_vm::pop_int32()
 	return value;
 }
 
-void aeon_vm::call(aeon_module& module, const char* func)
+void aeVM::call(aeon_module& module, const char* func)
 {
 	aeStackFrame callinfo;
 	callinfo.name = func;
@@ -168,7 +170,7 @@ void aeon_vm::call(aeon_module& module, const char* func)
 
 	aeFunctionId functionId = 0;
 
-	aeFunction* function = ctx->getFunctionByName(func);
+	aeFunction* function = m_ctx->getFunctionByName(func);
 	int i = 0;
 
 	if (function)
@@ -185,6 +187,7 @@ void aeon_vm::call(aeon_module& module, const char* func)
 		callinfo.pc = function->offset;
 		callinfo.module = &module;
 		callinfo.ebp = m_stk.esp;
+		callinfo.function = function;
 		m_stk.frames.push_back(callinfo);
 
 		// Launch the thread from this entry point
@@ -196,7 +199,7 @@ void aeon_vm::call(aeon_module& module, const char* func)
 	}
 }
 
-inline static void DoAdd(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoAdd(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -218,7 +221,7 @@ inline static void DoAdd(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoSub(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoSub(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value b = vm->m_stk.pop_value();
 	vm_value a = vm->m_stk.pop_value();
@@ -240,7 +243,7 @@ inline static void DoSub(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoMul(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoMul(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -262,12 +265,12 @@ inline static void DoMul(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoDiv(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoDiv(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value b = vm->m_stk.pop_value();
 	vm_value a = vm->m_stk.pop_value();
 
-	printf("DIV %d %d\n", a.i32, b.i32);
+	//printf("DIV %d %d\n", a.i32, b.i32);
 
 	switch (ptype)
 	{
@@ -286,7 +289,7 @@ inline static void DoDiv(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoMod(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoMod(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -308,7 +311,7 @@ inline static void DoMod(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoConversion(aeon_vm* vm, AeonPrimitiveType t1, AeonPrimitiveType t2)
+inline static void DoConversion(aeVM* vm, AeonPrimitiveType t1, AeonPrimitiveType t2)
 {
 	vm_value v = vm->m_stk.pop_value();
 	
@@ -328,7 +331,7 @@ inline static void DoConversion(aeon_vm* vm, AeonPrimitiveType t1, AeonPrimitive
 	vm->m_stk.push_value(v);
 }
 
-inline static void DoEquals(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoEquals(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -350,7 +353,7 @@ inline static void DoEquals(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoNotEquals(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoNotEquals(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -372,7 +375,7 @@ inline static void DoNotEquals(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoAssign(aeon_vm* vm, int mode, int offset, int type)
+inline static void DoAssign(aeVM* vm, int mode, int offset, int type)
 {
 	// Assign modes:
 	// pod_copy - simply copy N bytes from the loaded value into the target address
@@ -382,21 +385,24 @@ inline static void DoAssign(aeon_vm* vm, int mode, int offset, int type)
 	if (type == AEP_PTR)
 	{
 		memcpy(addr.ptr, &operand.ptr, 4);
-		printf("OP_SET ptr [%x now %x]\n", addr.ptr, operand.ptr);
+		//printf("OP_SET ptr [%x now %x]\n", addr.ptr, operand.ptr);
 	}
 	else
 	{
 		memcpy(addr.ptr, &operand.i32, 4);
-		printf("OP_SET [%x now %d]\n", addr.ptr, operand.i32);
+		//printf("OP_SET [%x now %d]\n", addr.ptr, operand.i32);
 	}
 }
 
-inline static void DoLoad(aeon_vm* vm, int addressMode, int offset, int kind)
+inline static void DoLoad(aeVM* vm, int addressMode, int offset, int kind)
 {
 	void* dataPtr = nullptr;
+
 	if (addressMode == AEK_THIS)
 	{
-		
+		vm_value thisPtr = vm->m_stk.pop_value();
+		dataPtr = static_cast<unsigned char*>(thisPtr.ptr) + offset;
+		//printf("LOAD FROM POPPED THIS|\n");
 	}
 	else if (addressMode == AEK_EBP)
 	{
@@ -414,86 +420,83 @@ inline static void DoLoad(aeon_vm* vm, int addressMode, int offset, int kind)
 			vm_value v;
 			memcpy(&v.ptr, dataPtr, sizeof(void*));
 			vm->m_stk.push_value(v);
-			printf("Loading ptr %x\n", v.ptr);
+			//printf("Loading ptr %x\n", v.ptr);
 		}
 		else
 		{
 			vm_value v;
 			v.i32 = *static_cast<int32_t*>(dataPtr);
 			vm->m_stk.push_value(v);
-			printf("Loading %d\n", v.i32);
+			//printf("Loading %d\n", v.i32);
 		}
 	}
 }
 
-inline static void DoLoadAddr(aeon_vm* vm, int addressMode, int offset, int x)
+inline static void DoLoadAddr(aeVM* vm, int addressMode, int offset, int x)
 {
 	if (addressMode == AEK_THIS)
 	{
-		vm_value thisPtr = vm->m_stk.getThisPtr();
+		vm_value thisPtr = vm->m_stk.pop_value();
 		thisPtr.ptr = (unsigned char*)thisPtr.ptr + offset;
-		/*
-		vm_value offsetedAddr = *thisObjAddr;
-		offsetedAddr.ptr = (char*)offsetedAddr.ptr + inst.arg1;*/
 		vm->m_stk.push_value(thisPtr);
-		printf("OP_LOAD THIS = %x (offset %d)\n", vm->m_stk.getThisPtr().ptr, offset);
+		//printf("OP_LOADADDR THIS = %x (offset %d)\n", vm->m_stk.getThisPtr().ptr, offset);
 	}
 	else if (addressMode == AEK_EBP)
 	{
 		vm_value val;
 		val.ptr = vm->m_stk.ebp - offset;
 		vm->m_stk.push_value(val);
-		printf("OP_LOADADDR EBP address %x (offset %d)\n", val.ptr, offset);
+		//printf("OP_LOADADDR EBP address %x (offset %d)\n", val.ptr, offset);
 	}
 	else if (addressMode == AEK_ESP)
 	{
 		vm_value v;
 		v.ptr = vm->m_stk.esp;
 		vm->m_stk.push_value(v);
-		printf("OP_LOAD ESP address %x\n", v.ptr);
+		//printf("OP_LOAD ESP address %x\n", v.ptr);
 	}
 }
 
-inline static void DoLoadConstant(aeon_vm* vm, int primType, int index, int x)
+inline static void DoLoadConstant(aeVM* vm, int primType, int index, int x)
 {
 	vm_value kVal;
 	if (primType == AEK_FLOAT)
 	{
-		kVal.fp = vm->ctx->m_floatTable[index];
-		printf("OP_LOADK FLOAT %f constant\n", kVal.fp);
+		kVal.fp = vm->m_ctx->m_floatTable[index];
+		//printf("OP_LOADK FLOAT %f constant\n", kVal.fp);
 	}
 	else if (primType == AEK_INT)
 	{
-		kVal.i32 = vm->ctx->int_literals[index];
-		printf("OP_LOADK INT32 %d constant\n", kVal.i32);
+		kVal.i32 = vm->m_ctx->int_literals[index];
+		//printf("OP_LOADK INT32 %d constant\n", kVal.i32);
 	}
 	else if (primType == AEK_STRING)
 	{
 		kVal.i32 = index;
-		printf("OP_LOADK string %d constant\n", kVal.i32);
+		//printf("OP_LOADK string %d constant\n", kVal.i32);
 	}
 	vm->m_stk.push_value(kVal);
 }
 
-inline static void DoLogicalNot(aeon_vm* vm)
+inline static void DoLogicalNot(aeVM* vm)
 {
 	vm_value a = vm->m_stk.pop_value();
 	a.i64 = !a.i64;
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoNewObject(aeon_vm* vm, int type)
+inline static void DoNewObject(aeVM* vm, int type)
 {
 	vm_value obj;
 	obj.ptr = nullptr;
 	vm->m_stk.push_value(obj);
 }
 
-inline static void DoLessThan(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoLessThan(aeVM* vm, AeonPrimitiveType ptype)
 {
-	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
-	 
+	vm_value a = vm->m_stk.pop_value();
+	//printf("LT OP %d < %d = %d\n", a.i32, b.i32, a.i32 < b.i32);
 
 	switch (ptype)
 	{
@@ -504,7 +507,7 @@ inline static void DoLessThan(aeon_vm* vm, AeonPrimitiveType ptype)
 	case AEP_UINT16: a.u16 = a.u16 < b.u16; break;
 	case AEP_INT16: a.i16 = a.i16 < b.i16; break;
 	case AEP_UINT32: a.u32 = a.u32 < b.u32; break;
-	case AEP_INT32: a.i32 = a.i32 < b.i32; break;
+	case AEP_INT32: a.i32 = (bool)(a.i32 < b.i32); break;
 	case AEP_UINT64: a.u64 = a.u64 < b.u64; break;
 	case AEP_INT64: a.i64 = a.i64 < b.i64; break;
 	}
@@ -512,7 +515,7 @@ inline static void DoLessThan(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoGreaterThan(aeon_vm* vm, AeonPrimitiveType ptype)
+inline static void DoGreaterThan(aeVM* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -534,31 +537,81 @@ inline static void DoGreaterThan(aeon_vm* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-void aeon_vm::execute(const aeThreadState& thread)
+static inline void DoJumpIfZero(aeVM* vm, int jumpOffset)
 {
-	aeStackFrame* cl = &m_stk.frames[m_stk.frames.size() - 1];
+	aeStackFrame* cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
 
-	for (; cl->pc < cl->module->instructions.size(); ++cl->pc)
+	int value = vm->m_stk.pop_value().i32;
+	if (value == 0)
 	{
-		aeon_instruction& inst = cl->module->instructions[cl->pc];
+		cl->pc += jumpOffset;
+		//Log("the if condition was false. eax %d", eax);
+	}
+	else
+	{
+		//Log("the if condition was true. eax %d", eax);
+	}
+	//Log("[jz] test %d %d", cond, pcoffset);
+}
+
+static inline void DoJump(aeVM* vm, int address)
+{
+	aeStackFrame* cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
+	cl->pc = address;
+}
+
+static inline void DoCall(aeVM* vm, int functionIndex)
+{
+	aeFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
+
+	aeStackFrame callinfo;
+	callinfo.name = "unknown";
+	callinfo.pc = functionData->offset - 1;
+	callinfo.module = functionData->m_module;
+	callinfo.ebp = vm->m_stk.ebp;
+	callinfo.function = functionData;
+	vm->m_stk.frames.push_back(callinfo);
+	vm->m_stk.cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
+}
+
+static inline bool DoReturn(aeVM* vm)
+{
+	vm->m_stk.frames.pop_back();
+	if (vm->m_stk.frames.size() == 0)
+	{
+		return true;
+	}
+	else
+	{
+		if (vm->m_stk.ebp != vm->m_stk.esp)
+			printf("Script function returned without popping all stack memory!\n");
+		else
+			printf("All memory is as expected\n");
+
+		// restore underlying function
+		vm->m_stk.cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
+		vm->m_stk.ebp = vm->m_stk.cl->ebp;
+	}
+
+	return false;
+}
+
+void aeVM::execute(aeThreadState& threadInfo)
+{
+	threadInfo.cl = &m_stk.frames[m_stk.frames.size() - 1];
+
+	for (; threadInfo.cl->pc < threadInfo.cl->module->instructions.size(); ++threadInfo.cl->pc)
+	{
+		aeon_instruction& inst = threadInfo.cl->module->instructions[threadInfo.cl->pc];
 		switch (inst.opcode)
 		{
 			vm_start(OP_PREPARE)
-				aeFunction* functionData = ctx->m_functionTable[inst.arg0];
+				aeFunction* functionData = m_ctx->m_functionTable[inst.arg0];
 				m_stk.esp -= functionData->returnValueSize;
 			vm_end
 
 			vm_start(OP_CALL)
-				aeFunction* functionData = ctx->m_functionTable[inst.arg0];
-				
-				aeStackFrame callinfo;
-				callinfo.name = "unknown";
-				callinfo.pc = functionData->offset - 1;
-				callinfo.module = functionData->m_module;
-				callinfo.ebp = m_stk.ebp;
-				callinfo.function = functionData;
-				m_stk.frames.push_back(callinfo);
-				cl = &m_stk.frames[m_stk.frames.size() - 1];
+				DoCall(this, inst.arg0);
 			vm_end
 
 			vm_start(OP_CALLVIRTUAL)
@@ -588,56 +641,20 @@ void aeon_vm::execute(const aeThreadState& thread)
 			vm_end
 
 			vm_start(OP_CALLMETHOD_NAT)
-				ctx->m_functionTable[inst.arg0]->fn(this);
+				m_ctx->m_functionTable[inst.arg0]->fn(this);
 			vm_end
 
 			vm_start(OP_RETURN)
-				m_stk.frames.pop_back();
-				if (m_stk.frames.size() == 0)
-				{
+				if (DoReturn(this))
 					return;
-				}
-				else
-				{
-					if (m_stk.ebp != m_stk.esp)
-						printf("Script function returned without popping all stack memory!\n");
-					else
-						printf("All memory is as expected\n");
-
-					// restore underlying function
-					cl = &m_stk.frames[m_stk.frames.size() - 1];
-					m_stk.ebp = cl->ebp;
-				}
 			vm_end
 
 			vm_start(OP_JZ)
-				int pcoffset = getinst_a(inst);
-				int cond = pop();
-				if (cond == 0)
-				{
-					 cl->pc += pcoffset;
-					 //Log("the if condition was false. eax %d", eax);
-				}
-				else
-				{
-					 //Log("the if condition was true. eax %d", eax);
-				}
-				//Log("[jz] test %d %d", cond, pcoffset);
+				DoJumpIfZero(this, inst.arg0);
 			vm_end
 
 			vm_start(OP_JMP)
-				int newpc = getinst_a(inst);
-				cl->pc = newpc;
-			vm_end
-
-			vm_start(OP_PUSHARG)
-				uint32_t argIndex = getinst_a(inst);
-				uint32_t argType = getinst_b(inst);
-				// uint64_t argValue = cl->module->instructions[++cl->pc];
-				uint64_t argValue = 0;
-				aeDynamicType  argVariant; argVariant._u64 = argValue; argVariant.type = argType;
-
-				setArg(argIndex, argVariant);
+				DoJump(this, inst.arg0);
 			vm_end
 
 			vm_start(OP_LOAD)
@@ -721,8 +738,8 @@ void aeon_vm::execute(const aeThreadState& thread)
 
 			vm_start(OP_SIZEOF)
 				uint32_t type_token = getinst_a(inst);
-				push(ctx->typedb[type_token]->getSize());
-				vm_end
+				push(m_ctx->typedb[type_token]->getSize());
+			vm_end
 
 			vm_start(OP_NEWOBJECT)
 				DoNewObject(this, inst.arg0);				
@@ -745,7 +762,7 @@ void aeon_vm::execute(const aeThreadState& thread)
 			vm_end
 
 			vm_start(OP_DEBUG)
-				printf("DEBUG: %s\n", ctx->string_literals[inst.arg1].c_str());
+				vm_log("DEBUG", 0, m_ctx->string_literals[inst.arg1].c_str());
 			vm_end
 
 		} // end of switch

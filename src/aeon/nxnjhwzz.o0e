@@ -84,14 +84,19 @@ aeNodeBranch* aeon_parser::parseBranch()
 	aeNodeBranch* branchNode = new aeNodeBranch;
 
 	getNextToken();
+	aeNodeBranch* ifbranch = new aeNodeBranch();
+	block->add(ifbranch);
 
 	getNextToken(); // go into the first part of the expression
-	branchNode->m_expression.reset(parseExpression());
-		
+	ifbranch->m_expression = parseExpression();
+	if (ifbranch->m_expression)
+	ifbranch->add(ifbranch->m_expression);
+
+	//Log("Parsing now the if nested block");
+
 	getNextToken();  //getNextToken(); // consume the {
-	
-	branchNode->m_block.reset(parseBlock());
-	
+	parseBlock(ifbranch->m_block);
+	*/
 	//getNextToken(); // advance to next statement
 	return branchNode;
 }
@@ -404,7 +409,7 @@ void aeon_parser::parseClassBody(aeNodeClass* classDeclNode)
 
 bool aeon_parser::matchesVarDecl()
 {
-	if (Tok.type == AETK_IDENTIFIER && (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE || peekAhead(0).text == "<"))
+	if (Tok.type == AETK_IDENTIFIER && (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE))
 		return true;
 
 	return false;
@@ -606,20 +611,33 @@ aeQualType aeon_parser::parseQualType()
 	type.m_type = ctx->getTypeInfo(Tok.text);
 	getNextToken();
 
-	if (Tok.text == "<")
-	{
-		getNextToken();
-		aeQualType templArg = parseQualType();
-		getNextToken();
-		type.m_templateArgs.push_back(templArg);
-	}
-
 	if (Tok.type == AETK_HANDLE)
 	{
 		type.m_handle = true;
 		getNextToken();
 	}
 
+		/*type_node->name = Tok.text;
+		getNextToken();
+
+		// Let's see if its a templated type
+		if (Tok.type == Tok.MarkOpen)
+		{
+			getNextToken();
+
+			while (Tok.type != Tok.MarkClose)
+			{
+				aeQualType* template_type_node = parse_type();
+
+				type_node->templateTypeArguments.push_back(template_type_node);
+
+				if (Tok.type == Tok.Comma)
+					getNextToken();
+			}
+
+			getNextToken();
+		}
+		*/
 	return type;
 }
 
@@ -727,13 +745,13 @@ aeNodeBlock* aeon_parser::parseBlock()
 aeNodeFor* aeon_parser::parseForLoop()
 {
 	aeNodeFor* astfor = new aeNodeFor();
+
 	getNextToken();
 	getNextToken();
 
-	if (matchesVarDecl())
-		astfor->initStatement.reset(parseVariableDecl());
-	else
-		astfor->initStatement.reset(parseExpression());
+	aeNodeExpr* initStatement = parseExpression();
+	if (initStatement)
+		astfor->initExpressions.push_back(initStatement);
 
 	getNextToken();
 
@@ -741,28 +759,28 @@ aeNodeFor* aeon_parser::parseForLoop()
 
 	getNextToken();
 
-	astfor->incrExpr.reset(parseExpression());
+	//astfor->incrExpr = parseExpression();
 
-	getNextToken();
-
-	astfor->block.reset(parseBlock());
+	//parseBlock(astfor->block);
 
 	return astfor;
 }
 
 aeNodeWhile* aeon_parser::parseWhileLoop()
 {
-	aeNodeWhile* whileNode = new aeNodeWhile();
+	aeNodeWhile* astwhile = new aeNodeWhile();
 
 	if (Tok.type == AETK_WHILE)
 	{
-		whileNode->doWhile = false;
+		/*astwhile->doWhile = false;
+		getNextToken();
+		getNextToken();
+		astwhile->expr = parseExpression();
+		if (astwhile->expr)
+			astwhile->add(astwhile->expr);
 
 		getNextToken();
-		getNextToken();
-		whileNode->expr.reset(parseExpression());
-		getNextToken();
-		whileNode->block.reset(parseBlock());
+		parseBlock(astwhile->block);*/
 	}
 	else
 	{
@@ -779,7 +797,7 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 		getNextToken();*/
 	}
 
-	return whileNode;
+	return astwhile;
 }
 
 aeNodeVarDecl* aeon_parser::parseVariableDecl()

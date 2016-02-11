@@ -1,5 +1,5 @@
 #include "aeon_type.h"
-#include "aeon_vm.h"
+#include <aeon/aeVM.h>
 
 aeType::aeType()
 {
@@ -58,7 +58,7 @@ bool aeType::isHybrid()
 	return true;
 }
 
-aeType::FieldInfo* aeType::getField(std::string name)
+aeField* aeType::getField(std::string name)
 {
 	for (auto& field : m_fields)
 	{
@@ -71,7 +71,7 @@ aeType::FieldInfo* aeType::getField(std::string name)
 	return nullptr;
 }
 
-void aeType::createField(FieldInfo fieldInfo)
+void aeType::createField(aeField fieldInfo)
 {
 	if (m_fields.size() == 0)
 		m_size = 0;
@@ -92,7 +92,7 @@ void aeType::registerMethod(const std::string& name, void* funptr)
 
 void aeType::registerField(const std::string& name, int offset)
 {
-	FieldInfo fieldInfo;
+	aeField fieldInfo;
 	fieldInfo.name = name;
 	fieldInfo.offset = offset;
 	m_fields.push_back(fieldInfo);

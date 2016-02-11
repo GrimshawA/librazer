@@ -2,6 +2,8 @@
 #define aeon_type_h__
 
 #include "aeon_generics.h"
+#include "aeQualType.h"
+#include "aeSymbol.h"
 #include <vector>
 #include <bitset>
 #include <string>
@@ -10,42 +12,11 @@
 class aeon_module;
 class aeon_context;
 
-typedef void(*aeBindMethod)(aeon_vm*);
+typedef void(*aeBindMethod)(aeVM*);
 typedef void(*aeDestructorMethod)(void*);
-typedef void(*aeConstructorMethod)(void*, aeon_vm*);
+typedef void(*aeConstructorMethod)(void*, aeVM*);
 
 #define 	aeOFFSET(s, m)   ((size_t)(&reinterpret_cast<s*>(100000)->m)-100000)
-
-/**
-\class aeSymbol
-
-A symbol can be:
-- module
-- namespace
-- class
-- enum
-- struct
-- global/member var
-- function
-
-All symbols have a unique name so they can be found
-when referenced. It follows the format a.b.c... to mark nested
-constructs within other constructs.
-*/
-class aeSymbol
-{
-public:
-
-	std::string m_absoluteName;    ///< Full name of this symbol (myModule.myNamespace.myClass.myFunction)
-
-public:
-
-	/// 
-	std::string getSymbolName()
-	{
-		return m_absoluteName;
-	}
-};
 
 /**
 	\class aeType
@@ -91,13 +62,6 @@ class aeType : public aeSymbol
 
 				
 			};
-		};
-
-		struct FieldInfo
-		{
-			uint16_t offset;
-			uint16_t size;
-			std::string name;
 		};
 
 		struct NestedTypeInfo
@@ -161,7 +125,7 @@ class aeType : public aeSymbol
 		std::string getName();
 
 		/// Get the field information for a given type
-		FieldInfo* getField(std::string name);
+		aeField* getField(std::string name);
 
 		/// Get the size of the type (C + script class)
 		uint32_t getSize();
@@ -170,7 +134,7 @@ class aeType : public aeSymbol
 		aeon_module* getModule();
 
 		/// Takes some input parameters and properly prepares the type for the new field
-		void createField(FieldInfo fieldInfo);
+		void createField(aeField fieldInfo);
 
 		/// Allow to register a host method into the type
 		void registerMethod(const std::string& name, void* funptr);
@@ -186,7 +150,7 @@ class aeType : public aeSymbol
 
 	private:
 		uint32_t                    m_size;   ///< The absolute type size in bytes (cpp + aeon fields)
-		std::vector<FieldInfo>      m_fields; ///< Every field that contributes to the final object
+		std::vector<aeField>        m_fields; ///< Every field that contributes to the final object
 };
 
 #endif // aeon_type_h__

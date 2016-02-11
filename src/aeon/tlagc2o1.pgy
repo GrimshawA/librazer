@@ -404,7 +404,7 @@ void aeon_parser::parseClassBody(aeNodeClass* classDeclNode)
 
 bool aeon_parser::matchesVarDecl()
 {
-	if (Tok.type == AETK_IDENTIFIER && (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE || peekAhead(0).text == "<"))
+	if (Tok.type == AETK_IDENTIFIER && (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE || peekAhead(0).type == AETK_OPENDIAMOND))
 		return true;
 
 	return false;

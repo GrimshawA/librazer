@@ -98,6 +98,7 @@ void aeon_compiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCal
 
 	if (func->m_native)
 	{
+		emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
 		emitInstruction(OP_CALLMETHOD_NAT, functionIndex);
 	}
 	else
@@ -177,7 +178,7 @@ void aeon_compiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
 
 void aeon_compiler::emitLoadAddress(aeNodeExpr* expr)
 {
-	if (!expr->m_nodeType == AEN_REF)
+	if (expr->m_nodeType != AEN_REF)
 	{
 		throwError("emitLoadAddress: Only know how to load a variable ref");
 		return;
@@ -377,6 +378,16 @@ void aeon_compiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprC
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);
 
+	int loadFrom = AEK_EBP;
+	
+	if (varInfo.mode == AE_VAR_FIELD)
+	{
+		// We're trying to access a member of "this"
+		emitPushThis();
+		loadFrom = AEK_THIS;
+		emitDebugPrint("LOADING THIS." + var->m_name);
+	}
+
 	if (parentExprContext.rx_value)
 	{
 		int kind = AEP_INT32;
@@ -384,11 +395,11 @@ void aeon_compiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprC
 		if (parentExprContext.expectedResult.m_handle)
 			kind = AEP_PTR;
 
-		emitInstruction(OP_LOAD, AEK_EBP, varInfo.offset_bp, kind);
+		emitInstruction(OP_LOAD, loadFrom, varInfo.offset_bp, kind);
 	}
 	else
 	{
-		emitInstruction(OP_LOADADDR, AEK_EBP, varInfo.offset_bp);
+		emitInstruction(OP_LOADADDR, loadFrom, varInfo.offset_bp);
 	}
 }
 
