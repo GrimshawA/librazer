@@ -7,7 +7,7 @@
 #include <cassert>
 
 
-void aeon_compiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
+void aeCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
 {
 	if (expr->m_nodeType == AEN_REF)
 	{
@@ -44,7 +44,7 @@ void aeon_compiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprConte
 	}
 }
 
-void aeon_compiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
+void aeCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
 {
 	std::string finalSymbolName = fn->m_name;
 
@@ -69,11 +69,11 @@ void aeon_compiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCal
 
 	}
 
-	printf("Function call %s\n", finalSymbolName.c_str());
+	CompilerLog("Function call %s\n", finalSymbolName.c_str());
 	aeFunction* func = m_env->getFunctionByName(finalSymbolName);
 	if (!func)
 	{
-		throwError("Calling an unknown function " + finalSymbolName);
+		CompilerError("0002","Calling an unknown function " + finalSymbolName);
 		return;
 	}
 
@@ -94,7 +94,7 @@ void aeon_compiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCal
 	int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
 
 	if (functionIndex == -1)
-		throwError("Could not find the function to call! " + finalSymbolName);
+		CompilerError("0002","Could not find the function to call! " + finalSymbolName);
 
 	if (func->m_native)
 	{
@@ -107,12 +107,12 @@ void aeon_compiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCal
 	}
 }
 
-void aeon_compiler::emitPushThis()
+void aeCompiler::emitPushThis()
 {
 	emitInstruction(OP_PUSHTHIS);
 }
 
-void aeon_compiler::emitBinaryOp(aeNodeBinaryOperator* operation)
+void aeCompiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 {
 	if (m_logExprOps)
 		emitDebugPrint("OP " + operation->oper + " " + operation->operandA->str() + " " + operation->operandB->str());
@@ -131,7 +131,7 @@ void aeon_compiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void aeon_compiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context)
+void aeCompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context)
 {
 	if (op->oper == "+")
 	{
@@ -170,21 +170,21 @@ void aeon_compiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprConte
 	}
 }
 
-bool aeon_compiler::canConvertType(aeType* typeA, aeType* typeB)
+bool aeCompiler::canConvertType(aeType* typeA, aeType* typeB)
 {
 	return false;
 }
 
-void aeon_compiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
+void aeCompiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
 {
 	m_typeSystem.performConversion(typeA, typeB, this);
 }
 
-void aeon_compiler::emitLoadAddress(aeNodeExpr* expr)
+void aeCompiler::emitLoadAddress(aeNodeExpr* expr)
 {
 	if (expr->m_nodeType != AEN_REF)
 	{
-		throwError("emitLoadAddress: Only know how to load a variable ref");
+		CompilerError("0002","emitLoadAddress: Only know how to load a variable ref");
 		return;
 	}
 	aeNodeRef* varExpr = (aeNodeRef*)expr;
@@ -194,7 +194,7 @@ void aeon_compiler::emitLoadAddress(aeNodeExpr* expr)
 	{
 		// Load a local variable address into the stack
 		emitInstruction(OP_LOADADDR, AEK_EBP, varStorage.offset_bp);
-		printf("Loading local\n");
+		CompilerLog("Loading local\n");
 	}
 	else if (varStorage.mode == AE_VAR_FIELD)
 	{
@@ -205,17 +205,17 @@ void aeon_compiler::emitLoadAddress(aeNodeExpr* expr)
 	}
 	else if (varStorage.mode == AE_VAR_GLOBAL)
 	{
-		printf("globals not working\n");
+		CompilerLog("globals not working\n");
 	}
 	else
 	{
 		// The variable could not be found
-		throwError("The referenced variable cannot be found. '" + varExpr->m_name + "'");
+		CompilerError("0002","The referenced variable cannot be found. '" + varExpr->m_name + "'");
 		return;
 	}
 }
 
-void aeon_compiler::emitLoadLiteral(aeNodeLiteral* lt)
+void aeCompiler::emitLoadLiteral(aeNodeLiteral* lt)
 {
 	// Always leaves temporary rvalues in the stack
 
@@ -236,72 +236,51 @@ void aeon_compiler::emitLoadLiteral(aeNodeLiteral* lt)
 	}
 }
 
-void aeon_compiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
+void aeCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {
 	aeExprContext ectx;
 	ectx.must_be_rvalue = true;
 
-	aeType* lhs_type = evaluateType(lhs);
-	aeType* rhs_type = evaluateType(rhs);
-	/*if (!rhs_type)
+	aeQualType T1 = buildQualifiedType(lhs);
+	aeQualType T2 = buildQualifiedType(rhs);
+	
+	if ((T1.getType() != T2.getType()) && !canImplicitlyConvert(T2, T1))
 	{
-		throwError("emitAssignOp: Could not deduce the type the rhs expression evaluates to!");
-		throwError("emitAssignOp: Here we would switch the compilation to runtime checking and dynamic typing!");
+		CompilerError("0002", "Cannot convert from " + T2.str() + " to " + T1.str());
 		return;
-	}*/
+	}
 
-	bool canDoAssignment = true;
-	bool needsConversion = false;
-	/*if (lhs_type != rhs_type)
+	// Left hand gets loaded (Address of it)
+	emitLoadAddress(lhs);
+
+	// Right hand gets loaded (value)
+	aeExprContext exprContext;
+	exprContext.expectedResult = buildQualifiedType(lhs);
+	emitExpressionEval(rhs, exprContext);
+
+	if ((T1.getType() != T2.getType()) && canImplicitlyConvert(T2, T1))
 	{
-		if (canConvertType(lhs_type, rhs_type))
-		{
-			needsConversion = true;
-			canDoAssignment = true;
-		}
-		else
-		{
-			throwError("Cannot convert from '' to ''");
-			return;
-		}
+		m_typeSystem.performConversion(T2, T1, this);
+	}	
 
+		
+	int assignType = -1;
+	emitDebugPrint("ASSIGNING TO " + exprContext.expectedResult.str());
+	if (exprContext.expectedResult.m_handle)
+	{
+		assignType = AEP_PTR;
 	}
 	else
 	{
-		canDoAssignment = true;
-	}*/
-
-	if (canDoAssignment)
-	{
-		emitLoadAddress(lhs);
-
-		// Send the right side of the assignment for evaluation
-		aeExprContext exprContext;
-		exprContext.expectedResult = buildQualifiedType(lhs);
-		emitExpressionEval(rhs, exprContext);
-
-		aeQualType qt2 = buildQualifiedType(rhs);
-
-		throwError("Assigning from " + qt2.str() + " to " + exprContext.expectedResult.str());
-
-		int assignType = -1;
-
-		emitDebugPrint("ASSIGNING TO " + exprContext.expectedResult.str());
-		if (exprContext.expectedResult.m_handle)
-		{
-			assignType = AEP_PTR;
-		}
-		else
-		{
-			assignType = AEP_INT32;
-		}
-
-		// Finalize the assignment
-		emitInstruction(OP_SET, 0, 0, assignType);
+		assignType = AEP_INT32;
 	}
+
+	// Finalize the assignment
+	emitInstruction(OP_SET, 0, 0, assignType);
+	
 }
 
-void aeon_compiler::emitMemberOp(aeNodeAccessOperator* acs)
+void aeCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 {
 	/**
 		We are compiling a.b
@@ -313,7 +292,7 @@ void aeon_compiler::emitMemberOp(aeNodeAccessOperator* acs)
 	aeQualType Ta = buildQualifiedType(acs->m_a);
 	if (!Ta)
 	{
-		throwError("Cannot find the type of '" + acs->m_a->str() + "'");
+		CompilerError("0002","Cannot find the type of '" + acs->m_a->str() + "'");
 		return;
 	}
 
@@ -324,7 +303,7 @@ void aeon_compiler::emitMemberOp(aeNodeAccessOperator* acs)
 
 	if (acs->m_b->m_nodeType == AEN_FUNCTIONCALL)
 	{
-		printf("Calling function on %s\n", Ta.str().c_str());
+		CompilerLog("Calling function on %s\n", Ta.str().c_str());
 
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
 		emitFunctionCall(Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
@@ -335,7 +314,7 @@ void aeon_compiler::emitMemberOp(aeNodeAccessOperator* acs)
 	}
 }
 
-void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)
+void aeCompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 {
 	/*
 		Operators: >, >=, <, <=, ==, !=, &&, ||
@@ -385,7 +364,7 @@ void aeon_compiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void aeon_compiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprContext)
+void aeCompiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprContext)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);
@@ -420,13 +399,13 @@ void aeon_compiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprC
 	}
 }
 
-void aeon_compiler::emitNew(aeNodeNew* newExpr)
+void aeCompiler::emitNew(aeNodeNew* newExpr)
 {
 	// new X() expression must generate a new object instance.
 	emitInstruction(OP_NEWOBJECT, 0);
 }
 
-void aeon_compiler::emitSubscriptOp(aeNodeSubscript* subscript)
+void aeCompiler::emitSubscriptOp(aeNodeSubscript* subscript)
 {
 
 }

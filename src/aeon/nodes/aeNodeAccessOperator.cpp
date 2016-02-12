@@ -7,7 +7,7 @@ aeNodeAccessOperator::aeNodeAccessOperator()
 	m_nodeType = (AEN_ACCESSOPERATOR);
 }
 
-aeQualType aeNodeAccessOperator::getQualifiedType(aeon_compiler* c)
+aeQualType aeNodeAccessOperator::getQualifiedType(aeCompiler* c)
 {
 	return m_b->getQualifiedType(c);
 }

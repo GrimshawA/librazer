@@ -32,6 +32,7 @@ aeon_context::aeon_context()
 	register_primitive("uint32", sizeof(uint32_t));
 	register_primitive("float", sizeof(float));
 	register_primitive("double", sizeof(double));
+	register_primitive("string", sizeof(int32_t));
 }
 
 void aeon_context::register_primitive(const std::string& name, uint32_t size)
@@ -94,7 +95,7 @@ void aeon_context::quick_build(const std::string& file)
 {
 	aeon_lexer lexer;
 	aeon_parser parser;
-	aeon_compiler compiler;
+	aeCompiler compiler;
 	std::string source = getFileSource(file);
 
 	if (source.empty())
@@ -237,13 +238,13 @@ void aeon_context::registerTypeMethod(const std::string& typeName, const std::st
 	{
 		aeQualType paramType = parser.parseQualType();
 		fn->params.push_back(paramType);
-		printf("param %s\n", paramType.str().c_str());
+		//printf("param %s\n", paramType.str().c_str());
 		if (parser.getNextToken().text != ",")
 			break;
 	}
 	m_functionTable.push_back(fn);
 
-	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
+	//printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void aeon_context::registerFunction(const std::string& decl, aeBindMethod func)
@@ -262,14 +263,14 @@ void aeon_context::registerFunction(const std::string& decl, aeBindMethod func)
 	{
 		aeQualType paramType = parser.parseQualType();
 		fn->params.push_back(paramType);
-		printf("param %s\n", paramType.str().c_str());
+		//printf("param %s\n", paramType.str().c_str());
 		if (parser.getNextToken().text != ",")
 			break;
 	}
 
 	m_functionTable.push_back(fn);
 
-	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
+	//printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void aeon_context::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)

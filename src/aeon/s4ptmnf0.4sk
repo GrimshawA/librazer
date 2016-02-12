@@ -67,7 +67,7 @@ struct ScopeLocalData
 
 	This compiler generates bytecode from validated AST
 */
-class aeCompiler
+class aeon_compiler
 {
 public:
 		aeon_context*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
@@ -88,10 +88,10 @@ public:
 	public:
 
 		/// Construct initial values
-		aeCompiler();
+		aeon_compiler();
 
 		/// Emit a compiler class error of what happened
-		void throwError(const std::string& errorCode, const std::string& message);
+		void throwError(const std::string& message);
 
 		int findLocalObject(const std::string& refname);
 
@@ -103,8 +103,6 @@ public:
 
 public:
 
-	bool canImplicitlyConvert(aeQualType origin, aeQualType dest);
-
 	aeNodeClass* getTopClassNode();
 
 	/// Builds a qualified type identifier based on context
@@ -112,7 +110,7 @@ public:
 
 	/// Find the qualified type of a given expression
 	aeQualType buildQualifiedType(aeNodeExpr* e);
-	
+		
 	/// Emit an instruction
 	uint32_t emitInstruction(aeon_instruction instr);
 

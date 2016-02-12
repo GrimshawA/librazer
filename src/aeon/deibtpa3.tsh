@@ -8,7 +8,7 @@
 
 #include <cassert>
 
-aeCompiler::aeCompiler()
+aeon_compiler::aeon_compiler()
 : m_currentFunction(nullptr)
 , m_outputLogs(false)
 {
@@ -21,45 +21,45 @@ aeCompiler::aeCompiler()
 
 }
 
-int32_t aeCompiler::cursor()
+int32_t aeon_compiler::cursor()
 { 
 	return m_cursor;
 }
 
-bool aeCompiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
+bool aeon_compiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
 {
 	for (auto& conv : m_typeSystem.m_table)
 	{
-		if (conv.allow_implicit && conv.T1 == origin.getType() && conv.T2 == dest.getType())
+		if (conv.allow_implicit && conv.T1 == origin.getType() && conv.T2 == origin.getType())
 			return true;
 	}
 	return false;
 }
 
-aeQualType aeCompiler::buildQualifiedType(const std::string& type)
+aeQualType aeon_compiler::buildQualifiedType(const std::string& type)
 {
 	aeQualType qtype;
 	qtype.m_type = m_env->getTypeInfo(type);
 	return qtype;
 }
 
-aeQualType aeCompiler::buildQualifiedType(aeNodeExpr* e)
+aeQualType aeon_compiler::buildQualifiedType(aeNodeExpr* e)
 {
 	return e->getQualifiedType(this);
 }
 
-void aeCompiler::emitDebugPrint(const std::string& message)
+void aeon_compiler::emitDebugPrint(const std::string& message)
 {
 	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
 }
 
-uint32_t aeCompiler::emitInstruction(aeon_instruction instr)
+uint32_t aeon_compiler::emitInstruction(aeon_instruction instr)
 {
 	m_module->instructions.push_back(instr);
 	return m_cursor++;
 }
 
-uint32_t aeCompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
+uint32_t aeon_compiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
 {
 	aeon_instruction instr;
 	instr.opcode = opcode;
@@ -70,20 +70,20 @@ uint32_t aeCompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, i
 	return m_cursor++;
 }
 
-aeNodeClass* aeCompiler::getTopClassNode()
+aeNodeClass* aeon_compiler::getTopClassNode()
 {
 	if (m_classes.size() > 0)
 		return m_classes[m_classes.size() - 1];
 	return nullptr;
 }
 
-void aeCompiler::push_scope()
+void aeon_compiler::push_scope()
 {
 	ScopeLocalData newScope;
 	m_scopes.push_back(newScope);
 }
 
-void aeCompiler::pop_scope()
+void aeon_compiler::pop_scope()
 {
 	//assert(m_scopes.size() == 0);
 
@@ -95,7 +95,7 @@ void aeCompiler::pop_scope()
 	m_scopes.pop_back();
 }
 
-VariableStorageInfo aeCompiler::getVariable(std::string name)
+VariableStorageInfo aeon_compiler::getVariable(std::string name)
 {
 	// Let's see if this is a local variable
 	for (auto it = m_scopes.rbegin(); it != m_scopes.rend(); ++it)
@@ -131,7 +131,7 @@ VariableStorageInfo aeCompiler::getVariable(std::string name)
 	return VariableStorageInfo();
 }
 
-void aeCompiler::destructLocalVar(VariableStorageInfo& var)
+void aeon_compiler::destructLocalVar(VariableStorageInfo& var)
 {
 	if (var.type.getType()->is_native)
 	{
@@ -146,22 +146,22 @@ void aeCompiler::destructLocalVar(VariableStorageInfo& var)
 	}
 }
 
-void aeCompiler::emitBreakpoint()
+void aeon_compiler::emitBreakpoint()
 {
 	emitInstruction(OP_BREAKPOINT);
 }
 
-void aeCompiler::emit_local_construct_pod(int32_t size)
+void aeon_compiler::emit_local_construct_pod(int32_t size)
 {
 
 }
 
-void aeCompiler::emit_local_construct_object(int32_t size)
+void aeon_compiler::emit_local_construct_object(int32_t size)
 {
 
 }
 
-void aeCompiler::generate(aeNodeBase* root)
+void aeon_compiler::generate(aeNodeBase* root)
 {
 	m_typeSystem.init(this);
 
@@ -189,7 +189,7 @@ void aeCompiler::generate(aeNodeBase* root)
 	}
 }
 
-void aeCompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
+void aeon_compiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 {
 	for (std::size_t i = 0; i < namespace_node->m_items.size(); ++i)
 	{
@@ -212,12 +212,12 @@ void aeCompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 	 }
 }
 
-void aeCompiler::emitGlobalVarCode(aeNodeRef* global_var)
+void aeon_compiler::emitGlobalVarCode(aeNodeRef* global_var)
 {
 	
 }
 
-void aeCompiler::emitClassCode(aeNodeClass* clss)
+void aeon_compiler::emitClassCode(aeNodeClass* clss)
 {
 	m_classes.push_back(clss);
 
@@ -281,9 +281,9 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 	m_classes.pop_back();
 }
 
-void aeCompiler::throwError(const std::string& errorCode, const std::string& message)
+void aeon_compiler::throwError(const std::string& errorCode, const std::string& message)
 {
-	m_reporter.emitLog("error C" + errorCode + ": " + message);
+	m_reporter.emitLog("error: " + errorCode + " : " + message);
 
 	if (m_currentFunction)
 	{
@@ -291,7 +291,7 @@ void aeCompiler::throwError(const std::string& errorCode, const std::string& mes
 	}
 }
 
-void aeCompiler::emitBranchCode(aeNodeBranch* cond)
+void aeon_compiler::emitBranchCode(aeNodeBranch* cond)
 {
 	aeNodeExpr* test_expr = cond->m_expression.get();
 	aeNodeBlock* nested_code = cond->m_block.get();
@@ -312,7 +312,7 @@ void aeCompiler::emitBranchCode(aeNodeBranch* cond)
 	setinst_a(m_module->instructions[jmptestpc], (m_cursor - 1) - jmptestpc);
 }
 
-int aeCompiler::findLocalObject(const std::string& refname)
+int aeon_compiler::findLocalObject(const std::string& refname)
 {
 	/*for (std::size_t i = 0; i < mFunctionLocals.size(); ++i)
 	{
@@ -322,12 +322,12 @@ int aeCompiler::findLocalObject(const std::string& refname)
 	return -1;
 }
 
-void aeCompiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
+void aeon_compiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
 {
 
 }
 
-void aeCompiler::emitForLoop(aeNodeFor* forloop)
+void aeon_compiler::emitForLoop(aeNodeFor* forloop)
 {
 	push_scope();
 
@@ -360,7 +360,7 @@ void aeCompiler::emitForLoop(aeNodeFor* forloop)
 }
 
 
-void aeCompiler::emitWhileLoop(aeNodeWhile* whileloop)
+void aeon_compiler::emitWhileLoop(aeNodeWhile* whileloop)
 {
 	int pc_expreval = cursor();
 
@@ -380,7 +380,7 @@ void aeCompiler::emitWhileLoop(aeNodeWhile* whileloop)
 	setinst_a(m_module->instructions[jmptestpc], (cursor() - 1) - jmptestpc);
 }
 
-void aeCompiler::emitFunction(aeNodeFunction* func)
+void aeon_compiler::emitFunction(aeNodeFunction* func)
 {
 	std::string symbol_prefix;
 	auto topClass = getTopClassNode();
@@ -426,12 +426,12 @@ void aeCompiler::emitFunction(aeNodeFunction* func)
 	m_currentFunction = nullptr;
 }
 
-void aeCompiler::emitLambdaFunction(aeNodeFunction* function)
+void aeon_compiler::emitLambdaFunction(aeNodeFunction* function)
 {
 	// todo
 }
 
-void aeCompiler::emitBlock(aeNodeBlock* codeblock)
+void aeon_compiler::emitBlock(aeNodeBlock* codeblock)
 {
 	push_scope();
 
@@ -443,7 +443,7 @@ void aeCompiler::emitBlock(aeNodeBlock* codeblock)
 	pop_scope();
 }
 
-void aeCompiler::emitStatement(aeNodeStatement* stmt)
+void aeon_compiler::emitStatement(aeNodeStatement* stmt)
 {
 	/*
 		List of statements accepted as "standalone" within blocks of code
@@ -498,17 +498,8 @@ void aeCompiler::emitStatement(aeNodeStatement* stmt)
 	}
 }
 
-void aeCompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
+void aeon_compiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 {
-	aeQualType declType = varDecl.m_type;
-
-	if (!declType.getType())
-	{
-		CompilerError("0003", "Declared local variable with unknown type.");
-		return;
-	}
-
-
 	aeType* varType = varDecl.m_type.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1]; 
 
@@ -547,17 +538,17 @@ void aeCompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	}
 }
 
-void aeCompiler::emitReturnCode(aeNodeReturn* ret)
+void aeon_compiler::emitReturnCode(aeNodeReturn* ret)
 {
 	emitInstruction(OP_RETURN);
 }
 
-aeType* aeCompiler::evaluateType(aeNodeExpr* expr)
+aeType* aeon_compiler::evaluateType(aeNodeExpr* expr)
 {
 	return nullptr;
 }
 
-aeType* aeCompiler::evaluateType(const std::string& type_name)
+aeType* aeon_compiler::evaluateType(const std::string& type_name)
 {
 	// Walk the scope stack from current to top level to search the decl
 	for (auto it = m_scopes.rbegin(); it != m_scopes.rend(); ++it)
@@ -589,7 +580,7 @@ aeType* aeCompiler::evaluateType(const std::string& type_name)
 	return type;
 }
 
-aeType* aeCompiler::evaluateType(aeNodeClass* class_node)
+aeType* aeon_compiler::evaluateType(aeNodeClass* class_node)
 {
 	return class_node->m_typeInfo;
 }

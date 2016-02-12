@@ -7,7 +7,7 @@ aeNodeExpr::aeNodeExpr()
 	m_parentExpr = nullptr;
 }
 
-aeQualType aeNodeExpr::getQualifiedType(aeon_compiler* c)
+aeQualType aeNodeExpr::getQualifiedType(aeCompiler* c)
 {
 	return aeQualType();
 }

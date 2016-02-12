@@ -22,7 +22,7 @@ public:
 
 	aeNodeRef();
 
-	virtual aeQualType getQualifiedType(aeon_compiler* c);
+	virtual aeQualType getQualifiedType(aeCompiler* c);
 
 	std::string str() const;
 };

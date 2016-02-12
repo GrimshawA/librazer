@@ -501,13 +501,13 @@ void aeCompiler::emitStatement(aeNodeStatement* stmt)
 void aeCompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 {
 	aeQualType declType = varDecl.m_type;
-
 	if (!declType.getType())
 	{
-		CompilerError("0003", "Declared local variable with unknown type.");
+		CompilerLog("0003", "Declared local variable with unknown type.");
 		return;
 	}
 
+	printf("var decl type %s\n", declType.str().c_str());
 
 	aeType* varType = varDecl.m_type.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1]; 

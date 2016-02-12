@@ -19,7 +19,7 @@ public:
 	aeQualType m_instanceType;
 
 public:
-	aeQualType getQualifiedType(aeon_compiler* c);
+	aeQualType getQualifiedType(aeCompiler* c);
 
 };
 

@@ -20,10 +20,8 @@ public:
 		m_nodeType = AEN_STRING;
 	}
 
-	virtual std::string exprstr()
-	{
-		return "\"" + value + "\"";
-	}
+	aeQualType getQualifiedType(aeCompiler* c);
+
 
 	std::string str() const
 	{
@@ -42,16 +40,13 @@ public:
 		m_nodeType = AEN_FLOAT;
 	}
 
-	virtual std::string exprstr()
-	{
-		return ".";
-		//return std::to_string(value);
-	}
-
 	std::string str() const
 	{
 		return std::to_string(value);
 	}
+
+	aeQualType getQualifiedType(aeCompiler* c);
+
 
 	float value;
 };

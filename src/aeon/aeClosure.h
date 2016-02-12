@@ -10,7 +10,7 @@ class aeClosure
 {
 public:
 
-	aeVM*              m_vm;
+	aeVM*                 m_vm;
 	int                   m_executionId;
 	int                   m_methodId;
 	void*                 m_object;

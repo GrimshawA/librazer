@@ -1,30 +1,31 @@
 #include "aeCompilerConv.h"
 #include "aeon_compiler.h"
 
-void ICG_FloatToDouble(aeon_compiler* c)
+void ICG_FloatToDouble(aeCompiler* c)
 {
 	// In the vm operand stack, no action is required to convert a float to a double
 }
 
-void ICG_DoubleToFloat(aeon_compiler* c)
+void ICG_DoubleToFloat(aeCompiler* c)
 {
 	// For operands, double would lose precision converting to float, but float is able to hold the double in the context of expression handling.
 }
 
-void ICG_DoubleToInt64(aeon_compiler* c)
+void ICG_DoubleToInt64(aeCompiler* c)
 {
 
 }
 
-void ICG_BoolToInt32(aeon_compiler* c)
+void ICG_BoolToInt32(aeCompiler* c)
 {
 
 }
 
-void TypeSystemInformation::init()
+void TypeSystemInformation::init(aeCompiler* c)
 {
 //	ImplicitConversion floatToDouble(AE_PFLOAT, AE_PDOUBLE, &ICG_FloatToDouble);
 	//m_table.push_back(floatToDouble);
+	m_table.push_back(ConversionProcedure(true, c->m_env->getTypeInfo("float"), c->m_env->getTypeInfo("int32")));	
 }
 
 bool TypeSystemInformation::canConvert(aeQualType T1, aeQualType T2)
@@ -40,7 +41,7 @@ bool TypeSystemInformation::canConvert(aeQualType T1, aeQualType T2)
 	return false;
 }
 
-void TypeSystemInformation::performConversion(aeQualType T1, aeQualType T2, aeon_compiler* compiler)
+void TypeSystemInformation::performConversion(aeQualType T1, aeQualType T2, aeCompiler* compiler)
 {
 	if (T1.getTypeName() == "int32" && T2.getTypeName() == "float")
 	{
@@ -68,6 +69,6 @@ void TypeSystemInformation::performConversion(aeQualType T1, aeQualType T2, aeon
 	}
 	else
 	{
-		compiler->throwError("I don't know how to convert " + T1.getTypeName() + " to " + T2.getTypeName());
+		//compiler->throwError("I don't know how to convert " + T1.getTypeName() + " to " + T2.getTypeName());
 	}
 }

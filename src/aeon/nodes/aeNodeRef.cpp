@@ -6,7 +6,7 @@ aeNodeRef::aeNodeRef()
 	m_nodeType = AEN_REF;
 }
 
-aeQualType aeNodeRef::getQualifiedType(aeon_compiler* c)
+aeQualType aeNodeRef::getQualifiedType(aeCompiler* c)
 {
 	aeQualType qt = c->getVariable(m_name).type;
 	return qt;

@@ -5,10 +5,10 @@
 #include <vector>
 
 class aeType;
-class aeon_compiler;
+class aeCompiler;
 
 /// Every time the compiler has to convert a type into another, he uses one of these functions
-typedef void(*ICGenerator)(aeon_compiler*);
+typedef void(*ICGenerator)(aeCompiler*);
 
 /**
 	\class ConversionProcedure
@@ -21,6 +21,13 @@ typedef void(*ICGenerator)(aeon_compiler*);
 */
 struct ConversionProcedure
 {
+	ConversionProcedure(bool implicit, aeType* t1, aeType* t2)
+	{
+		allow_implicit = implicit;
+		T1 = t1;
+		T2 = t2;
+	}
+
 	enum ConversionModes
 	{
 		Primitive,
@@ -79,7 +86,7 @@ struct OperatorOverloadTable
 	/// In success, the response carries the return type of the custom overload
 	/// First, it matches compatibility literally, if nothing satisfies these types, it will start trying to find implicit conversions.
 	/// The current context of expression counts, as which overloads can be seen and have precedence is relative to that.
-	OperatorOverloadInfo findAppropriate(aeQualType t1, aeQualType t2, std::string operatr, aeon_compiler* c)
+	OperatorOverloadInfo findAppropriate(aeQualType t1, aeQualType t2, std::string operatr, aeCompiler* c)
 	{
 		OperatorOverloadInfo info;
 		return info;
@@ -90,9 +97,9 @@ struct TypeSystemInformation
 {
 	std::vector<ConversionProcedure> m_table;
 
-	void init();
+	void init(aeCompiler* c);
 
-	void performConversion(aeQualType T1, aeQualType T2, aeon_compiler* compiler);
+	void performConversion(aeQualType T1, aeQualType T2, aeCompiler* compiler);
 
 	bool canConvert(aeQualType T1, aeQualType T2);
 };

@@ -6,7 +6,7 @@
 #include <map>
 #include <memory>
 
-class aeon_compiler;
+class aeCompiler;
 
 /**
 	\class aeNodeExpr
@@ -25,7 +25,7 @@ public:
 
 	aeNodeExpr();
 
-	virtual aeQualType getQualifiedType(aeon_compiler* c);
+	virtual aeQualType getQualifiedType(aeCompiler* c);
 
 	bool isFloat();
 
