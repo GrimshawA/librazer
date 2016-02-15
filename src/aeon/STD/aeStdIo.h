@@ -1,9 +1,9 @@
 #ifndef aeon_stdlib_h__
 #define aeon_stdlib_h__
 
-class aeon_context;
+class aeContext;
 
 /// Loads default functionality into the vm
-void register_stdlib(aeon_context* ctx);
+void register_stdlib(aeContext* ctx);
 
 #endif // aeon_stdlib_h__

@@ -1,8 +1,7 @@
 #ifndef aeon_type_h__
 #define aeon_type_h__
 
-#include "aeon_generics.h"
-#include "aeQualType.h"
+#include <AEON/aeQualType.h>
 #include "aeSymbol.h"
 #include <vector>
 #include <bitset>
@@ -10,7 +9,8 @@
 #include <stdint.h>
 
 class aeon_module;
-class aeon_context;
+class aeContext;
+class aeVM;
 
 typedef void(*aeBindMethod)(aeVM*);
 typedef void(*aeDestructorMethod)(void*);
@@ -29,7 +29,7 @@ typedef void(*aeConstructorMethod)(void*, aeVM*);
 class aeType : public aeSymbol
 {
 	public:
-		friend class aeon_context;
+		friend class aeContext;
 
 		enum ETypeFlags
 		{
@@ -80,6 +80,13 @@ class aeType : public aeSymbol
 			//implement
 		};
 
+		enum TypeKind
+		{
+			KindClass,
+			KindEnum
+		};
+
+		TypeKind                    m_typeKind = KindClass;
 		std::string                 m_name;
 		std::string                 m_namespace;
 		int                         m_id;
@@ -91,9 +98,12 @@ class aeType : public aeSymbol
 		std::vector<EnumInfo>       m_enums;
 		std::vector<NestedTypeInfo> m_structs;
 		std::vector<ProtocolInfo>   m_protocols;
+		std::vector<std::string>    m_templateParams;
 		aeon_module*                m_module;
 		bool is_native = false;
+		void*                       m_userData;            ///< This allows the user to inject additional info on the type
 		aeDestructorMethod          m_destructor;
+		bool m_pod = true;
 
 	public:
 
@@ -102,6 +112,21 @@ class aeType : public aeSymbol
 
 		/// Build the type info object, explicitly used when declaring c++ types
 		aeType(const std::string& _name, uint32_t _size);
+
+		/// Is this type an enum
+		bool isEnum();
+
+		/// Check if this type is templated( type<...>
+		bool isTemplated();
+
+		/// Check if this type is a class
+		bool isClass();
+
+		/// Check if the type is native-side defined
+		bool isNative();
+
+		/// Check if this type is a pod type
+		bool isPod();
 
 		/// Get the current number of methods
 		uint32_t getNumMethods();
@@ -148,7 +173,7 @@ class aeType : public aeSymbol
 		/// Register a property to the enum
 		void registerEnumProperty(const std::string& name, const std::string& property, int value);
 
-	private:
+	//private:
 		uint32_t                    m_size;   ///< The absolute type size in bytes (cpp + aeon fields)
 		std::vector<aeField>        m_fields; ///< Every field that contributes to the final object
 };

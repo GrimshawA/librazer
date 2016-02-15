@@ -1,10 +1,8 @@
-#include "aeon_parser.h"
-#include "aeon_lexer.h"
-#include "aeon_context.h"
-#include "nodes/aeNodeClass.h"
-#include "nodes/aeNodeModule.h"
-#include "nodes/aeNodeNamespace.h"
-#include "aeon_lexer.h"
+#include <AEON/aeParser.h>
+#include <AEON/aeTokenizer.h>
+#include <AEON/aeContext.h>
+#include <AEON/AST/Nodes.h>
+
 #include <map>
 #include <cstdlib>
 
@@ -24,12 +22,28 @@ std::map<std::string, int> mOperatorTable = {
 
 	};
 
-aeon_parser::aeon_parser()
+
+std::unique_ptr<aeParser> aeParser::create(const std::string& source, aeContext* context)
+{
+	std::unique_ptr<aeParser> parser(new aeParser(source));
+	parser->i = 0; parser->ctx = context; parser->getNextToken();
+	return std::move(parser);
+}
+
+aeParser::aeParser()
 {
 	pass = Gather;
 }
 
-aeNodeStatement* aeon_parser::parseStatement()
+aeParser::aeParser(const std::string& source)
+{
+	pass = Gather;
+	m_customTokenizer.reset(new aeon_lexer());
+	m_tokenizer = m_customTokenizer.get();
+	m_tokenizer->tokenize(source);
+}
+
+aeNodeStatement* aeParser::parseStatement()
 {
 	switch (Tok.type)
 	{
@@ -72,14 +86,14 @@ aeNodeStatement* aeon_parser::parseStatement()
 	}
 }
 
-aeNodeReturn* aeon_parser::parseReturn()
+aeNodeReturn* aeParser::parseReturn()
 {
 	aeNodeReturn* returnNode = new aeNodeReturn;
 	getNextToken();
 	return returnNode;
 }
 
-aeNodeBranch* aeon_parser::parseBranch()
+aeNodeBranch* aeParser::parseBranch()
 {
 	aeNodeBranch* branchNode = new aeNodeBranch;
 
@@ -96,7 +110,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 	return branchNode;
 }
 
-	void aeon_parser::parseValue(aeon_lexer& lexer, aeon_value& rootValue)
+	void aeParser::parseValue(aeon_lexer& lexer, aeon_value& rootValue)
 	{
 		if (lexer.tokens.size() == 0)
 		{
@@ -104,7 +118,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 			return;
 		}
 
-		lex = &lexer;
+		m_tokenizer = &lexer;
 		i = 0;
 		mDataValue = &rootValue;
 
@@ -118,7 +132,7 @@ aeNodeBranch* aeon_parser::parseBranch()
 	}
 
 	/// Parses the {} data object
-	aeon_value aeon_parser::parseDataObject()
+	aeon_value aeParser::parseDataObject()
 	{
 		aeon_value objectValue;
 		objectValue.mValueType = aeon_value::EInvalid;
@@ -245,12 +259,12 @@ aeNodeBranch* aeon_parser::parseBranch()
 		return objectValue;
 	}
 
-void aeon_parser::startParse(aeon_lexer& lexer)
+void aeParser::startParse(aeon_lexer& lexer)
 {
 		root = new aeNodeModule();
 		root->m_name = "main";
 
-		lex = &lexer;
+		m_tokenizer = &lexer;
 		i = 0;
 
 		Tok = getNextToken();
@@ -295,7 +309,7 @@ void aeon_parser::startParse(aeon_lexer& lexer)
 		}
 }
 
-	aeNodeNamespace* aeon_parser::parseNamespace()
+	aeNodeNamespace* aeParser::parseNamespace()
 	{
 		aeNodeNamespace* namespace_node = new aeNodeNamespace;
 		namespace_node->m_name = getNextToken().text;
@@ -337,7 +351,7 @@ void aeon_parser::startParse(aeon_lexer& lexer)
 	}
 
 	// Assumes the current token is "class" and stops the token after the ; at the end
-	aeNodeClass* aeon_parser::parseClass()
+	aeNodeClass* aeParser::parseClass()
 	{
 		aeNodeClass* classDecl = new aeNodeClass();
 		classDecl->m_name = getNextToken().text;
@@ -379,7 +393,7 @@ void aeon_parser::startParse(aeon_lexer& lexer)
 		return classDecl;
 	}
 
-void aeon_parser::parseClassBody(aeNodeClass* classDeclNode)
+void aeParser::parseClassBody(aeNodeClass* classDeclNode)
 {
 	std::string currentDefaultAccessLevel = "public";
 
@@ -402,7 +416,7 @@ void aeon_parser::parseClassBody(aeNodeClass* classDeclNode)
 	}
 }
 
-bool aeon_parser::matchesVarDecl()
+bool aeParser::matchesVarDecl()
 {
 	if (Tok.type == AETK_IDENTIFIER && (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE || peekAhead(0).text == "<"))
 		return true;
@@ -410,7 +424,7 @@ bool aeon_parser::matchesVarDecl()
 	return false;
 }
 
-aeNodeFunction* aeon_parser::parseLambdaFunction()
+aeNodeFunction* aeParser::parseLambdaFunction()
 {
 	/*
 		Assumes we are on a =>
@@ -433,7 +447,7 @@ aeNodeFunction* aeon_parser::parseLambdaFunction()
 	return function;
 }
 
-aeNodeEnum* aeon_parser::parseEnum()
+aeNodeEnum* aeParser::parseEnum()
 {
 	aeNodeEnum* enum_code = new aeNodeEnum;
 	enum_code->name = getNextToken().text;
@@ -459,7 +473,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 }
 
 	/// Parses one thing inside the class body
-	void aeon_parser::parseClassMember(aeNodeClass* classDeclNode)
+	void aeParser::parseClassMember(aeNodeClass* classDeclNode)
 	{
 		if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
 		{
@@ -514,6 +528,8 @@ aeNodeEnum* aeon_parser::parseEnum()
 			aeNodeFunction* funcDecl = parseFunction();
 			funcDecl->is_method = true;
 			funcDecl->is_static = false;
+			if (funcDecl->m_name == classDeclNode->m_name)
+				funcDecl->is_constructor = true;
 			classDeclNode->add(funcDecl);
 			getNextToken();
 		}
@@ -525,7 +541,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 	}
 
 	/// Parses one symbol, either a variable or a function declaration
-	aeNodeBase* aeon_parser::parseSymbol()
+	aeNodeBase* aeParser::parseSymbol()
 	{
 		aeNodeBase* result_node = nullptr;
 		bool IsFunctionDecl = false;
@@ -589,7 +605,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 			}
 			else
 			{
-				aeNodeRef* var_node = new aeNodeRef;
+				aeNodeIdentifier* var_node = new aeNodeIdentifier;
 				var_node->m_name = SymbolName;
 				var_node->VarType = type_node;
 				result_node = var_node;
@@ -600,7 +616,7 @@ aeNodeEnum* aeon_parser::parseEnum()
 		return result_node;
 	}
 
-aeQualType aeon_parser::parseQualType()
+aeQualType aeParser::parseQualType()
 {
 	aeQualType type;
 	type.m_type = ctx->getTypeInfo(Tok.text);
@@ -625,7 +641,7 @@ aeQualType aeon_parser::parseQualType()
 
 	/// Parses a list of arguments (expressions) to pass to a function for example
 	/// Assumes to be already on the first token of the argument list
-	std::vector<aeNodeExpr*> aeon_parser::parseArgsList()
+	std::vector<aeNodeExpr*> aeParser::parseArgsList()
 	{
 		std::vector<aeNodeExpr*> temp;
 
@@ -646,7 +662,7 @@ aeQualType aeon_parser::parseQualType()
 	}
 
 
-std::vector<aeNodeExpr*> aeon_parser::parseParamsList()
+std::vector<aeNodeExpr*> aeParser::parseParamsList()
 {
 	std::vector<aeNodeExpr*> temp;
 	while (Tok.type != AETK_CLOSEPAREN)
@@ -661,39 +677,38 @@ std::vector<aeNodeExpr*> aeon_parser::parseParamsList()
 	return temp;
 }
 
-void aeon_parser::serialize(const std::string& filename)
+void aeParser::serialize(const std::string& filename)
 {
 	
 }
 
-void aeon_parser::print()
+void aeParser::print()
 {
 	root->printSelf(0);
 }
 
-aeNodeFunction* aeon_parser::parseFunction()
+aeNodeFunction* aeParser::parseFunction()
 {
-		aeNodeFunction* funcDecl = new aeNodeFunction();
-		funcDecl->m_name = getNextToken().text;
+	aeNodeFunction* funcDecl = new aeNodeFunction();
+	funcDecl->m_name = getNextToken().text;
 
-		// We're now in the (
-		getNextToken();
+	// We're now in the (
+	getNextToken();
+	getNextToken();
 
-		getNextToken();
+	while (Tok.type != AETK_CLOSEPAREN)
+	{
+		funcDecl->m_parameters = parseParamsList();
+	}
 
-		while (Tok.type != AETK_CLOSEPAREN)
-		{
-			funcDecl->m_parameters = parseParamsList();
-		}
+	getNextToken(); // just opened bracket
 
-		getNextToken(); // just opened bracket
+	funcDecl->m_block.reset(parseBlock());
 
-		funcDecl->m_block.reset(parseBlock());
-
-		return funcDecl;
+	return funcDecl;
 }
 
-aeNodeBlock* aeon_parser::parseBlock()
+aeNodeBlock* aeParser::parseBlock()
 {
 	aeNodeBlock* block = new aeNodeBlock;
 	getNextToken();
@@ -724,7 +739,7 @@ aeNodeBlock* aeon_parser::parseBlock()
 	return block;
 }
 
-aeNodeFor* aeon_parser::parseForLoop()
+aeNodeFor* aeParser::parseForLoop()
 {
 	aeNodeFor* astfor = new aeNodeFor();
 	getNextToken();
@@ -750,7 +765,7 @@ aeNodeFor* aeon_parser::parseForLoop()
 	return astfor;
 }
 
-aeNodeWhile* aeon_parser::parseWhileLoop()
+aeNodeWhile* aeParser::parseWhileLoop()
 {
 	aeNodeWhile* whileNode = new aeNodeWhile();
 
@@ -782,7 +797,7 @@ aeNodeWhile* aeon_parser::parseWhileLoop()
 	return whileNode;
 }
 
-aeNodeVarDecl* aeon_parser::parseVariableDecl()
+aeNodeVarDecl* aeParser::parseVariableDecl()
 {
 	aeNodeVarDecl* varDecl = new aeNodeVarDecl;
 	varDecl->m_type = parseQualType();
@@ -801,7 +816,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 	{
 		getNextToken();
 
-		aeNodeRef* astvar = new aeNodeRef();
+		aeNodeIdentifier* astvar = new aeNodeIdentifier();
 		astvar->explicitDeclaration = true;
 		astvar->m_name = varName;
 
@@ -813,7 +828,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 }
 
 	/// We're about to read a function call, get it
-	aeNodeFunctionCall* aeon_parser::parseFunctionCall()
+	aeNodeFunctionCall* aeParser::parseFunctionCall()
 	{
 		aeNodeFunctionCall* funccall = new aeNodeFunctionCall();
 		funccall->m_name = Tok.text;
@@ -850,7 +865,7 @@ aeNodeVarDecl* aeon_parser::parseVariableDecl()
 		return funccall;
 	}
 
-aeNodeExpr* aeon_parser::parsePrimaryExpression()
+aeNodeExpr* aeParser::parsePrimaryExpression()
 {
 	aeNodeExpr* idnt = parseIdentityExpression();
 	if (Tok.type == AETK_DOT)
@@ -860,7 +875,7 @@ aeNodeExpr* aeon_parser::parsePrimaryExpression()
 	return idnt;
 }
 
-aeNodeAccessOperator* aeon_parser::parseMemberAccess(aeNodeExpr* left)
+aeNodeAccessOperator* aeParser::parseMemberAccess(aeNodeExpr* left)
 {
 	// We are on a '.', which HAS to form an operator
 	getNextToken();
@@ -868,6 +883,9 @@ aeNodeAccessOperator* aeon_parser::parseMemberAccess(aeNodeExpr* left)
 	aeNodeAccessOperator* dotOp = new aeNodeAccessOperator();
 	dotOp->m_a = left;
 	dotOp->m_b = parseIdentityExpression();
+
+	dotOp->m_a->m_parentExpr = dotOp;
+	dotOp->m_b->m_parentExpr = dotOp;
 
 	if (Tok.type == AETK_DOT)
 	{
@@ -877,7 +895,7 @@ aeNodeAccessOperator* aeon_parser::parseMemberAccess(aeNodeExpr* left)
 		return dotOp;
 }
 
-aeNodeExpr* aeon_parser::parseIdentityExpression()
+aeNodeExpr* aeParser::parseIdentityExpression()
 {
 	aeNodeExpr* result = nullptr;
 	std::string name = Tok.text;
@@ -903,7 +921,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 	}
 	else
 	{
-		aeNodeRef* varRef = new aeNodeRef;
+		aeNodeIdentifier* varRef = new aeNodeIdentifier;
 		varRef->m_name = name;
 		result = varRef;
 	}
@@ -911,7 +929,7 @@ aeNodeExpr* aeon_parser::parseIdentityExpression()
 	return result;
 }
 
-aeNodeExpr* aeon_parser::parseExpression()
+aeNodeExpr* aeParser::parseExpression()
 {
 		// no way we can get a valid expression here
 		if (Tok.type == AETK_CLOSEPAREN || Tok.type == AETK_SEMICOLON || Tok.type == AETK_COMMA)
@@ -1038,7 +1056,7 @@ aeNodeExpr* aeon_parser::parseExpression()
 		return lhs;
 	}
 
-aeNodeExpr* aeon_parser::parse_identifier_subexpression()
+aeNodeExpr* aeParser::parse_identifier_subexpression()
 {
 		aeNodeExpr* result_expr = nullptr;
 
@@ -1097,7 +1115,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 		}
 		else
 		{
-			aeNodeRef* var = new aeNodeRef;
+			aeNodeIdentifier* var = new aeNodeIdentifier;
 			var->m_name = identifier.text;
 			result_expr = var;
 
@@ -1127,7 +1145,7 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 		return result_expr;
 }
 
-	bool aeon_parser::checkForFunction()
+	bool aeParser::checkForFunction()
 	{
 		// So, the statement is not started, getNextToken() should be returning the return type
 		return peekAhead(2).type == AETK_OPENPAREN;
@@ -1135,18 +1153,18 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 
 
 
-	void aeon_parser::parseTopLevel()
+	void aeParser::parseTopLevel()
 	{
 
 	}
 
 
-	aeon_token aeon_parser::getNextToken()
+	aeon_token aeParser::getNextToken()
 	{
 		if (Tok.type == AETK_EOF)
 			return Tok;;
 
-		Tok = lex->tokens[i++];
+		Tok = m_tokenizer->tokens[i++];
 
 		while (Tok.type == AETK_LINECOMMENT || Tok.type == AETK_MULTICOMMENT)
 			Tok = getNextToken();
@@ -1155,12 +1173,12 @@ aeNodeExpr* aeon_parser::parse_identifier_subexpression()
 	}
 
 	/// Peeks ahead from 1 to N tokens
-	aeon_token aeon_parser::peekAhead(int count)
+	aeon_token aeParser::peekAhead(int count)
 	{
-		return lex->tokens[i + count];
+		return m_tokenizer->tokens[i + count];
 	}
 
-void aeon_parser::printAST()
+void aeParser::printAST()
 {
 	root->printSelf(0);
 }

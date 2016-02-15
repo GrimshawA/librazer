@@ -3,7 +3,7 @@
 
 #include "aeNodeExpr.h"
 
-#include "../aeon_tree.h"
+#include <AEON/AST/Nodes.h>
 #include <vector>
 #include <stdint.h>
 

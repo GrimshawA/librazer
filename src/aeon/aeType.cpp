@@ -1,16 +1,51 @@
-#include "aeon_type.h"
+#include <AEON/aeType.h>
 #include <aeon/aeVM.h>
 
 aeType::aeType()
+: is_native(false)
+, m_userData(nullptr)
 {
 	m_size = 1;
 	m_name = "null";
 }
 
 aeType::aeType(const std::string& _name, uint32_t _size)
+: is_native(false)
+, m_userData(nullptr)
 {
 	m_name = _name;
 	m_size = _size;
+}
+
+bool aeType::isEnum()
+{
+	return m_typeKind == KindEnum;
+}
+
+bool aeType::isTemplated()
+{
+	return !m_templateParams.empty();
+}
+
+bool aeType::isClass()
+{
+	return m_typeKind == KindClass;
+}
+
+bool aeType::isNative()
+{
+	return is_native;
+}
+
+bool aeType::isPod()
+{
+	for (auto& field : m_fields)
+	{
+		if (!field.type.getType()->isPod())
+			return false;
+	}
+
+	return m_pod;
 }
 
 uint32_t aeType::getSize()

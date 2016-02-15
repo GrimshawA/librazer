@@ -1,18 +1,16 @@
-#include "aeon_compiler.h"
-#include "aeon_bytecode.h"
-#include <aeon/aeVM.h>
-#include "aeon_context.h"
-#include "nodes/aeNodeNew.h"
+#include <AEON/Compiler/aeCompiler.h>
+#include <AEON/aeBytecode.h>
+#include <AEON/aeVM.h>
+#include <AEON/aeContext.h>
 
 #include <cassert>
 
-
 void aeCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
 {
-	if (expr->m_nodeType == AEN_REF)
+	if (expr->m_nodeType == AEN_IDENTIFIER)
 	{
 		// Load the var address into the stack
-		emitVarExpr(static_cast<aeNodeRef*>(expr), exprContext);
+		emitVarExpr(static_cast<aeNodeIdentifier*>(expr), exprContext);
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
@@ -41,69 +39,6 @@ void aeCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
 		{
 			emitAssignOp(binaryop->operandA, binaryop->operandB);
 		}
-	}
-}
-
-void aeCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
-{
-	std::string finalSymbolName = fn->m_name;
-
-	if (!beingCalledOn)
-	{
-		// This seems to be a "top-level" call, meaning it could have to be called on this, or a global func
-		auto topClass = getTopClassNode();
-		if (topClass && topClass->hasMethod(fn->m_name))
-		{
-			finalSymbolName = topClass->m_name + "." + fn->m_name;
-
-			aeNodeFunction* calledMethod = topClass->getMethod(fn->m_name);
-			if (!calledMethod->is_static)
-			{
-				emitPushThis();
-			}
-		}
-	}
-	else
-	{
-		finalSymbolName = beingCalledOn.m_type->getSymbolName() + "." + fn->m_name;
-
-	}
-
-	CompilerLog("Function call %s\n", finalSymbolName.c_str());
-	aeFunction* func = m_env->getFunctionByName(finalSymbolName);
-	if (!func)
-	{
-		CompilerError("0002","Calling an unknown function " + finalSymbolName);
-		return;
-	}
-
-	// First allocate some room for the return value
-	//emitInstruction(OP_MOV, fn->getReturnTypeSize());
-
-	// Emit the arguments
-	int i = 0;
-	for (auto it = fn->m_args.rbegin(); it != fn->m_args.rend(); ++it)
-	{
-		aeExprContext arg_ctx;
-		arg_ctx.rx_value = true;
-		arg_ctx.expectedResult = fn->getArgType(i);
-		emitExpressionEval((*it), arg_ctx);
-	}
-
-	
-	int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
-
-	if (functionIndex == -1)
-		CompilerError("0002","Could not find the function to call! " + finalSymbolName);
-
-	if (func->m_native)
-	{
-		emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
-		emitInstruction(OP_CALLMETHOD_NAT, functionIndex);
-	}
-	else
-	{
-		emitInstruction(OP_CALL, functionIndex);
 	}
 }
 
@@ -182,18 +117,18 @@ void aeCompiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
 
 void aeCompiler::emitLoadAddress(aeNodeExpr* expr)
 {
-	if (expr->m_nodeType != AEN_REF)
+	if (expr->m_nodeType != AEN_IDENTIFIER)
 	{
 		CompilerError("0002","emitLoadAddress: Only know how to load a variable ref");
 		return;
 	}
-	aeNodeRef* varExpr = (aeNodeRef*)expr;
+	aeNodeIdentifier* varExpr = (aeNodeIdentifier*)expr;
 
 	auto varStorage = getVariable(varExpr->m_name);
 	if (varStorage.mode == AE_VAR_LOCAL)
 	{
 		// Load a local variable address into the stack
-		emitInstruction(OP_LOADADDR, AEK_EBP, varStorage.offset_bp);
+		emitInstruction(OP_LOADADDR, AEK_EBP, varStorage.offset);
 		CompilerLog("Loading local\n");
 	}
 	else if (varStorage.mode == AE_VAR_FIELD)
@@ -298,7 +233,10 @@ void aeCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 
 	aeExprContext exprContext;
 	exprContext.expectedResult = Ta;
-	exprContext.rx_value = true;
+	if (Ta.m_handle)
+		exprContext.rx_value = true; // for handles we want to load their value
+	else
+		exprContext.lvalue = true; // for values we want to get them loaded for edit
 	emitExpressionEval(acs->m_a, exprContext);
 
 	if (acs->m_b->m_nodeType == AEN_FUNCTIONCALL)
@@ -310,7 +248,11 @@ void aeCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 	}
 	else
 	{
-
+		if (acs->m_b->m_nodeType == AEN_IDENTIFIER && Ta.getType()->isEnum())
+		{
+			aeNodeIdentifier* refNode = (aeNodeIdentifier*)acs->m_b;
+			emitEnumValue((aeEnum*)Ta.getType(), refNode->m_name);
+		}
 	}
 }
 
@@ -364,7 +306,7 @@ void aeCompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void aeCompiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprContext)
+void aeCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);
@@ -379,10 +321,6 @@ void aeCompiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprCont
 		loadFrom = AEK_THIS;
 		emitDebugPrint("LOADING THIS." + var->m_name);
 	}
-	else
-	{
-		offsetOnRefFrame = varInfo.offset_bp;
-	}
 
 	if (parentExprContext.rx_value)
 	{
@@ -393,7 +331,7 @@ void aeCompiler::emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprCont
 
 		emitInstruction(OP_LOAD, loadFrom, offsetOnRefFrame, kind);
 	}
-	else
+	else if (parentExprContext.lvalue)
 	{
 		emitInstruction(OP_LOADADDR, loadFrom, offsetOnRefFrame);
 	}

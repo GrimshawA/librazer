@@ -25,6 +25,9 @@ public:
 
 	aeNodeExpr();
 
+	/// Get the parent expression if any
+	aeNodeExpr* getParentExpression();
+
 	virtual aeQualType getQualifiedType(aeCompiler* c);
 
 	bool isFloat();

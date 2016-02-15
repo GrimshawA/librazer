@@ -10,7 +10,7 @@
 	\class aeNodeRef
 	\brief Reference to a stored variable
 */
-class aeNodeRef : public aeNodeExpr
+class aeNodeIdentifier : public aeNodeExpr
 {
 public:
 	bool explicitDeclaration;
@@ -20,7 +20,7 @@ public:
 
 public:
 
-	aeNodeRef();
+	aeNodeIdentifier();
 
 	virtual aeQualType getQualifiedType(aeCompiler* c);
 

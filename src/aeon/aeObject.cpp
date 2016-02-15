@@ -1,5 +1,5 @@
-#include "aeon_object.h"
-#include "aeon_type.h"
+#include <AEON/aeObject.h>
+#include <AEON/aeType.h>
 
 aeType* aeon_object::getType()
 {

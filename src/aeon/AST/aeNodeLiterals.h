@@ -59,11 +59,8 @@ public:
 		m_nodeType = AEN_INTEGER;
 	}
 
-	virtual std::string exprstr()
-	{
-		return ";";
-		//return std::to_string(value);
-	}
+	aeQualType getQualifiedType(aeCompiler* c);
+
 
 	std::string str() const
 	{

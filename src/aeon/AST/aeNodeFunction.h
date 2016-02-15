@@ -6,6 +6,7 @@
 class aeNodeExpr;
 class aeQualType;
 class aeNodeBlock;
+class aeNodeStatement;
 
 /**
 	\class aeNodeFunction
@@ -21,17 +22,18 @@ class aeNodeFunction : public aeNodeBase
 {
 public:
 
-	std::vector<aeNodeExpr*>      m_parameters;
-	std::vector<aeQualType>       m_paramTypes;
-	std::string                   m_name;
-	aeQualType                    m_returnType;
-	std::unique_ptr<aeNodeBlock>  m_block;
-	bool                          is_constructor;
-	bool                          is_method;
-	bool                          is_destructor;
-	bool                          is_global;
-	bool                          is_static;
-	bool                          is_anon;
+	std::vector<aeNodeExpr*>                      m_parameters;
+	std::vector<aeQualType>                       m_paramTypes;
+	std::vector<std::unique_ptr<aeNodeStatement>> m_statements;
+	std::string                                   m_name;
+	aeQualType                                    m_returnType;
+	std::unique_ptr<aeNodeBlock>                  m_block;
+	bool                                          is_constructor;
+	bool                                          is_method;
+	bool                                          is_destructor;
+	bool                                          is_global;
+	bool                                          is_static;
+	bool                                          is_anon;
 
 public:
 	aeNodeFunction();

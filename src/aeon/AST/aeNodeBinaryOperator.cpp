@@ -1,6 +1,6 @@
 #include "aeNodeBinaryOperator.h"
-#include "../aeon_compiler.h"
-#include "../aeon_context.h"
+#include <AEON/Compiler/aeCompiler.h>
+#include <AEON/aeContext.h>
 
 aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper)
 {
@@ -29,7 +29,7 @@ aeQualType aeNodeBinaryOperator::getQualifiedType(aeCompiler* c)
 	{
 		qt.m_type = c->m_env->getTypeInfo("bool");
 	}
-	else if (oper == "+")
+	else if (isArithmetic())
 	{
 		qt.m_type = c->m_env->getTypeInfo("int32");
 	}

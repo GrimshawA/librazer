@@ -1,10 +1,10 @@
 #ifndef aeSymbol_h__
 #define aeSymbol_h__
 
-#include "aeQualType.h"
+#include <AEON/aeQualType.h>
 
 class aeType;
-class aeon_context;
+class aeContext;
 
 #include <vector>
 #include <stdint.h>

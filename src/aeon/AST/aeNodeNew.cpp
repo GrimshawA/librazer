@@ -1,5 +1,5 @@
 #include "aeNodeNew.h"
-#include "../aeon_compiler.h"
+#include <AEON/Compiler/aeCompiler.h>
 
 aeQualType aeNodeNew::getQualifiedType(aeCompiler* c)
 {

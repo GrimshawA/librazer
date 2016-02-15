@@ -1,7 +1,7 @@
 #include "aeNodeModule.h"
 #include "aeNodeClass.h"
 #include "aeNodeNamespace.h"
-#include "../aeon_tree.h"
+#include <AEON/AST/Nodes.h>
 
 aeNodeModule::aeNodeModule()
 {
@@ -10,9 +10,5 @@ aeNodeModule::aeNodeModule()
 
 void aeNodeModule::printSelf(int tabs)
 {
-	printf("%sModule '%s'\n", makeTabbing(tabs).c_str(), m_name.c_str());
-	for (auto item : m_items)
-	{
-		item->printSelf(tabs + 1);
-	}
+	
 }

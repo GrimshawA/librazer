@@ -1,4 +1,5 @@
-#include "aeon_lexer.h"
+#include <AEON/aeTokenizer.h>
+
 #include <string>
 #include <locale>
 

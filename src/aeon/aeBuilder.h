@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-class aeon_context;
+class aeContext;
 
 /**
 	\class aeBuilder
@@ -19,11 +19,11 @@ public:
 	/// The source files to be compiled
 	std::vector<std::string> m_sources;
 	std::string m_module;
-	aeon_context* m_context;
+	aeContext* m_context;
 
 public:
 
-	aeBuilder(aeon_context& context);
+	aeBuilder(aeContext& context);
 
 	void addFile(const std::string& sourcefile);
 

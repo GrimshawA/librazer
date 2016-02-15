@@ -1,10 +1,12 @@
 #include "aeNodeFunctionCall.h"
 #include "aeNodeFunction.h"
 #include "aeNodeClass.h"
+#include <AEON/Compiler/aeCompiler.h>
 
 aeNodeFunctionCall::aeNodeFunctionCall()
 : aeNodeExpr()
 , m_function(nullptr)
+, m_fn(nullptr)
 {
 	m_nodeType = AEN_FUNCTIONCALL;
 }
@@ -14,6 +16,20 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	if (m_function)
 	{
 		return m_function->getReturnType().getSize();
+	}
+}
+
+aeQualType aeNodeFunctionCall::getQualifiedType(aeCompiler* c)
+{
+	if (!m_fn)
+	{
+		// Derives which function this call actually wants to call, to find the return type
+		m_fn = c->selectFunction(this);
+	}
+
+	if (m_fn)
+	{
+		return m_fn->returnType;
 	}
 }
 

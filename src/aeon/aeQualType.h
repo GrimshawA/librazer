@@ -2,7 +2,7 @@
 #define aeQualType_h__
 
 class aeType;
-class aeon_context;
+class aeContext;
 
 #include <vector>
 #include <stdint.h>
@@ -87,6 +87,9 @@ public:
 	/// Check if the type is a void
 	bool isVoid() const;
 
+	/// Check if this is a pod type (trivially constructible, handle or ptr)
+	bool isPod() const;
+
 	/// Get the primitive type in an enum
 	AEPrimitive getPrimitive() const;
 
@@ -100,7 +103,7 @@ public:
 	operator bool() const;
 
 	/// Parse a type
-	void parse(const std::string& str, aeon_context* ctx);
+	void parse(const std::string& str, aeContext* ctx);
 };
 
 #endif // aeQualType_h__

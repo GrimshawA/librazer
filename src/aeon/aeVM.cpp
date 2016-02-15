@@ -1,7 +1,7 @@
 #include <aeon/aeVM.h>
-#include "aeon_bytecode.h"
-#include "aeon_context.h"
-#include "aeon_object.h"
+#include <AEON/aeByteCode.h>
+#include <AEON/aeContext.h>
+#include <AEON/aeObject.h>
 
 #define vm_start(x) case x:{
 #define vm_end break;}
@@ -13,7 +13,12 @@
 
 aeVM::aeVM()
 {
-	
+	memset(m_stk.stack.data(), 0, m_stk.stack.size());
+}
+
+aeVM::aeVM(aeContext* context)
+{
+	m_ctx = context;
 }
 
 aeon_module* aeVM::get_current_mod()
@@ -47,34 +52,10 @@ void aeVM::pushThis(void* obj)
 	m_stk.push_addr(obj);
 }
 
-void aeVM::setContext(aeon_context* context)
+void aeVM::setContext(aeContext* context)
 {
 	m_ctx = context;
 } 
-
-void aeVM::setArgFloat(uint32_t index, float v)
-{
-	*(m_stk.esp - sizeof(aeDynamicType)* index) = v;
-}
-
-float aeVM::getArgFloat(uint32_t index)
-{
-	return *(m_stk.esp - index * sizeof(aeDynamicType));
-}
-
-void aeVM::setArg(uint32_t index, aeDynamicType v)
-{
-	uint64_t* argAddress = reinterpret_cast<uint64_t*>((m_stk.esp - sizeof(uint64_t)* index));
-	*argAddress = v._u64;
-}
-
-aeDynamicType aeVM::getArg(uint32_t index)
-{
-	uint64_t* argAddress = reinterpret_cast<uint64_t*>((m_stk.esp - sizeof(uint64_t)* index));
-	aeDynamicType v;
-	v._u64 = *argAddress;
-	return v;
-}
 
 void printBits2(size_t const size, void const * const ptr)
 {
@@ -94,74 +75,6 @@ void printBits2(size_t const size, void const * const ptr)
 		puts("");
 }
 
-void aeVM::push(uint64_t n)
-{
-	m_stk.esp -= 8;
-	memcpy(m_stk.esp, &n, sizeof(n));
-	//Log("Pushed to stack: %d", n);
-}
-
-void aeVM::push_float(float value)
-{
-	m_stk.esp -= sizeof(value);
-	memcpy(m_stk.esp, &value, sizeof(value));
-}
-
-void aeVM::push_double(double value)
-{
-	m_stk.esp -= sizeof(value);
-	memcpy(m_stk.esp, &value, sizeof(value));
-}
-
-void aeVM::push_int32(int32_t value)
-{
-	m_stk.esp -= sizeof(value);
-	memcpy(m_stk.esp, &value, sizeof(value));
-}
-
-void aeVM::push_bytes(uint32_t bytes)
-{
-	m_stk.esp -= bytes;
-}
-
-void aeVM::push_objectref(atom_objectref ref)
-{
-	m_stk.esp -= sizeof(ref);
-	memcpy(m_stk.esp, &ref, sizeof(ref));
-}
-
-uint64_t aeVM::pop()
-{
-	uint64_t stacktop;
-	memcpy(&stacktop, m_stk.esp, sizeof(uint64_t));
-	m_stk.esp += 8;
-	return stacktop;
-}
-
-float aeVM::pop_float()
-{
-	float value;
-	memcpy(&value, m_stk.esp, sizeof(float));
-	m_stk.esp += sizeof(float);
-	return value;
-}
-
-double aeVM::pop_double()
-{
-	double value;
-	memcpy(&value, m_stk.esp, sizeof(double));
-	m_stk.esp += sizeof(double);
-	return value;
-}
-
-int32_t aeVM::pop_int32()
-{
-	int32_t value;
-	memcpy(&value, m_stk.esp, sizeof(int32_t));
-	m_stk.esp += sizeof(int32_t);
-	return value;
-}
-
 void aeVM::call(aeon_module& module, const char* func)
 {
 	aeStackFrame callinfo;
@@ -178,7 +91,7 @@ void aeVM::call(aeon_module& module, const char* func)
 		if (!function->m_compiled)
 		{
 			//printf("This function is not compiled '%s'.\n", function->getSymbolName().c_str());
-			//return;
+			return;
 		}
 
 		prepare(functionId);
@@ -439,7 +352,7 @@ inline static void DoLoadAddr(aeVM* vm, int addressMode, int offset, int x)
 		vm_value thisPtr = vm->m_stk.pop_value();
 		thisPtr.ptr = (unsigned char*)thisPtr.ptr + offset;
 		vm->m_stk.push_value(thisPtr);
-		//printf("OP_LOADADDR THIS = %x (offset %d)\n", vm->m_stk.getThisPtr().ptr, offset);
+		printf("OP_LOADADDR THIS = %x (offset %d)\n", vm->m_stk.getThisPtr().ptr, offset);
 	}
 	else if (addressMode == AEK_EBP)
 	{
@@ -669,15 +582,18 @@ void aeVM::execute(aeThreadState& threadInfo)
 				DoLoadConstant(this, inst.arg0, inst.arg1, inst.arg2);				
 			vm_end
 
+			vm_start(OP_LOADENUM)
+				vm_value v;
+				v.i32 = inst.arg0;
+				m_stk.push_value(v);
+			vm_end
+
 			vm_start(OP_LT)
 				DoLessThan(this, (AeonPrimitiveType)inst.arg0);
 			vm_end
 
 			vm_start(OP_LTE)
-				int opb = pop();
-				int opa = pop();
-				push(static_cast<int>(opa < opb));
-				//Log("[lt] %d < %d = %d", opa, opb, static_cast<int>(opa < opb));
+				
 			vm_end
 
 			vm_start(OP_GT)
@@ -685,10 +601,7 @@ void aeVM::execute(aeThreadState& threadInfo)
 			vm_end
 
 			vm_start(OP_GTE)
-				int opb = pop();
-				int opa = pop();
-				push(static_cast<int>(opa > opb));
-				// Log("[gt] %d > %d = %d", opa, opb, static_cast<int>(opa < opb));
+				
 			vm_end
 
 			vm_start(OP_EQ)
@@ -734,11 +647,16 @@ void aeVM::execute(aeThreadState& threadInfo)
 			vm_start(OP_PUSHTHIS)
 				vm_value v = m_stk.getThisPtr();
 				m_stk.push_value(v);
-			vm_end
+				vm_end
 
-			vm_start(OP_SIZEOF)
-				uint32_t type_token = getinst_a(inst);
-				push(m_ctx->typedb[type_token]->getSize());
+					vm_start(OP_SIZEOF)
+
+					vm_end
+
+			vm_start(OP_TYPEINFO)
+				int index = inst.arg0;
+				m_stk.push_value(vm_value::make_ptr(m_ctx->typedb[index]));
+				printf("LOADED TYPE INFO %s\n", m_ctx->typedb[index]->getName().c_str());
 			vm_end
 
 			vm_start(OP_NEWOBJECT)

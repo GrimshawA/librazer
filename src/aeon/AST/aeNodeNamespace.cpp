@@ -1,6 +1,6 @@
 #include "aeNodeNamespace.h"
 #include "aeNodeClass.h"
-#include "../aeon_tree.h"
+#include <AEON/AST/Nodes.h>
 
 aeNodeNamespace::aeNodeNamespace()
 {

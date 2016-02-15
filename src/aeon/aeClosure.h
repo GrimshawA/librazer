@@ -1,7 +1,7 @@
 #ifndef aeClosure_h__
 #define aeClosure_h__
 
-#include "aeon_bytecode.h"
+#include <AEON/aeByteCode.h>
 #include <aeon/aeVM.h>
 
 #include <vector>

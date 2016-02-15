@@ -1,5 +1,5 @@
-#include "aeQualType.h"
-#include "aeon_type.h"
+#include <AEON/aeQualType.h>
+#include <AEON/aeType.h>
 
 aeQualType aeQualType::fromString(const std::string& str)
 {
@@ -25,7 +25,7 @@ aeQualType::aeQualType(aeType* type)
 
 }
 
-void aeQualType::parse(const std::string& str, aeon_context* ctx)
+void aeQualType::parse(const std::string& str, aeContext* ctx)
 {
 
 }
@@ -82,7 +82,7 @@ bool aeQualType::isConst() const
 
 bool aeQualType::isTemplated() const
 {
-	return m_templated;
+	return !m_templateArgs.empty();
 }
 
 bool aeQualType::isPrimitive() const
@@ -93,6 +93,19 @@ bool aeQualType::isPrimitive() const
 bool aeQualType::isVoid() const
 {
 	return m_type == nullptr;
+}
+
+bool aeQualType::isPod() const
+{
+	if (m_handle)
+		return true;
+
+	if (m_type->isPod())
+	{
+		return true;
+	}
+
+	return false;
 }
 
 AEPrimitive aeQualType::getPrimitive() const

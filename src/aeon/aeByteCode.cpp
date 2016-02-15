@@ -1,4 +1,4 @@
-#include "aeon_bytecode.h"
+#include <AEON/aeByteCode.h>
 
 std::array<const char*, static_cast<int32_t>(EOpCodes::Count)> EOpCodeNames = {
 	

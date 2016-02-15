@@ -1,10 +1,7 @@
-#include "aeon_compiler.h"
-#include "aeon_bytecode.h"
-#include <aeon/aeVM.h>
-#include "aeon_context.h"
-#include "nodes/aeNodeNew.h"
-#include "nodes/aeNodeClass.h"
-#include "nodes/aeNodeNamespace.h"
+#include <AEON/Compiler/aeCompiler.h>
+#include <AEON/aeByteCode.h>
+#include <AEON/aeVM.h>
+#include <AEON/aeContext.h>
 
 #include <cassert>
 
@@ -18,7 +15,6 @@ aeCompiler::aeCompiler()
 
 	m_OffsetFromBasePtr = 0;
 	m_caller = nullptr;
-
 }
 
 int32_t aeCompiler::cursor()
@@ -34,6 +30,16 @@ bool aeCompiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
 			return true;
 	}
 	return false;
+}
+
+void aeCompiler::emitEnumValue(aeEnum* enumDef, const std::string& valueDef)
+{
+	if (enumDef->table.find(valueDef) == enumDef->table.end())
+	{
+		CompilerError("0010", "The value '" + valueDef + "' is not a part of the enum '" + enumDef->getName() + "'");
+		return;
+	}
+	emitInstruction(OP_LOADENUM, enumDef->table[valueDef]);
 }
 
 aeQualType aeCompiler::buildQualifiedType(const std::string& type)
@@ -182,9 +188,9 @@ void aeCompiler::generate(aeNodeBase* root)
 		{
 			emitNamespaceCode(static_cast<aeNodeNamespace*>(root->m_items[i]));
 		}
-		else if (root->m_items[i]->m_nodeType == AEN_REF)
+		else if (root->m_items[i]->m_nodeType == AEN_IDENTIFIER)
 		{
-			emitGlobalVarCode(static_cast<aeNodeRef*>(root->m_items[i]));
+			emitGlobalVarCode(static_cast<aeNodeIdentifier*>(root->m_items[i]));
 		}
 	}
 }
@@ -205,14 +211,14 @@ void aeCompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 			{
 				emitNamespaceCode(static_cast<aeNodeNamespace*>(namespace_node->m_items[i]));
 			}
-			else if (namespace_node->m_items[i]->m_nodeType == AEN_REF)
+			else if (namespace_node->m_items[i]->m_nodeType == AEN_IDENTIFIER)
 			{
-				emitGlobalVarCode(static_cast<aeNodeRef*>(namespace_node->m_items[i]));
+				emitGlobalVarCode(static_cast<aeNodeIdentifier*>(namespace_node->m_items[i]));
 			}
 	 }
 }
 
-void aeCompiler::emitGlobalVarCode(aeNodeRef* global_var)
+void aeCompiler::emitGlobalVarCode(aeNodeIdentifier* global_var)
 {
 	
 }
@@ -233,7 +239,7 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 	typeInfo->m_module = m_module;
 	m_env->typedb.push_back(typeInfo);
 	m_module->types.push_back(*typeInfo);
-	aeon_context::object_heap objectHeap;
+	aeContext::object_heap objectHeap;
 	objectHeap.type = typeInfo;
 	m_env->object_heaps.push_back(objectHeap);
 
@@ -268,7 +274,7 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 			{
 				aeField fieldInfo;
 				fieldInfo.name = i.m_name;
-				fieldInfo.size = 4;
+				fieldInfo.size = varDecl->m_type.getSize();
 				fieldInfo.type = varDecl->m_type;
 				typeInfo->createField(fieldInfo);
 
@@ -278,7 +284,32 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 		}
 	}
 
+	// Now the class is compiled, we generate constructor and destructor
+	emitClassConstructors(typeInfo, clss);
+	emitClassDestructors(typeInfo, clss);
+
 	m_classes.pop_back();
+}
+
+void aeCompiler::emitClassConstructors(aeType* classType, aeNodeClass* classNode)
+{
+	aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
+
+	if (!classType->isPod())
+	{
+		// Need to inject construction code into the constructors
+		if (!defaultConstructor)
+		{
+			defaultConstructor = classNode->createDefaultConstructor();
+		}
+
+	//	injectMemberConstruction(defaultConstructor, classType, classNode);
+	}
+}
+
+void aeCompiler::emitClassDestructors(aeType* classType, aeNodeClass* classNode)
+{
+
 }
 
 void aeCompiler::throwError(const std::string& errorCode, const std::string& message)
@@ -416,6 +447,12 @@ void aeCompiler::emitFunction(aeNodeFunction* func)
 	function->m_absoluteName = symbol_prefix + func->m_name;
 	function->m_module = m_module;
 
+	if (func->is_constructor)
+	{
+		// Constructor specific code
+		emitConstructorInjection(func, function);
+	}
+
 	// let's just generate code for the executable block
 	emitBlock(func->m_block.get());
 
@@ -424,6 +461,38 @@ void aeCompiler::emitFunction(aeNodeFunction* func)
 	emitReturnCode(nullptr);
 	m_caller = nullptr;
 	m_currentFunction = nullptr;
+}
+
+void aeCompiler::emitConstructorInjection(aeNodeFunction* node, aeFunction* function)
+{
+	// This is where the initialization is done, before any user constructor instruction is executed
+	aeNodeClass* cl = getTopClassNode();
+
+	for (auto& field : cl->m_typeInfo->m_fields)
+	{
+		printf("INIT %s\n", field.name.c_str());
+		if (!field.type.isPod())
+		{
+			emitPushThis();
+			emitInstruction(OP_LOADADDR, AEK_THIS, field.offset);
+			
+			if (field.type.isTemplated())
+			{
+				// Templated types get the type as parameter
+				for (int i = 0; i < field.type.getNumTemplateArgs(); ++i)
+				{
+					aeQualType targ = field.type.getTemplateArg(i);
+					emitInstruction(OP_TYPEINFO, m_env->getTypeInfoIndex(targ.m_type));
+				}
+			}
+
+			aeNodeFunctionCall fnCall;
+			fnCall.m_name = "array";
+			emitFunctionCall(field.type, &fnCall, aeExprContext());
+
+			printf("INJECTED CONSTRUCTION %s\n", field.name.c_str());
+		}
+	}
 }
 
 void aeCompiler::emitLambdaFunction(aeNodeFunction* function)
@@ -515,8 +584,7 @@ void aeCompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	VariableStorageInfo localObject;
 	localObject.type = varDecl.m_type;
 	localObject.name = varDecl.m_decls[0].m_name;
-	localObject.offset = scope.offset;
-	localObject.offset_bp = m_OffsetFromBasePtr;
+	localObject.offset = m_OffsetFromBasePtr;
 	localObject.mode = AE_VAR_LOCAL;
 	scope.locals.push_back(localObject);
 

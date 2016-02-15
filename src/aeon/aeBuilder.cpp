@@ -1,8 +1,8 @@
 #include "aeBuilder.h"
-#include "aeon_context.h"
+#include <AEON/aeContext.h>
 #include <cstdlib>
 
-aeBuilder::aeBuilder(aeon_context& context)
+aeBuilder::aeBuilder(aeContext& context)
 : m_context(&context)
 {
 

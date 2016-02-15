@@ -1,10 +1,15 @@
 #include "aeNodeExpr.h"
 #include "aeNodeLiterals.h"
-#include "../aeon_compiler.h"
+#include <AEON/Compiler/aeCompiler.h>
 
 aeNodeExpr::aeNodeExpr()
 {
 	m_parentExpr = nullptr;
+}
+
+aeNodeExpr* aeNodeExpr::getParentExpression()
+{
+	return m_parentExpr;
 }
 
 aeQualType aeNodeExpr::getQualifiedType(aeCompiler* c)

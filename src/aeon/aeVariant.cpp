@@ -1,4 +1,4 @@
-#include "aeon_value.h"
+#include <AEON/aeVariant.h>
 #include <cstdlib>
 
 aeon_value::aeon_value()

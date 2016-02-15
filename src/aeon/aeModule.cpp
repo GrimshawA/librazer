@@ -1,4 +1,4 @@
-#include "aeon_module.h"
+#include <AEON/aeModule.h>
 
 uint32_t aeon_module::storeString(std::string s)
 {

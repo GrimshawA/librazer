@@ -1,6 +1,7 @@
 #include "aeNodeFunction.h"
 #include "aeNodeExpr.h"
 #include "aeNodeBlock.h"
+#include "aeNodeStatement.h"
 
 aeNodeFunction::aeNodeFunction()
 {

@@ -1,6 +1,6 @@
 #include "aeNodeModule.h"
 #include "aeNodeClass.h"
-#include "../aeon_tree.h"
+#include <AEON/AST/Nodes.h>
 
 void aeNodeBase::add(aeNodeBase* n)
 {
@@ -14,9 +14,9 @@ std::string aeNodeBase::str() const
 
 void aeNodeBase::printSelf(int tabs)
 {
-	printf("%s%s\n", makeTabbing(tabs).c_str(), str().c_str());
+	/*printf("%s%s\n", makeTabbing(tabs).c_str(), str().c_str());
 	for (auto item : m_items)
 	{
 		item->printSelf(tabs + 1);
-	}
+	}*/
 }

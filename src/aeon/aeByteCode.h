@@ -19,6 +19,7 @@ enum EOpCodes
 	OP_LOAD,           ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADADDR,           ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADK,          ///< load a constant into stack
+	OP_LOADENUM,          ///< load a constant into stack
 	OP_MUL,            ///< mul stores in eax, ebx * ec
 	OP_DIV,            ///< 
 	OP_MOD,            ///<
@@ -35,6 +36,7 @@ enum EOpCodes
 	OP_NOT,            ///< Negate operand
 	OP_SET,            ///< Assign something to something
 	OP_SIZEOF,     ///< Pushes the size in bytes to the stack of the given type token
+	OP_TYPEINFO,       ///< Pushes the ptr to a typeinfo struct
 	OP_NEWOBJECT,        ///< Creates a new object of the selected type and pushes its objectref
 	OP_DELETEOBJECT,     ///< Release the objectref on the stack
 	OP_MOV,

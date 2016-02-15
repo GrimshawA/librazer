@@ -1,13 +1,13 @@
 #ifndef aeon_context_h__
 #define aeon_context_h__
 
-#include "aeon_generics.h"
-#include "aeCodeFile.h"
-#include "aeQualType.h"
-#include "aeon_type.h"
-#include "aeon_value.h"
+#include <AEON/aeThreadState.h>
+#include <AEON/aeQualType.h>
+#include <AEON/aeType.h>
+#include <AEON/aeVariant.h>
 #include <vector>
 #include <memory>
+#include <map>
 #include <stdint.h>
 
 class aeVM;
@@ -31,11 +31,35 @@ typedef int aeFunctionId;
 
 class aeFunction;
 
+class aeEnum : public aeType
+{
+public:
+	std::map<std::string, int> table;
+
+	aeEnum()
+	{
+		m_typeKind = KindEnum;
+	}
+};
+
+enum ObjectSpecifiers
+{
+	aeOBJ_POD = 1 << 0,
+	aeOBJ_PRIMITIVE = 1 << 1,
+};
+
+class aeTypedef
+{
+public:
+	std::string from;
+	std::string to;
+};
+
 /**
 	\class aeon_context
 	\brief Brings different modules together in a single runtime environment
 */
-class aeon_context
+class aeContext
 {
 	public:
 
@@ -50,18 +74,19 @@ class aeon_context
 			std::vector<aeon_object*> objects;
 		};
 
-		std::vector<aeUnit>                           m_units;
-		std::vector<aeType*>                       typedb;               ///< All the types on the context
+		std::vector<aeType*>                          typedb;               ///< All the types on the context
 		std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
 		std::vector<std::unique_ptr<aeon_module> >    modules;              ///< All the loaded modules
 		std::vector<std::string>                      string_literals;      ///< All the loaded string literals
 		std::vector<double>                           m_floatTable;      ///< All the loaded double literals
 		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
 		std::vector<aeFunction*>                      m_functionTable;      ///< All the functions available to scripts
+		std::vector<aeTypedef>                        m_typedefs;
+		std::vector<aeEnum*>                          m_enums;
 		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 public:
 
-	aeon_context();
+	aeContext();
 
 	void init_all();
 
@@ -88,14 +113,19 @@ public:
 	void registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest);
 	void registerTypeField(const std::string& typeName, const std::string& decl, int offset);
 	void registerFunction(const std::string& decl, aeBindMethod func);
+	void registerEnum(const std::string& enumName);
+	void registerEnumValue(const std::string& enumName, const std::string& valueName, int value);
+	void registerPrimitive(const std::string& name, uint32_t size);
+	void registerTypedef(const std::string& from, const std::string& to);
 
 	aeFunction* getFunctionByIndex(uint32_t index);
 	aeFunction* getFunctionByName(const std::string& name);
 	uint32_t    getFunctionIndexByName(const std::string& name);
-
+	aeEnum*     getEnumByName(const std::string& name);
 	aeFunctionId getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior);
 
 	aeType* getTypeInfo(const std::string& name);
+	int32_t getTypeInfoIndex(aeType* typeInfo);
 
 	/// Creates a new object of that type
 	aeon_object* createObject(const std::string& typen);
@@ -103,7 +133,6 @@ public:
 	/// Destroys the object and frees its memory
 	void destroyObject(aeon_object* object);
 
-	void register_primitive(const std::string& name, uint32_t size);
 };
 
 #endif // aeon_context_h__

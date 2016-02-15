@@ -1,9 +1,9 @@
 #ifndef aeon_module_h__
 #define aeon_module_h__
 
-#include "aeon_bytecode.h"
-#include "aeon_type.h"
-#include "aeQualType.h"
+#include <AEON/aeByteCode.h>
+#include <AEON/aeType.h>
+#include <AEON/aeQualType.h>
 #include <vector>
 #include <array>
 #include <stdint.h>
@@ -29,10 +29,11 @@ public:
 	uint32_t    paramsStorageSize; ///< The amount of storage needed to push the params
 	uint32_t    offset;            ///< which instruction this function starts in the code
 	std::string decl;
-	bool m_compiled;               ///< Whether or not this function is compiled successfully, with a valid body
 	aeBindMethod fn;
 	aeon_module* m_module;
 	bool m_native;
+	bool m_compiled;               ///< Whether or not this function is compiled successfully, with a valid body
+	bool m_virtual;
 };
 
 struct aeon_method

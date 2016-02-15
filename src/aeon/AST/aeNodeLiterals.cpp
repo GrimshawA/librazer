@@ -1,5 +1,5 @@
 #include "aeNodeLiterals.h"
-#include <aeon/aeon_compiler.h>
+#include <AEON/Compiler/aeCompiler.h>
 
 aeQualType aeNodeString::getQualifiedType(aeCompiler* c)
 {
@@ -9,4 +9,9 @@ aeQualType aeNodeString::getQualifiedType(aeCompiler* c)
 aeQualType aeNodeFloat::getQualifiedType(aeCompiler* c)
 {
 	return aeQualType(c->m_env->getTypeInfo("float"));
+}
+
+aeQualType aeNodeInteger::getQualifiedType(aeCompiler* c)
+{
+	return aeQualType(c->m_env->getTypeInfo("int32"));
 }

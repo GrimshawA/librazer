@@ -1,6 +1,7 @@
 #ifndef aeNodeFunctionCall_h__
 #define aeNodeFunctionCall_h__
 
+#include <AEON/aeModule.h>
 #include "aeNodeExpr.h"
 
 class aeNodeFunction;
@@ -27,6 +28,8 @@ public:
 	std::vector<TemplateTypeArgument> templateTypeArguments;
 	aeNodeFunction* m_function;
 
+	aeFunction* m_fn;
+
 public:
 
 	aeNodeFunctionCall();
@@ -38,6 +41,9 @@ public:
 
 	/// Does this node already know exactly what function is to be called?
 	bool hasLinkedFunction();
+
+
+	aeQualType getQualifiedType(aeCompiler* c);
 
 	/// Returns a simple string representation
 	std::string str() const;

@@ -1,12 +1,13 @@
 #ifndef aeon_parser_h__
 #define aeon_parser_h__
 
-#include "aeon_tree.h"
-#include "aeon_value.h"
-#include "aeon_lexer.h"
+#include <AEON/AST/Nodes.h>
+#include <AEON/aeVariant.h>
+#include <AEON/aeTokenizer.h>
+
 #include <vector>
 
-class aeon_context;
+class aeContext;
 
 /**
 	\class aeon_parser
@@ -32,7 +33,7 @@ class aeon_context;
 	declared in aeon_module structs, belonging to the same aeon_context. These types are also considered
 	in pass 2.
 */
-class aeon_parser
+class aeParser
 {
 	public:
 
@@ -44,15 +45,22 @@ class aeon_parser
 
 		int           pass;
 		int           i = 0;
-		aeon_lexer*   lex = nullptr;
+		aeon_lexer*   m_tokenizer;
+		std::unique_ptr<aeon_lexer> m_customTokenizer; ///< When we manage our own
 		aeon_token    Tok;              ///< Current token cursor
-		aeon_context* ctx;              ///< The context of the application/library
+		aeContext* ctx;              ///< The context of the application/library
 		aeNodeModule* root;
 		aeon_value*   mDataValue;
 
+		/// Tokenizes the source and is fully ready to use
+		static std::unique_ptr<aeParser> create(const std::string& source, aeContext* context);
+
 	public:
 
-		aeon_parser();
+		aeParser();
+
+		/// Create with a custom tokenizer
+		aeParser(const std::string& source);
 
 		void                     startGather(aeon_lexer& lexer);
 		void                     startParse(aeon_lexer& lexer);

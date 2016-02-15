@@ -1,24 +1,17 @@
 #ifndef aeon_compiler_h__
 #define aeon_compiler_h__
 
-#include "aeCompilerConv.h"
-#include "nodes/aeNodeFunction.h"
-#include "nodes/aeNodeAccessOperator.h"
-#include "nodes/aeNodeSubscript.h"
-#include "nodes/aeNodeNew.h"
-#include "nodes/aeNodeLiterals.h"
-#include "nodes/aeNodeRef.h"
-#include "nodes/aeNodeNew.h"
-#include "nodes/aeNodeReturn.h"
-#include "aeon_module.h"
-#include "aeon_tree.h"
-#include "aeReportManager.h"
+#include <AEON/AST/Nodes.h>
+#include <AEON/Compiler/aeCompilerConv.h>
+#include <AEON/aeModule.h>
+#include <AEON/aeReportManager.h>
+
 #include <vector>
 #include <stack>
 #include <stdint.h>
 
 class aeVM;
-class aeon_context;
+class aeContext;
 
 /**
 	Any given variable can be a member of a class (field),
@@ -34,11 +27,10 @@ enum EVariableStorageLocations
 
 struct VariableStorageInfo
 {
-	int mode = AE_VAR_INVALID;
-	int offset = 0;
-	int offset_bp = 0;
-	aeQualType type;
-	std::string name;
+	int mode = AE_VAR_INVALID; ///< Reference frame, or where the varable belongs to
+	int offset = 0;            ///< Offset within reference frame
+	aeQualType type;           ///< Qualified type of this object
+	std::string name;          
 };
 
 /*
@@ -53,6 +45,7 @@ struct aeExprContext
 	bool is_temporary = false; ///< If the expression is isolated, it should evaluate for side effects and leave nothing on the stack
 	bool must_be_rvalue = false;
 	bool rx_value = false; ///< Tells the expression it must load a temporary rvalue (to be consumed shortly after in expression handling)
+	bool lvalue = false; ///< Must load as an editable value (loadaddress)
 };
 
 struct ScopeLocalData
@@ -70,7 +63,7 @@ struct ScopeLocalData
 class aeCompiler
 {
 public:
-		aeon_context*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
+		aeContext*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
 		aeon_module*                        m_module;                ///< Current module being compiled
 		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
 		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
@@ -151,6 +144,9 @@ public:
 	/// Evaluates a typename to a real type depending on context
 	aeType* evaluateType(const std::string& type_name);
 
+	/// Evaluate which function fn is trying to call (derived from context)
+	aeFunction* selectFunction(aeNodeFunctionCall* fn);
+
 	/// All the dirty tricks
 	void emitDebugPrint(const std::string& message);
 
@@ -161,9 +157,14 @@ public:
 	void emitClassCode(aeNodeClass* clss);
 	void emitFunction(aeNodeFunction* func);
 	void emitNamespaceCode(aeNodeNamespace* namespace_node);
-	void emitGlobalVarCode(aeNodeRef* global_var);
+	void emitGlobalVarCode(aeNodeIdentifier* global_var);
 	void emitStatement(aeNodeStatement* stmt);
+	void emitEnumValue(aeEnum* enumDef, const std::string& valueDef);
 	void emitBreakpoint();
+	void emitClassConstructors(aeType* classType, aeNodeClass* classNode);
+	void emitClassDestructors(aeType* classType, aeNodeClass* classNode);
+	void emitConstructorInjection(aeNodeFunction* node, aeFunction* function);
+
 
 	// Statement compilation
 	void emitBlock(aeNodeBlock* codeblock);
@@ -180,7 +181,7 @@ public:
 	void emitBinaryOp(aeNodeBinaryOperator* operation);
 	void emitConditionalOp(aeNodeBinaryOperator* operation);
 	void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
-	void emitVarExpr(aeNodeRef* var, const aeExprContext& parentExprContext);
+	void emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
 	void emitLoadAddress(aeNodeExpr* expr);
 	void emitLoadLiteral(aeNodeLiteral* lt);
 	void emitMemberOp(aeNodeAccessOperator* acs);
