@@ -1,30 +1,30 @@
 #include "aeDynamicType.h"
 
-aeDynamicType vmvalue_from_float(float v)
+AEVmObject vmvalue_from_float(float v)
 {
-	aeDynamicType rv;
-	rv.type = aeDynamicType::eFloat;
+	AEVmObject rv;
+	rv.type = AEVmObject::eFloat;
 	rv._fp = v;
 	return rv;
 }
 
-aeDynamicType vmvalue_from_stringindex(uint32_t poolIndex)
+AEVmObject vmvalue_from_stringindex(uint32_t poolIndex)
 {
-	aeDynamicType rv;
-	rv.type = aeDynamicType::eU32;
+	AEVmObject rv;
+	rv.type = AEVmObject::eU32;
 	rv._u32 = poolIndex;
 	return rv;
 }
 
-aeDynamicType vmvalue_from_bool(bool b)
+AEVmObject vmvalue_from_bool(bool b)
 {
-	aeDynamicType rv;
-	rv.type = aeDynamicType::eU32;
+	AEVmObject rv;
+	rv.type = AEVmObject::eU32;
 	rv._u32 = static_cast<uint32_t>(b);
 	return rv;
 }
 
-void vmvalue_print(aeDynamicType v)
+void vmvalue_print(AEVmObject v)
 {
 	/*switch (v.type)
 	{

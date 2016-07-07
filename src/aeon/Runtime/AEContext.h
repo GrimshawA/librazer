@@ -3,16 +3,16 @@
 
 #include <AEON/aeThreadState.h>
 #include <AEON/aeQualType.h>
-#include <AEON/aeType.h>
-#include <AEON/aeVariant.h>
+#include <AEON/Runtime/AEType.h>
+#include <AEON/Runtime/AEValue.h>
+#include <AEON/Runtime/AEModule.h>
 #include <vector>
 #include <memory>
 #include <map>
 #include <stdint.h>
 
 class aeVM;
-class aeon_module;
-class aeon_object;
+class AEObject;
 
 struct aeon_config
 {
@@ -29,9 +29,9 @@ typedef void(*aeConstructorMethod)(void*, aeVM*);
 typedef int aeLiteralId;
 typedef int aeFunctionId;
 
-class aeFunction;
+class AEFunction;
 
-class aeEnum : public aeType
+class aeEnum : public AEType
 {
 public:
 	std::map<std::string, int> table;
@@ -59,7 +59,7 @@ public:
 	\class aeon_context
 	\brief Brings different modules together in a single runtime environment
 */
-class aeContext
+class AEContext
 {
 	public:
 
@@ -67,43 +67,45 @@ class aeContext
 		{
 			std::vector<unsigned char*> memory;
 			std::vector<unsigned char*> freestore;
-			aeType*                  type;
+			AEType*                  type;
 			// start with the most naive implementation
 			// allocates with malloc for every single object and frees when needed
 			// todo: fancier memory management and allocation
-			std::vector<aeon_object*> objects;
+			std::vector<AEObject*> objects;
 		};
 
-		std::vector<aeType*>                          typedb;               ///< All the types on the context
+		std::vector<AEType*>                          typedb;               ///< All the types on the context
 		std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
-		std::vector<std::unique_ptr<aeon_module> >    modules;              ///< All the loaded modules
+		std::vector<std::unique_ptr<AEModule> >    modules;              ///< All the loaded modules
 		std::vector<std::string>                      string_literals;      ///< All the loaded string literals
 		std::vector<double>                           m_floatTable;      ///< All the loaded double literals
 		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
-		std::vector<aeFunction*>                      m_functionTable;      ///< All the functions available to scripts
+		std::vector<AEFunction*>                      m_functionTable;      ///< All the functions available to scripts
 		std::vector<aeTypedef>                        m_typedefs;
 		std::vector<aeEnum*>                          m_enums;
 		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 public:
 
-	aeContext();
+	AEContext();
 
 	void init_all();
 
-	aeFunction* createFunction(const std::string& name);
+	AEFunction* createFunction(const std::string& name);
 
 	aeLiteralId getIntegerLiteral(int64_t n);
 	aeLiteralId getStringLiteral(const std::string& s);
 	aeLiteralId getFloatLiteral(float v);
 
 	/// Executes and evaluates an arbitrary expression and returns the value
-	aeon_value evaluate(const std::string& expression);
+	AEValue evaluate(const std::string& expression);
 	
 	void quick_build(const std::string& file);
 
-	aeon_module* getModule(const std::string name);
+	static AEValue readValue(const std::string& filename);
 
-	aeon_module* createModule(const std::string& name);
+	AEModule* getModule(const std::string name);
+
+	AEModule* createModule(const std::string& name);
 
 
 	/// Registers a native type to work with the language
@@ -118,20 +120,20 @@ public:
 	void registerPrimitive(const std::string& name, uint32_t size);
 	void registerTypedef(const std::string& from, const std::string& to);
 
-	aeFunction* getFunctionByIndex(uint32_t index);
-	aeFunction* getFunctionByName(const std::string& name);
+	AEFunction* getFunctionByIndex(uint32_t index);
+	AEFunction* getFunctionByName(const std::string& name);
 	uint32_t    getFunctionIndexByName(const std::string& name);
 	aeEnum*     getEnumByName(const std::string& name);
 	aeFunctionId getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior);
 
-	aeType* getTypeInfo(const std::string& name);
-	int32_t getTypeInfoIndex(aeType* typeInfo);
+	AEType* getTypeInfo(const std::string& name);
+	int32_t getTypeInfoIndex(AEType* typeInfo);
 
 	/// Creates a new object of that type
-	aeon_object* createObject(const std::string& typen);
+	AEObject* createObject(const std::string& typen);
 
 	/// Destroys the object and frees its memory
-	void destroyObject(aeon_object* object);
+	void destroyObject(AEObject* object);
 
 };
 

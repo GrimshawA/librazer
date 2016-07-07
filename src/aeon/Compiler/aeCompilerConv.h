@@ -4,7 +4,7 @@
 #include <AEON/aeQualType.h>
 #include <vector>
 
-class aeType;
+class AEType;
 class aeCompiler;
 
 /// Every time the compiler has to convert a type into another, he uses one of these functions
@@ -21,7 +21,7 @@ typedef void(*ICGenerator)(aeCompiler*);
 */
 struct ConversionProcedure
 {
-	ConversionProcedure(bool implicit, aeType* t1, aeType* t2)
+	ConversionProcedure(bool implicit, AEType* t1, AEType* t2)
 	{
 		allow_implicit = implicit;
 		T1 = t1;
@@ -36,8 +36,8 @@ struct ConversionProcedure
 	};
 
 	bool allow_implicit; /// A conversion procedure will be automatically performed if this flag is on, otherwise only with a cast<>
-	aeType* T1;
-	aeType* T2;
+	AEType* T1;
+	AEType* T2;
 	int conversion_mode;
 
 	union

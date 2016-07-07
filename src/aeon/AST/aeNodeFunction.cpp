@@ -38,9 +38,9 @@ bool aeNodeFunction::isAnonymousFunction()
 	return is_anon;
 }
 
-std::string aeNodeFunction::str()
+std::string aeNodeFunction::str() const
 {
-	std::string s1 = std::string("Fn ") + m_name + "(";
+	std::string s = std::string("function");
 	/*if (m_parameters.size() > 0)
 	{
 		for (std::size_t i = 0; i < m_parameters.size(); ++i)
@@ -51,7 +51,7 @@ std::string aeNodeFunction::str()
 		}
 	}
 	s1 += ")";*/
-	return s1;
+	return s;
 }
 
 aeQualType aeNodeFunction::getParameterType(uint32_t index)

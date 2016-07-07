@@ -2,15 +2,16 @@
 #define aeon_type_h__
 
 #include <AEON/aeQualType.h>
-#include "aeSymbol.h"
+#include <AEON/aeSymbol.h>
 #include <vector>
 #include <bitset>
 #include <string>
 #include <stdint.h>
 
-class aeon_module;
-class aeContext;
+class AEModule;
+class AEContext;
 class aeVM;
+class AEFunction;
 
 typedef void(*aeBindMethod)(aeVM*);
 typedef void(*aeDestructorMethod)(void*);
@@ -26,10 +27,10 @@ typedef void(*aeConstructorMethod)(void*, aeVM*);
 	in the language. They also map to the TypeInfo struct that results of the
 	typeof(X) operator.
 */
-class aeType : public aeSymbol
+class AEType : public aeSymbol
 {
 	public:
-		friend class aeContext;
+		friend class AEContext;
 
 		enum ETypeFlags
 		{
@@ -66,12 +67,12 @@ class aeType : public aeSymbol
 
 		struct NestedTypeInfo
 		{
-			aeType* ref;
+			AEType* ref;
 		};
 
 		struct ParentTypeInfo
 		{
-			aeType* ref;
+			AEType* ref;
 			std::string access;
 		};
 
@@ -99,7 +100,7 @@ class aeType : public aeSymbol
 		std::vector<NestedTypeInfo> m_structs;
 		std::vector<ProtocolInfo>   m_protocols;
 		std::vector<std::string>    m_templateParams;
-		aeon_module*                m_module;
+		AEModule*                m_module;
 		bool is_native = false;
 		void*                       m_userData;            ///< This allows the user to inject additional info on the type
 		aeDestructorMethod          m_destructor;
@@ -108,10 +109,10 @@ class aeType : public aeSymbol
 	public:
 
 		/// Build the type info object
-		aeType();
+		AEType();
 
 		/// Build the type info object, explicitly used when declaring c++ types
-		aeType(const std::string& _name, uint32_t _size);
+		AEType(const std::string& _name, uint32_t _size);
 
 		/// Is this type an enum
 		bool isEnum();
@@ -149,6 +150,11 @@ class aeType : public aeSymbol
 		/// Get the name of the type
 		std::string getName();
 
+		/// Get the id of the function by its name
+		int getFunctionId(const std::string& name);
+
+		AEFunction* getFunction(const std::string& name);
+
 		/// Get the field information for a given type
 		aeField* getField(std::string name);
 
@@ -156,7 +162,7 @@ class aeType : public aeSymbol
 		uint32_t getSize();
 
 		/// Get the module this type is a part of
-		aeon_module* getModule();
+		AEModule* getModule();
 
 		/// Takes some input parameters and properly prepares the type for the new field
 		void createField(aeField fieldInfo);

@@ -3,7 +3,7 @@
 
 #include <AEON/AST/Nodes.h>
 #include <AEON/Compiler/aeCompilerConv.h>
-#include <AEON/aeModule.h>
+#include <AEON/Runtime/AEModule.h>
 #include <AEON/aeReportManager.h>
 
 #include <vector>
@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 class aeVM;
-class aeContext;
+class AEContext;
 
 /**
 	Any given variable can be a member of a class (field),
@@ -63,13 +63,13 @@ struct ScopeLocalData
 class aeCompiler
 {
 public:
-		aeContext*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
-		aeon_module*                        m_module;                ///< Current module being compiled
+		AEContext*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
+		AEModule*                        m_module;                ///< Current module being compiled
 		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
 		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
 		std::vector<aeNodeClass*>           m_classes;               ///< Class we are compiling right now
 		aeNodeFunction*                     m_caller;                ///< Current function node we're compiling
-		aeFunction*                         m_currentFunction;       ///< Current function being compiled to
+		AEFunction*                         m_currentFunction;       ///< Current function being compiled to
 		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
 		TypeSystemInformation               m_typeSystem;            ///< Table that defines what can be converted to what and how
 		aeReportManager                     m_reporter;
@@ -107,7 +107,7 @@ public:
 	aeQualType buildQualifiedType(aeNodeExpr* e);
 	
 	/// Emit an instruction
-	uint32_t emitInstruction(aeon_instruction instr);
+	uint32_t emitInstruction(AEInstruction instr);
 
 	/// Emits an instruction at the cursor from premade arguments
 	uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
@@ -136,22 +136,22 @@ public:
 	/// Evaluates the type of the expression/variable, taking into account the scope of the cursor
 	/// Any given variable 'x' can have different types depending from where its referenced.
 	/// Returns nullptr if it couldn't evaluate the scope
-	aeType* evaluateType(aeNodeExpr* expr);
+	AEType* evaluateType(aeNodeExpr* expr);
 
 	/// Evaluates the class node to an actual type
-	aeType* evaluateType(aeNodeClass* class_node);
+	AEType* evaluateType(aeNodeClass* class_node);
 
 	/// Evaluates a typename to a real type depending on context
-	aeType* evaluateType(const std::string& type_name);
+	AEType* evaluateType(const std::string& type_name);
 
 	/// Evaluate which function fn is trying to call (derived from context)
-	aeFunction* selectFunction(aeNodeFunctionCall* fn);
+	AEFunction* selectFunction(aeNodeFunctionCall* fn);
 
 	/// All the dirty tricks
 	void emitDebugPrint(const std::string& message);
 
 	/// Regarding scope, tries to deduce if we know how to convert typeB to typeA
-	bool canConvertType(aeType* typeA, aeType* typeB);
+	bool canConvertType(AEType* typeA, AEType* typeB);
 
 	// High level constructs compilation
 	void emitClassCode(aeNodeClass* clss);
@@ -161,9 +161,9 @@ public:
 	void emitStatement(aeNodeStatement* stmt);
 	void emitEnumValue(aeEnum* enumDef, const std::string& valueDef);
 	void emitBreakpoint();
-	void emitClassConstructors(aeType* classType, aeNodeClass* classNode);
-	void emitClassDestructors(aeType* classType, aeNodeClass* classNode);
-	void emitConstructorInjection(aeNodeFunction* node, aeFunction* function);
+	void emitClassConstructors(AEType* classType, aeNodeClass* classNode);
+	void emitClassDestructors(AEType* classType, aeNodeClass* classNode);
+	void emitConstructorInjection(aeNodeFunction* node, AEFunction* function);
 
 
 	// Statement compilation

@@ -1,6 +1,21 @@
-#include <AEON/aeModule.h>
+#include <AEON/Runtime/AEModule.h>
 
-uint32_t aeon_module::storeString(std::string s)
+AEModule::AEModule()
+{
+
+}
+
+AEModule::~AEModule()
+{
+
+}
+
+std::string AEModule::getName()
+{
+	return name;
+}
+
+uint32_t AEModule::storeString(std::string s)
 {
 	uint32_t index = 0;
 	for (auto str : stringPool)
@@ -15,29 +30,29 @@ uint32_t aeon_module::storeString(std::string s)
 	return index;
 }
 
-std::string aeon_module::getStringFromPool(uint32_t index)
+std::string AEModule::getStringFromPool(uint32_t index)
 {
 	return stringPool[index];
 }
 
-bool aeon_module::hasFunction(const std::string& name)
+bool AEModule::hasFunction(const std::string& name)
 {
 	return false;
 }
 
-void aeon_module::write(const char* filename)
+void AEModule::write(const char* filename)
 {
 		FILE* fp = fopen(filename, "wb");
 		if (fp)
 		{
 			int ic = instructions.size();
 			fwrite(&ic, sizeof(ic), 1, fp);
-			fwrite(&instructions[0], sizeof(aeon_instruction), instructions.size(), fp);
+			fwrite(&instructions[0], sizeof(AEInstruction), instructions.size(), fp);
 			fclose(fp);
 		}
 }
 
-	void aeon_module::read(const char* filename)
+	void AEModule::read(const char* filename)
 	{
 		FILE* fp = fopen(filename, "rb");
 		if (fp)
@@ -45,13 +60,13 @@ void aeon_module::write(const char* filename)
 			int ic;
 			fread(&ic, sizeof(ic), 1, fp);
 			instructions.resize(ic);
-			fread(&instructions[0], sizeof(aeon_instruction), ic, fp);
+			fread(&instructions[0], sizeof(AEInstruction), ic, fp);
 			fclose(fp);
 		}
 	}
 
 	/// Write the program source to a human readable format ( hopefully )
-	void aeon_module::dumpToFile(const std::string& filename)
+	void AEModule::dumpToFile(const std::string& filename)
 	{
 		/*File outFile(filename, IODevice::TextWrite);
 		if (outFile)
@@ -74,7 +89,7 @@ void aeon_module::write(const char* filename)
 		}*/
 	}
 
-	void aeon_module::debugCode()
+	void AEModule::debugCode()
 	{
 		for (auto i : instructions)
 		{
@@ -83,7 +98,7 @@ void aeon_module::write(const char* filename)
 		}
 	}
 
-int aeon_module::getFunctionIndexByName(const std::string& name)
+int AEModule::getFunctionIndexByName(const std::string& name)
 {
 		for (std::size_t i = 0; i < functions.size(); ++i)
 		{

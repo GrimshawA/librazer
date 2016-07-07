@@ -1,14 +1,17 @@
-#ifndef aeon_object_h__
-#define aeon_object_h__
+#ifndef AEOBJECT_H__
+#define AEOBJECT_H__
 
 #include <vector>
 #include <string>
 #include <stdint.h>
 
-class aeType;
+#include <AEON/Runtime/AEValue.h>
+
+class AEVm;
+class AEType;
 
 /**
-	\class aeon_object
+	\class AEObject
 	\brief Instances of script classes
 
 	Since at native compile time, we cannot know the specific script side types,
@@ -21,14 +24,17 @@ class aeType;
 	with that object's memory. The address of these objects is NOT the same as the objects themselves.
 	It is just a wrapper.
 */
-class aeon_object
+class AEObject
 {
-	public:
-		void* addr;
-		aeType* m_type;
-
 public:
-		aeType* getType();
+
+	void setProperty(const std::string& name, const std::string& value);
+
+	void call(const std::string& name);
+	
+
+
+		AEType* getType();
 
 		void setField(const std::string& field, int32_t value);
 
@@ -37,6 +43,13 @@ public:
 		void* getFieldAddress(const std::string& field) const;
 
 		void log();
-};
 
-#endif // aeon_object_h__
+private:
+	friend class aeVM;
+	friend class AEContext;
+
+	std::vector<AEValue> m_properties;
+	void* addr;
+	AEType* m_type;
+};
+#endif // AEOBJECT_H__

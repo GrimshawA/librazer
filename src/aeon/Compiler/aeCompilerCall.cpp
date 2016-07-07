@@ -1,8 +1,8 @@
 #include <AEON/Compiler/aeCompiler.h>
 
-aeFunction* aeCompiler::selectFunction(aeNodeFunctionCall* fn)
+AEFunction* aeCompiler::selectFunction(aeNodeFunctionCall* fn)
 {
-	aeFunction* r = nullptr;
+	AEFunction* r = nullptr;
 
 	if (fn->getParentExpression() && fn->getParentExpression()->m_nodeType == AEN_ACCESSOPERATOR)
 	{
@@ -46,7 +46,7 @@ void aeCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 	}
 
 	CompilerLog("Function call %s\n", finalSymbolName.c_str());
-	aeFunction* func = m_env->getFunctionByName(finalSymbolName);
+	AEFunction* func = m_env->getFunctionByName(finalSymbolName);
 	if (!func)
 	{
 		CompilerError("0002", "Calling an unknown function " + finalSymbolName);

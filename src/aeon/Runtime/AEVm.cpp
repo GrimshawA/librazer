@@ -1,7 +1,7 @@
-#include <aeon/aeVM.h>
-#include <AEON/aeByteCode.h>
-#include <AEON/aeContext.h>
-#include <AEON/aeObject.h>
+#include <AEON/Runtime/aeVM.h>
+#include <AEON/Runtime/aeByteCode.h>
+#include <AEON/Runtime/AEContext.h>
+#include <AEON/Runtime/AEObject.h>
 
 #define vm_start(x) case x:{
 #define vm_end break;}
@@ -16,17 +16,17 @@ aeVM::aeVM()
 	memset(m_stk.stack.data(), 0, m_stk.stack.size());
 }
 
-aeVM::aeVM(aeContext* context)
+aeVM::aeVM(AEContext* context)
 {
 	m_ctx = context;
 }
 
-aeon_module* aeVM::get_current_mod()
+AEModule* aeVM::get_current_mod()
 {
 	return m_stk.frames[m_stk.frames.size() - 1].module;
 }
 
-void aeVM::callMethod(aeon_object* object, const std::string& prototype)
+void aeVM::callMethod(AEObject* object, const std::string& prototype)
 {
 	m_stk.ebp = m_stk.esp;
 
@@ -37,7 +37,7 @@ void aeVM::callMethod(aeon_object* object, const std::string& prototype)
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
 
-void aeVM::callMethod(aeon_object* object, uint32_t methodId)
+void aeVM::callMethod(AEObject* object, uint32_t methodId)
 {
 
 }
@@ -52,7 +52,7 @@ void aeVM::pushThis(void* obj)
 	m_stk.push_addr(obj);
 }
 
-void aeVM::setContext(aeContext* context)
+void aeVM::setContext(AEContext* context)
 {
 	m_ctx = context;
 } 
@@ -75,41 +75,44 @@ void printBits2(size_t const size, void const * const ptr)
 		puts("");
 }
 
-void aeVM::call(aeon_module& module, const char* func)
+void aeVM::call(AEModule& module, const char* func)
 {
-	aeStackFrame callinfo;
-	callinfo.name = func;
-	callinfo.object = nullptr;
-
 	aeFunctionId functionId = 0;
 
-	aeFunction* function = m_ctx->getFunctionByName(func);
+	AEFunction* function = m_ctx->getFunctionByName(func);
 	int i = 0;
 
 	if (function)
 	{
-		if (!function->m_compiled)
-		{
-			//printf("This function is not compiled '%s'.\n", function->getSymbolName().c_str());
-			return;
-		}
-
-		prepare(functionId);
-
-
-		callinfo.pc = function->offset;
-		callinfo.module = &module;
-		callinfo.ebp = m_stk.esp;
-		callinfo.function = function;
-		m_stk.frames.push_back(callinfo);
-
-		// Launch the thread from this entry point
-		execute(m_stk);
+		call(function);
 	}
 	else
 	{
 		printf("Couldn't find the calling function\n");
 	}
+}
+
+void aeVM::call(AEFunction* fn)
+{
+	if (!fn->m_compiled)
+	{
+		//printf("This function is not compiled '%s'.\n", function->getSymbolName().c_str());
+		return;
+	}
+
+	prepare(fn->id);
+
+	aeStackFrame callinfo;
+	callinfo.name = fn->getName();
+	callinfo.object = nullptr;
+	callinfo.pc = fn->offset;
+	callinfo.module = fn->m_module;
+	callinfo.ebp = m_stk.esp;
+	callinfo.function = fn;
+	m_stk.frames.push_back(callinfo);
+
+	// Launch the thread from this entry point
+	execute(m_stk);
 }
 
 inline static void DoAdd(aeVM* vm, AeonPrimitiveType ptype)
@@ -475,7 +478,7 @@ static inline void DoJump(aeVM* vm, int address)
 
 static inline void DoCall(aeVM* vm, int functionIndex)
 {
-	aeFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
+	AEFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
 
 	aeStackFrame callinfo;
 	callinfo.name = "unknown";
@@ -515,11 +518,11 @@ void aeVM::execute(aeThreadState& threadInfo)
 
 	for (; threadInfo.cl->pc < threadInfo.cl->module->instructions.size(); ++threadInfo.cl->pc)
 	{
-		aeon_instruction& inst = threadInfo.cl->module->instructions[threadInfo.cl->pc];
+		AEInstruction& inst = threadInfo.cl->module->instructions[threadInfo.cl->pc];
 		switch (inst.opcode)
 		{
 			vm_start(OP_PREPARE)
-				aeFunction* functionData = m_ctx->m_functionTable[inst.arg0];
+				AEFunction* functionData = m_ctx->m_functionTable[inst.arg0];
 				m_stk.esp -= functionData->returnValueSize;
 			vm_end
 

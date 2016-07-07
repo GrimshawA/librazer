@@ -1,0 +1,4 @@
+It is not necessary to delimitate statements with ; 
+whenever the context can be understood through newlines and other cues.
+
+Most typically, code is single line statements, and in that case the statement doesn't need to end in a ;

@@ -2,6 +2,7 @@
 #define aeNodeExpr_h__
 
 #include "aeNodeStatement.h"
+#include "aeNodeValue.h"
 
 #include <map>
 #include <memory>
@@ -15,7 +16,7 @@ class aeCompiler;
 	Supports infinite nesting of expressions and all kinds of different operations.
 	Can evaluate its type and even results under certain constraints.
 */
-class aeNodeExpr : public aeNodeStatement
+class aeNodeExpr : public aeNodeValue
 {
 public:
 

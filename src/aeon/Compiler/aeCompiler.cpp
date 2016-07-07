@@ -1,7 +1,7 @@
 #include <AEON/Compiler/aeCompiler.h>
-#include <AEON/aeByteCode.h>
-#include <AEON/aeVM.h>
-#include <AEON/aeContext.h>
+#include <AEON/Runtime/aeByteCode.h>
+#include <AEON/Runtime/aeVM.h>
+#include <AEON/Runtime/AEContext.h>
 
 #include <cassert>
 
@@ -59,7 +59,7 @@ void aeCompiler::emitDebugPrint(const std::string& message)
 	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
 }
 
-uint32_t aeCompiler::emitInstruction(aeon_instruction instr)
+uint32_t aeCompiler::emitInstruction(AEInstruction instr)
 {
 	m_module->instructions.push_back(instr);
 	return m_cursor++;
@@ -67,7 +67,7 @@ uint32_t aeCompiler::emitInstruction(aeon_instruction instr)
 
 uint32_t aeCompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
 {
-	aeon_instruction instr;
+	AEInstruction instr;
 	instr.opcode = opcode;
 	instr.arg0 = arg0;
 	instr.arg1 = arg1;
@@ -120,7 +120,7 @@ VariableStorageInfo aeCompiler::getVariable(std::string name)
 	if (m_classes.size() > 0)
 	{
 		aeNodeClass* classNode = getTopClassNode();
-		aeType* type = evaluateType(classNode);
+		AEType* type = evaluateType(classNode);
 
 		if (type->getField(name))
 		{
@@ -233,13 +233,13 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 		return;
 	}
 
-	aeType* typeInfo = new aeType();
+	AEType* typeInfo = new AEType();
 	typeInfo->m_name = clss->m_name;
 	typeInfo->m_absoluteName = clss->m_name;
 	typeInfo->m_module = m_module;
 	m_env->typedb.push_back(typeInfo);
 	m_module->types.push_back(*typeInfo);
-	aeContext::object_heap objectHeap;
+	AEContext::object_heap objectHeap;
 	objectHeap.type = typeInfo;
 	m_env->object_heaps.push_back(objectHeap);
 
@@ -249,7 +249,7 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 
 	for (auto pnt : clss->parents)
 	{
-		aeType* info = m_env->getTypeInfo(pnt.parentClass);
+		AEType* info = m_env->getTypeInfo(pnt.parentClass);
 		if (!info)
 		{
 			CompilerLog("Compiler Error C0001: Can't inherit from '%s'. No such type.\n", pnt.parentClass.c_str());
@@ -291,7 +291,7 @@ void aeCompiler::emitClassCode(aeNodeClass* clss)
 	m_classes.pop_back();
 }
 
-void aeCompiler::emitClassConstructors(aeType* classType, aeNodeClass* classNode)
+void aeCompiler::emitClassConstructors(AEType* classType, aeNodeClass* classNode)
 {
 	aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
 
@@ -307,7 +307,7 @@ void aeCompiler::emitClassConstructors(aeType* classType, aeNodeClass* classNode
 	}
 }
 
-void aeCompiler::emitClassDestructors(aeType* classType, aeNodeClass* classNode)
+void aeCompiler::emitClassDestructors(AEType* classType, aeNodeClass* classNode)
 {
 
 }
@@ -420,7 +420,7 @@ void aeCompiler::emitFunction(aeNodeFunction* func)
 		symbol_prefix = topClass->m_name + ".";
 	}
 
-	aeFunction* function = m_env->createFunction(symbol_prefix + func->m_name);
+	AEFunction* function = m_env->createFunction(symbol_prefix + func->m_name);
 	// Compiled unless some error is thrown
 	m_currentFunction = function;
 	function->m_compiled = true;
@@ -463,7 +463,7 @@ void aeCompiler::emitFunction(aeNodeFunction* func)
 	m_currentFunction = nullptr;
 }
 
-void aeCompiler::emitConstructorInjection(aeNodeFunction* node, aeFunction* function)
+void aeCompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* function)
 {
 	// This is where the initialization is done, before any user constructor instruction is executed
 	aeNodeClass* cl = getTopClassNode();
@@ -578,7 +578,7 @@ void aeCompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	}
 
 
-	aeType* varType = varDecl.m_type.m_type;
+	AEType* varType = varDecl.m_type.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1]; 
 
 	VariableStorageInfo localObject;
@@ -594,7 +594,7 @@ void aeCompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	if (m_logAllocs)
 		emitDebugPrint("Allocating " + localObject.name);
 
-	emitInstruction(OP_MOV, AEK_ESP, -varType->getSize());
+	emitInstruction(OP_MOV, AEK_ESP, -(int)varType->getSize());
 
 	// Now the variable is initialized and part of its scope, initialize it
 	if (varDecl.m_decls[0].m_init)
@@ -620,12 +620,12 @@ void aeCompiler::emitReturnCode(aeNodeReturn* ret)
 	emitInstruction(OP_RETURN);
 }
 
-aeType* aeCompiler::evaluateType(aeNodeExpr* expr)
+AEType* aeCompiler::evaluateType(aeNodeExpr* expr)
 {
 	return nullptr;
 }
 
-aeType* aeCompiler::evaluateType(const std::string& type_name)
+AEType* aeCompiler::evaluateType(const std::string& type_name)
 {
 	// Walk the scope stack from current to top level to search the decl
 	for (auto it = m_scopes.rbegin(); it != m_scopes.rend(); ++it)
@@ -645,19 +645,19 @@ aeType* aeCompiler::evaluateType(const std::string& type_name)
 	if (!m_classes.empty())
 	{
 		aeNodeClass* container_class = m_classes[m_classes.size() - 1];
-		aeType* class_type = evaluateType(container_class);
+		AEType* class_type = evaluateType(container_class);
 
 		// todo
 	}
 
 	/// Can still be a primitive
-	aeType* type = m_env->getTypeInfo(type_name);
+	AEType* type = m_env->getTypeInfo(type_name);
 
 	/// Cannot evaluate.
 	return type;
 }
 
-aeType* aeCompiler::evaluateType(aeNodeClass* class_node)
+AEType* aeCompiler::evaluateType(aeNodeClass* class_node)
 {
 	return class_node->m_typeInfo;
 }

@@ -70,4 +70,36 @@ public:
 	uint32_t value;
 };
 
+/*
+	An array literal in the code, as a RVALUE to assign on something.
+	a: [0,1,2,3,4]
+	myArray = [0,1,2,3,4]
+
+	inside code or property definitions.
+*/
+class aeNodeArray : public aeNodeLiteral
+{
+public:
+	
+	void addElement(aeNodeValue* elem)
+	{
+		m_elements.push_back(std::unique_ptr<aeNodeValue>(elem));
+	}
+
+	std::string str() const
+	{
+		std::string s = "[";
+		for (int i = 0; i < m_elements.size(); ++i){
+			s += m_elements[i]->str();
+			if (i < m_elements.size() - 1)
+				s += ",";
+		}
+		s += "]";
+		return s;
+	}
+
+private:
+	std::vector<std::unique_ptr<aeNodeValue>> m_elements;
+};
+
 #endif // aeNodeLiterals_h__

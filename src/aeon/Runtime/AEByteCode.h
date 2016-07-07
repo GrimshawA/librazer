@@ -109,7 +109,7 @@ struct aeon_object_ref
 	void* addr;
 };
 
-struct aeon_instruction
+struct AEInstruction
 {
 	uint8_t opcode;
 	int8_t arg0;
@@ -117,13 +117,13 @@ struct aeon_instruction
 	int8_t arg2;
 };
 
-void setopcode(aeon_instruction& inst, EOpCodes opcode);
-uint32_t getopcode(const aeon_instruction& inst);
+void setopcode(AEInstruction& inst, EOpCodes opcode);
+uint32_t getopcode(const AEInstruction& inst);
 
-void setinst_a(aeon_instruction& inst, int val_a);
-uint32_t getinst_a(const aeon_instruction& inst);
+void setinst_a(AEInstruction& inst, int val_a);
+uint32_t getinst_a(const AEInstruction& inst);
 
-void setinst_b(aeon_instruction& inst, int val_b);
-uint32_t getinst_b(const aeon_instruction& inst);
+void setinst_b(AEInstruction& inst, int val_b);
+uint32_t getinst_b(const AEInstruction& inst);
 
 #endif // aeon_bytecode_h__

@@ -1,0 +1,34 @@
+class DynamicallyBoundCalls
+{
+	adhere std::proto
+
+	setA()
+}
+
+class AnotherClass
+{
+	setA()
+}
+
+function HelloWorld() 
+{
+	DynamicallyBoundCalls obj;
+	AnotherClass obj2;
+	var v;
+
+	// Regular C style call
+	obj.setA()
+
+	// Dynamically bound call, will return undefined value unless something dynamically added the function to the class
+	obj.setB()
+
+	// Regular static call
+	obj2.setA()
+
+	// Compile error
+	obj2.setB()
+
+	// Always valid
+	v.setA()
+	v.setB()
+}

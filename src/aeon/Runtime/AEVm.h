@@ -1,16 +1,16 @@
 #ifndef aeon_vm_h__
 #define aeon_vm_h__
 
-#include <AEON/aeModule.h>
+#include <AEON/Runtime/AEModule.h>
 #include <AEON/aeThreadState.h>
-#include <AEON/aeContext.h>
+#include <AEON/Runtime/AEContext.h>
 
 #include <vector>
 #include <stdint.h>
 
 
 class aeVM;
-class aeon_object;
+class AEObject;
 
 #define STATE_ASSERT (assert((esp > m_stack.data() + m_stack.size()); assert((esp < m_stack.data())); 
 
@@ -25,31 +25,33 @@ class aeVM
 {
 	public:
 
-		aeContext*           m_ctx;
+		AEContext*           m_ctx;
 		aeThreadState           m_stk;
 
 	public:
 
 		aeVM();
 
-		aeVM(aeContext* context);
+		aeVM(AEContext* context);
 
-		aeon_module* get_current_mod();
+		AEModule* get_current_mod();
 
-		void setContext(aeContext* context);
+		void setContext(AEContext* context);
 
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
 		void execute(aeThreadState& threadInfo);
 
 		/// Call a method on the given script object by its name
-		void callMethod(aeon_object* object, const std::string& prototype);
+		void callMethod(AEObject* object, const std::string& prototype);
 
 		/// Call a method on the given script object by the method id
-		void callMethod(aeon_object* object, uint32_t methodId);
+		void callMethod(AEObject* object, uint32_t methodId);
 
 		/// Call a script function
-		void call(aeon_module& module, const char* func);	
+		void call(AEModule& module, const char* func);
+
+		void call(AEFunction* fn);
 };
 
 #endif // aeon_vm_h__

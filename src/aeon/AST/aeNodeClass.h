@@ -3,7 +3,7 @@
 
 #include "aeNodeBase.h"
 
-class aeType;
+class AEType;
 class aeNodeFunction;
 
 /**
@@ -20,7 +20,7 @@ public:
 		std::string accessLevel;
 	};
 
-	aeType*  m_typeInfo; ///< Runtime type information object for this class ([partials] multiple class nodes may share the same)
+	AEType*  m_typeInfo; ///< Runtime type information object for this class ([partials] multiple class nodes may share the same)
 	std::string m_name;     ///< The name of the struct/class
 	bool        m_struct;   ///< struct or class
 	std::vector<classparentinfo> parents;

@@ -6,14 +6,14 @@
 #include <stdint.h>
 
 /**
-	\struct aeDynamicType
+	\struct AEVmObject
 	\brief This is the built-in variant type for the language.
 
 	Each instance of this type carries its type and its value.
 	Both can freely mutate between states.
 	It can be an array, a prototype-based object
 */
-struct aeDynamicType
+struct AEVmObject
 {
 	enum
 	{
@@ -30,12 +30,12 @@ struct aeDynamicType
 		eObject
 	};
 
-	aeDynamicType(float f)
+	AEVmObject(float f)
 	{
 		_fp = f;
 	}
 
-	aeDynamicType()
+	AEVmObject()
 	{
 		_i32 = 0;
 	}
@@ -59,10 +59,10 @@ struct aeDynamicType
 	int8_t type; ///< 0 means null value
 };
 
-aeDynamicType vmvalue_from_float(float v);
-aeDynamicType vmvalue_from_stringindex(uint32_t poolIndex);
-void vmvalue_print(aeDynamicType v);
+AEVmObject vmvalue_from_float(float v);
+AEVmObject vmvalue_from_stringindex(uint32_t poolIndex);
+void vmvalue_print(AEVmObject v);
 
-aeDynamicType vmvalue_from_bool(bool b);
+AEVmObject vmvalue_from_bool(bool b);
 
 #endif // aeon_variant_h__

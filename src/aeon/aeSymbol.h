@@ -3,8 +3,8 @@
 
 #include <AEON/aeQualType.h>
 
-class aeType;
-class aeContext;
+class AEType;
+class AEContext;
 
 #include <vector>
 #include <stdint.h>

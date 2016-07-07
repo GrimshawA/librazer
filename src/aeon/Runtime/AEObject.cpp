@@ -1,12 +1,30 @@
-#include <AEON/aeObject.h>
-#include <AEON/aeType.h>
+#include <AEON/Runtime/AEObject.h>
+#include <AEON/Runtime/AEFunction.h>
+#include <AEON/Runtime/AEVm.h>
 
-aeType* aeon_object::getType()
+void AEObject::setProperty(const std::string& name, const std::string& value)
+{
+
+}
+
+void AEObject::call(const std::string& name)
+{
+	AEFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
+	printf("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
+	if (fn)
+	{
+		aeVM vm;
+		vm.setContext(getType()->m_module->m_context);
+		vm.call(fn);
+	}
+}
+
+AEType* AEObject::getType()
 {
 	return m_type;
 }
 
-void aeon_object::setField(const std::string& field, int32_t value)
+void AEObject::setField(const std::string& field, int32_t value)
 {
 	aeField* fieldInfo = m_type->getField(field);
 	if (fieldInfo)
@@ -19,7 +37,7 @@ void aeon_object::setField(const std::string& field, int32_t value)
 	}
 }
 
-void aeon_object::getField(const std::string& field, int32_t& value) const
+void AEObject::getField(const std::string& field, int32_t& value) const
 {
 	aeField* fieldInfo = m_type->getField(field);
 	if (fieldInfo)
@@ -32,7 +50,7 @@ void aeon_object::getField(const std::string& field, int32_t& value) const
 	}
 }
 
-void* aeon_object::getFieldAddress(const std::string& field) const
+void* AEObject::getFieldAddress(const std::string& field) const
 {
 	aeField* fieldInfo = m_type->getField(field);
 	if (fieldInfo)
@@ -42,7 +60,7 @@ void* aeon_object::getFieldAddress(const std::string& field) const
 	return nullptr;
 }
 
-void aeon_object::log()
+void AEObject::log()
 {
 	printf("Object %s@%x\n", m_type->m_name.c_str(), addr);
 }

@@ -1,40 +1,13 @@
 #ifndef aeon_module_h__
 #define aeon_module_h__
 
-#include <AEON/aeByteCode.h>
-#include <AEON/aeType.h>
+#include <AEON/Runtime/AEByteCode.h>
+#include <AEON/Runtime/AEType.h>
 #include <AEON/aeQualType.h>
+#include <AEON/Runtime/AEFunction.h>
 #include <vector>
 #include <array>
 #include <stdint.h>
-
-/**
-	\class aeFunction
-*/
-class aeFunction : public aeSymbol
-{
-public:
-	aeFunction()
-		: aeSymbol()
-		, m_native(false)
-		, m_compiled(false)
-	{
-
-	}
-
-	uint32_t    id;
-	uint32_t    returnValueSize;   ///< Size the function reserves for the return value
-	aeQualType returnType;
-	std::vector<aeQualType> params;
-	uint32_t    paramsStorageSize; ///< The amount of storage needed to push the params
-	uint32_t    offset;            ///< which instruction this function starts in the code
-	std::string decl;
-	aeBindMethod fn;
-	aeon_module* m_module;
-	bool m_native;
-	bool m_compiled;               ///< Whether or not this function is compiled successfully, with a valid body
-	bool m_virtual;
-};
 
 struct aeon_method
 {
@@ -50,7 +23,7 @@ struct ae_module_header
 };
 
 /**
-	\class aeon_module
+	\class AEModule
 	\brief One or more scripts are compiled into a module
 
 	By default, each file will generate a module for itself, but multiple files
@@ -70,21 +43,14 @@ struct ae_module_header
 	import a given module, it can use types in the imported module without ever explicitly doing
 	the import.
 */
-class aeon_module
+class AEModule
 {
-	public:
+public:
+	
+	AEModule();
+	~AEModule();
 
-		std::string                   name;         ///< Every module must have a name like stdlib.io or nephilim.core.graphics
-		std::vector<aeFunction>    functions;    ///< Every static class function and global is listed here
-		std::vector<aeon_method>      methods;      ///< Every non-static class function is listed here
-		std::vector<aeType>        types;
-		std::vector<std::string>      stringPool;
-		std::vector<double>           double_literals;
-		std::vector<std::string>      auto_import_modules;  ///<  
-		std::vector<aeon_instruction> instructions;         ///< The entire module's bytecode
-		//std::vector<aeCodeFile>       m_files; ///< Files compiled to this module (for hot reloading code)
-
-	public:
+	std::string getName();
 
 
 		std::string getStringFromPool(uint32_t index);
@@ -106,6 +72,19 @@ class aeon_module
 		void dumpToFile(const std::string& filename);
 
 		void debugCode();
+
+public:
+
+	std::string                   name;         ///< Every module must have a name like stdlib.io or nephilim.core.graphics
+	AEContext*                    m_context;
+	std::vector<AEFunction>    functions;    ///< Every static class function and global is listed here
+	std::vector<aeon_method>      methods;      ///< Every non-static class function is listed here
+	std::vector<AEType>        types;
+	std::vector<std::string>      stringPool;
+	std::vector<double>           double_literals;
+	std::vector<std::string>      auto_import_modules;  ///<  
+	std::vector<AEInstruction> instructions;         ///< The entire module's bytecode
+	//std::vector<aeCodeFile>       m_files; ///< Files compiled to this module (for hot reloading code)
 };
 
 #endif // aeon_module_h__

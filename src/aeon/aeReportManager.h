@@ -1,8 +1,8 @@
 #ifndef aeReportManager_h__
 #define aeReportManager_h__
 
-#include <AEON/aeByteCode.h>
-#include <AEON/aeVM.h>
+#include <AEON/Runtime/AEByteCode.h>
+#include <AEON/Runtime/AEVm.h>
 
 #include <vector>
 

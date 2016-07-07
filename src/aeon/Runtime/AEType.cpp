@@ -1,7 +1,7 @@
-#include <AEON/aeType.h>
-#include <aeon/aeVM.h>
+#include <AEON/Runtime/AEType.h>
+#include <AEON/Runtime/AEVm.h>
 
-aeType::aeType()
+AEType::AEType()
 : is_native(false)
 , m_userData(nullptr)
 {
@@ -9,7 +9,7 @@ aeType::aeType()
 	m_name = "null";
 }
 
-aeType::aeType(const std::string& _name, uint32_t _size)
+AEType::AEType(const std::string& _name, uint32_t _size)
 : is_native(false)
 , m_userData(nullptr)
 {
@@ -17,27 +17,27 @@ aeType::aeType(const std::string& _name, uint32_t _size)
 	m_size = _size;
 }
 
-bool aeType::isEnum()
+bool AEType::isEnum()
 {
 	return m_typeKind == KindEnum;
 }
 
-bool aeType::isTemplated()
+bool AEType::isTemplated()
 {
 	return !m_templateParams.empty();
 }
 
-bool aeType::isClass()
+bool AEType::isClass()
 {
 	return m_typeKind == KindClass;
 }
 
-bool aeType::isNative()
+bool AEType::isNative()
 {
 	return is_native;
 }
 
-bool aeType::isPod()
+bool AEType::isPod()
 {
 	for (auto& field : m_fields)
 	{
@@ -48,52 +48,62 @@ bool aeType::isPod()
 	return m_pod;
 }
 
-uint32_t aeType::getSize()
+uint32_t AEType::getSize()
 {
 	return m_size;
 }
 
-uint32_t aeType::getNumMethods()
+uint32_t AEType::getNumMethods()
 {
 	return m_methods.size();
 }
 
-uint32_t aeType::getNumFields()
+uint32_t AEType::getNumFields()
 {
 	return m_fields.size();
 }
 
-uint32_t aeType::getNumProtocols()
+uint32_t AEType::getNumProtocols()
 {
 	return 0;
 }
 
-std::string aeType::getName()
+std::string AEType::getName()
 {
 	return m_name;
 }
 
-aeon_module* aeType::getModule()
+int AEType::getFunctionId(const std::string& name)
+{
+	return m_module->m_context->getFunctionIndexByName(name);
+}
+
+AEFunction* AEType::getFunction(const std::string& name)
+{
+	return m_module->m_context->getFunctionByName(name);
+}
+
+AEModule* AEType::getModule()
 {
 	return m_module;
 }
 
-bool aeType::isScriptSide()
+bool AEType::isScriptSide()
 {
 	return true;
 }
 
-bool aeType::isHostSide()
+bool AEType::isHostSide()
 {
 	return true;
 }
 
-bool aeType::isHybrid()
+bool AEType::isHybrid()
 {
 	return true;
 }
 
-aeField* aeType::getField(std::string name)
+aeField* AEType::getField(std::string name)
 {
 	for (auto& field : m_fields)
 	{
@@ -106,7 +116,7 @@ aeField* aeType::getField(std::string name)
 	return nullptr;
 }
 
-void aeType::createField(aeField fieldInfo)
+void AEType::createField(aeField fieldInfo)
 {
 	if (m_fields.size() == 0)
 		m_size = 0;
@@ -117,7 +127,7 @@ void aeType::createField(aeField fieldInfo)
 	m_size += fieldInfo.size;
 }
 
-void aeType::registerMethod(const std::string& name, void* funptr)
+void AEType::registerMethod(const std::string& name, void* funptr)
 {
 	MethodInfo methodInfo;
 	methodInfo.type = 0;
@@ -125,7 +135,7 @@ void aeType::registerMethod(const std::string& name, void* funptr)
 	m_methods.push_back(methodInfo);
 }
 
-void aeType::registerField(const std::string& name, int offset)
+void AEType::registerField(const std::string& name, int offset)
 {
 	aeField fieldInfo;
 	fieldInfo.name = name;
@@ -133,14 +143,14 @@ void aeType::registerField(const std::string& name, int offset)
 	m_fields.push_back(fieldInfo);
 }
 
-void aeType::registerEnum(const std::string& name)
+void AEType::registerEnum(const std::string& name)
 {
 	EnumInfo enumInfo;
 	enumInfo.name = name;
 	m_enums.push_back(enumInfo);
 }
 
-void aeType::registerEnumProperty(const std::string& name, const std::string& property, int value)
+void AEType::registerEnumProperty(const std::string& name, const std::string& property, int value)
 {
 	for (auto& enumm : m_enums)
 	{

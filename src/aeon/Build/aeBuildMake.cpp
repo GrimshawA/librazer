@@ -1,4 +1,4 @@
-#include "aeon_project.h"
+/*#include "aeon_project.h"
 
 void aeon_project::writeProjectFile()
 {
@@ -15,4 +15,4 @@ aeon_project generateFromDirectory(const std::string& dir)
 	aeon_project proj;
 	
 	return proj;
-}
+}*/

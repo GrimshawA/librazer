@@ -1,11 +1,16 @@
-#ifndef aeon_value_h__
-#define aeon_value_h__
+#ifndef AEValue_h__
+#define AEValue_h__
 
 #include <string>
 #include <vector>
+#include <memory>
+
+#include <AEON/AST/aeNodeValue.h>
+
+class AEValueList;
 
 /**
-	\class aeon_value
+	\class AEValue
 	\brief Represents any value any var in aeon can take
 
 	This is mostly used at compilation for assigning complex values into variables,
@@ -28,34 +33,50 @@
 	And composite values
 	<value> = rgba(1.0, 1.0, auto, 1.0)
 */
-class aeon_value
+class AEValue
 {
 public:
 
-		enum ValueType
-		{
-			EInvalid,
-			EObject,
-			EArray,
-			EInteger,
-			EString,
-		};
+	enum ValueType
+	{
+		VALUE_UNDEFINED,
+		VALUE_OBJECT,
+		VALUE_ARRAY,
+		VALUE_INT,
+		VALUE_REAL,
+		VALUE_STRING,
+		VALUE_FUNCTION
+	};
 
-		ValueType mValueType;
-		std::string mRawValue;
-		std::string mRawProperty;
+public:
 
-		/// Child items
-		std::vector<aeon_value> properties;
+	AEValue();
+	~AEValue();
 
-	public:
+	void release();
 
-		/// Construct default empty object
-		aeon_value();
+	void setProperty(const std::string& name, const std::string& value);
+	void setProperty(const std::string& name, int value);
+	void setProperty(const std::string& name, const AEValue& value);
 
-		aeon_value* begin();
+	AEValue property(const std::string& name);
 
-		aeon_value* end();
+	void call();
+	void call(const AEValueList& argumentList);
+
+	bool isCallable();
+	bool isUndefined();
+	bool isString();
+
+public:
+	
+	AEValue& operator=(const AEValue& v);
+	AEValue& operator=(const std::string& v);
+	AEValue& operator=(int v);
+
+
+		AEValue* begin();
+		AEValue* end();
 
 		/// Creates a string property on this object
 		void CreateString(const std::string& name, const std::string& value);
@@ -85,7 +106,13 @@ public:
 		std::string as_string();
 
 		/// Read a property of this value
-		aeon_value operator[](const std::string& str);
+		AEValue operator[](const std::string& str);
+
+private:
+	friend class aeParser;
+
+	ValueType m_valueType;
+	void*     m_data;
 };
 
-#endif // aeon_value_h__
+#endif // AEValue_h__

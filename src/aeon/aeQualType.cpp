@@ -1,5 +1,5 @@
 #include <AEON/aeQualType.h>
-#include <AEON/aeType.h>
+#include <AEON/Runtime/AEType.h>
 
 aeQualType aeQualType::fromString(const std::string& str)
 {
@@ -16,7 +16,7 @@ aeQualType::aeQualType()
 
 }
 
-aeQualType::aeQualType(aeType* type)
+aeQualType::aeQualType(AEType* type)
 : m_type(type)
 , m_templated(false)
 , m_const(false)
@@ -25,7 +25,7 @@ aeQualType::aeQualType(aeType* type)
 
 }
 
-void aeQualType::parse(const std::string& str, aeContext* ctx)
+void aeQualType::parse(const std::string& str, AEContext* ctx)
 {
 
 }
@@ -70,9 +70,14 @@ std::string aeQualType::getName() const
 	return m_type ? m_type->getName() : "void";
 }
 
-aeType* aeQualType::getType() const
+AEType* aeQualType::getType() const
 {
 	return m_type;
+}
+
+bool aeQualType::isBroken() const
+{
+	return !m_typeString.empty() && !m_type;
 }
 
 bool aeQualType::isConst() const

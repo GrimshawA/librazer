@@ -1,8 +1,8 @@
 #ifndef aeQualType_h__
 #define aeQualType_h__
 
-class aeType;
-class aeContext;
+class AEType;
+class AEContext;
 
 #include <vector>
 #include <stdint.h>
@@ -34,7 +34,7 @@ class aeQualType
 {
 public:
 
-	aeType*                 m_type;
+	AEType*                 m_type;
 	bool                    m_const;
 	bool                    m_ref;
 	bool                    m_ptr;
@@ -42,6 +42,7 @@ public:
 	bool                    m_templated;
 	bool                    m_handle;
 	std::vector<aeQualType> m_templateArgs;
+	std::string             m_typeString;
 
 
 public:
@@ -55,7 +56,7 @@ public:
 	aeQualType();
 
 	/// Initialize from a type
-	aeQualType(aeType* type);
+	aeQualType(AEType* type);
 
 	/// Get the static size of this type
 	uint32_t getSize();
@@ -70,10 +71,13 @@ public:
 	std::string getName() const;
 
 	/// Get the type information object
-	aeType* getType() const;
+	AEType* getType() const;
 
 	/// Get the typename of the qualified type in the form app.module.class
 	std::string getTypeName() const;
+
+	/// A broken type has the type information but misses the runtime information of it
+	bool isBroken() const;
 
 	/// Check if the type is immutable
 	bool isConst() const;
@@ -103,7 +107,7 @@ public:
 	operator bool() const;
 
 	/// Parse a type
-	void parse(const std::string& str, aeContext* ctx);
+	void parse(const std::string& str, AEContext* ctx);
 };
 
 #endif // aeQualType_h__

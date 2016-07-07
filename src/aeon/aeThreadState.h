@@ -4,9 +4,9 @@
 #include <vector>
 #include <stdint.h>
 
-class aeFunction;
+class AEFunction;
 class aeVM;
-class aeon_module;
+class AEModule;
 
 
 /**
@@ -60,11 +60,11 @@ struct vm_value
 
 struct aeStackFrame
 {
-	aeFunction*    function;      ///< The function this frame represents
+	AEFunction*    function;      ///< The function this frame represents
 	std::string    name;          ///< Name?
 	uint32_t       pc;            ///< So we can restore the program counter of the caller
 	unsigned char* ebp;           ///< So we can restore the base pointer of the caller
-	aeon_module*   module;
+	AEModule*   module;
 	void*          object;
 };
 

@@ -1,6 +1,6 @@
 #include "aeNodeBinaryOperator.h"
 #include <AEON/Compiler/aeCompiler.h>
-#include <AEON/aeContext.h>
+#include <AEON/Runtime/AEContext.h>
 
 aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper)
 {

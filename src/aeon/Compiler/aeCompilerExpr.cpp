@@ -1,7 +1,7 @@
 #include <AEON/Compiler/aeCompiler.h>
-#include <AEON/aeBytecode.h>
-#include <AEON/aeVM.h>
-#include <AEON/aeContext.h>
+#include <AEON/Runtime/AEByteCode.h>
+#include <AEON/Runtime/AEVm.h>
+#include <AEON/Runtime/AEContext.h>
 
 #include <cassert>
 
@@ -105,7 +105,7 @@ void aeCompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext&
 	}
 }
 
-bool aeCompiler::canConvertType(aeType* typeA, aeType* typeB)
+bool aeCompiler::canConvertType(AEType* typeA, AEType* typeB)
 {
 	return false;
 }

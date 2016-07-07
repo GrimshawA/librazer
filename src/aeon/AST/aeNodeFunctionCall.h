@@ -1,7 +1,7 @@
 #ifndef aeNodeFunctionCall_h__
 #define aeNodeFunctionCall_h__
 
-#include <AEON/aeModule.h>
+#include <AEON/Runtime/AEModule.h>
 #include "aeNodeExpr.h"
 
 class aeNodeFunction;
@@ -28,7 +28,7 @@ public:
 	std::vector<TemplateTypeArgument> templateTypeArguments;
 	aeNodeFunction* m_function;
 
-	aeFunction* m_fn;
+	AEFunction* m_fn;
 
 public:
 

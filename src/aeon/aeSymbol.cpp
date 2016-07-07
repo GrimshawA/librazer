@@ -1,5 +1,5 @@
 #include "aeSymbol.h"
-#include <AEON/aeType.h>
+#include <AEON/Runtime/AEType.h>
 
 std::string aeSymbol::getSymbolName()
 {

@@ -8,7 +8,7 @@ aeNodeIdentifier::aeNodeIdentifier()
 
 aeQualType aeNodeIdentifier::getQualifiedType(aeCompiler* c)
 {
-	aeType* typeInfo = c->m_env->getTypeInfo(m_name);
+	AEType* typeInfo = c->m_env->getTypeInfo(m_name);
 	if (typeInfo)
 	{
 		// This identifier is actually a type (enum, class)

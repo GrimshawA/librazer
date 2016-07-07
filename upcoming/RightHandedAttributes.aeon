@@ -1,0 +1,29 @@
+class RightHandedAttributes
+{
+public:
+	setPosition() -> Vector3
+	setSize() -> Vector2
+	setSomethingElse() -> auto
+
+	position() [InlineMetadata=Stuff]
+	size() override
+	x()
+	y()
+	z()
+
+	evaluate()
+	test()
+	do()
+
+	[ContextMetaData=Nice Way to define meta data for the function]
+	runScript()
+}
+
+// Anywhere metadata
+[@RightHandedAttributes::evaluate AdditionalProperty=Lel]
+
+function Hello() {
+	
+	//Runtime metadata, adds metadata on runtime for that type
+	[@RightHandedAttributes Property=Value]
+}

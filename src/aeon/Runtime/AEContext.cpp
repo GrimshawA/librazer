@@ -1,6 +1,6 @@
-#include <AEON/aeContext.h>
-#include <AEON/aeObject.h>
-#include <AEON/aeVM.h>
+#include <AEON/Runtime/AEContext.h>
+#include <AEON/Runtime/AEObject.h>
+#include <AEON/Runtime/AEVm.h>
 #include <AEON/aeParser.h>
 #include <AEON/aeTokenizer.h>
 #include <AEON/Compiler/aeCompiler.h>
@@ -21,7 +21,7 @@ std::string getFileSource(const std::string& filename)
 	return s;
 }
 
-aeContext::aeContext()
+AEContext::AEContext()
 {
 	m_config.allowNativeInheritance = true;
 	m_config.allowMultipleInheritance = false;
@@ -43,15 +43,15 @@ aeContext::aeContext()
 	registerTypedef("int32", "int");
 }
 
-void aeContext::registerPrimitive(const std::string& name, uint32_t size)
+void AEContext::registerPrimitive(const std::string& name, uint32_t size)
 {
-	aeType* type = new aeType(name, size);
+	AEType* type = new AEType(name, size);
 	type->m_name = name;
 	type->m_absoluteName = name;
 	typedb.push_back(type);
 }
 
-aeLiteralId aeContext::getIntegerLiteral(int64_t n)
+aeLiteralId AEContext::getIntegerLiteral(int64_t n)
 {
 	for (std::size_t i = 0; i < int_literals.size(); ++i)
 	{
@@ -63,7 +63,7 @@ aeLiteralId aeContext::getIntegerLiteral(int64_t n)
 	return int_literals.size() - 1;
 }
 
-aeLiteralId aeContext::getStringLiteral(const std::string& s)
+aeLiteralId AEContext::getStringLiteral(const std::string& s)
 {
 	for (std::size_t i = 0; i < string_literals.size(); ++i)
 	{
@@ -75,7 +75,7 @@ aeLiteralId aeContext::getStringLiteral(const std::string& s)
 	return string_literals.size() - 1;
 }
 
-aeLiteralId aeContext::getFloatLiteral(float v)
+aeLiteralId AEContext::getFloatLiteral(float v)
 {
 	for (std::size_t i = 0; i < m_floatTable.size(); ++i)
 	{
@@ -87,19 +87,19 @@ aeLiteralId aeContext::getFloatLiteral(float v)
 	return m_floatTable.size() - 1;
 }
 
-aeon_value aeContext::evaluate(const std::string& expression)
+AEValue AEContext::evaluate(const std::string& expression)
 {
-	aeon_value value;
-	value.mRawValue = "null";
+	AEValue value;
+//	value.mRawValue = "null";
 	return value;
 }
 
-void aeContext::init_all()
+void AEContext::init_all()
 {
 	register_stdlib(this);
 }
 
-void aeContext::quick_build(const std::string& file)
+void AEContext::quick_build(const std::string& file)
 {
 	aeon_lexer lexer;
 	aeParser parser;
@@ -122,7 +122,20 @@ void aeContext::quick_build(const std::string& file)
 	compiler.generate(parser.root);
 }
 
-aeon_module* aeContext::getModule(const std::string name)
+AEValue AEContext::readValue(const std::string& filename)
+{
+	aeon_lexer lexer;
+	aeParser parser;
+	std::string src = getFileSource(filename);
+	
+	lexer.tokenize(src);
+	parser.i = 0;
+	parser.m_tokenizer = &lexer;
+	parser.getNextToken();
+	return parser.parseDataObject();
+}
+
+AEModule* AEContext::getModule(const std::string name)
 {
 	for (auto& mod : modules)
 	{
@@ -132,13 +145,13 @@ aeon_module* aeContext::getModule(const std::string name)
 	return nullptr;
 }
 
-aeon_object* aeContext::createObject(const std::string& typen)
+AEObject* AEContext::createObject(const std::string& typen)
 {
 	for (auto& heap : object_heaps)
 	{
 		if (heap.type->m_name == typen)
 		{
-			aeon_object* object = new aeon_object();
+			AEObject* object = new AEObject();
 			object->addr = malloc(heap.type->getSize());
 			object->m_type = heap.type;
 			aeVM vm(this);
@@ -151,7 +164,7 @@ aeon_object* aeContext::createObject(const std::string& typen)
 	return nullptr;
 }
 
-void aeContext::destroyObject(aeon_object* object)
+void AEContext::destroyObject(AEObject* object)
 {
 	free(object->addr);
 	for (auto& heap : object_heaps)
@@ -164,24 +177,24 @@ void aeContext::destroyObject(aeon_object* object)
 	}
 }
 
-aeFunction* aeContext::createFunction(const std::string& name)
+AEFunction* AEContext::createFunction(const std::string& name)
 {
-	aeFunction* fn = getFunctionByName(name);
+	AEFunction* fn = getFunctionByName(name);
 	if (!fn)
 	{
-		fn = new aeFunction();
+		fn = new AEFunction();
 		fn->m_absoluteName = name;
 		m_functionTable.push_back(fn);
 	}
 	return fn;
 }
 
-aeFunction* aeContext::getFunctionByIndex(uint32_t index)
+AEFunction* AEContext::getFunctionByIndex(uint32_t index)
 {
 	return m_functionTable[index];
 }
 
-aeFunction* aeContext::getFunctionByName(const std::string& name)
+AEFunction* AEContext::getFunctionByName(const std::string& name)
 {
 	for (auto fn : m_functionTable)
 	{
@@ -194,7 +207,7 @@ aeFunction* aeContext::getFunctionByName(const std::string& name)
 	return nullptr;
 }
 
-uint32_t aeContext::getFunctionIndexByName(const std::string& name)
+uint32_t AEContext::getFunctionIndexByName(const std::string& name)
 {
 	for (uint32_t i = 0; i < m_functionTable.size(); ++i)
 	{
@@ -204,21 +217,22 @@ uint32_t aeContext::getFunctionIndexByName(const std::string& name)
 	return -1;
 }
 
-aeon_module* aeContext::createModule(const std::string& name)
+AEModule* AEContext::createModule(const std::string& name)
 {
 	if (getModule(name))
 		return getModule(name);
 
 
-	aeon_module* mod = new aeon_module;
+	AEModule* mod = new AEModule;
 	mod->name = name;
-	modules.push_back(std::move(std::unique_ptr<aeon_module>(mod)));
+	mod->m_context = this;
+	modules.push_back(std::move(std::unique_ptr<AEModule>(mod)));
 	return mod;
 }
 
-void aeContext::registerType(const std::string& name, std::size_t size, const std::string& namespc)
+void AEContext::registerType(const std::string& name, std::size_t size, const std::string& namespc)
 {
-	aeType* objinfo = new aeType(name, size);
+	AEType* objinfo = new AEType(name, size);
 
 	auto parser = aeParser::create(name, this);
 	std::string canonicalName = parser->Tok.text;
@@ -239,19 +253,19 @@ void aeContext::registerType(const std::string& name, std::size_t size, const st
 	typedb.push_back(objinfo);
 }
 
-void aeContext::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
+void AEContext::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
 {
 	aeon_lexer lex; lex.tokenize(decl);
 	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
 	auto typeInfo = getTypeInfo(typeName);
 
-	aeType::MethodInfo info;
+	AEType::MethodInfo info;
 	info.methodCallback = method;
 	info.name = decl;
 	typeInfo->m_methods.push_back(info);
 
-	aeFunction* fn = new aeFunction;
+	AEFunction* fn = new AEFunction;
 	fn->returnType = parser.parseQualType();
 	fn->m_absoluteName = typeName + "." + parser.Tok.text;
 	fn->decl = decl;
@@ -271,12 +285,12 @@ void aeContext::registerTypeMethod(const std::string& typeName, const std::strin
 	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
-void aeContext::registerFunction(const std::string& decl, aeBindMethod func)
+void AEContext::registerFunction(const std::string& decl, aeBindMethod func)
 {
 	aeon_lexer lex; lex.tokenize(decl);
 	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
-	aeFunction* fn = new aeFunction;
+	AEFunction* fn = new AEFunction;
 	fn->fn = func;
 	fn->decl = decl;
 	fn->m_native = true;
@@ -297,28 +311,28 @@ void aeContext::registerFunction(const std::string& decl, aeBindMethod func)
 	//printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
-void aeContext::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
+void AEContext::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
 {
 	auto typeInfo = getTypeInfo(typeName);
-	aeType::MethodInfo info;
+	AEType::MethodInfo info;
 	//info.constructorCallback = constructor;
 	info.name = "constructor";
 	typeInfo->m_methods.push_back(info);
 
-	aeFunction* ncall = new aeFunction;
+	AEFunction* ncall = new AEFunction;
 	ncall->decl = behavName;
 	ncall->fn = constructor;
 	ncall->m_native = true;
 	m_functionTable.push_back(ncall);
 }
 
-void aeContext::registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest)
+void AEContext::registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest)
 {
 	auto typeInfo = getTypeInfo(typeName);
 	typeInfo->m_destructor = dest;
 }
 
-void aeContext::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
+void AEContext::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
 {
 	auto typeInfo = getTypeInfo(typeName);
 	aeField info;
@@ -327,7 +341,7 @@ void aeContext::registerTypeField(const std::string& typeName, const std::string
 	typeInfo->m_fields.push_back(info);
 }
 
-void aeContext::registerTypedef(const std::string& from, const std::string& to)
+void AEContext::registerTypedef(const std::string& from, const std::string& to)
 {
 	aeTypedef tdef;
 	tdef.from = from;
@@ -335,7 +349,7 @@ void aeContext::registerTypedef(const std::string& from, const std::string& to)
 	m_typedefs.push_back(tdef);
 }
 
-void aeContext::registerEnum(const std::string& enumName)
+void AEContext::registerEnum(const std::string& enumName)
 {
 	aeEnum* enumDef = new aeEnum;
 	enumDef->m_absoluteName = enumName;
@@ -344,7 +358,7 @@ void aeContext::registerEnum(const std::string& enumName)
 	typedb.push_back(enumDef);
 }
 
-void aeContext::registerEnumValue(const std::string& enumName, const std::string& valueName, int value)
+void AEContext::registerEnumValue(const std::string& enumName, const std::string& valueName, int value)
 {
 	aeEnum* enumDef = getEnumByName(enumName);
 	if (enumDef)
@@ -353,7 +367,7 @@ void aeContext::registerEnumValue(const std::string& enumName, const std::string
 	}
 }
 
-aeEnum* aeContext::getEnumByName(const std::string& name)
+aeEnum* AEContext::getEnumByName(const std::string& name)
 {
 	for (auto& e : m_enums)
 	{
@@ -363,7 +377,7 @@ aeEnum* aeContext::getEnumByName(const std::string& name)
 	return nullptr;
 }
 
-aeFunctionId aeContext::getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior)
+aeFunctionId AEContext::getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior)
 {
 	for (std::size_t i = 0; i < m_functionTable.size(); ++i)
 	{
@@ -376,7 +390,7 @@ aeFunctionId aeContext::getNativeBehaviorIndex(const std::string& typeName, cons
 	return -1;
 }
 
-aeType* aeContext::getTypeInfo(const std::string& name)
+AEType* AEContext::getTypeInfo(const std::string& name)
 {
 	for (auto& obj : typedb)
 	{
@@ -388,7 +402,7 @@ aeType* aeContext::getTypeInfo(const std::string& name)
 	return nullptr;
 }
 
-int32_t aeContext::getTypeInfoIndex(aeType* typeInfo)
+int32_t AEContext::getTypeInfoIndex(AEType* typeInfo)
 {
 	for (auto i = 0; i < typedb.size(); ++i)
 	{

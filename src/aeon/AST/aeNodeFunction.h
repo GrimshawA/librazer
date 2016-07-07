@@ -2,6 +2,7 @@
 #define aeNodeFunction_h__
 
 #include "aeNodeBase.h"
+#include "aeNodeValue.h"
 
 class aeNodeExpr;
 class aeQualType;
@@ -18,7 +19,7 @@ class aeNodeStatement;
 	- class methods
 	- anonymous functions / closures
 */
-class aeNodeFunction : public aeNodeBase
+class aeNodeFunction : public aeNodeValue
 {
 public:
 
@@ -55,7 +56,7 @@ public:
 	/// Is this is an anonymous function
 	bool isAnonymousFunction();
 
-	std::string str();
+	std::string str() const;
 };
 
 #endif // aeNodeFunction_h__

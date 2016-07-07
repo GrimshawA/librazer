@@ -1,6 +1,6 @@
 #include <AEON/aeParser.h>
 #include <AEON/aeTokenizer.h>
-#include <AEON/aeContext.h>
+#include <AEON/Runtime/AEContext.h>
 #include <AEON/AST/Nodes.h>
 
 #include <map>
@@ -23,7 +23,7 @@ std::map<std::string, int> mOperatorTable = {
 	};
 
 
-std::unique_ptr<aeParser> aeParser::create(const std::string& source, aeContext* context)
+std::unique_ptr<aeParser> aeParser::create(const std::string& source, AEContext* context)
 {
 	std::unique_ptr<aeParser> parser(new aeParser(source));
 	parser->i = 0; parser->ctx = context; parser->getNextToken();
@@ -110,154 +110,139 @@ aeNodeBranch* aeParser::parseBranch()
 	return branchNode;
 }
 
-	void aeParser::parseValue(aeon_lexer& lexer, aeon_value& rootValue)
+void aeParser::parseValue(aeon_lexer& lexer, AEValue& rootValue)
+{
+	if (lexer.tokens.size() == 0)
 	{
-		if (lexer.tokens.size() == 0)
+		//Log("Parser: No tokens in the stream");
+		return;
+	}
+
+	m_tokenizer = &lexer;
+	i = 0;
+	mDataValue = &rootValue;
+
+	Tok = getNextToken();
+
+	while (Tok.type != AETK_EOF)
+	{
+		AEValue ParsedValue = parseDataObject();
+		rootValue.setProperty("a", ParsedValue);
+	}
+}
+
+aeNodeValue* aeParser::parsePropertyValue()
+{
+	aeNodeValue* returnValue = nullptr;
+
+	if (Tok.type == AETK_OPENSQBRACKET)
+	{
+		getNextToken();
+
+		aeNodeArray* arrayValue = new aeNodeArray;
+		
+		if (Tok.type != AETK_CLOSESQBRACKET)
 		{
-			//Log("Parser: No tokens in the stream");
-			return;
+			do 
+			{
+				aeNodeValue* element = parsePropertyValue();
+				arrayValue->addElement(element);
+
+				if (Tok.type == AETK_COMMA)
+					getNextToken();
+				else break;
+
+			} while (1);
 		}
 
-		m_tokenizer = &lexer;
-		i = 0;
-		mDataValue = &rootValue;
+		getNextToken();
 
-		Tok = getNextToken();
+		returnValue = arrayValue;
+	}
+	else if (Tok.type == AETK_OPENBRACKET)
+	{
+		aeNodeFunction* fn = new aeNodeFunction;
+		fn->m_block.reset(parseBlock());
+		returnValue = fn;
 
-		while (Tok.type != AETK_EOF)
+		getNextToken();
+	}
+	else {
+		// Expression, we will infer what it is
+		aeNodeExpr* expr = parseExpression();
+		returnValue = expr;
+	}
+
+	if (returnValue)
+	{
+		printf("pvalue: %s\n", returnValue->str().c_str());
+	}
+
+	return returnValue;
+}
+
+AEValue aeParser::parseDataObject()
+{
+	AEValue objectValue;
+	objectValue.m_valueType = AEValue::VALUE_UNDEFINED;
+
+	// we are on the first token of a data definition
+
+	std::string ObjectType;
+	if (Tok.type == AETK_IDENTIFIER)
+	{
+		ObjectType = Tok.text;
+		getNextToken();
+		//objectValue.mRawProperty = ObjectType;
+	}
+
+	// Found a member-of property
+	std::vector<std::string> ObjectSubProperties;
+	if (Tok.type == AETK_DOT)
+	{
+		while (Tok.type == AETK_DOT)
 		{
-			aeon_value ParsedValue = parseDataObject();
-			rootValue.properties.push_back(ParsedValue);
+			getNextToken();
+			ObjectSubProperties.push_back(Tok.text);
+			getNextToken();
 		}
 	}
 
-	/// Parses the {} data object
-	aeon_value aeParser::parseDataObject()
+	// Property assigned
+	if (Tok.type == AETK_COLON)
 	{
-		aeon_value objectValue;
-		objectValue.mValueType = aeon_value::EInvalid;
-
-		// we are on the first token of a data definition
-
-		std::string ObjectType;
-		if (Tok.type == AETK_IDENTIFIER)
-		{
-			ObjectType = Tok.text;
-			getNextToken();
-		}
-
-		// Found a member-of property
-		std::vector<std::string> ObjectSubProperties;
-		if (Tok.type == AETK_DOT)
-		{
-			while (Tok.type == AETK_DOT)
-			{
-				getNextToken();
-				ObjectSubProperties.push_back(Tok.text);
-				getNextToken();
-			}
-		}
-
-		std::string ObjectName;
-		if (Tok.type == AETK_DIRECTIVE)
-		{
-			getNextToken();
-			ObjectName = Tok.text;
-			getNextToken();
-
-			objectValue.CreateString("Name", ObjectName);
-		}
-
-		// Property assigned
-		if ((Tok.type == AETK_BINOP && Tok.text == "="))
-		{
-			getNextToken();
-
-			if (Tok.type == AETK_INTLITERAL || Tok.type == AETK_FLOATLITERAL)
-			{
-				std::string NumberLiteralString = Tok.text;
-				getNextToken();
-
-				objectValue.SetNumber(ObjectType, NumberLiteralString);
-				//Log("Float PROP: %s %s", ObjectType.c_str(), NumberLiteralString.c_str());
-
-				if (Tok.type == AETK_BINOP && Tok.text == "%")
-				{
-					// This is a percentage!!
-					getNextToken();
-				}
-			}
-			else if (Tok.type == AETK_FALSE)
-			{
-				objectValue.mRawValue = "false";
-				getNextToken();
-			}
-			else if (Tok.type == AETK_TRUE)
-			{
-				objectValue.mRawValue = "true";
-				getNextToken();
-			}
-			else if (Tok.type == AETK_IDENTIFIER || Tok.type == AETK_STRINGLITERAL)
-			{
-
-				bool IsIdentifier = Tok.type == AETK_IDENTIFIER;
-
-				std::string TheStringLiteral = Tok.extract_stringliteral();
-				getNextToken();
-				//Log("STRING: %s", TheStringLiteral.c_str());
-
-				// We're in the token after the identifier on RHS
-				if (IsIdentifier && Tok.type == AETK_OPENPAREN)
-				{
-					getNextToken();
-					std::vector<aeon_token> args;
-					do
-					{
-						TheStringLiteral += " " + Tok.extract_stringliteral();
-
-						getNextToken();
-
-						if (Tok.type == AETK_COMMA)
-							getNextToken();
-
-					} while (Tok.type != AETK_CLOSEPAREN);
-					getNextToken();
-
-				}
-
-				objectValue.SetString(ObjectType, TheStringLiteral);
-
-			}
-		}
-		else if (Tok.type == AETK_OPENBRACKET)
-		{
-			getNextToken();
-
-			std::string PropertyName;
-
-			while (Tok.text != "}")
-			{
-				aeon_value ChildValue = parseDataObject();
-				objectValue.properties.push_back(ChildValue);
-
-				/*if (Tok.type == Tok.EndOfFile)
-					break;*/
-			}
-			getNextToken();
-
-			// Add its type since its an object
-			objectValue.mValueType = aeon_value::EObject;
-			objectValue.SetString("Type", ObjectType);
-		}
-
-		if (Tok.type == AETK_COMMA || Tok.type == AETK_SEMICOLON)
-		{
-			getNextToken();
-		}
-
-		// We end on the token that belongs to the next object/value
-		return objectValue;
+		getNextToken();
+//		objectValue.setValue(parsePropertyValue());
 	}
+	else if (Tok.type == AETK_OPENBRACKET)
+	{
+		getNextToken();
+
+		std::string PropertyName;
+
+		while (Tok.text != "}")
+		{
+			AEValue ChildValue = parseDataObject();
+		//	objectValue.properties.push_back(ChildValue);
+
+			/*if (Tok.type == Tok.EndOfFile)
+				break;*/
+		}
+		getNextToken();
+
+		// Add its type since its an object
+		objectValue.m_valueType = AEValue::VALUE_OBJECT;
+		objectValue.SetString("Type", ObjectType);
+	}
+
+	if (Tok.type == AETK_COMMA || Tok.type == AETK_SEMICOLON)
+	{
+		getNextToken();
+	}
+
+	// We end on the token that belongs to the next object/value
+	return objectValue;
+}
 
 void aeParser::startParse(aeon_lexer& lexer)
 {

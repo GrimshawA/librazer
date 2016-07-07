@@ -1,8 +1,8 @@
 #ifndef aeClosure_h__
 #define aeClosure_h__
 
-#include <AEON/aeByteCode.h>
-#include <aeon/aeVM.h>
+#include <AEON/Runtime/AEByteCode.h>
+#include <AEON/Runtime/AEVm.h>
 
 #include <vector>
 
