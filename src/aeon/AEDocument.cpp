@@ -54,5 +54,5 @@ AEValue AEDocument::root()
 void AEDocument::print()
 {
 	printf("AEDocument print\n");
-	m_root.debugPrint();
+	//m_root.debugPrint();
 }

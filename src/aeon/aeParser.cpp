@@ -251,7 +251,7 @@ AEValue aeParser::parseDataValue()
 
 		// Add its type since its an object
 		objectValue.m_valueType = AEValue::VALUE_OBJECT;
-		objectValue.SetString("Type", ObjectType);
+//		objectValue.SetString("Type", ObjectType);
 	}
 
 	if (Tok.type == AETK_COMMA || Tok.type == AETK_SEMICOLON)

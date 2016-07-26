@@ -1,13 +1,26 @@
 #ifndef AEValue_h__
 #define AEValue_h__
 
+#include <AEON/Runtime/AEFunction.h>
+
 #include <string>
 #include <vector>
 #include <memory>
+#include <functional>
 
 #include <AEON/AST/aeNodeValue.h>
 
 class AEValueList;
+class AEObject;
+
+class AEString
+{
+public:
+	std::string str;
+	int ref = 0;
+};
+
+class AEArray;
 
 /**
 	\class AEValue
@@ -51,9 +64,20 @@ public:
 public:
 
 	AEValue();
+	AEValue(std::initializer_list<int> v);
+	AEValue(int v);
+	AEValue(const std::string& v);
+	AEValue(std::function<void()> fn);
+
 	~AEValue();
 
+	ValueType type() const;
+
+	int length() const;
+
 	void release();
+
+	void setValue(int index, AEValue v);
 
 	void setProperty(const std::string& name, const std::string& value);
 	void setProperty(const std::string& name, int value);
@@ -64,9 +88,13 @@ public:
 	void call();
 	void call(const AEValueList& argumentList);
 
+	std::string str() const;
+
 	bool isCallable();
 	bool isUndefined();
 	bool isString();
+
+	int asInt();
 
 public:
 	
@@ -75,44 +103,34 @@ public:
 	AEValue& operator=(int v);
 	AEValue& operator=(float v);
 
-		AEValue* begin();
-		AEValue* end();
-
-		/// Creates a string property on this object
-		void CreateString(const std::string& name, const std::string& value);
-
-		/// Creates a float on this object
-		void CreateFloat(const std::string& name, float value);
-
-		/// Create a number, of any type
-		void CreateNumber(const std::string& name, const std::string& number);
-
-		/// Sets this value as a number
-		void SetNumber(const std::string& name, const std::string& number);
-
-		/// Sets this value as a number
-		void SetString(const std::string& name, const std::string& value);
-
-		/// Check if this value is an object
-		/// It is an object as long as it has more than one property
-		bool IsObject();
-
-		void debugPrint();
-
-		int as_int();
-
-		float as_float();
-
-		std::string as_string();
-
-		/// Read a property of this value
-		AEValue operator[](const std::string& str);
+	AEValue operator+(AEValue v);
+	AEValue operator+(int32_t v);
+	AEValue operator+(AEArray& v);
+	AEValue operator+(AEString& v);
 
 private:
 	friend class aeParser;
 
-	ValueType m_valueType;
-	void*     m_data;
+	void setFromArray(AEValue v);
+	void setFromString(AEValue v);
+
+	ValueType    m_valueType;
+
+	union {
+		double _real;
+		int    _int;
+		AEString* _string;
+		AEObject* _object;
+		AEArray*  _array;
+		AEFunction* _function;
+	};
 };
+
+class AEArray
+{
+public:
+	std::vector<AEValue> values;
+};
+
 
 #endif // AEValue_h__

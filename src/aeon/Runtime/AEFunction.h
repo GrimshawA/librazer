@@ -4,6 +4,8 @@
 #include <AEON/aeSymbol.h>
 #include <AEON/Runtime/AEType.h>
 
+#include <functional>
+
 class AEValueList;
 
 /**
@@ -40,6 +42,7 @@ public:
 	bool m_native;
 	bool m_compiled;               ///< Whether or not this function is compiled successfully, with a valid body
 	bool m_virtual;
+	std::function<void()> tmp;
 };
 
 #endif // AEFunction_h__

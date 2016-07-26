@@ -1,8 +1,10 @@
 #ifndef aeon_threadstate_h__
 #define aeon_threadstate_h__
 
+#include <AEON/Runtime/AEValue.h>
 #include <vector>
 #include <stdint.h>
+
 
 class AEFunction;
 class aeVM;
@@ -112,6 +114,8 @@ public:
 
 		return v;
 	}
+
+	AEValue popVar();
 
 	vm_value getThisPtr()
 	{
