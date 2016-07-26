@@ -10,6 +10,7 @@ enum EOpCodes
 	OP_NEW,            ///< Allocate a new instance of a type
 	OP_PREPARE,        ///< Prepares the vm for a subsequent call
 	OP_CALL,		   ///< Call one aeon procedure, static, method, global, which assumes its input environment is already set
+	OP_DCALL,          ///< Call a dynamic method on any object, resolved at runtime
 	OP_CALLVIRTUAL,	   ///< Call a virtual method on an aeon object, separate to avoid overhead of checking
 	OP_CALLNATIVE,	   ///< Call a native function on the host environment
 	OP_CALLMETHOD_NAT, ///< Call non-static member function on a native object

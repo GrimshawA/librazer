@@ -72,7 +72,7 @@ class aeParser
 		aeNodeStatement*         parseStatement();
 		aeNodeBranch*            parseBranch();
 		aeNodeBase*              parseSymbol();
-		AEValue               parseDataObject();
+		AEValue               parseDataValue();
 		aeQualType               parseQualType();
 		aeNodeExpr*              parseExpression();
 		aeNodeExpr*              parsePrimaryExpression();

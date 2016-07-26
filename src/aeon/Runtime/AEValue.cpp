@@ -85,6 +85,11 @@ AEValue& AEValue::operator=(int v)
 	return *this;
 }
 
+AEValue& AEValue::operator=(float v)
+{
+	return *this;
+}
+
 void AEValue::CreateString(const std::string& name, const std::string& value)
 {
 		AEValue v;
@@ -143,10 +148,16 @@ void AEValue::CreateFloat(const std::string& name, float value)
 
 	void AEValue::debugPrint()
 	{
+		if (m_valueType == VALUE_ARRAY)
+		{
+			printf("[");
+
+			printf("]\n");
+		}
 
 		//Log("AtomValue: %s -> %s", mRawProperty.c_str(), mRawValue.c_str());
-//		for (auto i : properties)
-	//		i.debugPrint();
+		//for (auto i : properties)
+		//	i.debugPrint();
 	}
 
 	int AEValue::as_int()

@@ -1,6 +1,7 @@
 #include <AEON/STD/aeStdIo.h>
 #include <AEON/Runtime/AEContext.h>
 #include <AEON/Runtime/AEVm.h>
+#include <AEON/Runtime/AEGeneric.h>
 
 #include <cmath>
 
@@ -14,10 +15,14 @@ void register_stdlib(AEContext* ctx)
 	ctx->registerFunction("cos", &atom_cos);
 	ctx->registerFunction("sin", &atom_sin);*/
 
-	ctx->registerFunction("void print(int32)", [](aeVM* vm){
-		vm_value strIndex = vm->m_stk.pop_value();
-		std::string str = vm->m_ctx->string_literals[strIndex.i32];
+	ctx->registerFunction("void print(int32)", [](AEGeneric g){
+		std::string str = g.unpack_string();
 		printf("%s\n", str.c_str());
+	});
+
+	ctx->registerFunction("void printint(int32)", [](AEGeneric g){
+		int32_t v = g.unpack_int32();
+		printf("%d\n", v);
 	});
 
 	printf("Registered interface!\n");

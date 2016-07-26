@@ -6,6 +6,7 @@
 #include <AEON/Runtime/AEType.h>
 #include <AEON/Runtime/AEValue.h>
 #include <AEON/Runtime/AEModule.h>
+#include <AEON/Runtime/AEGeneric.h>
 #include <vector>
 #include <memory>
 #include <map>
@@ -22,7 +23,7 @@ struct aeon_config
 	bool allowAutomaticTypeInference; ///< Anonymous variables assume a type from inference, but are immutable (and not aeon_variant), otherwise explicit inference is supported
 };
 
-typedef void(*aeBindMethod)(aeVM*);
+typedef void(*aeBindMethod)(AEGeneric);
 typedef void(*aeDestructorMethod)(void*);
 typedef void(*aeConstructorMethod)(void*, aeVM*);
 
@@ -76,9 +77,10 @@ class AEContext
 
 		std::vector<AEType*>                          typedb;               ///< All the types on the context
 		std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
-		std::vector<std::unique_ptr<AEModule> >    modules;              ///< All the loaded modules
+		std::vector<std::unique_ptr<AEModule> >       modules;              ///< All the loaded modules
 		std::vector<std::string>                      string_literals;      ///< All the loaded string literals
-		std::vector<double>                           m_floatTable;      ///< All the loaded double literals
+		std::vector<std::string>                      m_functionIdTable;    ///< Maps each dynamic call identifier to an integer index
+		std::vector<double>                           m_floatTable;         ///< All the loaded double literals
 		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
 		std::vector<AEFunction*>                      m_functionTable;      ///< All the functions available to scripts
 		std::vector<aeTypedef>                        m_typedefs;

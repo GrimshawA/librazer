@@ -2,6 +2,9 @@
 #include <AEON/Runtime/aeByteCode.h>
 #include <AEON/Runtime/AEContext.h>
 #include <AEON/Runtime/AEObject.h>
+#include <AEON/Runtime/AEGeneric.h>
+
+#include <AEON/Runtime/AEVmCalls.h>
 
 #define vm_start(x) case x:{
 #define vm_end break;}
@@ -476,20 +479,6 @@ static inline void DoJump(aeVM* vm, int address)
 	cl->pc = address;
 }
 
-static inline void DoCall(aeVM* vm, int functionIndex)
-{
-	AEFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
-
-	aeStackFrame callinfo;
-	callinfo.name = "unknown";
-	callinfo.pc = functionData->offset - 1;
-	callinfo.module = functionData->m_module;
-	callinfo.ebp = vm->m_stk.ebp;
-	callinfo.function = functionData;
-	vm->m_stk.frames.push_back(callinfo);
-	vm->m_stk.cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
-}
-
 static inline bool DoReturn(aeVM* vm)
 {
 	vm->m_stk.frames.pop_back();
@@ -530,11 +519,15 @@ void aeVM::execute(aeThreadState& threadInfo)
 				DoCall(this, inst.arg0);
 			vm_end
 
-			vm_start(OP_CALLVIRTUAL)
-				// todo
+			vm_start(OP_DCALL)
+				DoDynamicCall(this, inst.arg0);
 			vm_end
 
-			vm_start(OP_CALLNATIVE)
+				vm_start(OP_CALLVIRTUAL)
+				// todo
+				vm_end
+
+				vm_start(OP_CALLNATIVE)
 				/*uint32_t funcid = getinst_a(inst);
 				uint32_t params = getinst_b(inst);
 
@@ -542,8 +535,8 @@ void aeVM::execute(aeThreadState& threadInfo)
 				gen->vm = this;
 				// forward to generic
 				gen->args.resize(params);
-				for (int k = 0; k < params; ++k) 
-					gen->args[k]._u64 = pop();
+				for (int k = 0; k < params; ++k)
+				gen->args[k]._u64 = pop();
 				//Log("Stored %d in the generic before calling", params);
 
 				// C Call
@@ -551,13 +544,14 @@ void aeVM::execute(aeThreadState& threadInfo)
 
 				// always push the return type
 				if (gen->hasRet)
-					push(gen->retarg._u64);
+				push(gen->retarg._u64);
 
 				delete gen;*/
 			vm_end
 
 			vm_start(OP_CALLMETHOD_NAT)
-				m_ctx->m_functionTable[inst.arg0]->fn(this);
+				AEGeneric g; g.m_vm = this;
+				m_ctx->m_functionTable[inst.arg0]->fn(g);
 			vm_end
 
 			vm_start(OP_RETURN)

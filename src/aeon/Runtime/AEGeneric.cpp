@@ -1,0 +1,55 @@
+#include <AEON/Runtime/AEGeneric.h>
+#include <AEON/Runtime/AEVm.h>
+#include <AEON/Runtime/AEGeneric.h>
+
+int32_t AEGeneric::unpack_int32()
+{
+	vm_value strIndex = m_vm->m_stk.pop_value();
+	return strIndex.i32;
+}
+
+uint32_t AEGeneric::unpack_uint32()
+{
+	return 0;
+}
+
+float AEGeneric::unpack_float()
+{
+	return 0;
+}
+
+double AEGeneric::unpack_double()
+{
+	return 0;
+}
+
+std::string AEGeneric::unpack_string()
+{
+	vm_value strIndex = m_vm->m_stk.pop_value();
+	std::string str = m_vm->m_ctx->string_literals[strIndex.i32];
+	return str;
+}
+
+void AEGeneric::pack_int32(int32_t value)
+{
+
+}
+
+void AEGeneric::pack_uint32(uint32_t value)
+{
+
+}
+
+void AEGeneric::pack_float(float value)
+{
+
+}
+
+void AEGeneric::pack_double(double value)
+{
+
+}
+void AEGeneric::pack_string(const std::string& value)
+{
+	
+}

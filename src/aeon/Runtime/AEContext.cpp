@@ -39,6 +39,7 @@ AEContext::AEContext()
 	registerPrimitive("float", sizeof(float));
 	registerPrimitive("double", sizeof(double));
 	registerPrimitive("string", sizeof(int32_t));
+	registerPrimitive("var", sizeof(AEValue));
 
 	registerTypedef("int32", "int");
 }
@@ -132,7 +133,7 @@ AEValue AEContext::readValue(const std::string& filename)
 	parser.i = 0;
 	parser.m_tokenizer = &lexer;
 	parser.getNextToken();
-	return parser.parseDataObject();
+	return parser.parseDataValue();
 }
 
 AEModule* AEContext::getModule(const std::string name)

@@ -73,7 +73,7 @@ public:
 	AEValue& operator=(const AEValue& v);
 	AEValue& operator=(const std::string& v);
 	AEValue& operator=(int v);
-
+	AEValue& operator=(float v);
 
 		AEValue* begin();
 		AEValue* end();
