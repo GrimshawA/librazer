@@ -30,9 +30,13 @@ public:
 
 	void setProperty(const std::string& name, const std::string& value);
 
+	void setProperty(const std::string& name, AEValue value);
+
 	void call(const std::string& name);
 	
+	int count() const;
 
+	std::string propertyName(int index);
 
 		AEType* getType();
 
@@ -44,12 +48,23 @@ public:
 
 		void log();
 
-private:
+		bool contains(const std::string& key) const{
+			for (auto& m : m_names)
+			{
+				if (m == key)
+					return true;
+			}
+			return false;
+		}
+
+//private:
 	friend class aeVM;
 	friend class AEContext;
 
+	std::vector<std::string> m_names;
 	std::vector<AEValue> m_properties;
 	void* addr;
 	AEType* m_type;
+
 };
 #endif // AEOBJECT_H__

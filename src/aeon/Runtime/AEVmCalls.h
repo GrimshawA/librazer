@@ -17,9 +17,8 @@ static inline void DoCall(aeVM* vm, int functionIndex)
 
 static inline void DoDynamicCall(aeVM* vm, int functionIndex)
 {
-
+	//AEValue v = vm->m_stk.popVar();
+	
 }
-
-
 
 #endif // AEVmCalls_h__

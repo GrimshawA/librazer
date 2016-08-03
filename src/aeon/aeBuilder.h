@@ -6,11 +6,19 @@
 
 class AEContext;
 
+class AEBuildSpec
+{
+public:
+	std::vector<std::string> files;
+};
+
 /**
 	\class aeBuilder
 	\brief Aeon build tool
 
 	The builder takes multiple sources as input
+
+	Builds libraries and applications into binaries or runtime code.
 */
 class aeBuilder
 {
@@ -22,12 +30,14 @@ public:
 	AEContext* m_context;
 
 public:
-
+	aeBuilder(){}
 	aeBuilder(AEContext& context);
 
 	void addFile(const std::string& sourcefile);
 
 	void build();
+
+	void buildApp(const std::string& appPath, AEBuildSpec spec);
 };
 
 #endif // aeBuilder_h__

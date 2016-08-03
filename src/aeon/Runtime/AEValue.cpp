@@ -24,6 +24,9 @@ AEValue::AEValue(int v)
 {
 	m_valueType = VALUE_INT;
 	_int = v;
+
+	printf("Returning int as %d\n", _int);
+
 }
 
 AEValue::AEValue(const std::string& v)
@@ -65,6 +68,21 @@ int AEValue::length() const
 		return 0;
 }
 
+AEValue AEValue::at(int index)
+{
+	return _array->values[index];
+}
+
+std::string AEValue::typeName() const
+{
+	if (m_valueType == VALUE_OBJECT)
+	{
+		return property("typename").str();
+	}
+	else
+		return "";
+}
+
 void AEValue::release()
 {
 	if (m_valueType == VALUE_STRING)
@@ -80,6 +98,8 @@ void AEValue::setValue(int index, AEValue v)
 {
 	if (m_valueType == VALUE_ARRAY)
 	{
+		if (_array->values.size() < index + 1)
+			_array->values.resize(index + 1);
 		_array->values[index] = v;
 	}
 }
@@ -99,12 +119,49 @@ void AEValue::setProperty(const std::string& name, int value)
 
 void AEValue::setProperty(const std::string& name, const AEValue& value)
 {
+	if (m_valueType != VALUE_OBJECT)
+	{
+		_object = new AEObject;
+		m_valueType = VALUE_OBJECT;
+	}
 
+	printf("%s: %s\n", name.c_str(), value.str().c_str());
+	_object->setProperty(name, (AEValue)value);
 }
 
-AEValue AEValue::property(const std::string& name)
+AEValue AEValue::property(const std::string& name) const
 {
+	int i = 0;
+	for (auto& m : _object->m_properties)
+	{
+		if (_object->m_names[i] == name)
+		{
+			return m;
+		}
+		++i;
+	}
+
 	return AEValue();
+}
+
+AEValue AEValue::property(int index)
+{
+	return _object->m_properties[index];
+}
+
+std::string AEValue::propertyName(int index)
+{
+	return _object->propertyName(index);
+}
+
+int AEValue::numProperties() const
+{
+	if (m_valueType == VALUE_OBJECT)
+	{
+		return _object->count();
+	}
+
+	return 0;
 }
 
 void AEValue::call()
@@ -154,7 +211,10 @@ std::string AEValue::str() const
 	}
 	else if (m_valueType == VALUE_OBJECT)
 	{
-		return "object";
+		if (_object->contains("typename"))
+			return std::string("object:") + property("typename").str();
+		else
+			return "object";
 	}
 	else if (m_valueType == VALUE_REAL)
 	{
@@ -162,6 +222,11 @@ std::string AEValue::str() const
 	}
 	else
 		return "undefined";
+}
+
+const char* AEValue::c_str() const
+{
+	return str().c_str();
 }
 
 bool AEValue::isCallable()
@@ -190,28 +255,36 @@ int AEValue::asInt()
 		return static_cast<int>(_real);
 	}
 	else
-		return 0;
+		return -1;
+}
+
+AEValue AEValue::makeArray()
+{
+	AEValue v;
+	v.m_valueType = VALUE_ARRAY;
+	v._array = new AEArray;
+	return v;
 }
 
 AEValue& AEValue::operator=(const AEValue& v)
 {
-	if (m_valueType == VALUE_ARRAY)
+	if (v.m_valueType == VALUE_ARRAY)
 	{
 		_array = v._array;
 	}
-	else if (m_valueType == VALUE_OBJECT)
+	else if (v.m_valueType == VALUE_OBJECT)
 	{
 		_object = v._object;
 	}
-	else if (m_valueType == VALUE_INT)
+	else if (v.m_valueType == VALUE_INT)
 	{
 		_int = v._int;
 	}
-	else if (m_valueType == VALUE_REAL)
+	else if (v.m_valueType == VALUE_REAL)
 	{
 		_real = v._real;
 	}
-	else if (m_valueType == VALUE_STRING)
+	else if (v.m_valueType == VALUE_STRING)
 	{
 		_string = v._string;
 	}
@@ -320,6 +393,11 @@ AEValue AEValue::operator+(int32_t v)
 		r.m_valueType = VALUE_UNDEFINED;
 		return r;
 	}
+}
+
+AEValue::operator bool()
+{
+	return m_valueType != VALUE_UNDEFINED;
 }
 
 void AEValue::setFromArray(AEValue v)

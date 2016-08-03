@@ -7,6 +7,8 @@
 
 #include <vector>
 
+#define PARSE_EXPECTS(toks, msg) (void) 0;
+
 class AEContext;
 
 /**
@@ -32,6 +34,10 @@ class AEContext;
 	Pre-compiled modules that are not being compiled right now, still have their public API
 	declared in aeon_module structs, belonging to the same aeon_context. These types are also considered
 	in pass 2.
+
+	Notes:
+	Some of the functions have the node suffix while others have the value suffix. Nodes are always part of the AST,
+	while values are runtime variants, usable for other purposes.
 */
 class aeParser
 {
@@ -73,6 +79,9 @@ class aeParser
 		aeNodeBranch*            parseBranch();
 		aeNodeBase*              parseSymbol();
 		AEValue               parseDataValue();
+		AEValue                  parseDataObjectBody();
+		AEValue                  parseArrayValue();
+		AEValue                  parseProperty();
 		aeQualType               parseQualType();
 		aeNodeExpr*              parseExpression();
 		aeNodeExpr*              parsePrimaryExpression();

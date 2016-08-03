@@ -23,3 +23,21 @@ void aeBuilder::build()
 	}
 	printf("------- Build finished.\n");
 }
+
+void aeBuilder::buildApp(const std::string& appPath, AEBuildSpec spec)
+{
+	AEContext ctx;
+
+	for (auto& f : spec.files)
+	{
+		ctx.quick_build(f);
+	}
+
+	FILE* fp = fopen(appPath.c_str(), "wb");
+	for (auto& m : ctx.modules)
+	{
+		fwrite(m->instructions.data(), sizeof(AEInstruction), m->instructions.size(), fp);
+	}
+	fclose(fp);
+	printf("Built application: %s\n", appPath.c_str());
+}

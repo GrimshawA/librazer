@@ -75,6 +75,10 @@ public:
 
 	int length() const;
 
+	AEValue at(int index);
+
+	std::string typeName() const;
+
 	void release();
 
 	void setValue(int index, AEValue v);
@@ -83,18 +87,26 @@ public:
 	void setProperty(const std::string& name, int value);
 	void setProperty(const std::string& name, const AEValue& value);
 
-	AEValue property(const std::string& name);
+	AEValue property(const std::string& name) const;
+	AEValue property(int index);
+
+	std::string propertyName(int index);
+
+	int numProperties() const;
 
 	void call();
 	void call(const AEValueList& argumentList);
 
 	std::string str() const;
+	const char* c_str() const;
 
 	bool isCallable();
 	bool isUndefined();
 	bool isString();
 
 	int asInt();
+
+	static AEValue makeArray();
 
 public:
 	
@@ -107,6 +119,8 @@ public:
 	AEValue operator+(int32_t v);
 	AEValue operator+(AEArray& v);
 	AEValue operator+(AEString& v);
+
+	operator bool();
 
 private:
 	friend class aeParser;

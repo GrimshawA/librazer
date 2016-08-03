@@ -7,6 +7,22 @@ void AEObject::setProperty(const std::string& name, const std::string& value)
 
 }
 
+int AEObject::count() const
+{
+	return m_properties.size();
+}
+
+std::string AEObject::propertyName(int index)
+{
+	return m_names[index];
+}
+
+void AEObject::setProperty(const std::string& name, AEValue value)
+{
+	m_names.push_back(name);
+	m_properties.push_back(value);
+}
+
 void AEObject::call(const std::string& name)
 {
 	AEFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
