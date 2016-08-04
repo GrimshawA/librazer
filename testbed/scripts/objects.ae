@@ -1,4 +1,6 @@
-class CoreWidget : Widget
+class ObjectsTest
+//: trait<std::prototype>
+//, trait<std::arc>
 {
 	/*int32 m_health;
 	int32 timeLeft;
@@ -7,14 +9,15 @@ class CoreWidget : Widget
 	int32 myOtherValue;
 	int32 superMonster;*/
 
-	function execute()
+	function ObjectsTest()
 	{
-		GameObject monster;
-		monster.setHealth();
+		print("Constructor");
 	}
 
-	function setHealth()
+	function execute()
 	{
-		
+		int32 a = 0;
+		int32 b = 1;
+		print("Hello world!0");
 	}
 }

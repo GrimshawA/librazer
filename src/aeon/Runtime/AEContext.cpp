@@ -1,4 +1,4 @@
-#include <AEON/Runtime/AEContext.h>
+#include <AEON/AEContext.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEVm.h>
 #include <AEON/aeParser.h>
@@ -19,6 +19,11 @@ std::string getFileSource(const std::string& filename)
 		}
 	}
 	return s;
+}
+
+int AEContext::exec(const std::string& filename)
+{
+	return 0;
 }
 
 AEContext::AEContext()

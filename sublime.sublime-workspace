@@ -8,29 +8,38 @@
 	"buffers":
 	[
 		{
-			"file": "testbed/scripts/objects.ae",
+			"contents": "Weapons\n\nStick 1 \nBat 4\nKnife 8\nMachete 12\nHandgun 20\nChainsaw 25\nShotgun 35\nDesert Eagle 50\nMP5 70\nKatana 90\nAK 47 100\n\nM4A1 120\nSniper Rifle 150\nMinigun 200\nRocket Launcher 300\n\nPhaser 450\nLaser gun 600\nReaper of worlds 999\n------\nArmors\n\nReinforced underpants 1\nJacket 5\nLeather Jacket 10\nPlate armor 20\nCenturion's armor 40\nKevlar 80\n\nAssassin's Suit 120\nSkull Suit 200\nNano Suit 500\n\n-------\nBodyguards\n\nGranny 5\nRabid dog 10\n\n\nLevels\n-------\n100 level cap\nlevel unlocks certain purchases and crimes\n\n",
+			"file": "/C/Users/Artur/Desktop/Contentv1",
+			"file_size": 427,
+			"file_write_time": 131073020924557853,
 			"settings":
 			{
-				"buffer_size": 283,
+				"buffer_size": 506,
+				"line_ending": "Windows",
+				"name": "Weapons"
+			}
+		},
+		{
+			"file": "/D/Development/Projects/forgeofgods/qml/Data/qmldir",
+			"settings":
+			{
+				"buffer_size": 198,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "\n/**\n	\\class IEngineShell\n	\\brief The outer manager of the application lifecycle\n*/\nclass IEngineShell\n{\npublic:\n		std::vector<IEngineModule*> m_modules;\n\n		virtual bool allowMultiProcess() { return false; }\n};",
-			"file": "/C/Users/Artur/Desktop/toolset/IEngineShell.h",
-			"file_size": 221,
-			"file_write_time": 130977105344381945,
+			"file": "/D/Development/Projects/forgeofgods/qml/Controllers/qmldir",
 			"settings":
 			{
-				"buffer_size": 210,
+				"buffer_size": 39,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "\n\n\nfn x()\n{\n	\n	int i;\n\n	i = 0; // allow LHS to be just a var ref for now, and force RHS to be on the same type for SET [ASSIGNv1]\n\n	\n}",
+			"file": "/D/Development/Projects/twistedcrime/TwistedCrime/qml/Models/qmldir",
 			"settings":
 			{
-				"buffer_size": 134,
+				"buffer_size": 79,
 				"line_ending": "Windows"
 			}
 		}
@@ -65,12 +74,99 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/D/Development/Projects/aeon/src",
+		"/D/Development/Projects/aeon/testbed",
+		"/D/Development/Projects/aeon/testbed/scripts"
+	],
 	"file_history":
 	[
+		"/D/Development/Projects/forgeofgods/ForgeOfGods.pro.user",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/MainMenu.ark",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Player/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Progression/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Models/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Theme/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Navigation/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Crime/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Scenes/MainScene.qml",
+		"/D/Development/Projects/aeon/src/AEON/AST/aeNodeWhile.cpp",
+		"/D/Development/Projects/aeon/src/AEON/AST/aeNodeWhile.h",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/JoinByIP.ark",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/MenuView.dmc",
+		"/C/Users/Artur/Desktop/Notes",
+		"/D/Development/PhysX-3.3/PhysXSDK/readme_win.html",
+		"/C/Users/Artur/Desktop/aeon prototypes.txt",
+		"/C/Users/Artur/Downloads/MAME (Emulator + 3500 roms)/MAME/MAME32 plus 0.83/cfg/default.cfg",
+		"/D/Development/Projects/roguelike/content/Characters/Moth/moth.dc",
+		"/D/testfile.h",
+		"/D/testfile_meta.cpp",
+		"/D/Development/Projects/roguelike/content/Characters/Moth/Scripts/moth_animations.aeon",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.777/Vec3.cpp",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.138/FrustumG.h",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.771/AABox.h",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.044/FrustumG.cpp",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.425/Plane.cpp",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.285/Plane.h",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.319/AABox.cpp",
+		"/C/Users/Artur/Desktop/GameEngine.cpp",
+		"/D/Development/Projects/daevaengine/bin/Rogue.exp",
+		"/D/Development/Projects/daevaengine/bin/source.cpp",
+		"/D/Development/Projects/daevaengine/sdk/DvThirdParty/include/sigc++/config.h",
+		"/D/Development/Projects/daevaengine/editor/DvEditor/EditorRuntime/GameSolution.h",
+		"/D/Development/Projects/daevaengine/editor/DvEditor/EditorRuntime/GameSolution.cpp",
+		"/D/Development/Projects/nephilim/source/Nephilim/Core/Object.cpp",
+		"/D/Development/Projects/daevaengine/.git/config",
+		"/D/Development/Projects/daevaengine/sdk/DvThirdParty/libfreetype/cidparse.h",
+		"/C/Users/Artur/Desktop/Don't Starve Together (v134235) (RoG)/Don't Starve Together/data/scripts/behaviours/follow.lua",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/ServiceScripting.cpp",
+		"/D/Development/Projects/daevaengine/bin/dev_game/boot.ax",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/Old/ScriptComponent.cpp",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/MainMenu.ax",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/main.ui",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/GameView.dmc",
+		"/D/Development/Projects/daevaengine/sdk/DvPlugins/daeva-fbx/ModuleMain.cpp",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/Components/CharacterComponent.h",
+		"/D/Development/Projects/daevaengine/sdk/DvGraphics/Skeleton.h",
+		"/D/Development/Projects/daevaengine/sdk/DvBase/GestureLongPress.cpp",
+		"/D/Development/Projects/daevaengine/sdk/DvBase/DvObject.h",
+		"/D/Development/Projects/daevaengine/src/Nephilim/Nephilim.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Core/Object.h",
+		"/D/Development/Projects/nephilim/bin/dev_game/gamecode/objects.ac",
+		"/D/Development/Projects/nephilim/bin/dev_game/gamecode/test.ac",
+		"/D/Development/Projects/nephilim/bin/dev_game/gamecode/monster.ac",
+		"/D/Development/Projects/roguelike/roguelike.pro",
+		"/D/Development/Projects/aeon/src/aeon.cpp",
+		"/D/Development/Projects/aeon/src/aeClosure.cpp",
+		"/D/Development/Projects/nephilim/source/NephilimGameplay/MatchBoard.cpp",
+		"/D/Development/Projects/aeon/src/AEON/5tylruil.yca",
+		"/D/Development/Projects/aeon/testbed/scripts/objects.ae",
+		"/D/Development/Projects/aeon/src/aeQualType.h",
+		"/D/Development/Projects/aeon/src/aeQualType.cpp",
+		"/D/Development/Projects/nephilim/source/Nephilim/Helpers/PlatformIOS.h",
+		"/D/Development/Projects/nephilim/android/apk/AndroidManifest.xml",
+		"/D/Development/Projects/nephilim/sdk/src/Chat/ChatService.h",
+		"/D/Development/Projects/nephilim/android/sdcard_assets/game/scripts/GameActivity.ae",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/Server/ServiceGameServer.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/Client/GameClient.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/Server/DiscoveryServer.h",
+		"/C/Defold/artifacts.xml",
+		"/C/Defold/configuration/config.ini",
+		"/C/Qt/5.5/msvc2013_64/include/QtNetwork/qauthenticator.h",
+		"/D/Development/Projects/nephilim/android/sdcard_assets/game/scripts/Boot.ae",
+		"/D/Development/Projects/aeon/src/aeCompilerConv.cpp",
+		"/D/Development/Projects/aeon/src/aeCompilerConv.h",
+		"/D/Development/Projects/aeon/src/aeon_compiler.h",
+		"/D/Development/Projects/aeon/src/aeon_bytecode.h",
+		"/D/Development/Projects/aeon/src/aeon_compiler.cpp",
+		"/C/Users/Artur/AppData/Roaming/Skype/My Skype Received Files/Isometric Forest v1/Isometric Forest by Acasas/PNG/ObjInfo.aeon",
+		"/C/Users/Artur/Desktop/toolset/IEngineShell.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/ServiceGameServer.h"
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 22.0
 	},
 	"find_in_files":
 	{
@@ -84,6 +180,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"throwError::"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -101,29 +198,58 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "testbed/scripts/objects.ae",
+					"file": "/C/Users/Artur/Desktop/Contentv1",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 283,
+						"buffer_size": 506,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								209,
-								209
+								504,
+								504
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C++.tmLanguage"
+							"auto_name": "Weapons",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 248.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/D/Development/Projects/forgeofgods/qml/Data/qmldir",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 198,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								198,
+								198
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -133,25 +259,25 @@
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "/C/Users/Artur/Desktop/toolset/IEngineShell.h",
+					"buffer": 2,
+					"file": "/D/Development/Projects/forgeofgods/qml/Controllers/qmldir",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 210,
+						"buffer_size": 39,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								210,
-								210
+								39,
+								39
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C++.tmLanguage"
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -161,24 +287,24 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
+					"file": "/D/Development/Projects/twistedcrime/TwistedCrime/qml/Models/qmldir",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 134,
+						"buffer_size": 79,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								132,
-								132
+								79,
+								0
 							]
 						],
 						"settings":
 						{
-							"auto_name": "",
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
@@ -193,7 +319,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 0.0
+		"height": 22.0
 	},
 	"input":
 	{
@@ -230,7 +356,7 @@
 	"project": "sublime.sublime-project",
 	"replace":
 	{
-		"height": 0.0
+		"height": 40.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -239,6 +365,26 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"ac",
+				"src\\aeClosure.cpp"
+			],
+			[
+				"aeon_compiler",
+				"src\\aeon_compiler.h"
+			],
+			[
+				"aeon_c",
+				"src\\aeon_compiler.h"
+			],
+			[
+				"aeco",
+				"src\\aeCompilerConv.h"
+			],
+			[
+				"aecompi",
+				"src\\aeCompilerConv.cpp"
+			]
 		],
 		"width": 0.0
 	},
@@ -265,10 +411,10 @@
 	{
 	},
 	"show_minimap": true,
-	"show_open_files": false,
+	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 244.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

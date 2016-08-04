@@ -1,7 +1,7 @@
 #include <AEON/Compiler/aeCompiler.h>
 #include <AEON/Runtime/AEByteCode.h>
 #include <AEON/Runtime/AEVm.h>
-#include <AEON/Runtime/AEContext.h>
+#include <AEON/AEContext.h>
 
 #include <cassert>
 

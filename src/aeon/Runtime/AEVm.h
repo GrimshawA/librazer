@@ -3,7 +3,7 @@
 
 #include <AEON/Runtime/AEModule.h>
 #include <AEON/aeThreadState.h>
-#include <AEON/Runtime/AEContext.h>
+#include <AEON/AEContext.h>
 
 #include <vector>
 #include <stdint.h>
@@ -18,8 +18,15 @@ class AEObject;
 	\class aeon_vm
 	\brief The vm is in charge of executing the program in its byte code form
 
-	Its job is simply to take a starting member function or global, and execute it 
-	and its nested calls until it ends.
+	The responsibility of the vm is to execute bytecode from the aeon language. With the exception of JIT
+	compiled native code, once the host application gives control to an AEON function, the vm will be processing
+	the byte code to do so, potentially calling into native code halfway.
+
+	The vm also takes control of managing the multiple hardware threads launched from the language and employ all mechanisms 
+	specified by the language and standard libraries.
+
+	Different vm can be instanced but they need to be executing on different programs, its unsafe to use two different vm to call into
+	the same modules. For virtually all applications, only one vm is needed and it will take care of everything.
 */
 class aeVM
 {

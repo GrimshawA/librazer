@@ -1,6 +1,6 @@
 #include <AEON/aeParser.h>
 #include <AEON/aeTokenizer.h>
-#include <AEON/Runtime/AEContext.h>
+#include <AEON/AEContext.h>
 #include <AEON/AST/Nodes.h>
 
 #include <map>

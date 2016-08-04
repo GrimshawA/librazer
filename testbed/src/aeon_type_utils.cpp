@@ -1,7 +1,7 @@
 #include "aeon_type_utils.h"
-#include <aeon_type.h>
+#include <AEON/Runtime/AEType.h>
 
-void printTypeDetails(aeon_type* type)
+void printTypeDetails(AEType* type)
 {
 	printf("typename: %s\n", type->m_name.c_str());
 }
