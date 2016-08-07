@@ -1,6 +1,7 @@
 #ifndef aeon_vm_h__
 #define aeon_vm_h__
 
+#include <AEON/VM/AEVmThread.h>
 #include <AEON/Runtime/AEModule.h>
 #include <AEON/aeThreadState.h>
 #include <AEON/AEContext.h>
@@ -9,7 +10,7 @@
 #include <stdint.h>
 
 
-class aeVM;
+class AEVirtualMachine;
 class AEObject;
 
 #define STATE_ASSERT (assert((esp > m_stack.data() + m_stack.size()); assert((esp < m_stack.data())); 
@@ -27,19 +28,23 @@ class AEObject;
 
 	Different vm can be instanced but they need to be executing on different programs, its unsafe to use two different vm to call into
 	the same modules. For virtually all applications, only one vm is needed and it will take care of everything.
+
+	[Threads]
+	The vm operates directly on the caller thread until vm inner threads are launched. When such happens,
+	the new threads will be managed by the VM and run effectively new threads, managed by the vm automatically.
+
+	The vm has one stack for itself, for the main host thread, and an additional independent stack per hardware thread launched.
+
+	[Coroutines]
+	Coroutines are implemented by preservation of call state for restoration.
 */
-class aeVM
+class AEVirtualMachine
 {
-	public:
+public:
 
-		AEContext*           m_ctx;
-		aeThreadState           m_stk;
+		AEVirtualMachine();
 
-	public:
-
-		aeVM();
-
-		aeVM(AEContext* context);
+		AEVirtualMachine(AEContext* context);
 
 		AEModule* get_current_mod();
 
@@ -47,7 +52,7 @@ class aeVM
 
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
-		void execute(aeThreadState& threadInfo);
+		void execute(AEVmStack& threadInfo);
 
 		/// Call a method on the given script object by its name
 		void callMethod(AEObject* object, const std::string& prototype);
@@ -59,6 +64,13 @@ class aeVM
 		void call(AEModule& module, const char* func);
 
 		void call(AEFunction* fn);
+
+		void startThread(AEVmThreadEnv threadEnv);
+
+//private:
+	std::vector<AEVmThread> hw_threads;
+	AEContext*           m_ctx;
+	AEVmStack           m_stk;
 };
 
 #endif // aeon_vm_h__

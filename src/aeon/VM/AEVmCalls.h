@@ -1,7 +1,7 @@
 #ifndef AEVmCalls_h__
 #define AEVmCalls_h__
 
-static inline void DoCall(aeVM* vm, int functionIndex)
+static inline void DoCall(AEVirtualMachine* vm, int functionIndex)
 {
 	AEFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
 
@@ -15,7 +15,7 @@ static inline void DoCall(aeVM* vm, int functionIndex)
 	vm->m_stk.cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
 }
 
-static inline void DoDynamicCall(aeVM* vm, int functionIndex)
+static inline void DoDynamicCall(AEVirtualMachine* vm, int functionIndex)
 {
 	//AEValue v = vm->m_stk.popVar();
 	

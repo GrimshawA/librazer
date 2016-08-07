@@ -1,10 +1,10 @@
-#include <AEON/Runtime/aeVM.h>
+#include <AEON/VM/AEVm.h>
 #include <AEON/Runtime/aeByteCode.h>
 #include <AEON/AEContext.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEGeneric.h>
 
-#include <AEON/Runtime/AEVmCalls.h>
+#include <AEON/VM/AEVmCalls.h>
 
 #define vm_start(x) case x:{
 #define vm_end break;}
@@ -14,22 +14,22 @@
 #define VMLOGLEVEL 5
 #define vm_log(tag, level, STR) if(level > VMLOGLEVEL) printf("%s: %s\n", tag, STR);
 
-aeVM::aeVM()
+AEVirtualMachine::AEVirtualMachine()
 {
 	memset(m_stk.stack.data(), 0, m_stk.stack.size());
 }
 
-aeVM::aeVM(AEContext* context)
+AEVirtualMachine::AEVirtualMachine(AEContext* context)
 {
 	m_ctx = context;
 }
 
-AEModule* aeVM::get_current_mod()
+AEModule* AEVirtualMachine::get_current_mod()
 {
 	return m_stk.frames[m_stk.frames.size() - 1].module;
 }
 
-void aeVM::callMethod(AEObject* object, const std::string& prototype)
+void AEVirtualMachine::callMethod(AEObject* object, const std::string& prototype)
 {
 	m_stk.ebp = m_stk.esp;
 
@@ -40,22 +40,22 @@ void aeVM::callMethod(AEObject* object, const std::string& prototype)
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
 
-void aeVM::callMethod(AEObject* object, uint32_t methodId)
+void AEVirtualMachine::callMethod(AEObject* object, uint32_t methodId)
 {
 
 }
 
-void aeVM::prepare(aeFunctionId function)
+void AEVirtualMachine::prepare(aeFunctionId function)
 {
 
 }
 
-void aeVM::pushThis(void* obj)
+void AEVirtualMachine::pushThis(void* obj)
 {
 	m_stk.push_addr(obj);
 }
 
-void aeVM::setContext(AEContext* context)
+void AEVirtualMachine::setContext(AEContext* context)
 {
 	m_ctx = context;
 } 
@@ -78,7 +78,7 @@ void printBits2(size_t const size, void const * const ptr)
 		puts("");
 }
 
-void aeVM::call(AEModule& module, const char* func)
+void AEVirtualMachine::call(AEModule& module, const char* func)
 {
 	aeFunctionId functionId = 0;
 
@@ -95,7 +95,7 @@ void aeVM::call(AEModule& module, const char* func)
 	}
 }
 
-void aeVM::call(AEFunction* fn)
+void AEVirtualMachine::call(AEFunction* fn)
 {
 	if (!fn->m_compiled)
 	{
@@ -118,7 +118,7 @@ void aeVM::call(AEFunction* fn)
 	execute(m_stk);
 }
 
-inline static void DoAdd(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoAdd(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -140,7 +140,7 @@ inline static void DoAdd(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoSub(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoSub(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value b = vm->m_stk.pop_value();
 	vm_value a = vm->m_stk.pop_value();
@@ -162,7 +162,7 @@ inline static void DoSub(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoMul(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoMul(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -184,7 +184,7 @@ inline static void DoMul(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoDiv(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoDiv(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value b = vm->m_stk.pop_value();
 	vm_value a = vm->m_stk.pop_value();
@@ -208,7 +208,7 @@ inline static void DoDiv(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoMod(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoMod(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -230,7 +230,7 @@ inline static void DoMod(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoConversion(aeVM* vm, AeonPrimitiveType t1, AeonPrimitiveType t2)
+inline static void DoConversion(AEVirtualMachine* vm, AeonPrimitiveType t1, AeonPrimitiveType t2)
 {
 	vm_value v = vm->m_stk.pop_value();
 	
@@ -250,7 +250,7 @@ inline static void DoConversion(aeVM* vm, AeonPrimitiveType t1, AeonPrimitiveTyp
 	vm->m_stk.push_value(v);
 }
 
-inline static void DoEquals(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoEquals(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -272,7 +272,7 @@ inline static void DoEquals(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoNotEquals(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoNotEquals(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -294,7 +294,7 @@ inline static void DoNotEquals(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoAssign(aeVM* vm, int mode, int offset, int type)
+inline static void DoAssign(AEVirtualMachine* vm, int mode, int offset, int type)
 {
 	// Assign modes:
 	// pod_copy - simply copy N bytes from the loaded value into the target address
@@ -313,7 +313,7 @@ inline static void DoAssign(aeVM* vm, int mode, int offset, int type)
 	}
 }
 
-inline static void DoLoad(aeVM* vm, int addressMode, int offset, int kind)
+inline static void DoLoad(AEVirtualMachine* vm, int addressMode, int offset, int kind)
 {
 	void* dataPtr = nullptr;
 
@@ -351,7 +351,7 @@ inline static void DoLoad(aeVM* vm, int addressMode, int offset, int kind)
 	}
 }
 
-inline static void DoLoadAddr(aeVM* vm, int addressMode, int offset, int x)
+inline static void DoLoadAddr(AEVirtualMachine* vm, int addressMode, int offset, int x)
 {
 	if (addressMode == AEK_THIS)
 	{
@@ -376,7 +376,7 @@ inline static void DoLoadAddr(aeVM* vm, int addressMode, int offset, int x)
 	}
 }
 
-inline static void DoLoadConstant(aeVM* vm, int primType, int index, int x)
+inline static void DoLoadConstant(AEVirtualMachine* vm, int primType, int index, int x)
 {
 	vm_value kVal;
 	if (primType == AEK_FLOAT)
@@ -397,21 +397,21 @@ inline static void DoLoadConstant(aeVM* vm, int primType, int index, int x)
 	vm->m_stk.push_value(kVal);
 }
 
-inline static void DoLogicalNot(aeVM* vm)
+inline static void DoLogicalNot(AEVirtualMachine* vm)
 {
 	vm_value a = vm->m_stk.pop_value();
 	a.i64 = !a.i64;
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoNewObject(aeVM* vm, int type)
+inline static void DoNewObject(AEVirtualMachine* vm, int type)
 {
 	vm_value obj;
 	obj.ptr = nullptr;
 	vm->m_stk.push_value(obj);
 }
 
-inline static void DoLessThan(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoLessThan(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value b = vm->m_stk.pop_value();
 	vm_value a = vm->m_stk.pop_value();
@@ -434,7 +434,7 @@ inline static void DoLessThan(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoGreaterThan(aeVM* vm, AeonPrimitiveType ptype)
+inline static void DoGreaterThan(AEVirtualMachine* vm, AeonPrimitiveType ptype)
 {
 	vm_value a = vm->m_stk.pop_value();
 	vm_value b = vm->m_stk.pop_value();
@@ -456,7 +456,7 @@ inline static void DoGreaterThan(aeVM* vm, AeonPrimitiveType ptype)
 	vm->m_stk.push_value(a);
 }
 
-static inline void DoJumpIfZero(aeVM* vm, int jumpOffset)
+static inline void DoJumpIfZero(AEVirtualMachine* vm, int jumpOffset)
 {
 	aeStackFrame* cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
 
@@ -473,13 +473,13 @@ static inline void DoJumpIfZero(aeVM* vm, int jumpOffset)
 	//Log("[jz] test %d %d", cond, pcoffset);
 }
 
-static inline void DoJump(aeVM* vm, int address)
+static inline void DoJump(AEVirtualMachine* vm, int address)
 {
 	aeStackFrame* cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
 	cl->pc = address;
 }
 
-static inline bool DoReturn(aeVM* vm)
+static inline bool DoReturn(AEVirtualMachine* vm)
 {
 	vm->m_stk.frames.pop_back();
 	if (vm->m_stk.frames.size() == 0)
@@ -501,7 +501,7 @@ static inline bool DoReturn(aeVM* vm)
 	return false;
 }
 
-void aeVM::execute(aeThreadState& threadInfo)
+void AEVirtualMachine::execute(AEVmStack& threadInfo)
 {
 	threadInfo.cl = &m_stk.frames[m_stk.frames.size() - 1];
 
@@ -662,6 +662,10 @@ void aeVM::execute(aeThreadState& threadInfo)
 
 			vm_start(OP_DELETEOBJECT)
 				
+			vm_end
+
+			vm_start(OP_THREAD_RUN)
+
 			vm_end
 
 			vm_start(OP_MOV)

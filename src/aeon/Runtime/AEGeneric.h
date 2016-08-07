@@ -4,7 +4,7 @@
 #include <string>
 #include <stdint.h>
 
-class aeVM;
+class AEVirtualMachine;
 
 /**
 	\class AEGeneric
@@ -37,7 +37,7 @@ public:
 	void pack_string(const std::string& value);
 
 //private:
-	aeVM* m_vm;
+	AEVirtualMachine* m_vm;
 };
 
 #endif // AEGeneric_h__

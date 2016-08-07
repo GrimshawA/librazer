@@ -10,7 +10,7 @@
 #include <stack>
 #include <stdint.h>
 
-class aeVM;
+class AEVirtualMachine;
 class AEContext;
 
 /**

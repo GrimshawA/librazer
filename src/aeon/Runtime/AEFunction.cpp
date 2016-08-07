@@ -1,6 +1,6 @@
 #include <AEON/Runtime/AEFunction.h>
 #include <AEON/Runtime/AEModule.h>
-#include <AEON/Runtime/AEVm.h>
+#include <AEON/VM/AEVm.h>
 
 AEFunction::AEFunction()
 : aeSymbol()

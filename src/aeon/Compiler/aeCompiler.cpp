@@ -1,6 +1,6 @@
 #include <AEON/Compiler/aeCompiler.h>
 #include <AEON/Runtime/aeByteCode.h>
-#include <AEON/Runtime/aeVM.h>
+#include <AEON/VM/AEVm.h>
 #include <AEON/AEContext.h>
 
 #include <cassert>

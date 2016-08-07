@@ -1,6 +1,6 @@
 #include <AEON/STD/aeStdIo.h>
 #include <AEON/AEContext.h>
-#include <AEON/Runtime/AEVm.h>
+#include <AEON/VM/AEVm.h>
 #include <AEON/Runtime/AEGeneric.h>
 
 #include <cmath>

@@ -1,5 +1,5 @@
 #include <AEON/Runtime/AEGeneric.h>
-#include <AEON/Runtime/AEVm.h>
+#include <AEON/VM/AEVm.h>
 #include <AEON/Runtime/AEGeneric.h>
 
 int32_t AEGeneric::unpack_int32()

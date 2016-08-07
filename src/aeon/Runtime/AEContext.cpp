@@ -1,6 +1,6 @@
 #include <AEON/AEContext.h>
 #include <AEON/Runtime/AEObject.h>
-#include <AEON/Runtime/AEVm.h>
+#include <AEON/VM/AEVm.h>
 #include <AEON/aeParser.h>
 #include <AEON/aeTokenizer.h>
 #include <AEON/Compiler/aeCompiler.h>
@@ -160,7 +160,7 @@ AEObject* AEContext::createObject(const std::string& typen)
 			AEObject* object = new AEObject();
 			object->addr = malloc(heap.type->getSize());
 			object->m_type = heap.type;
-			aeVM vm(this);
+			AEVirtualMachine vm(this);
 			vm.callMethod(object, typen + "." + typen);
 			return object;
 		}

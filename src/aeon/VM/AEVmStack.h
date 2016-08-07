@@ -7,7 +7,7 @@
 
 
 class AEFunction;
-class AEVirtualMachine;
+class aeVM;
 class AEModule;
 
 
@@ -92,6 +92,11 @@ public:
 		stack.resize(512000);
 		esp = &stack[512000 - 1];
 		ebp = esp;
+	}
+
+	uint64_t size()
+	{
+		return stack.size();
 	}
 
 	void print_registers()

@@ -1,0 +1,20 @@
+class A
+{
+
+
+	function do()
+	{
+		print("ifhif");
+		int32 a = 5;
+		int32 b = 6;
+		int32 c;
+		c = a + b;
+
+		printint(a);
+		printint(b);
+		printint(c);
+
+		var x;
+	}
+
+}

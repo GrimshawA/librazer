@@ -2,7 +2,7 @@
 #define aeClosure_h__
 
 #include <AEON/Runtime/AEByteCode.h>
-#include <AEON/Runtime/AEVm.h>
+#include <AEON/VM/AEVm.h>
 
 #include <vector>
 
@@ -10,7 +10,7 @@ class aeClosure
 {
 public:
 
-	aeVM*                 m_vm;
+	AEVirtualMachine*                 m_vm;
 	int                   m_executionId;
 	int                   m_methodId;
 	void*                 m_object;

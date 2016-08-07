@@ -12,7 +12,7 @@
 #include <map>
 #include <stdint.h>
 
-class aeVM;
+class AEVirtualMachine;
 class AEObject;
 
 struct aeon_config
@@ -25,7 +25,7 @@ struct aeon_config
 
 typedef void(*aeBindMethod)(AEGeneric);
 typedef void(*aeDestructorMethod)(void*);
-typedef void(*aeConstructorMethod)(void*, aeVM*);
+typedef void(*aeConstructorMethod)(void*, AEVirtualMachine*);
 
 typedef int aeLiteralId;
 typedef int aeFunctionId;
@@ -150,7 +150,7 @@ public:
 	void destroyObject(AEObject* object);
 
 private:
-	aeVM* m_vm;
+	AEVirtualMachine* m_vm;
 };
 
 #endif // aeon_context_h__

@@ -1,6 +1,6 @@
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEFunction.h>
-#include <AEON/Runtime/AEVm.h>
+#include <AEON/VM/AEVm.h>
 
 void AEObject::setProperty(const std::string& name, const std::string& value)
 {
@@ -29,7 +29,7 @@ void AEObject::call(const std::string& name)
 	printf("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
 	if (fn)
 	{
-		aeVM vm;
+		AEVirtualMachine vm;
 		vm.setContext(getType()->m_module->m_context);
 		vm.call(fn);
 	}

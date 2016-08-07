@@ -58,7 +58,7 @@ public:
 		}
 
 //private:
-	friend class aeVM;
+	friend class AEVirtualMachine;
 	friend class AEContext;
 
 	std::vector<std::string> m_names;
