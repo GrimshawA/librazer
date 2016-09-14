@@ -36,7 +36,7 @@ void aeBuilder::buildApp(const std::string& appPath, AEBuildSpec spec)
 	FILE* fp = fopen(appPath.c_str(), "wb");
 	for (auto& m : ctx.modules)
 	{
-		fwrite(m->instructions.data(), sizeof(AEInstruction), m->instructions.size(), fp);
+		fwrite(m->m_code.data(), sizeof(AEInstruction), m->m_code.size(), fp);
 	}
 	fclose(fp);
 	printf("Built application: %s\n", appPath.c_str());

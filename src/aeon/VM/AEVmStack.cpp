@@ -1,9 +1,16 @@
 #include <AEON/VM/AEVmStack.h>
 #include <AEON/VM/AEVm.h>
 
-AEValue AEVmStack::popVar()
+void AEVmStack::pushVariant(const AEValue& v)
 {
-	AEValue* v = reinterpret_cast<AEValue*>(esp);
+	esp -= sizeof(v);
+	new (esp) AEValue();
+	*reinterpret_cast<AEValue*>(esp) = v;
+}
+
+void AEVmStack::popVariant(AEValue& v)
+{
+	v = *reinterpret_cast<AEValue*>(esp);
+	reinterpret_cast<AEValue*>(esp)->~AEValue();
 	esp += sizeof(AEValue);
-	return *v;
 }

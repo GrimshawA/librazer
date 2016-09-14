@@ -75,9 +75,9 @@ class aeParser
 
 		void                     parseValue(aeon_lexer& lexer, AEValue& rootValue);
 		aeNodeValue*             parsePropertyValue(); ///< Parses any of the language's values in form property: <value>
-		aeNodeStatement*         parseStatement();
+		AEStmtNode*         parseStatement();
 		aeNodeBranch*            parseBranch();
-		aeNodeBase*              parseSymbol();
+		AEBaseNode*              parseSymbol();
 		AEValue               parseDataValue();
 		AEValue                  parseDataObjectBody();
 		AEValue                  parseArrayValue();
@@ -89,19 +89,20 @@ class aeParser
 		void                     parseTopLevel();
 		aeNodeExpr*              parseIdentityExpression();
 		aeNodeNamespace*         parseNamespace();
-		aeNodeEnum*              parseEnum();
-		aeNodeClass*             parseClass();
+		AEEnumNode*              parseEnum();
+		AEStructNode*            parseClass();
 		aeNodeFor*               parseForLoop();
 		aeNodeWhile*             parseWhileLoop();
-		void                     parseClassBody(aeNodeClass* classDeclNode);
+		void                     parseClassBody(AEStructNode* classDeclNode);
+		AEFieldNode*             parseStructField();
 		aeNodeFunction*          parseLambdaFunction();
-		void                     parseClassMember(aeNodeClass* classDeclNode);
+		void                     parseClassMember(AEStructNode* classDeclNode);
 		aeNodeReturn*            parseReturn();
 		aeNodeBlock*             parseBlock();
 		aeNodeFunction*          parseFunction();
 		aeNodeVarDecl*           parseVariableDecl();
 		std::vector<aeNodeExpr*> parseArgsList();
-		std::vector<aeNodeExpr*> parseParamsList();
+		std::vector<aeNodeVarDecl*> parseParamsList();
 
 		void                     serialize(const std::string& filename);
 		void                     print();

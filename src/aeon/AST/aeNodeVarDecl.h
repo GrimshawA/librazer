@@ -1,7 +1,7 @@
 #ifndef aeNodeVarDecl_h__
 #define aeNodeVarDecl_h__
 
-#include "aeNodeStatement.h"
+#include <AEON/AST/AEBaseNode.h>
 
 class aeNodeExpr;
 
@@ -22,7 +22,7 @@ class aeNodeExpr;
 	The type of the declaration, contextual to where the declaration is.
 	Default initialization strategy will be deduced after evaluating this type.
 */
-class aeNodeVarDecl : public aeNodeStatement
+class aeNodeVarDecl : public AEStmtNode
 {
 public:
 	struct Decl

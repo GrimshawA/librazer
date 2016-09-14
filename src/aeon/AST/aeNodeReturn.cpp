@@ -1,5 +1,5 @@
 #include "aeNodeReturn.h"
-#include "aeNodeClass.h"
+#include "AEStructNode.h"
 #include <AEON/AST/Nodes.h>
 
 

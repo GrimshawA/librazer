@@ -54,6 +54,7 @@ public:
 	{
 		VALUE_UNDEFINED,
 		VALUE_OBJECT,
+		VALUE_ANONOBJECT,
 		VALUE_ARRAY,
 		VALUE_INT,
 		VALUE_REAL,
@@ -68,6 +69,7 @@ public:
 	AEValue(int v);
 	AEValue(const std::string& v);
 	AEValue(std::function<void()> fn);
+	AEValue(AEObject* obj);
 
 	~AEValue();
 
@@ -145,6 +147,5 @@ class AEArray
 public:
 	std::vector<AEValue> values;
 };
-
 
 #endif // AEValue_h__

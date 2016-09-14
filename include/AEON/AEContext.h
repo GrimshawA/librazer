@@ -1,7 +1,7 @@
 #ifndef aeon_context_h__
 #define aeon_context_h__
 
-#include <AEON/aeThreadState.h>
+#include <AEON/VM/AEVmStack.h>
 #include <AEON/aeQualType.h>
 #include <AEON/Runtime/AEType.h>
 #include <AEON/Runtime/AEValue.h>

@@ -12,17 +12,9 @@ class AEType;
 
 /**
 	\class AEObject
-	\brief Instances of script classes
+	\brief Wraps a statically typed object
 
-	Since at native compile time, we cannot know the specific script side types,
-	we need to use an interface to represent and interact them.
-	
-	How big an aeon_object is, is highly dependent on the size of the
-	aeon type and its features.
-
-	This type can represent any type available to scripts, it acts as an interface to interact
-	with that object's memory. The address of these objects is NOT the same as the objects themselves.
-	It is just a wrapper.
+	This object is used to represent a native or script language object at runtime.
 */
 class AEObject
 {
@@ -33,38 +25,56 @@ public:
 	void setProperty(const std::string& name, AEValue value);
 
 	void call(const std::string& name);
-	
+
 	int count() const;
 
 	std::string propertyName(int index);
 
-		AEType* getType();
+	AEType* getType();
 
-		void setField(const std::string& field, int32_t value);
+	void setField(const std::string& field, int32_t value);
 
-		void getField(const std::string& field, int32_t& value) const;
+	void getField(const std::string& field, int32_t& value) const;
 
-		void* getFieldAddress(const std::string& field) const;
+	void* getFieldAddress(const std::string& field) const;
 
-		void log();
+	void log();
 
-		bool contains(const std::string& key) const{
-			for (auto& m : m_names)
-			{
-				if (m == key)
-					return true;
-			}
-			return false;
+	bool contains(const std::string& key) const{
+		for (auto& m : m_names)
+		{
+			if (m == key)
+				return true;
 		}
+		return false;
+	}
 
-//private:
+	//private:
 	friend class AEVirtualMachine;
 	friend class AEContext;
 
 	std::vector<std::string> m_names;
 	std::vector<AEValue> m_properties;
-	void* addr;
+	void* m_obj;
 	AEType* m_type;
 
 };
+
+/**
+	\class AEDynamicObject
+	\brief Typeless object that can take arbitrary properties
+
+	In the language type system, one can use the dynamic type for storing any value.
+	It can hold actual typed objects as well as anonymous objects that are fully prototype based.
+*/
+class AEDynamicObject
+{
+public:
+
+
+private:
+	std::vector<std::string> m_names;
+	std::vector<AEValue> m_properties;
+};
+
 #endif // AEOBJECT_H__

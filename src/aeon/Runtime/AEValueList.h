@@ -3,9 +3,15 @@
 
 #include <AEON/Runtime/AEValue.h>
 
-class AEValueList : public AEValueList
+class AEValueList : public AEValue
 {
 public:
+
+	AEValueList& operator << (const AEValue& v)
+	{
+		m_list.push_back(v);
+		return *this;
+	}
 
 	std::vector<AEValue> m_list;
 };

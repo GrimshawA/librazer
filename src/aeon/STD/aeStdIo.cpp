@@ -5,6 +5,11 @@
 
 #include <cmath>
 
+class MySprite
+{
+	int a, b, c;
+};
+
 void register_stdlib(AEContext* ctx)
 {
 	/*ctx->registerFunction("t1", &t1);
@@ -24,6 +29,8 @@ void register_stdlib(AEContext* ctx)
 		int32_t v = g.unpack_int32();
 		printf("%d\n", v);
 	});
+
+	ctx->registerType("Sprite", sizeof(MySprite));
 
 	printf("Registered interface!\n");
 }

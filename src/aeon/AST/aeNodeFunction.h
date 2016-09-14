@@ -1,13 +1,14 @@
 #ifndef aeNodeFunction_h__
 #define aeNodeFunction_h__
 
-#include "aeNodeBase.h"
+#include "AEBaseNode.h"
 #include "aeNodeValue.h"
 
 class aeNodeExpr;
+class aeNodeVarDecl;
 class aeQualType;
 class aeNodeBlock;
-class aeNodeStatement;
+class AEStmtNode;
 
 /**
 	\class aeNodeFunction
@@ -23,9 +24,9 @@ class aeNodeFunction : public aeNodeValue
 {
 public:
 
-	std::vector<aeNodeExpr*>                      m_parameters;
+	std::vector<aeNodeVarDecl*>                      m_parameters;
 	std::vector<aeQualType>                       m_paramTypes;
-	std::vector<std::unique_ptr<aeNodeStatement>> m_statements;
+	std::vector<std::unique_ptr<AEStmtNode>> m_statements;
 	std::string                                   m_name;
 	aeQualType                                    m_returnType;
 	std::unique_ptr<aeNodeBlock>                  m_block;
@@ -35,6 +36,9 @@ public:
 	bool                                          is_global;
 	bool                                          is_static;
 	bool                                          is_anon;
+	int visibility;
+
+	std::string visibilityText();
 
 public:
 	aeNodeFunction();

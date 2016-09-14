@@ -31,7 +31,7 @@ void AEObject::call(const std::string& name)
 	{
 		AEVirtualMachine vm;
 		vm.setContext(getType()->m_module->m_context);
-		vm.call(fn);
+//		vm.call(fn);
 	}
 }
 
@@ -45,7 +45,7 @@ void AEObject::setField(const std::string& field, int32_t value)
 	aeField* fieldInfo = m_type->getField(field);
 	if (fieldInfo)
 	{
-		memcpy((char*)addr + fieldInfo->offset, &value, sizeof(value));
+		memcpy((char*)m_obj + fieldInfo->offset, &value, sizeof(value));
 	}
 	else
 	{
@@ -58,7 +58,7 @@ void AEObject::getField(const std::string& field, int32_t& value) const
 	aeField* fieldInfo = m_type->getField(field);
 	if (fieldInfo)
 	{
-		memcpy(&value, (char*)addr + fieldInfo->offset, sizeof(value));
+		memcpy(&value, (char*)m_obj + fieldInfo->offset, sizeof(value));
 	}
 	else
 	{
@@ -71,12 +71,12 @@ void* AEObject::getFieldAddress(const std::string& field) const
 	aeField* fieldInfo = m_type->getField(field);
 	if (fieldInfo)
 	{
-		return (char*)addr + fieldInfo->offset;
+		return (char*)m_obj + fieldInfo->offset;
 	}
 	return nullptr;
 }
 
 void AEObject::log()
 {
-	printf("Object %s@%x\n", m_type->m_name.c_str(), addr);
+	printf("Object %s@%x\n", m_type->m_name.c_str(), m_obj);
 }

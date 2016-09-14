@@ -35,22 +35,29 @@ enum NodeTypes
 	AEN_IDENTIFIER,
 	AEN_ENUM,
 	AEN_TYPEDEF,
+	AEN_OBJECTINIT
 };
 
-class aeNodeBase
+class AEBaseNode
 {
 public:
 	
 	int                      m_nodeType;
-	std::vector<aeNodeBase*> m_items;
+	std::vector<AEBaseNode*> m_items;
 
 public:
 
-	void add(aeNodeBase* n);
+	void add(AEBaseNode* n);
 
 	virtual std::string str() const;
 
 	virtual void printSelf(int tabs = 0);
+};
+
+class AEStmtNode : public AEBaseNode
+{
+public:
+	virtual bool isNullStatement();
 };
 
 #endif // aeNodeBase_h__

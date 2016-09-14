@@ -1,5 +1,5 @@
-#ifndef aeon_module_h__
-#define aeon_module_h__
+#ifndef AEMODULE_H__
+#define AEMODULE_H__
 
 #include <AEON/Runtime/AEByteCode.h>
 #include <AEON/Runtime/AEType.h>
@@ -9,18 +9,7 @@
 #include <array>
 #include <stdint.h>
 
-struct aeon_method
-{
-		uint32_t    offset; ///< The offset in the module's bytecode this method logic begins
-		std::string name;   ///< The identifier for this method
-};
-
-struct ae_module_header
-{
-	bool        m_fixPtrs;
-	bool        abiIndependent;
-	std::string name;
-};
+typedef int FnIndex;
 
 /**
 	\class AEModule
@@ -46,45 +35,64 @@ struct ae_module_header
 class AEModule
 {
 public:
-	
+
 	AEModule();
 	~AEModule();
+
+	AEFunction* getFunction(const std::string& name);
+	AEFunction* getFunction(FnIndex index);
+
+	FnIndex getFunctionIndex(const std::string& name);
+
+	uint64_t getFunctionOffset(const std::string& name);
+	uint64_t getFunctionOffset(FnIndex functionIndex);
+
+	int64_t getTypeIndex(const std::string& name);
+	int64_t getTypeIndex(AEType* type);
+	
+	AEType* getType(const std::string& name);
+	AEType* getType(int64_t index);
+
+	std::string getStringFromPool(uint32_t index);
+	double      getDoubleLiteral(uint32_t index);
+	uint64_t    getIntegerLiteral(uint32_t index);
+
+
+	int identifierPoolIndex(const std::string& identifier);
 
 	std::string getName();
 
 
-		std::string getStringFromPool(uint32_t index);
+	uint32_t storeString(std::string s);
 
-		uint32_t storeString(std::string s);
+	/// Check if there is a function with this name in the module
+	bool hasFunction(const std::string& name);
 
-		/// Check if there is a function with this name in the module
-		bool hasFunction(const std::string& name);
+	int getFunctionIndexByName(const std::string& name);
 
-		int getFunctionIndexByName(const std::string& name);
+	/// Write the module object to a file
+	void write(const char* filename);
 
-		/// Write the module object to a file
-		void write(const char* filename);
+	/// Read the module from file
+	void read(const char* filename);
 
-		/// Read the module from file
-		void read(const char* filename);
+	/// Write the program source to a human readable format ( hopefully )
+	void dumpToFile(const std::string& filename);
 
-		/// Write the program source to a human readable format ( hopefully )
-		void dumpToFile(const std::string& filename);
-
-		void debugCode();
+	void debugCode();
 
 public:
 
-	std::string                   name;         ///< Every module must have a name like stdlib.io or nephilim.core.graphics
+	std::string                   m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
 	AEContext*                    m_context;
-	std::vector<AEFunction>    functions;    ///< Every static class function and global is listed here
-	std::vector<aeon_method>      methods;      ///< Every non-static class function is listed here
-	std::vector<AEType>        types;
-	std::vector<std::string>      stringPool;
-	std::vector<double>           double_literals;
-	std::vector<std::string>      auto_import_modules;  ///<  
-	std::vector<AEInstruction> instructions;         ///< The entire module's bytecode
-	//std::vector<aeCodeFile>       m_files; ///< Files compiled to this module (for hot reloading code)
+	std::vector<AEFunction>       m_functions;          ///< Every static class function and global is listed here
+	std::vector<AEType*>          m_types;
+	std::vector<std::string>      m_stringPool;
+	std::vector<double>           m_doublePool;
+	std::vector<int64_t>          m_intPool;
+	std::vector<std::string>      m_identifierPool;
+	std::vector<AEInstruction>    m_code;               ///< The entire module's bytecode
+	std::vector<AEModule*>        m_dependencies;       ///< Dependencies of this module
 };
 
-#endif // aeon_module_h__
+#endif // AEMODULE_H__

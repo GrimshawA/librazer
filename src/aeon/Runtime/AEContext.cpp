@@ -109,7 +109,7 @@ void AEContext::quick_build(const std::string& file)
 {
 	aeon_lexer lexer;
 	aeParser parser;
-	aeCompiler compiler;
+	AECompiler compiler;
 	std::string source = getFileSource(file);
 
 	if (source.empty())
@@ -145,7 +145,7 @@ AEModule* AEContext::getModule(const std::string name)
 {
 	for (auto& mod : modules)
 	{
-		if (mod->name == name)
+		if (mod->m_name == name)
 			return mod.get();
 	}
 	return nullptr;
@@ -158,7 +158,7 @@ AEObject* AEContext::createObject(const std::string& typen)
 		if (heap.type->m_name == typen)
 		{
 			AEObject* object = new AEObject();
-			object->addr = malloc(heap.type->getSize());
+			object->m_obj = malloc(heap.type->getSize());
 			object->m_type = heap.type;
 			AEVirtualMachine vm(this);
 			vm.callMethod(object, typen + "." + typen);
@@ -172,7 +172,7 @@ AEObject* AEContext::createObject(const std::string& typen)
 
 void AEContext::destroyObject(AEObject* object)
 {
-	free(object->addr);
+	free(object->m_obj);
 	for (auto& heap : object_heaps)
 	{
 		if (heap.type == object->m_type)
@@ -230,7 +230,7 @@ AEModule* AEContext::createModule(const std::string& name)
 
 
 	AEModule* mod = new AEModule;
-	mod->name = name;
+	mod->m_name = name;
 	mod->m_context = this;
 	modules.push_back(std::move(std::unique_ptr<AEModule>(mod)));
 	return mod;
@@ -403,6 +403,14 @@ AEType* AEContext::getTypeInfo(const std::string& name)
 		//printf("%s = %s\n", name.c_str(), obj->getSymbolName().c_str());
 		if (obj->m_absoluteName == name)
 			return obj;
+	}
+
+	for (auto& td : m_typedefs)
+	{
+		if (td.to == name)
+		{
+			return getTypeInfo(td.from);
+		}
 	}
 
 	return nullptr;

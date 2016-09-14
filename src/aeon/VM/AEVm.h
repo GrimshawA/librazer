@@ -3,7 +3,8 @@
 
 #include <AEON/VM/AEVmThread.h>
 #include <AEON/Runtime/AEModule.h>
-#include <AEON/aeThreadState.h>
+#include <AEON/VM/AEVmStack.h>
+#include <AEON/Runtime/AEValueList.h>
 #include <AEON/AEContext.h>
 
 #include <vector>
@@ -42,13 +43,18 @@ class AEVirtualMachine
 {
 public:
 
-		AEVirtualMachine();
+	AEVirtualMachine();
+	AEVirtualMachine(AEContext* context);
 
-		AEVirtualMachine(AEContext* context);
+	AEValue call(AEValue obj, const std::string& functionName, AEValueList args = AEValueList());
+
+	void setContext(AEContext* context);
+
+
+public:
 
 		AEModule* get_current_mod();
 
-		void setContext(AEContext* context);
 
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
@@ -66,6 +72,8 @@ public:
 		void call(AEFunction* fn);
 
 		void startThread(AEVmThreadEnv threadEnv);
+
+public:
 
 //private:
 	std::vector<AEVmThread> hw_threads;

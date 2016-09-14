@@ -101,7 +101,7 @@ class AEType : public aeSymbol
 		std::vector<NestedTypeInfo> m_structs;
 		std::vector<ProtocolInfo>   m_protocols;
 		std::vector<std::string>    m_templateParams;
-		AEModule*                m_module;
+		AEModule*                   m_module;
 		bool is_native = false;
 		void*                       m_userData;            ///< This allows the user to inject additional info on the type
 		aeDestructorMethod          m_destructor;

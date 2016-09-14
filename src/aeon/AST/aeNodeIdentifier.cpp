@@ -6,7 +6,7 @@ aeNodeIdentifier::aeNodeIdentifier()
 	m_nodeType = AEN_IDENTIFIER;
 }
 
-aeQualType aeNodeIdentifier::getQualifiedType(aeCompiler* c)
+aeQualType aeNodeIdentifier::getQualifiedType(AECompiler* c)
 {
 	AEType* typeInfo = c->m_env->getTypeInfo(m_name);
 	if (typeInfo)

@@ -9,6 +9,7 @@ enum EOpCodes
 {
 	OP_NEW,            ///< Allocate a new instance of a type
 	OP_PREPARE,        ///< Prepares the vm for a subsequent call
+	OP_VARCALL,        ///< Call a method on a variant value
 	OP_CALL,		   ///< Call one aeon procedure, static, method, global, which assumes its input environment is already set
 	OP_DCALL,          ///< Call a dynamic method on any object, resolved at runtime
 	OP_CALLVIRTUAL,	   ///< Call a virtual method on an aeon object, separate to avoid overhead of checking
@@ -18,13 +19,14 @@ enum EOpCodes
 	OP_JZ,             ///< Jump if eax == 0 to relative address (pc += offset)
 	OP_JMP,            ///< jmp to an absolute location pc = x
 	OP_LOAD,           ///< Pushes the contents of local variable <index> to stack (integer)
-	OP_LOADADDR,           ///< Pushes the contents of local variable <index> to stack (integer)
+	OP_LOADADDR,       ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADK,          ///< load a constant into stack
 	OP_LOADENUM,          ///< load a constant into stack
 	OP_MUL,            ///< mul stores in eax, ebx * ec
 	OP_DIV,            ///< 
 	OP_MOD,            ///<
 	OP_ADD,            ///<
+	OP_VADD,
 	OP_SUB,            ///<
  	OP_CONV,        ///< Built in type conversion
 	OP_PUSHTHIS,        ///< Built in type conversion
@@ -45,6 +47,7 @@ enum EOpCodes
 	OP_BREAKPOINT,
 	OP_DTEST,      ///< Just debug prints something for tests
 	OP_DEBUG,       ///< Dirty tricks for debug mode
+	OP_PUSHVAR,
 	Count
 };
 

@@ -22,7 +22,7 @@ public:
 
 	aeNodeIdentifier();
 
-	virtual aeQualType getQualifiedType(aeCompiler* c);
+	virtual aeQualType getQualifiedType(AECompiler* c);
 
 	std::string str() const;
 };

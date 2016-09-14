@@ -60,14 +60,14 @@ struct ScopeLocalData
 
 	This compiler generates bytecode from validated AST
 */
-class aeCompiler
+class AECompiler
 {
 public:
 		AEContext*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
 		AEModule*                        m_module;                ///< Current module being compiled
 		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
 		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
-		std::vector<aeNodeClass*>           m_classes;               ///< Class we are compiling right now
+		std::vector<AEStructNode*>           m_classes;               ///< Class we are compiling right now
 		aeNodeFunction*                     m_caller;                ///< Current function node we're compiling
 		AEFunction*                         m_currentFunction;       ///< Current function being compiled to
 		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
@@ -81,7 +81,7 @@ public:
 	public:
 
 		/// Construct initial values
-		aeCompiler();
+		AECompiler();
 
 		/// Emit a compiler class error of what happened
 		void throwError(const std::string& errorCode, const std::string& message);
@@ -89,7 +89,7 @@ public:
 		int findLocalObject(const std::string& refname);
 
 		/// Emit byte code for the passed AST
-		void generate(aeNodeBase* root);
+		void generate(AEBaseNode* root);
 
 		/// Get the cursor position, aka the index of the last added instruction
 		int32_t cursor();
@@ -98,7 +98,7 @@ public:
 
 	bool canImplicitlyConvert(aeQualType origin, aeQualType dest);
 
-	aeNodeClass* getTopClassNode();
+	AEStructNode* getTopClassNode();
 
 	/// Builds a qualified type identifier based on context
 	aeQualType buildQualifiedType(const std::string& type);
@@ -117,6 +117,9 @@ public:
 
 	/// Emits code for destructing the topmost scope level
 	void pop_scope();
+
+	/// Pops the function arguments from the stack
+	void releaseParametersContext();
 
 	/// Emit a local construction of a POD variable
 	void emit_local_construct_pod(int32_t size);
@@ -139,7 +142,7 @@ public:
 	AEType* evaluateType(aeNodeExpr* expr);
 
 	/// Evaluates the class node to an actual type
-	AEType* evaluateType(aeNodeClass* class_node);
+	AEType* evaluateType(AEStructNode* class_node);
 
 	/// Evaluates a typename to a real type depending on context
 	AEType* evaluateType(const std::string& type_name);
@@ -154,15 +157,15 @@ public:
 	bool canConvertType(AEType* typeA, AEType* typeB);
 
 	// High level constructs compilation
-	void emitClassCode(aeNodeClass* clss);
-	void emitFunction(aeNodeFunction* func);
+	void emitClassCode(AEStructNode* clss);
+	AEFunction* emitFunction(aeNodeFunction* func);
 	void emitNamespaceCode(aeNodeNamespace* namespace_node);
 	void emitGlobalVarCode(aeNodeIdentifier* global_var);
-	void emitStatement(aeNodeStatement* stmt);
+	void emitStatement(AEStmtNode* stmt);
 	void emitEnumValue(aeEnum* enumDef, const std::string& valueDef);
 	void emitBreakpoint();
-	void emitClassConstructors(AEType* classType, aeNodeClass* classNode);
-	void emitClassDestructors(AEType* classType, aeNodeClass* classNode);
+	void emitClassConstructors(AEType* classType, AEStructNode* classNode);
+	void emitClassDestructors(AEType* classType, AEStructNode* classNode);
 	void emitConstructorInjection(aeNodeFunction* node, AEFunction* function);
 
 
@@ -180,7 +183,6 @@ public:
 	void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
 	void emitBinaryOp(aeNodeBinaryOperator* operation);
 	void emitConditionalOp(aeNodeBinaryOperator* operation);
-	void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
 	void emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
 	void emitLoadAddress(aeNodeExpr* expr);
 	void emitLoadLiteral(aeNodeLiteral* lt);
@@ -191,6 +193,12 @@ public:
 	void emitLambdaFunction(aeNodeFunction* function);
 	void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
 	void emitPushThis();
+
+	/// Function calls
+	void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
+	void emitVariantCall(aeNodeFunctionCall* fn);
+	void emitLateBoundCall(aeNodeFunctionCall* fn);
+
 };
 
 #define CompilerLog(...) printf(__VA_ARGS__);

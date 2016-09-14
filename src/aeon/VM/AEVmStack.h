@@ -66,7 +66,7 @@ struct aeStackFrame
 	std::string    name;          ///< Name?
 	uint32_t       pc;            ///< So we can restore the program counter of the caller
 	unsigned char* ebp;           ///< So we can restore the base pointer of the caller
-	AEModule*   module;
+	AEModule*      module;
 	void*          object;
 };
 
@@ -87,12 +87,17 @@ public:
 	int                         pc;
 	aeStackFrame*               cl;
 
+public:
+
 	AEVmStack()
 	{
 		stack.resize(512000);
 		esp = &stack[512000 - 1];
 		ebp = esp;
 	}
+
+	void pushVariant(const AEValue& v);
+	void popVariant(AEValue& v);
 
 	uint64_t size()
 	{
@@ -119,8 +124,6 @@ public:
 
 		return v;
 	}
-
-	AEValue popVar();
 
 	vm_value getThisPtr()
 	{

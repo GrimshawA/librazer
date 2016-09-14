@@ -1,6 +1,6 @@
 #include "aeNodeFunctionCall.h"
 #include "aeNodeFunction.h"
-#include "aeNodeClass.h"
+#include "AEStructNode.h"
 #include <AEON/Compiler/aeCompiler.h>
 
 aeNodeFunctionCall::aeNodeFunctionCall()
@@ -19,7 +19,7 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	}
 }
 
-aeQualType aeNodeFunctionCall::getQualifiedType(aeCompiler* c)
+aeQualType aeNodeFunctionCall::getQualifiedType(AECompiler* c)
 {
 	if (!m_fn)
 	{

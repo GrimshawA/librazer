@@ -2,6 +2,7 @@
 #include <AEON/aeTokenizer.h>
 #include <AEON/AEContext.h>
 #include <AEON/AST/Nodes.h>
+#include <AEON/AST/aeNodeValue.h>
 
 #include <map>
 #include <cstdlib>
@@ -23,6 +24,18 @@ std::map<std::string, int> mOperatorTable = {
 	};
 
 
+AEStructNode::Visibility TokToVisib(const std::string& str)
+{
+	if (str == "public")
+		return AEStructNode::VISIBILITY_PUBLIC;
+	if (str == "protected")
+		return AEStructNode::VISIBILITY_PROTECTED;
+	if (str == "private")
+		return AEStructNode::VISIBILITY_PRIVATE;
+
+	return AEStructNode::VISIBILITY_PUBLIC;
+}
+
 std::unique_ptr<aeParser> aeParser::create(const std::string& source, AEContext* context)
 {
 	std::unique_ptr<aeParser> parser(new aeParser(source));
@@ -43,7 +56,7 @@ aeParser::aeParser(const std::string& source)
 	m_tokenizer->tokenize(source);
 }
 
-aeNodeStatement* aeParser::parseStatement()
+AEStmtNode* aeParser::parseStatement()
 {
 	switch (Tok.type)
 	{
@@ -133,7 +146,7 @@ void aeParser::startParse(aeon_lexer& lexer)
 
 			else if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
 			{
-				aeNodeClass* classDecl = parseClass();
+				AEStructNode* classDecl = parseClass();
 				root->add(classDecl);
 			}
 			else if (Tok.type == AETK_NAMESPACE)
@@ -151,7 +164,7 @@ void aeParser::startParse(aeon_lexer& lexer)
 			}
 			else
 			{
-				aeNodeBase* symbol = parseSymbol();
+				AEBaseNode* symbol = parseSymbol();
 				if (symbol)
 				{
 					root->add(symbol);
@@ -178,7 +191,7 @@ void aeParser::startParse(aeon_lexer& lexer)
 			}
 			else if (Tok.type == AETK_CLASS)
 			{
-				aeNodeClass* classDecl = parseClass();
+				AEStructNode* classDecl = parseClass();
 				namespace_node->add(classDecl);
 			}
 			else if (Tok.type == AETK_NAMESPACE)
@@ -188,7 +201,7 @@ void aeParser::startParse(aeon_lexer& lexer)
 			}
 			else
 			{
-				aeNodeBase* symbol = parseSymbol();
+				AEBaseNode* symbol = parseSymbol();
 				if (symbol)
 				{
 					namespace_node->add(symbol);
@@ -201,33 +214,32 @@ void aeParser::startParse(aeon_lexer& lexer)
 		return namespace_node;
 	}
 
-	// Assumes the current token is "class" and stops the token after the ; at the end
-	aeNodeClass* aeParser::parseClass()
+AEStructNode* aeParser::parseClass()
+{
+	AEStructNode* classDecl = new AEStructNode();
+	classDecl->m_name = getNextToken().text;
+
+	// Will be either a : or a { depending on whether the class inherits stuff
+	getNextToken();
+
+	// Get the inheritance fathers
+	if (Tok.type == AETK_COLON)
 	{
-		aeNodeClass* classDecl = new aeNodeClass();
-		classDecl->m_name = getNextToken().text;
-
-		// Will be either a : or a { depending on whether the class inherits stuff
-		getNextToken();
-
-		// Get the inheritance fathers
-		if (Tok.type == AETK_COLON)
-		{
 			do
 			{
-				aeNodeClass::classparentinfo cpi;
+				AEStructNode::classparentinfo cpi;
 
 				// Let's get the first keyword, can be either a access level or the identifier
 				getNextToken();
 
 				if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
 				{
-					cpi.accessLevel = Tok.text;
+					cpi.visibility = TokToVisib(Tok.text);
 					cpi.parentClass = getNextToken().text;
 				}
 				else
 				{
-					cpi.accessLevel = "public";
+					cpi.visibility = TokToVisib("public");
 					cpi.parentClass = Tok.text;
 				}
 
@@ -241,10 +253,13 @@ void aeParser::startParse(aeon_lexer& lexer)
 		getNextToken(); // we need to skip the last ;
 		getNextToken();
 
-		return classDecl;
-	}
+		// debug print
+		printf("Parsed class %s\n%s\n", classDecl->m_name.c_str(), classDecl->str().c_str());
 
-void aeParser::parseClassBody(aeNodeClass* classDeclNode)
+		return classDecl;
+}
+
+void aeParser::parseClassBody(AEStructNode* classDeclNode)
 {
 	std::string currentDefaultAccessLevel = "public";
 
@@ -253,18 +268,227 @@ void aeParser::parseClassBody(aeNodeClass* classDeclNode)
 	// Parse on element at a time until the end of class shows
 	while (Tok.type != AETK_CLOSEBRACKET)
 	{
-		if (matchesVarDecl())
+		std::string useVisib;
+
+		begin: 
+
+		if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PRIVATE || Tok.type == AETK_PROTECTED)
 		{
-			auto varDecl = parseVariableDecl();
-			classDeclNode->add(varDecl);
+			std::string visib = Tok.text;
+			getNextToken();
+
+			if (Tok.type == AETK_COLON)
+			{
+				currentDefaultAccessLevel = visib;
+				printf("CHANGED DEFAULT VISIB\n");
+				getNextToken();
+				goto begin;
+			}
+			else
+				useVisib = visib;
+		}
+
+		if (Tok.type == AETK_FUNCTION)
+		{
+			aeNodeFunction* f = parseFunction();
+			f->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
+			useVisib.clear();
+			classDeclNode->m_functions.emplace_back(f);
+		}
+		else if (Tok.type == AETK_ENUM)
+		{
+			AEEnumNode* e = parseEnum();
+			classDeclNode->m_enums.emplace_back(e);
+		}
+		else{
+			AEFieldNode* field = parseStructField();
+			field->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
+			useVisib.clear();			
+			classDeclNode->m_fields.push_back(field);			
+		}
+	}
+}
+
+AEFieldNode* aeParser::parseStructField()
+{
+	AEFieldNode* f = new AEFieldNode;
+	f->name = Tok.text;
+	getNextToken();
+
+	if (Tok.type == AETK_COLON)
+	{
+		getNextToken();
+
+		if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_OPENBRACKET)
+		{
+			std::string typeIdentifier = Tok.text;
+			getNextToken();
+			getNextToken();
+			getNextToken();
+
+			f->initializer = new AEFieldInitNode;
+			f->initializer->value = new AEObjectInitNode(typeIdentifier);
+			f->deduceStaticType(ctx);
+
+			if (!f->type)
+			{
+				printf("Field '%s': unknown type %s\n", f->name.c_str(), typeIdentifier.c_str());
+			}
+		}
+		else
+		{
+			auto node = parsePropertyValue();
+			f->initializer = new AEFieldInitNode;
+			f->initializer->value = node;
+			f->deduceStaticType(ctx);
+		}
+	}
+	else
+		f->type = ctx->getTypeInfo("var");
+
+	return f;
+}
+
+void aeParser::parseClassMember(AEStructNode* classDeclNode)
+{
+	if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
+	{
+		AEStructNode* classDecl = parseClass();
+		classDeclNode->add(classDecl);
+	}
+	else if (Tok.type == AETK_ENUM)
+	{
+		AEEnumNode* enum_node = parseEnum();
+		classDeclNode->add(enum_node);
+	}
+	else if (Tok.type == AETK_TYPEDEF)
+	{
+		/*getNextToken();
+		aeNodeTypedef* typedef_node = new aeNodeTypedef;
+		typedef_node->typeA = parseQualType();
+		typedef_node->typeB = parseQualType();
+		classDeclNode->add(typedef_node);*/
+	}
+	else if (Tok.type == AETK_IDENTIFIER && Tok.text == classDeclNode->m_name)
+	{
+		// Constructor
+		aeNodeFunction* constructorDecl = new aeNodeFunction();
+		constructorDecl->m_name = classDeclNode->m_name;
+		getNextToken();
+		getNextToken();
+
+		constructorDecl->m_parameters = parseParamsList();
+		constructorDecl->m_block.reset(parseBlock());
+		classDeclNode->add(constructorDecl);
+		getNextToken();
+
+		//Log("After constructor %s", Tok.text.c_str());
+
+	}
+	else if (Tok.type == AETK_TILDE)
+	{
+		if (getNextToken().text == classDeclNode->m_name)
+		{
+			aeNodeFunction* destructorDecl = new aeNodeFunction();
+			destructorDecl->m_name = std::string("~") + classDeclNode->m_name;
+			getNextToken();
+			getNextToken();
+			getNextToken();
+			destructorDecl->m_block.reset(parseBlock());
+			classDeclNode->add(destructorDecl);
+			getNextToken();
+		}
+	}
+	else if (Tok.type == AETK_FUNCTION)
+	{
+		aeNodeFunction* funcDecl = parseFunction();
+		funcDecl->is_method = true;
+		funcDecl->is_static = false;
+		if (funcDecl->m_name == classDeclNode->m_name)
+			funcDecl->is_constructor = true;
+		classDeclNode->add(funcDecl);
+		getNextToken();
+	}
+	else
+	{
+		AEBaseNode* symbol = parseSymbol();
+		classDeclNode->add(symbol);
+	}
+}
+
+AEBaseNode* aeParser::parseSymbol()
+{
+	AEBaseNode* result_node = nullptr;
+	bool IsFunctionDecl = false;
+	bool IsConst = false;
+	std::vector<aeNodeVarDecl*> params;
+
+	if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
+	{
+		getNextToken();
+	}
+
+	aeQualType type_node = parseQualType();
+
+	std::string SymbolName = Tok.text;
+
+	getNextToken();
+
+	// Let's check if we got a function
+	if (Tok.type == AETK_OPENPAREN)
+	{
+		IsFunctionDecl = true;
+		getNextToken();
+		params = parseParamsList();
+		getNextToken();
+	}
+
+	if (Tok.type == AETK_CONST)
+	{
+		IsConst = true;
+		getNextToken();
+	}
+
+	// If the brackets are opening, can only be a property or a function body definition
+	if (Tok.type == AETK_OPENBRACKET)
+	{
+		if (IsFunctionDecl)
+		{
+			aeNodeFunction* func_node = new aeNodeFunction();
+			func_node->m_name = SymbolName;
+			func_node->m_parameters = params;
+			func_node->is_static = false;
+			func_node->is_method = true;
+			//func_node->is_method = true;
+			func_node->m_block.reset(parseBlock());
+			result_node = func_node;
+			getNextToken();
+		}
+	}
+	else if (Tok.type == AETK_SEMICOLON)
+	{
+		// We are done early, this is a function prototype or a variable
+		if (IsFunctionDecl)
+		{
+			aeNodeFunction* func_node = new aeNodeFunction();
+			func_node->m_name = SymbolName;
+			func_node->is_method = true;
+			func_node->is_static = false;
+			//parseBlock(func_node->block);
+			result_node = func_node;
 			getNextToken();
 		}
 		else
 		{
-			parseClassMember(classDeclNode);
-
+			aeNodeIdentifier* var_node = new aeNodeIdentifier;
+			var_node->m_name = SymbolName;
+			var_node->VarType = type_node;
+			result_node = var_node;
+			getNextToken();
 		}
 	}
+
+	return result_node;
 }
 
 bool aeParser::matchesVarDecl()
@@ -298,9 +522,9 @@ aeNodeFunction* aeParser::parseLambdaFunction()
 	return function;
 }
 
-aeNodeEnum* aeParser::parseEnum()
+AEEnumNode* aeParser::parseEnum()
 {
-	aeNodeEnum* enum_code = new aeNodeEnum;
+	AEEnumNode* enum_code = new AEEnumNode;
 	enum_code->name = getNextToken().text;
 	getNextToken(); getNextToken();
 
@@ -308,164 +532,20 @@ aeNodeEnum* aeParser::parseEnum()
 	{
 		std::string EnumMember = Tok.text;
 		if (getNextToken().type == AETK_COMMA)
-			{
-				enum_code->addField(EnumMember);
-				getNextToken();
-			}
-			else if (Tok.type == AETK_CLOSEBRACKET)
-			{
-				enum_code->addField(EnumMember);
-			}
+		{
+			enum_code->addField(EnumMember);
+			getNextToken();
+		}
+		else if (Tok.type == AETK_CLOSEBRACKET)
+		{
+			enum_code->addField(EnumMember);
+		}
 	}
 
 	getNextToken();
 
 	return enum_code;
 }
-
-	/// Parses one thing inside the class body
-	void aeParser::parseClassMember(aeNodeClass* classDeclNode)
-	{
-		if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
-		{
-			aeNodeClass* classDecl = parseClass();
-			classDeclNode->add(classDecl);
-		}
-		else if (Tok.type == AETK_ENUM)
-		{
-			aeNodeEnum* enum_node = parseEnum();
-			classDeclNode->add(enum_node);
-		}
-		else if (Tok.type == AETK_TYPEDEF)
-		{
-			/*getNextToken();
-			aeNodeTypedef* typedef_node = new aeNodeTypedef;
-			typedef_node->typeA = parseQualType();
-			typedef_node->typeB = parseQualType();
-			classDeclNode->add(typedef_node);*/
-		}
-		else if (Tok.type == AETK_IDENTIFIER && Tok.text == classDeclNode->m_name)
-		{
-			// Constructor
-			aeNodeFunction* constructorDecl = new aeNodeFunction();
-			constructorDecl->m_name = classDeclNode->m_name;
-			getNextToken();
-			getNextToken();
-
-			constructorDecl->m_parameters = parseParamsList();
-			constructorDecl->m_block.reset(parseBlock());
-			classDeclNode->add(constructorDecl);
-			getNextToken();
-
-			//Log("After constructor %s", Tok.text.c_str());
-
-		}
-		else if (Tok.type == AETK_TILDE)
-		{
-			if (getNextToken().text == classDeclNode->m_name)
-			{
-				aeNodeFunction* destructorDecl = new aeNodeFunction();
-				destructorDecl->m_name = std::string("~") + classDeclNode->m_name;
-				getNextToken();
-				getNextToken();
-				getNextToken();
-				destructorDecl->m_block.reset(parseBlock());
-				classDeclNode->add(destructorDecl);
-				getNextToken();
-			}
-		}
-		else if (Tok.type == AETK_FUNCTION)
-		{
-			aeNodeFunction* funcDecl = parseFunction();
-			funcDecl->is_method = true;
-			funcDecl->is_static = false;
-			if (funcDecl->m_name == classDeclNode->m_name)
-				funcDecl->is_constructor = true;
-			classDeclNode->add(funcDecl);
-			getNextToken();
-		}
-		else
-		{
-			aeNodeBase* symbol = parseSymbol();
-			classDeclNode->add(symbol);
-		}
-	}
-
-	/// Parses one symbol, either a variable or a function declaration
-	aeNodeBase* aeParser::parseSymbol()
-	{
-		aeNodeBase* result_node = nullptr;
-		bool IsFunctionDecl = false;
-		bool IsConst = false;
-		std::vector<aeNodeExpr*> params;
-
-		if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
-		{
-			getNextToken();
-		}
-
-		aeQualType type_node = parseQualType();
-
-		std::string SymbolName = Tok.text;
-
-		getNextToken();
-
-		// Let's check if we got a function
-		if (Tok.type == AETK_OPENPAREN)
-		{
-			IsFunctionDecl = true;
-			getNextToken();
-			params = parseParamsList();
-			getNextToken();
-		}
-
-		if (Tok.type == AETK_CONST)
-		{
-			IsConst = true;
-			getNextToken();
-		}
-
-		// If the brackets are opening, can only be a property or a function body definition
-		if (Tok.type == AETK_OPENBRACKET)
-		{
-			if (IsFunctionDecl)
-			{
-				aeNodeFunction* func_node = new aeNodeFunction();
-				func_node->m_name = SymbolName;
-				func_node->m_parameters = params;
-				func_node->is_static = false;
-				func_node->is_method = true;
-				//func_node->is_method = true;
-				func_node->m_block.reset(parseBlock());
-				result_node = func_node;
-				getNextToken();
-			}
-		}
-		else if (Tok.type == AETK_SEMICOLON)
-		{
-			// We are done early, this is a function prototype or a variable
-			if (IsFunctionDecl)
-			{
-				aeNodeFunction* func_node = new aeNodeFunction();
-				func_node->m_name = SymbolName;
-				func_node->is_method = true;
-				func_node->is_static = false;
-				//parseBlock(func_node->block);
-				result_node = func_node;
-				getNextToken();
-			}
-			else
-			{
-				aeNodeIdentifier* var_node = new aeNodeIdentifier;
-				var_node->m_name = SymbolName;
-				var_node->VarType = type_node;
-				result_node = var_node;
-				getNextToken();
-			}
-		}
-
-		return result_node;
-	}
 
 aeQualType aeParser::parseQualType()
 {
@@ -513,13 +593,13 @@ aeQualType aeParser::parseQualType()
 	}
 
 
-std::vector<aeNodeExpr*> aeParser::parseParamsList()
+std::vector<aeNodeVarDecl*> aeParser::parseParamsList()
 {
-	std::vector<aeNodeExpr*> temp;
+	std::vector<aeNodeVarDecl*> temp;
 	while (Tok.type != AETK_CLOSEPAREN)
 	{
 		aeNodeVarDecl* varexpr = parseVariableDecl();
-		//temp.push_back(varexpr);
+		temp.push_back(varexpr);
 		if (Tok.type != AETK_COMMA)
 			break;
 		else
@@ -555,6 +635,8 @@ aeNodeFunction* aeParser::parseFunction()
 	getNextToken(); // just opened bracket
 
 	funcDecl->m_block.reset(parseBlock());
+
+	getNextToken();
 
 	return funcDecl;
 }

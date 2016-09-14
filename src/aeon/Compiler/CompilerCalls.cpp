@@ -1,6 +1,6 @@
 #include <AEON/Compiler/aeCompiler.h>
 
-AEFunction* aeCompiler::selectFunction(aeNodeFunctionCall* fn)
+AEFunction* AECompiler::selectFunction(aeNodeFunctionCall* fn)
 {
 	AEFunction* r = nullptr;
 
@@ -20,7 +20,7 @@ AEFunction* aeCompiler::selectFunction(aeNodeFunctionCall* fn)
 }
 
 
-void aeCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
+void AECompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
 {
 	std::string finalSymbolName = fn->m_name;
 
@@ -43,6 +43,12 @@ void aeCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 	{
 		finalSymbolName = beingCalledOn.m_type->getSymbolName() + "." + fn->m_name;
 
+	}
+
+	if (beingCalledOn.getName() == "var")
+	{
+		emitVariantCall(fn);
+		return;
 	}
 
 	CompilerLog("Function call %s\n", finalSymbolName.c_str());
@@ -83,3 +89,14 @@ void aeCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 	}
 }
 
+void AECompiler::emitVariantCall(aeNodeFunctionCall* fn)
+{
+	// Calls a function on a dynamic variable
+	int fnNameIndex = m_module->identifierPoolIndex(fn->m_name);
+	emitInstruction(OP_VARCALL, fnNameIndex);
+}
+
+void AECompiler::emitLateBoundCall(aeNodeFunctionCall* fn)
+{
+	// Calls a function on a static object, if it supports it
+}

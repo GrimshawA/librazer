@@ -1,7 +1,7 @@
 #ifndef aeNodeBranch_h__
 #define aeNodeBranch_h__
 
-#include "aeNodeStatement.h"
+#include <AEON/AST/AEBaseNode.h>
 
 class aeNodeExpr;
 class aeNodeBlock;
@@ -14,7 +14,7 @@ class aeNodeBlock;
 	the last branch may or may not have an expression, if it 
 	doesn't, its a single else clause.
 */
-class aeNodeBranch : public aeNodeStatement
+class aeNodeBranch : public AEStmtNode
 {
 public:
 	std::unique_ptr<aeNodeExpr>                 m_expression;

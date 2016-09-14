@@ -1,12 +1,12 @@
 #ifndef aeNodeWhile_h__
 #define aeNodeWhile_h__
 
-#include "aeNodeStatement.h"
+#include <AEON/AST/AEBaseNode.h>
 
 class aeNodeExpr;
 class aeNodeBlock;
 
-class aeNodeWhile : public aeNodeStatement
+class aeNodeWhile : public AEStmtNode
 {
 public:
 

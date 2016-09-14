@@ -1,7 +1,8 @@
 #include "aeNodeFunction.h"
 #include "aeNodeExpr.h"
 #include "aeNodeBlock.h"
-#include "aeNodeStatement.h"
+#include <AEON/AST/AEBaseNode.h>
+#include "AEStructNode.h"
 
 aeNodeFunction::aeNodeFunction()
 {
@@ -62,4 +63,16 @@ aeQualType aeNodeFunction::getParameterType(uint32_t index)
 aeQualType aeNodeFunction::getReturnType()
 {
 	return m_returnType;
+}
+
+std::string aeNodeFunction::visibilityText()
+{
+	if (visibility == AEStructNode::VISIBILITY_PUBLIC)
+		return "public";
+	if (visibility == AEStructNode::VISIBILITY_PROTECTED)
+		return "protected";
+	if (visibility == AEStructNode::VISIBILITY_PRIVATE)
+		return "private";
+
+	return "undefined";
 }

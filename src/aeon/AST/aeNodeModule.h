@@ -1,12 +1,12 @@
 #ifndef aeNodeModule_h__
 #define aeNodeModule_h__
 
-#include "aeNodeBase.h"
+#include "AEBaseNode.h"
 
 #include <map>
 #include <memory>
 
-class aeNodeClass;
+class AEStructNode;
 class aeNodeNamespace;
 
 /**
@@ -21,12 +21,12 @@ class aeNodeNamespace;
 
 	Modules can naturally reference one another, as a way to group functionality together.
 */
-class aeNodeModule : public aeNodeBase
+class aeNodeModule : public AEBaseNode
 {
 public:
 
 	typedef std::unique_ptr<aeNodeNamespace> aeNodeNamespaceObj;
-	typedef std::unique_ptr<aeNodeClass> aeNodeClassObj;
+	typedef std::unique_ptr<AEStructNode> aeNodeClassObj;
 
 	std::string                        m_name;       ///< Name of the module (can be empty)
 	std::map<std::string, std::string> m_directives; ///< Configuration directives for this module

@@ -3,7 +3,7 @@
 
 #include "aeNodeExpr.h"
 
-class aeNodeBlock : public aeNodeStatement
+class aeNodeBlock : public AEStmtNode
 {
 public:
 

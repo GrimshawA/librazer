@@ -1,7 +1,7 @@
 #ifndef aeNodeReturn_h__
 #define aeNodeReturn_h__
 
-#include "aeNodeStatement.h"
+#include <AEON/AST/AEBaseNode.h>
 #include "../aeQualType.h"
 
 #include <vector>
@@ -9,7 +9,7 @@
 
 class aeNodeExpr;
 
-class aeNodeReturn : public aeNodeStatement
+class aeNodeReturn : public AEStmtNode
 {
 public:
 	aeNodeExpr* m_expression;

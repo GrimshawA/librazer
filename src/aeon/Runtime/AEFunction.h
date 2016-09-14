@@ -11,6 +11,10 @@ class AEValueList;
 /**
 	\class AEFunction
 	\brief Encapsulates one callable compiled function
+
+	All functions are just a contiguous range of instructions within the module.
+	This structure provides utility to locate functions in the module code, as well as
+	additional information about them.
 */
 class AEFunction : public aeSymbol
 {
@@ -27,7 +31,9 @@ public:
 	bool isVirtual();
 	bool isNative();
 
+public:
 
+	uint32_t    m_offset;            ///< First instruction for this function in the owner module
 
 	AEType*     m_struct;
 	uint32_t    id;
@@ -35,7 +41,6 @@ public:
 	aeQualType returnType;
 	std::vector<aeQualType> params;
 	uint32_t    paramsStorageSize; ///< The amount of storage needed to push the params
-	uint32_t    offset;            ///< which instruction this function starts in the code
 	std::string decl;
 	aeBindMethod fn;
 	AEModule* m_module;

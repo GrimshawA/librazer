@@ -44,6 +44,12 @@ AEValue::AEValue(std::function<void()> fn)
 	_function->tmp = fn;
 }
 
+AEValue::AEValue(AEObject* obj)
+{
+	m_valueType = VALUE_OBJECT;
+	_object = obj;
+}
+
 AEValue::~AEValue()
 {
 	//release();
@@ -131,6 +137,9 @@ void AEValue::setProperty(const std::string& name, const AEValue& value)
 
 AEValue AEValue::property(const std::string& name) const
 {
+	if (m_valueType != VALUE_OBJECT)
+		return AEValue();
+
 	int i = 0;
 	for (auto& m : _object->m_properties)
 	{

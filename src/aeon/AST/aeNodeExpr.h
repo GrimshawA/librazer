@@ -1,13 +1,13 @@
 #ifndef aeNodeExpr_h__
 #define aeNodeExpr_h__
 
-#include "aeNodeStatement.h"
+#include <AEON/AST/AEBaseNode.h>
 #include "aeNodeValue.h"
 
 #include <map>
 #include <memory>
 
-class aeCompiler;
+class AECompiler;
 
 /**
 	\class aeNodeExpr
@@ -29,7 +29,7 @@ public:
 	/// Get the parent expression if any
 	aeNodeExpr* getParentExpression();
 
-	virtual aeQualType getQualifiedType(aeCompiler* c);
+	virtual aeQualType getQualifiedType(AECompiler* c);
 
 	bool isFloat();
 

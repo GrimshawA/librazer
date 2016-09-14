@@ -7,7 +7,7 @@ static inline void DoCall(AEVirtualMachine* vm, int functionIndex)
 
 	aeStackFrame callinfo;
 	callinfo.name = "unknown";
-	callinfo.pc = functionData->offset - 1;
+	callinfo.pc = functionData->m_offset - 1;
 	callinfo.module = functionData->m_module;
 	callinfo.ebp = vm->m_stk.ebp;
 	callinfo.function = functionData;
