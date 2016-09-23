@@ -1,0 +1,17 @@
+class DynamicTest
+{
+	function callDynamic() {
+		var obj;
+
+		obj.testFn = function(){
+			print("Hello world");
+		}
+
+		obj.testFn();
+	}
+
+	function staticInDynamic() {
+		var x = new File();
+		x.open("myfile.txt");
+	}
+}

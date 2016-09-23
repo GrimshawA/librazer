@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Compiler">
+      <UniqueIdentifier>{a7f3c0f4-2a21-4d89-8a6e-192b11cf6bd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AST">
+      <UniqueIdentifier>{cb9aee87-ebca-4a53-89e2-24549c673710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Runtime">
+      <UniqueIdentifier>{eb7db48d-54d4-4a6c-954f-705d0502330e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{5875fac3-d117-4410-8c38-3f067178f21a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API">
+      <UniqueIdentifier>{546da207-fd01-486b-8800-8bca5097191c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VM">
+      <UniqueIdentifier>{9d9aa689-1e77-4b61-93cc-9f3d042c5948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stdlib">
+      <UniqueIdentifier>{689ba728-f178-45bc-862b-eaf2318f6349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stdlib\io">
+      <UniqueIdentifier>{16c9dfe7-31a6-49c0-9f6f-f333ed3fcfa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stdlib\net">
+      <UniqueIdentifier>{7354fbaa-7ee1-46c1-9696-b2f98fc5e414}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEByteCode.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEContext.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEFunction.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEModule.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEObject.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEType.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEValue.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEValueList.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeBindingHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeClosure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeCodeFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AEDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeDynamicType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeIR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeQualType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeReportManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeSymbol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\aeTokenizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeAccessOperator.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeBinaryOperator.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeBlock.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeBranch.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeEcosystem.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeExpr.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeFor.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeFunction.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeFunctionCall.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeIdentifier.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeLiterals.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeModule.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeNamespace.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeNew.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeReturn.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeSubscript.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeTernaryOperator.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeUnaryOperator.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeValue.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeVarDecl.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\aeNodeWhile.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\aeCompilerConv.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\STD\aeStdIo.cpp">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEGeneric.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\AECompilerData.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Parser\AEParserData.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\VM\AEVm.cpp">
+      <Filter>VM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\VM\AEVmThread.cpp">
+      <Filter>VM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\VM\AEVmStack.cpp">
+      <Filter>VM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\AEStructNode.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AST\AEBaseNode.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\AECompiler.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\stdlib\io\File.cpp">
+      <Filter>stdlib\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\stdlib\io\FileInfo.cpp">
+      <Filter>stdlib\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\stdlib\net\Socket.cpp">
+      <Filter>stdlib\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\CompileFunctions.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\CompileStatements.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\CompileCalls.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\AEParser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Compiler\CompileExpressions.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\AEString.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEByteCode.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEFunction.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEModule.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEObject.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEType.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEValue.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEValueList.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeBindingHelper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeBuilder.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeClosure.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeCodeFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeDynamicType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeIR.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeQualType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeReportManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeSymbol.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\aeTokenizer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeAccessOperator.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeBinaryOperator.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeBlock.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeBranch.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeEcosystem.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeExpr.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeFor.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeFunction.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeFunctionCall.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeIdentifier.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeLiterals.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeModule.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeNamespace.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeNew.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeReturn.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeSubscript.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeTernaryOperator.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeUnaryOperator.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeValue.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeVarDecl.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\aeNodeWhile.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\Nodes.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerConv.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerErrorIds.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\STD\aeStdIo.h">
+      <Filter>stdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEGeneric.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AEON\AEDocument.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerWarningIds.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AEON\AEContext.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\AEVm.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\AEVmArithmetic.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\AEVmCalls.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\AEVmThread.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\AEVmStack.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\AEStructNode.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\AST\AEBaseNode.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Compiler\AECompiler.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\stdlib\io\File.h">
+      <Filter>stdlib\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\stdlib\io\FileInfo.h">
+      <Filter>stdlib\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\stdlib\net\Socket.h">
+      <Filter>stdlib\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\VmInstructions.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\VM\VmDispatch.h">
+      <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\DebugDefs.h" />
+    <ClInclude Include="..\..\src\AEON\AEParser.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\Runtime\AEString.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

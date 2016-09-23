@@ -45,3 +45,12 @@ bool AEFunction::isNative()
 {
 	return m_native;
 }
+
+void AEFunction::printByteCode()
+{
+	printf("bytecode %s\n", getName().c_str());
+	for (int i = m_offset; i < m_numInstructions; ++i)
+	{
+		printf("fn %s\n", inst_opcode_str(m_module->m_code[i]).c_str());
+	}
+}

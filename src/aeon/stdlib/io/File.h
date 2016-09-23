@@ -3,6 +3,10 @@
 
 #include <string>
 
+class AEModule;
+
+void registerFile(AEModule* m, const std::string& name);
+
 class File
 {
 public:

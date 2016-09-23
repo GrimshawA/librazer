@@ -5,6 +5,11 @@ static inline void DoCall(AEVirtualMachine* vm, int functionIndex)
 {
 	AEFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
 
+#if defined TRACE_VM
+	printf("Calling function %s\n", functionData->getName().c_str());
+	functionData->printByteCode();
+#endif
+
 	aeStackFrame callinfo;
 	callinfo.name = "unknown";
 	callinfo.pc = functionData->m_offset - 1;

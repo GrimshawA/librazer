@@ -180,6 +180,17 @@ void aeon_lexer::tokenize(std::string src)
 			return token;
 		}
 
+		if (LastChar == '-')
+		{
+			if (program_source[i + 1] == '>')
+			{
+				i++;
+				token.type = AETK_ARROW;
+				token.text = "->";
+				return token;
+			}
+		}
+
 		if (LastChar == '+')
 		{
 			if (program_source[i + 1] == '+')

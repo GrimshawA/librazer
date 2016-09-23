@@ -2,6 +2,7 @@
 #define aeon_threadstate_h__
 
 #include <AEON/Runtime/AEValue.h>
+#include <AEON/Runtime/AEObject.h>
 #include <vector>
 #include <stdint.h>
 
@@ -98,6 +99,13 @@ public:
 
 	void pushVariant(const AEValue& v);
 	void popVariant(AEValue& v);
+
+	void pushMemory(const std::vector<uint8_t>& mem);
+	std::vector<uint8_t> popMemory(int size);
+
+	void pushObject(AEObject* obj);
+
+	void alloc(int size);
 
 	uint64_t size()
 	{

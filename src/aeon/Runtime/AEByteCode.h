@@ -48,7 +48,10 @@ enum EOpCodes
 	OP_DTEST,      ///< Just debug prints something for tests
 	OP_DEBUG,       ///< Dirty tricks for debug mode
 	OP_PUSHVAR,
-	Count
+	OP_POPVAR,
+	OP_VARSTORE, ///< Assigns the top value of stack to the loaded var
+	OP_VARLOAD,  ///< Loads a field of a var to stack
+ 	Count
 };
 
 enum AeonConstants
@@ -130,5 +133,7 @@ uint32_t getinst_a(const AEInstruction& inst);
 
 void setinst_b(AEInstruction& inst, int val_b);
 uint32_t getinst_b(const AEInstruction& inst);
+
+std::string inst_opcode_str(AEInstruction inst);
 
 #endif // aeon_bytecode_h__

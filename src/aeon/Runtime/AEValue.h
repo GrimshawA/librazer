@@ -2,6 +2,7 @@
 #define AEValue_h__
 
 #include <AEON/Runtime/AEFunction.h>
+#include <AEON/Runtime/AEString.h>
 
 #include <string>
 #include <vector>
@@ -12,14 +13,6 @@
 
 class AEValueList;
 class AEObject;
-
-class AEString
-{
-public:
-	std::string str;
-	int ref = 0;
-};
-
 class AEArray;
 
 /**

@@ -3,6 +3,7 @@
 #include <AEON/AEContext.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEGeneric.h>
+#include <AEON/DebugDefs.h>
 
 #include <AEON/VM/AEVmCalls.h>
 
@@ -117,10 +118,12 @@ void AEVirtualMachine::call(AEFunction* fn)
 	// Get arguments
 	printf("Calling script func with %d args\n", fn->params.size());
 
-	std::vector<vm_value> args;
+
+	std::vector<std::vector<uint8_t>> argsMem;
 	for (int i = 0; i < fn->params.size(); ++i)
-	{
-		args.push_back(m_stk.pop_value());
+	{		
+		printf("pop memory for param %d\n", fn->params[i].getSize());
+		argsMem.push_back(m_stk.popMemory(fn->params[i].getSize()));
 	}
 
 	// Prepare functions and call
@@ -134,9 +137,13 @@ void AEVirtualMachine::call(AEFunction* fn)
 	callinfo.function = fn;
 	m_stk.frames.push_back(callinfo);
 
-	for (int i = 0; i < args.size(); ++i)
+	m_stk.ebp = m_stk.esp;
+
+	m_stk.alloc(fn->returnValueSize);
+
+	for (int i = argsMem.size() - 1; i >= 0; --i)
 	{
-		m_stk.push_value(args[i]);
+		m_stk.pushMemory(argsMem[i]);
 	}
 
 	// Launch the thread from this entry point

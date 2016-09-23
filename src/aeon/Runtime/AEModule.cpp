@@ -103,6 +103,16 @@ uint64_t AEModule::getIntegerLiteral(uint32_t index)
 	return m_intPool[index];
 }
 
+void AEModule::exportType(const std::string& name, int32_t size)
+{
+
+}
+
+void AEModule::exportMethod(const std::string& name, const std::string& signature, aeBindMethod fn)
+{
+
+}
+
 int AEModule::identifierPoolIndex(const std::string& identifier)
 {
 	for (int i = 0; i < m_identifierPool.size(); ++i)

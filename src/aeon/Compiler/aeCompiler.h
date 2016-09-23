@@ -65,6 +65,7 @@ class AECompiler
 public:
 		AEContext*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
 		AEModule*                        m_module;                ///< Current module being compiled
+		AEType*                             m_currentStruct = nullptr;
 		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
 		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
 		std::vector<AEStructNode*>           m_classes;               ///< Class we are compiling right now
@@ -118,6 +119,10 @@ public:
 	/// Emits code for destructing the topmost scope level
 	void pop_scope();
 
+	/// Declares a function local variable that can be addressed within it
+	/// The stack frame of a function is basically a sequence of slots, each being a variable, at discrete offsets from the base pointer
+	void declareStackVar(const std::string& name, aeQualType type);
+
 	/// Pops the function arguments from the stack
 	void releaseParametersContext();
 
@@ -158,7 +163,7 @@ public:
 
 	// High level constructs compilation
 	void emitClassCode(AEStructNode* clss);
-	AEFunction* emitFunction(aeNodeFunction* func);
+	AEFunction* compileFunction(aeNodeFunction* func);
 	void emitNamespaceCode(aeNodeNamespace* namespace_node);
 	void emitGlobalVarCode(aeNodeIdentifier* global_var);
 	void emitStatement(AEStmtNode* stmt);

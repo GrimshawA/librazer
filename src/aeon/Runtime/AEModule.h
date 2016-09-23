@@ -9,6 +9,11 @@
 #include <array>
 #include <stdint.h>
 
+class AENativeFunctionWrapper {
+public:
+	aeBindMethod f;
+};
+
 typedef int FnIndex;
 
 /**
@@ -57,6 +62,8 @@ public:
 	double      getDoubleLiteral(uint32_t index);
 	uint64_t    getIntegerLiteral(uint32_t index);
 
+	void exportType(const std::string& name, int32_t size);
+	void exportMethod(const std::string& name, const std::string& signature, aeBindMethod fn);
 
 	int identifierPoolIndex(const std::string& identifier);
 
@@ -83,16 +90,17 @@ public:
 
 public:
 
-	std::string                   m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
-	AEContext*                    m_context;
-	std::vector<AEFunction>       m_functions;          ///< Every static class function and global is listed here
-	std::vector<AEType*>          m_types;
-	std::vector<std::string>      m_stringPool;
-	std::vector<double>           m_doublePool;
-	std::vector<int64_t>          m_intPool;
-	std::vector<std::string>      m_identifierPool;
-	std::vector<AEInstruction>    m_code;               ///< The entire module's bytecode
-	std::vector<AEModule*>        m_dependencies;       ///< Dependencies of this module
+	std::string                          m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
+	AEContext*                           m_context;
+	std::vector<AEFunction>              m_functions;          ///< All script functions
+	std::vector<AENativeFunctionWrapper> m_nativeFunctions;    ///< All native functions exported
+	std::vector<AEType*>                 m_types;
+	std::vector<std::string>             m_stringPool;
+	std::vector<double>                  m_doublePool;
+	std::vector<int64_t>                 m_intPool;
+	std::vector<std::string>             m_identifierPool;
+	std::vector<AEInstruction>           m_code;               ///< The entire module's bytecode
+	std::vector<AEModule*>               m_dependencies;       ///< Dependencies of this module
 };
 
 #endif // AEMODULE_H__

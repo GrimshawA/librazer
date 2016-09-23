@@ -1,4 +1,5 @@
 #include <AEON/Runtime/AEByteCode.h>
+#include <string>
 
 std::array<const char*, static_cast<int32_t>(EOpCodes::Count)> EOpCodeNames = {
 	
@@ -63,4 +64,17 @@ void setinst_b(AEInstruction& inst, int val_b)
 uint32_t getinst_b(const AEInstruction& inst)
 {
 	return inst.arg1;
+}
+
+std::string inst_opcode_str(AEInstruction inst)
+{
+	switch (inst.opcode)
+	{
+	case OP_CALL: return "OP_CALL";
+	case OP_RETURN: return "OP_RETURN";
+	case OP_DEBUG: return "OP_DEBUG";
+	case OP_VARCALL: return "OP_VARCALL";
+	case OP_PUSHVAR: return "OP_PUSHVAR";
+	}
+	return std::to_string(inst.opcode);
 }

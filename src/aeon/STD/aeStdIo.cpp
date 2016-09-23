@@ -5,6 +5,8 @@
 
 #include <cmath>
 
+#include <AEON/stdlib/io/File.h>
+
 class MySprite
 {
 	int a, b, c;
@@ -30,7 +32,16 @@ void register_stdlib(AEContext* ctx)
 		printf("%d\n", v);
 	});
 
+	ctx->registerFunction("void printVar(string)", [](AEGeneric g){
+		/*AEString* str = g.unpackString();
+		std::string s = str;
+		printf("%d\n", v);*/
+	});
+
 	ctx->registerType("Sprite", sizeof(MySprite));
 
 	printf("Registered interface!\n");
+
+	AEModule* stdModule = ctx->createModule("std");
+	registerFile(stdModule, "File");
 }

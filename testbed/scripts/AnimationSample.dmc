@@ -1,0 +1,14 @@
+SpriteAnimation {
+	frames: [
+		KeyFrame {
+
+		},
+		KeyFrame {
+
+		}
+	]
+
+	onFinish: {
+		
+	}
+}

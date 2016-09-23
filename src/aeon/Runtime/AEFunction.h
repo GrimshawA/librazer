@@ -31,9 +31,12 @@ public:
 	bool isVirtual();
 	bool isNative();
 
+	void printByteCode();
+
 public:
 
 	uint32_t    m_offset;            ///< First instruction for this function in the owner module
+	uint32_t    m_numInstructions;
 
 	AEType*     m_struct;
 	uint32_t    id;

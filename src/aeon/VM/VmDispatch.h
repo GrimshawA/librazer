@@ -5,6 +5,10 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 	for (; threadInfo.cl->pc < threadInfo.cl->module->m_code.size(); ++threadInfo.cl->pc)
 	{
 		AEInstruction& inst = threadInfo.cl->module->m_code[threadInfo.cl->pc];
+#ifdef TRACE_VM
+		printf(" vm %s\n", inst_opcode_str(inst).c_str());
+#endif
+
 		switch (inst.opcode)
 		{
 			vm_start(OP_PREPARE)
@@ -178,19 +182,32 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 			vm_end
 
 				vm_start(OP_DEBUG)
-				vm_log("DEBUG", 0, m_ctx->string_literals[inst.arg1].c_str());
+				vm_log("DEBUG", 7, m_ctx->string_literals[inst.arg1].c_str());
 			vm_end
 
 				vm_start(OP_PUSHVAR)
-				m_stk.pushVariant(AEValue());
-			printf("PUSHED VARIABLE TO STACK\n");
+#if defined TRACE_VM
+			printf("Pushed var to stack from offset %d\n", inst.arg0);
+#endif
+			AEValue* referredValue = reinterpret_cast<AEValue*>(m_stk.ebp - inst.arg0 - sizeof(AEValue));
+			m_stk.pushVariant(*referredValue);
+
 			vm_end
 
-				vm_start(OP_VARCALL)
-				AEValue* ptr = reinterpret_cast<AEValue*>(m_stk.esp);
-			std::string methodName = m_stk.cl->module->m_identifierPool[inst.arg0];
-			AEValue fnValue = ptr->property(methodName);
+				vm_start(OP_POPVAR)
+				AEValue v;
+				m_stk.popVariant(v);
+				vm_end
 
+				vm_start(OP_VARCALL)
+				AEValue ptr;
+				m_stk.popVariant(ptr);
+			std::string methodName = m_stk.cl->module->m_identifierPool[inst.arg0];
+			AEValue fnValue = ptr.property(methodName);
+
+#if defined TRACE_VM
+			printf("Calling late bound method\n");
+#endif
 			if (!fnValue.isUndefined())
 			{
 				fnValue.call();
@@ -201,6 +218,30 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 				printf("No such property\n");
 			}
 			vm_end
+
+				vm_start(OP_VARSTORE)
+					AEValue obj;
+					vm_value value;
+				
+					if (inst.arg0 == 0)
+					{
+						value = m_stk.pop_value();
+					}
+
+					m_stk.popVariant(obj);
+
+					if (inst.arg0 == 0)
+					{
+						obj = value.i32;
+					}
+					
+					vm_end
+
+					vm_start(OP_VARLOAD)
+						AEValue variant; m_stk.popVariant(variant);
+						std::string fieldName = m_stk.cl->module->m_identifierPool[inst.arg0];
+												
+					vm_end
 
 		} // end of switch
 	}

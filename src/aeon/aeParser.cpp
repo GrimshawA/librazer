@@ -292,6 +292,7 @@ void aeParser::parseClassBody(AEStructNode* classDeclNode)
 		{
 			aeNodeFunction* f = parseFunction();
 			f->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
+			f->is_method = true;
 			useVisib.clear();
 			classDeclNode->m_functions.emplace_back(f);
 		}
@@ -631,8 +632,15 @@ aeNodeFunction* aeParser::parseFunction()
 	{
 		funcDecl->m_parameters = parseParamsList();
 	}
+	getNextToken();
 
-	getNextToken(); // just opened bracket
+	if (Tok.type == AETK_ARROW)
+	{
+		getNextToken();
+
+		funcDecl->m_returnType = parseQualType();
+		printf("Parsed return of func  %s\n", funcDecl->m_returnType.str().c_str());
+	}
 
 	funcDecl->m_block.reset(parseBlock());
 

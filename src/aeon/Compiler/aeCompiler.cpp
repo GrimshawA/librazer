@@ -2,6 +2,7 @@
 #include <AEON/Runtime/aeByteCode.h>
 #include <AEON/VM/AEVm.h>
 #include <AEON/AEContext.h>
+#include <AEON/DebugDefs.h>
 
 #include <cassert>
 
@@ -102,6 +103,24 @@ void AECompiler::pop_scope()
 	m_scopes.pop_back();
 }
 
+void AECompiler::declareStackVar(const std::string& name, aeQualType type)
+{
+	int bpOffset = m_OffsetFromBasePtr;
+
+	VariableStorageInfo localObject;
+	localObject.type = type;
+	localObject.name = name;
+	localObject.offset = bpOffset;
+	localObject.mode = AE_VAR_LOCAL;
+	m_scopes.back().locals.push_back(localObject);
+
+	m_OffsetFromBasePtr += type.getSize();
+
+#if defined TRACE_STACK
+	printf("STACK VAR: %s offset %d\n", name.c_str(), bpOffset);
+#endif
+}
+
 void AECompiler::releaseParametersContext()
 {
 	pop_scope();
@@ -154,7 +173,14 @@ void AECompiler::destructLocalVar(VariableStorageInfo& var)
 	}
 	else
 	{
-		emitInstruction(OP_MOV, AEK_ESP, var.type.getSize());
+		if (var.type.str() == "var")
+		{
+			emitInstruction(OP_POPVAR);
+		}
+		else
+		{
+			emitInstruction(OP_MOV, AEK_ESP, var.type.getSize());
+		}
 	}
 }
 
@@ -184,7 +210,7 @@ void AECompiler::generate(AEBaseNode* root)
 	{
 		if (root->m_items[i]->m_nodeType == AEN_FUNCTION)
 		{
-			emitFunction(static_cast<aeNodeFunction*>(root->m_items[i]));
+			compileFunction(static_cast<aeNodeFunction*>(root->m_items[i]));
 		}
 		else if (root->m_items[i]->m_nodeType == AEN_CLASS)
 		{
@@ -207,7 +233,7 @@ void AECompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 	{
 			if (namespace_node->m_items[i]->m_nodeType == AEN_FUNCTION)
 			{
-				emitFunction(static_cast<aeNodeFunction*>(namespace_node->m_items[i]));
+				compileFunction(static_cast<aeNodeFunction*>(namespace_node->m_items[i]));
 			}
 			else if (namespace_node->m_items[i]->m_nodeType == AEN_CLASS)
 			{
@@ -249,6 +275,8 @@ void AECompiler::emitClassCode(AEStructNode* clss)
 	objectHeap.type = typeInfo;
 	m_env->object_heaps.push_back(objectHeap);
 
+	m_currentStruct = typeInfo;
+
 	clss->m_typeInfo = typeInfo;
 
 	CompilerLog("Compiled type %s\n", typeInfo->m_name.c_str());
@@ -264,7 +292,7 @@ void AECompiler::emitClassCode(AEStructNode* clss)
 
 	for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
 	{
-		AEFunction* fn = emitFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
+		AEFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
 	}
 
 	for (std::size_t i = 0; i < clss->m_items.size(); ++i)
@@ -296,6 +324,8 @@ void AECompiler::emitClassCode(AEStructNode* clss)
 	emitClassDestructors(typeInfo, clss);
 
 	m_classes.pop_back();
+
+	m_currentStruct = nullptr;
 }
 
 void AECompiler::emitClassConstructors(AEType* classType, AEStructNode* classNode)
@@ -418,88 +448,6 @@ void AECompiler::emitWhileLoop(aeNodeWhile* whileloop)
 	setinst_a(m_module->m_code[jmptestpc], (cursor() - 1) - jmptestpc);
 }
 
-AEFunction* AECompiler::emitFunction(aeNodeFunction* func)
-{
-	
-	std::string symbol_prefix;
-	auto topClass = getTopClassNode();
-	if (topClass)
-	{
-		symbol_prefix = topClass->m_name + ".";
-	}
-
-
-	AEFunction* function = m_env->createFunction(symbol_prefix + func->m_name);
-	// Compiled unless some error is thrown
-	m_currentFunction = function;
-	function->m_compiled = true;
-
-	//m_module->functions.push_back(function);
-
-	aeQualType returnType = func->getReturnType();
-
-	m_OffsetFromBasePtr = 0;
-
-	// The function must be aware how much time it needs for the return value
-	function->returnValueSize = returnType.getSize();
-
-	m_caller = func;
-
-	// If we are a method, we reserve space for the THIS ptr
-	if (func->isNonStaticMethod())
-	{
-		m_OffsetFromBasePtr += sizeof(vm_value);
-		CompilerLog("Compiling non static method %s\n", function->getSymbolName().c_str());
-	}
-
-	function->m_offset = m_cursor;
-	function->m_absoluteName = symbol_prefix + func->m_name;
-	function->m_module = m_module;
-
-	if (func->is_constructor)
-	{
-		// Constructor specific code
-		emitConstructorInjection(func, function);
-	}
-
-	function->params.resize(func->m_parameters.size());
-
-	ScopeLocalData paramsScope;
-	paramsScope.offset = 0;
-
-	if (func->isNonStaticMethod())
-	{
-		// Self
-		VariableStorageInfo selfInfo;
-		selfInfo.name = "this";
-		selfInfo.offset = 0;
-		//selfInfo.type = ;
-		paramsScope.locals.push_back(selfInfo);
-	}	
-
-	for (int i = 0; i < func->m_parameters.size(); ++i)
-	{
-		VariableStorageInfo paramInfo;
-		paramInfo.name = func->m_parameters[i]->m_decls[0].m_name;
-		paramInfo.offset = 8 + i * 8;
-		paramInfo.type = func->m_parameters[i]->m_type;
-		paramsScope.locals.push_back(paramInfo);
-	}
-	m_scopes.push_back(paramsScope);
-
-	// let's just generate code for the executable block
-	emitBlock(func->m_block.get());
-
-	emitReturnCode(nullptr);
-	m_caller = nullptr;
-	m_currentFunction = nullptr;
-
-	// TODO: Needs to be done by returns
-	releaseParametersContext();
-
-	return function;
-}
-
 void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* function)
 {
 	// This is where the initialization is done, before any user constructor instruction is executed
@@ -618,24 +566,13 @@ void AECompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
 	AEType* varType = varDecl.m_type.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1]; 
 
-	VariableStorageInfo localObject;
-	localObject.type = varDecl.m_type;
-	localObject.name = varDecl.m_decls[0].m_name;
-	localObject.offset = m_OffsetFromBasePtr;
-	localObject.mode = AE_VAR_LOCAL;
-	scope.locals.push_back(localObject);
-
-	scope.offset += localObject.type.getSize();
-	m_OffsetFromBasePtr += localObject.type.getSize();
+	declareStackVar(varDecl.m_decls[0].m_name, varDecl.m_type);
 
 	if (declType.getName() == "var")
 	{
 		emitInstruction(OP_PUSHVAR);
 		return;
 	}
-
-	if (m_logAllocs)
-		emitDebugPrint("Allocating " + localObject.name);
 
 	emitInstruction(OP_MOV, AEK_ESP, -(int)varType->getSize());
 
