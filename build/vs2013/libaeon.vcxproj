@@ -262,6 +262,7 @@
     <ClInclude Include="..\..\src\AEON\VM\AEVmArithmetic.h" />
     <ClInclude Include="..\..\src\AEON\VM\AEVmCalls.h" />
     <ClInclude Include="..\..\src\AEON\VM\AEVmThread.h" />
+    <ClInclude Include="..\..\src\aeon\VM\VariantOps.h" />
     <ClInclude Include="..\..\src\AEON\VM\VmDispatch.h" />
     <ClInclude Include="..\..\src\AEON\VM\VmInstructions.h" />
   </ItemGroup>

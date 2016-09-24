@@ -403,5 +403,8 @@
     <ClInclude Include="..\..\src\AEON\Runtime\AEString.h">
       <Filter>Runtime</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\aeon\VM\VariantOps.h">
+      <Filter>VM</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,6 +11,10 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 
 		switch (inst.opcode)
 		{
+			vm_start(OP_NEW)
+				DoNewObject(this, inst.arg0, inst.arg1);
+			vm_end
+
 			vm_start(OP_PREPARE)
 				AEFunction* functionData = m_ctx->m_functionTable[inst.arg0];
 			m_stk.esp -= functionData->returnValueSize;
@@ -157,10 +161,6 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 			printf("LOADED TYPE INFO %s\n", m_ctx->typedb[index]->getName().c_str());
 			vm_end
 
-				vm_start(OP_NEWOBJECT)
-				DoNewObject(this, inst.arg0);
-			vm_end
-
 				vm_start(OP_DELETEOBJECT)
 
 				vm_end
@@ -220,22 +220,8 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 			vm_end
 
 				vm_start(OP_VARSTORE)
-					AEValue obj;
-					vm_value value;
-				
-					if (inst.arg0 == 0)
-					{
-						value = m_stk.pop_value();
-					}
-
-					m_stk.popVariant(obj);
-
-					if (inst.arg0 == 0)
-					{
-						obj = value.i32;
-					}
-					
-					vm_end
+					DoVarStore(this, inst.arg0, inst.arg1, inst.arg2);					
+				vm_end
 
 					vm_start(OP_VARLOAD)
 						AEValue variant; m_stk.popVariant(variant);

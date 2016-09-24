@@ -285,10 +285,12 @@ inline static void DoLogicalNot(AEVirtualMachine* vm)
 	vm->m_stk.push_value(a);
 }
 
-inline static void DoNewObject(AEVirtualMachine* vm, int type)
+inline static void DoNewObject(AEVirtualMachine* vm, int module_id, int type)
 {
+	void* objectMem = malloc(vm->get_current_mod()->m_types[type]->getSize());
+
 	vm_value obj;
-	obj.ptr = nullptr;
+	obj.ptr = objectMem;
 	vm->m_stk.push_value(obj);
 }
 

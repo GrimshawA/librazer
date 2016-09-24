@@ -5,9 +5,14 @@
 #include <array>
 #include <stdint.h>
 
+/*
+	Instructions notation:
+
+	
+*/
 enum EOpCodes
 {
-	OP_NEW,            ///< Allocate a new instance of a type
+	OP_NEW,            ///< R(new object ptr) <- module id and type id
 	OP_PREPARE,        ///< Prepares the vm for a subsequent call
 	OP_VARCALL,        ///< Call a method on a variant value
 	OP_CALL,		   ///< Call one aeon procedure, static, method, global, which assumes its input environment is already set
@@ -40,7 +45,6 @@ enum EOpCodes
 	OP_SET,            ///< Assign something to something
 	OP_SIZEOF,     ///< Pushes the size in bytes to the stack of the given type token
 	OP_TYPEINFO,       ///< Pushes the ptr to a typeinfo struct
-	OP_NEWOBJECT,        ///< Creates a new object of the selected type and pushes its objectref
 	OP_DELETEOBJECT,     ///< Release the objectref on the stack
 	OP_THREAD_RUN,
 	OP_MOV,

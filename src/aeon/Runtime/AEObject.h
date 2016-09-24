@@ -57,7 +57,6 @@ public:
 	std::vector<AEValue> m_properties;
 	void* m_obj;
 	AEType* m_type;
-
 };
 
 /**
