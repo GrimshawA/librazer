@@ -4,8 +4,8 @@
 
 void registerFile(AEModule* m, const std::string& name)
 {
-	m->exportType(name, sizeof(File));
-	m->exportMethod(name, "void open(int32)", [](AEGeneric g){
+	m->registerType(name, sizeof(File));
+	m->registerMethod(name, "void open(int32)", [](AEGeneric g){
 		std::string str = g.unpack_string();
 		printf("%s\n", str.c_str());
 	});

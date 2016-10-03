@@ -12,6 +12,20 @@ class MySprite
 	int a, b, c;
 };
 
+class TestClass {
+public:
+
+		int x;
+		int y;
+
+		void setSomething(){}
+
+};
+
+void aeonTestClass_setSomething(AEGeneric g){
+
+}
+
 void register_stdlib(AEContext* ctx)
 {
 	/*ctx->registerFunction("t1", &t1);
@@ -43,4 +57,7 @@ void register_stdlib(AEContext* ctx)
 
 	AEModule* stdModule = ctx->createModule("std");
 	registerFile(stdModule, "File");
+
+	stdModule->registerType("TestClass", sizeof(TestClass));
+	stdModule->registerMethod("TestClass", "setSomething", aeonTestClass_setSomething);
 }

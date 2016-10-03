@@ -65,9 +65,6 @@ public:
 	double      getDoubleLiteral(uint32_t index);
 	uint64_t    getIntegerLiteral(uint32_t index);
 
-	void exportType(const std::string& name, int32_t size);
-	void exportMethod(const std::string& name, const std::string& signature, aeBindMethod fn);
-
 	int identifierPoolIndex(const std::string& identifier);
 
 	void registerFunction(const std::string& sig, aeBindMethod fn);
