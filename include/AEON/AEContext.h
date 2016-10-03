@@ -5,7 +5,7 @@
 #include <AEON/aeQualType.h>
 #include <AEON/Runtime/AEType.h>
 #include <AEON/Runtime/AEValue.h>
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
 #include <AEON/Runtime/AEGeneric.h>
 #include <vector>
 #include <memory>

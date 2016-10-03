@@ -1,7 +1,7 @@
 #ifndef aeNodeFunctionCall_h__
 #define aeNodeFunctionCall_h__
 
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
 #include "aeNodeExpr.h"
 
 class aeNodeFunction;

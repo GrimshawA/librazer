@@ -27,6 +27,9 @@ typedef int FnIndex;
 	For example, the standard module std.io will contain multiple classes and functions,
 	that are defined among multiple files.
 
+	C++ must be exported into a language module as well, so its seamlessly recognized by the runtime.
+	No code can live without a module in the context of the vm.
+
 	Each module usually maps to one .obj file on disk, result of compilation.
 
 	When compiling code, the code being compiled will belong to the module it specifies in source
@@ -66,6 +69,21 @@ public:
 	void exportMethod(const std::string& name, const std::string& signature, aeBindMethod fn);
 
 	int identifierPoolIndex(const std::string& identifier);
+
+	void registerFunction(const std::string& sig, aeBindMethod fn);
+	void registerGlobal(const std::string& sig, void* memory);
+
+	void registerType(const std::string& name, std::size_t size);
+	void registerTypeConstructor();
+	void registerTypeDestructor();
+	void registerMethod(const std::string& name, const std::string& sig, aeBindMethod fn);
+	void registerField();
+	void registerPropertyGet();
+	void registerPropertySet();
+	void registerEnum();
+	void registerEnumValue();
+	void registerTypedef();
+
 
 public:
 

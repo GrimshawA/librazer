@@ -1,5 +1,5 @@
 #include <AEON/Runtime/AEFunction.h>
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
 #include <AEON/VM/AEVm.h>
 
 AEFunction::AEFunction()

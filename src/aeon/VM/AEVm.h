@@ -2,7 +2,7 @@
 #define aeon_vm_h__
 
 #include <AEON/VM/AEVmThread.h>
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
 #include <AEON/VM/AEVmStack.h>
 #include <AEON/Runtime/AEValueList.h>
 #include <AEON/AEContext.h>

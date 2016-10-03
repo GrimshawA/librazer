@@ -3,7 +3,7 @@
 
 #include <AEON/AST/Nodes.h>
 #include <AEON/Compiler/aeCompilerConv.h>
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
 #include <AEON/aeReportManager.h>
 
 #include <vector>

@@ -1,4 +1,6 @@
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
+#include <AEON/aeParser.h>
+#include <AEON/aeTokenizer.h>
 
 AEModule::AEModule()
 {
@@ -125,6 +127,108 @@ int AEModule::identifierPoolIndex(const std::string& identifier)
 	return m_identifierPool.size() - 1;
 }
 
+void AEModule::registerFunction(const std::string& sig, aeBindMethod fn)
+{
+
+}
+
+void AEModule::registerGlobal(const std::string& sig, void* memory)
+{
+
+}
+
+void AEModule::registerType(const std::string& name, std::size_t size)
+{
+	AEType* typeInfo = new AEType(name, size);
+	auto parser = aeParser::create(name, this->m_context);
+	std::string canonicalName = parser->Tok.text;
+	parser->getNextToken();
+	if (parser->Tok.text == "<")
+	{
+		parser->getNextToken();
+		while (parser->Tok.type == AETK_IDENTIFIER)
+		{
+			typeInfo->m_templateParams.push_back(parser->Tok.text);
+			parser->getNextToken(); if (parser->Tok.type == AETK_COMMA) parser->getNextToken();
+		}
+	}
+
+	typeInfo->is_native = true;
+	typeInfo->m_absoluteName = canonicalName;
+	m_types.push_back(typeInfo);
+}
+
+void AEModule::registerTypeConstructor()
+{
+
+}
+
+void AEModule::registerTypeDestructor()
+{
+
+}
+
+void AEModule::registerMethod(const std::string& name, const std::string& sig, aeBindMethod fnPtr)
+{
+	aeon_lexer lex; lex.tokenize(sig);
+	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
+
+	auto typeInfo = getType(name);
+
+	AEType::MethodInfo info;
+	info.methodCallback = fnPtr;
+	info.name = sig;
+	typeInfo->m_methods.push_back(info);
+
+	AEFunction fn;
+	fn.returnType = parser.parseQualType();
+	fn.m_absoluteName = name + "." + parser.Tok.text;
+	fn.decl = name;
+	fn.fn = fnPtr;
+	fn.m_native = true;
+	parser.getNextToken(); parser.getNextToken();
+	while (parser.Tok.text != ")")
+	{
+		aeQualType paramType = parser.parseQualType();
+		fn.params.push_back(paramType);
+		//printf("param %s\n", paramType.str().c_str());
+		if (parser.getNextToken().text != ",")
+			break;
+	}
+	m_functions.push_back(fn);
+
+	printf("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
+}
+
+void AEModule::registerField()
+{
+
+}
+
+void AEModule::registerPropertyGet()
+{
+
+}
+
+void AEModule::registerPropertySet()
+{
+
+}
+
+void AEModule::registerEnum()
+{
+
+}
+
+void AEModule::registerEnumValue()
+{
+
+}
+
+void AEModule::registerTypedef()
+{
+
+}
 
 int AEModule::getDependencyId(const std::string& name)
 {

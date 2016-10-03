@@ -1,6 +1,6 @@
 #include "File.h"
 
-#include <AEON/Runtime/AEModule.h>
+#include <AEON/AEModule.h>
 
 void registerFile(AEModule* m, const std::string& name)
 {
