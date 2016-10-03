@@ -100,6 +100,9 @@ public:
 	void pushVariant(const AEValue& v);
 	void popVariant(AEValue& v);
 
+	void pushVariantRef(const AEValueRef& ref);
+	AEValueRef popVariantRef();
+
 	void pushMemory(const std::vector<uint8_t>& mem);
 	std::vector<uint8_t> popMemory(int size);
 

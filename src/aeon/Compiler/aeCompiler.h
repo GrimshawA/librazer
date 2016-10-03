@@ -198,6 +198,8 @@ public:
 	void emitLambdaFunction(aeNodeFunction* function);
 	void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
 	void emitPushThis();
+	void compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
+	void loadVarRef(aeNodeExpr* e);
 
 	/// Function calls
 	void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);

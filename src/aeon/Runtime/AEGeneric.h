@@ -2,6 +2,7 @@
 #define AEGeneric_h__
 
 #include <string>
+//#include <AEON/Runtime/AEValue.h>
 #include <stdint.h>
 
 class AEVirtualMachine;
@@ -28,6 +29,7 @@ public:
 	float unpack_float();
 	double unpack_double();
 	std::string unpack_string();
+	//AEValue unpackVariant();
 
 	/// [Argument packing: host -> script]
 	void pack_int32(int32_t value);
@@ -39,5 +41,7 @@ public:
 //private:
 	AEVirtualMachine* m_vm;
 };
+
+typedef void(*aeBindMethod)(AEGeneric);
 
 #endif // AEGeneric_h__

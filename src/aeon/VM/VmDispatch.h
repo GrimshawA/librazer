@@ -1,3 +1,5 @@
+#include "VariantOps.h"
+
 void AEVirtualMachine::execute(AEVmStack& threadInfo)
 {
 	threadInfo.cl = &m_stk.frames[m_stk.frames.size() - 1];
@@ -219,15 +221,17 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 			}
 			vm_end
 
-				vm_start(OP_VARSTORE)
-					DoVarStore(this, inst.arg0, inst.arg1, inst.arg2);					
-				vm_end
+			vm_start(OP_VARSTORE)
+				DoVarStore(this, inst.arg0, inst.arg1, inst.arg2);					
+			vm_end
 
-					vm_start(OP_VARLOAD)
-						AEValue variant; m_stk.popVariant(variant);
-						std::string fieldName = m_stk.cl->module->m_identifierPool[inst.arg0];
-												
-					vm_end
+				vm_start(OP_VARLOAD)
+				DoVarLoad(this, inst.arg0);												
+			vm_end
+
+				vm_start(OP_VARLOADREF)
+				DoVarLoadRef(this, inst.arg0, inst.arg1);
+			vm_end
 
 		} // end of switch
 	}

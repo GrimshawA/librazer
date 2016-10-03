@@ -69,7 +69,7 @@ public:
 		/// Call a script function
 		void call(AEModule& module, const char* func);
 
-		void call(AEFunction* fn);
+		int call(AEFunction* fn);
 
 		void startThread(AEVmThreadEnv threadEnv);
 

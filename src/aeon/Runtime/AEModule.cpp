@@ -125,6 +125,95 @@ int AEModule::identifierPoolIndex(const std::string& identifier)
 	return m_identifierPool.size() - 1;
 }
 
+
+int AEModule::getDependencyId(const std::string& name)
+{
+	for (int i = 0; i < m_dependencies.size(); ++i)
+	{
+		if (m_dependencies[i].name == name)
+			return i;
+	}
+
+	return -1;
+}
+
+int AEModule::getDependencyId(AEModule* module)
+{
+	for (int i = 0; i < m_dependencies.size(); ++i)
+	{
+		if (m_dependencies[i].module == module)
+			return i;
+	}
+
+	return -1;
+}
+
+bool AEModule::depends(const std::string& name) const
+{
+	for (auto& dep : m_dependencies)
+	{
+		if (dep.name == name)
+			return true;
+	}
+
+	return false;
+}
+
+bool AEModule::depends(AEModule* module) const
+{
+	for (auto& dep : m_dependencies)
+	{
+		if (dep.module == module)
+			return true;
+	}
+
+	return false;
+}
+
+int AEModule::createDependency(const std::string& name)
+{
+	// This overload creates a unlinked dependency, potentially loaded later
+
+	for (int i = 0; i < m_dependencies.size(); ++i)
+	{
+		if (m_dependencies[i].name == name)
+		{
+			return i;
+		}
+	}
+
+	ModuleDependency dep;
+	dep.module = nullptr;
+	dep.name = name;
+	m_dependencies.push_back(dep);
+
+	return m_dependencies.size() - 1;
+}
+
+int AEModule::createDependency(AEModule* module)
+{
+	if (!module)
+	{
+		printf("Can't create dependencies to null modules\n");
+		return -1;
+	}
+
+	for (int i = 0; i < m_dependencies.size(); ++i)
+	{
+		if (m_dependencies[i].name == module->getName())
+		{
+			return i;
+		}
+	}
+
+	ModuleDependency dep;
+	dep.module = module;
+	dep.name = module->getName();
+	m_dependencies.push_back(dep);
+
+	return m_dependencies.size() - 1;
+}
+
 std::string AEModule::getName()
 {
 	return m_name;

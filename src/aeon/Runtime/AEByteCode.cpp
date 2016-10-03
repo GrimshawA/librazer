@@ -71,10 +71,16 @@ std::string inst_opcode_str(AEInstruction inst)
 	switch (inst.opcode)
 	{
 	case OP_CALL: return "OP_CALL";
+	case OP_CALLNATIVE: return "OP_CALLNATIVE";
+	case OP_CALLMETHOD_NAT: return "OP_CALLMETHOD_NAT";
 	case OP_RETURN: return "OP_RETURN";
 	case OP_DEBUG: return "OP_DEBUG";
 	case OP_VARCALL: return "OP_VARCALL";
 	case OP_PUSHVAR: return "OP_PUSHVAR";
+	case OP_VARLOAD: return "OP_VARLOAD";
+	case OP_VARLOADREF: return "OP_VARLOADREF";
+	case OP_VARSTORE: return "OP_VARSTORE";
+	case OP_LOADK: return "OP_LOADK";
 	}
 	return std::to_string(inst.opcode);
 }

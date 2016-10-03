@@ -13,7 +13,30 @@
 
 class AEValueList;
 class AEObject;
+class AEDynamicObject;
 class AEArray;
+class AEValue;
+
+class AEValueRef {
+public:
+
+	enum RefType
+	{
+		REF_UNDEFINED,
+		REF_VALUE,
+		REF_RAW
+	};
+
+	union {
+		AEValue* value;
+		void*    data;
+	};
+
+	RefType type;
+	AEValue* container;
+
+	bool createOnAssign();
+};
 
 /**
 	\class AEValue
@@ -77,10 +100,9 @@ public:
 	void release();
 
 	void setValue(int index, AEValue v);
-
-	void setProperty(const std::string& name, const std::string& value);
-	void setProperty(const std::string& name, int value);
-	void setProperty(const std::string& name, const AEValue& value);
+	void setValue(const std::string& name, const std::string& value);
+	void setValue(const std::string& name, int value);
+	void setValue(const std::string& name, const AEValue& value);
 
 	AEValue property(const std::string& name) const;
 	AEValue property(int index);
@@ -99,9 +121,13 @@ public:
 	bool isUndefined();
 	bool isString();
 
-	int asInt();
+	int toInteger();
+	std::string toString() const;
 
 	static AEValue makeArray();
+
+	AEValueRef makeRef();
+	AEValueRef makeRefForChild(const std::string& name);
 
 public:
 	
@@ -130,6 +156,7 @@ private:
 		int    _int;
 		AEString* _string;
 		AEObject* _object;
+		AEDynamicObject* _dynObj;
 		AEArray*  _array;
 		AEFunction* _function;
 	};
@@ -140,5 +167,6 @@ class AEArray
 public:
 	std::vector<AEValue> values;
 };
+
 
 #endif // AEValue_h__

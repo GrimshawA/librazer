@@ -2,6 +2,16 @@
 #include <AEON/Runtime/AEObject.h>
 #include <cstdlib>
 
+bool AEValueRef::createOnAssign()
+{
+	if (container && container->type() == AEValue::VALUE_OBJECT)
+		return true;
+
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 AEValue::AEValue()
 : m_valueType(VALUE_UNDEFINED)
 , _real(0)
@@ -110,20 +120,37 @@ void AEValue::setValue(int index, AEValue v)
 	}
 }
 
-void AEValue::setProperty(const std::string& name, const std::string& value)
+void AEValue::setValue(const std::string& name, const std::string& value)
 {
 	if (m_valueType == VALUE_OBJECT)
 	{
 		_object->setProperty(name, value);
 	}
+	else if (m_valueType == VALUE_ANONOBJECT)
+	{
+		_dynObj->setValue(name, value);
+	}
+	else if (!m_valueType)
+	{
+		m_valueType = VALUE_ANONOBJECT;
+		_dynObj = new AEDynamicObject;
+		_dynObj->setValue(name, value);
+	}
 }
 
-void AEValue::setProperty(const std::string& name, int value)
+void AEValue::setValue(const std::string& name, int value)
 {
+	if (m_valueType != VALUE_OBJECT)
+	{
+		_object = new AEObject;
+		m_valueType = VALUE_OBJECT;
+	}
 
+	//printf("%s: %s\n", name.c_str(), value.str().c_str());
+	_object->setProperty(name, AEValue(value));
 }
 
-void AEValue::setProperty(const std::string& name, const AEValue& value)
+void AEValue::setValue(const std::string& name, const AEValue& value)
 {
 	if (m_valueType != VALUE_OBJECT)
 	{
@@ -143,6 +170,7 @@ AEValue AEValue::property(const std::string& name) const
 	int i = 0;
 	for (auto& m : _object->m_properties)
 	{
+		printf("Searching %s vs %s\n", _object->m_names[i].c_str(), name.c_str());
 		if (_object->m_names[i] == name)
 		{
 			return m;
@@ -253,7 +281,7 @@ bool AEValue::isString()
 	return m_valueType == VALUE_STRING;
 }
 
-int AEValue::asInt()
+int AEValue::toInteger()
 {
 	if (m_valueType == VALUE_INT)
 	{
@@ -267,12 +295,60 @@ int AEValue::asInt()
 		return -1;
 }
 
+std::string AEValue::toString() const
+{
+	return str();
+}
+
 AEValue AEValue::makeArray()
 {
 	AEValue v;
 	v.m_valueType = VALUE_ARRAY;
 	v._array = new AEArray;
 	return v;
+}
+
+AEValueRef AEValue::makeRef()
+{
+	AEValueRef ref;
+	if (m_valueType == VALUE_INT)
+	{
+		ref.data = &_int;
+		ref.type = AEValueRef::REF_RAW;
+	}
+	return ref;
+}
+
+AEValueRef AEValue::makeRefForChild(const std::string& name)
+{
+	AEValueRef ref;
+	ref.data = nullptr;
+	ref.type = AEValueRef::REF_UNDEFINED;
+	ref.container = this;
+
+	if (m_valueType == VALUE_OBJECT)
+	{
+		for (int i = 0; i < _object->m_properties.size(); ++i)
+		{
+			if (_object->m_names[i] == name)
+			{
+				if (_object->m_properties[i].m_valueType == VALUE_INT)
+				{
+					ref.data = ((char*)&_object->m_properties[i]._int);
+					ref.type = AEValueRef::REF_RAW;
+					printf("<< Filled raw int ptr for this %x %s  %x\n", _object, name.c_str(), &_object->m_properties[i]._int);
+					return ref;
+				}
+			}
+		}
+
+		// Get here means it doesnt exist: create
+		_object->setProperty(name, AEValue());
+		ref.value = _object->getValueRef(name);
+		ref.type = AEValueRef::REF_VALUE;
+	}
+	
+	return ref;
 }
 
 AEValue& AEValue::operator=(const AEValue& v)

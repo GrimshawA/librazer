@@ -47,6 +47,42 @@ void AECompiler::emitPushThis()
 	emitInstruction(OP_PUSHTHIS);
 }
 
+void AECompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
+{
+	aeQualType varType = m_env->getTypeInfo("var");
+	aeQualType rhsType = buildQualifiedType(rhs);
+
+	loadVarRef(lhs);
+	emitExpressionEval(rhs, aeExprContext());
+
+	if (rhsType.getTypeName() == "int32")
+	{
+		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_INT);
+	}
+}
+
+void AECompiler::loadVarRef(aeNodeExpr* e)
+{
+	if (e->m_nodeType == AEN_ACCESSOPERATOR)
+	{
+		aeNodeAccessOperator* op = (aeNodeAccessOperator*)e;
+		loadVarRef(op->m_a);
+
+		if (op->m_b->m_nodeType == AEN_IDENTIFIER)
+		{
+			emitInstruction(OP_VARLOADREF, 0, m_module->identifierPoolIndex(static_cast<aeNodeIdentifier*>(op->m_b)->m_name));
+		}
+	}
+	else if (e->m_nodeType == AEN_IDENTIFIER)
+	{
+		aeNodeIdentifier* ident = (aeNodeIdentifier*)e;
+		if (getVariable(ident->m_name).mode == AE_VAR_LOCAL)
+		{
+			emitInstruction(OP_VARLOADREF, 1, getVariable(ident->m_name).offset);
+		}
+	}
+}
+
 void AECompiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 {
 	if (m_logExprOps)
@@ -178,10 +214,18 @@ void AECompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 
 	aeQualType T1 = buildQualifiedType(lhs);
 	aeQualType T2 = buildQualifiedType(rhs);
+
+	printf("T1 %s T2 %s\n", T1.str().c_str(), T2.str().c_str());
 	
-	if ((T1.getType() != T2.getType()) && !canImplicitlyConvert(T2, T1))
+	if (!T1.isVariant() && (T1.getType() != T2.getType()) && !canImplicitlyConvert(T2, T1))
 	{
 		CompilerError("0002", "Cannot convert from " + T2.str() + " to " + T1.str());
+		return;
+	}
+
+	if (T1.isVariant())
+	{
+		compileVarAssign(lhs, rhs);
 		return;
 	}
 
@@ -252,6 +296,10 @@ void AECompiler::emitMemberOp(aeNodeAccessOperator* acs)
 		{
 			aeNodeIdentifier* refNode = (aeNodeIdentifier*)acs->m_b;
 			emitEnumValue((aeEnum*)Ta.getType(), refNode->m_name);
+		}
+		else if (acs->m_b->m_nodeType == AEN_IDENTIFIER && Ta.str() == "var")
+		{
+			emitInstruction(OP_VARLOAD, m_module->identifierPoolIndex(((aeNodeIdentifier*)acs->m_b)->m_name));
 		}
 	}
 }
@@ -348,7 +396,8 @@ void AECompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentE
 void AECompiler::emitNew(aeNodeNew* newExpr)
 {
 	// new X() expression must generate a new object instance.
-	emitInstruction(OP_NEWOBJECT, 0);
+	//int typeId = newExpr->m_instanceType.getType();
+	//emitInstruction(OP_NEW, 0, typeId);
 }
 
 void AECompiler::emitSubscriptOp(aeNodeSubscript* subscript)

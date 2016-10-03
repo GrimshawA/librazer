@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include <stdint.h>
 
 #include <AEON/Runtime/AEValue.h>
@@ -19,7 +20,10 @@ class AEType;
 class AEObject
 {
 public:
+	AEObject();
 
+	AEValue* getValueRef(const std::string& name);
+	
 	void setProperty(const std::string& name, const std::string& value);
 
 	void setProperty(const std::string& name, AEValue value);
@@ -55,8 +59,11 @@ public:
 
 	std::vector<std::string> m_names;
 	std::vector<AEValue> m_properties;
-	void* m_obj;
+
+public:
+	void*   m_obj;
 	AEType* m_type;
+	int     m_ref;
 };
 
 /**
@@ -70,10 +77,10 @@ class AEDynamicObject
 {
 public:
 
+	void setValue(const std::string& name, const AEValue& value);
 
 private:
-	std::vector<std::string> m_names;
-	std::vector<AEValue> m_properties;
+	std::map<std::string, AEValue> m_properties;
 };
 
 #endif // AEOBJECT_H__

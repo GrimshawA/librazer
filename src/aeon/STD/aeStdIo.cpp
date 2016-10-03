@@ -32,10 +32,9 @@ void register_stdlib(AEContext* ctx)
 		printf("%d\n", v);
 	});
 
-	ctx->registerFunction("void printVar(string)", [](AEGeneric g){
-		/*AEString* str = g.unpackString();
-		std::string s = str;
-		printf("%d\n", v);*/
+	ctx->registerFunction("void printVar(var)", [](AEGeneric g){
+		AEValue v; g.m_vm->m_stk.popVariant(v);
+		printf("VAR: %s\n", v.toString().c_str());
 	});
 
 	ctx->registerType("Sprite", sizeof(MySprite));

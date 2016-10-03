@@ -55,7 +55,16 @@ enum EOpCodes
 	OP_POPVAR,
 	OP_VARSTORE, ///< Assigns the top value of stack to the loaded var
 	OP_VARLOAD,  ///< Loads a field of a var to stack
+	OP_VARLOADREF,
  	Count
+};
+
+enum AeonVariantTypes
+{
+	AE_VARIANTTYPE_INT,
+	AE_VARIANTTYPE_FLOAT,
+	AE_VARIANTTYPE_STRING,
+	AE_VARIANTTYPE_OBJECT
 };
 
 enum AeonConstants

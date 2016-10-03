@@ -31,17 +31,21 @@ void objects_test()
 	if (myObject)
 	{
 		AEValue myObj;
-		myObj.setProperty("kill", AEValue([](){
+		myObj.setValue("kill", AEValue([](){
 			printf("		kill on A\n");
 		}));
+		myObj.setValue("health", 100);
+
+		myObj.makeRefForChild("health");
 
 		AEValue objB;
-		objB.setProperty("doThings", AEValue([](){
+		objB.setValue("doThings", AEValue([](){
 			printf("           doThings on B\n");
 		}));
+		//objB.setValue("a", myObj);
 
 		AEValue objC;
-		objC.setProperty("finish", AEValue([](){
+		objC.setValue("finish", AEValue([](){
 			printf("			FINISH ON C OBJECT\n");
 		}));
 
@@ -57,6 +61,8 @@ void objects_test()
 		vm.m_stk.pushVariant(objC);
 		//vm.m_stk.pushVariant(AEValue());
 		vm.call(*ctx.modules[0].get(), "ObjectsTest.sum2");
+
+		printf("FINISH\n");
 
 		//vm.call(AEValue(myObject), "ObjectsTest.sum2", AEValueList() << myObj);
 	}

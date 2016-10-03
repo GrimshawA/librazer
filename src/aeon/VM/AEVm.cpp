@@ -105,12 +105,12 @@ void AEVirtualMachine::call(AEModule& module, const char* func)
 	}
 }
 
-void AEVirtualMachine::call(AEFunction* fn)
+int AEVirtualMachine::call(AEFunction* fn)
 {
 	if (!fn->m_compiled)
 	{
 		//printf("This function is not compiled '%s'.\n", function->getSymbolName().c_str());
-		return;
+		return 1;
 	}
 
 	prepare(fn->id);
@@ -148,6 +148,8 @@ void AEVirtualMachine::call(AEFunction* fn)
 
 	// Launch the thread from this entry point
 	execute(m_stk);
+
+	return 0;
 }
 
 #include "VmDispatch.h"

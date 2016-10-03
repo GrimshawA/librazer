@@ -94,6 +94,9 @@ public:
 	/// Check if this is a pod type (trivially constructible, handle or ptr)
 	bool isPod() const;
 
+	/// Check if this type is a variant
+	bool isVariant() const;
+
 	/// Get the primitive type in an enum
 	AEPrimitive getPrimitive() const;
 

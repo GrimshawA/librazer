@@ -2,9 +2,27 @@
 #include <AEON/Runtime/AEFunction.h>
 #include <AEON/VM/AEVm.h>
 
-void AEObject::setProperty(const std::string& name, const std::string& value)
+AEObject::AEObject()
+: m_ref(0)
 {
 
+}
+
+AEValue* AEObject::getValueRef(const std::string& name)
+{
+	for (int i = 0; i < m_properties.size(); ++i)
+	{
+		if (m_names[i] == name)
+			return &m_properties[i];
+	}
+
+	return nullptr;
+}
+
+void AEObject::setProperty(const std::string& name, const std::string& value)
+{
+	m_names.push_back(name);
+	m_properties.push_back(value);
 }
 
 int AEObject::count() const
@@ -25,14 +43,21 @@ void AEObject::setProperty(const std::string& name, AEValue value)
 
 void AEObject::call(const std::string& name)
 {
-	AEFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
-	printf("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
-	if (fn)
+	if (getType()->isNative())
 	{
-		AEVirtualMachine vm;
-		vm.setContext(getType()->m_module->m_context);
-//		vm.call(fn);
+
 	}
+	else
+	{
+		AEFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
+		printf("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
+		if (fn)
+		{
+			AEVirtualMachine vm;
+			vm.setContext(getType()->m_module->m_context);
+			//		vm.call(fn);
+		}
+	}	
 }
 
 AEType* AEObject::getType()
@@ -79,4 +104,11 @@ void* AEObject::getFieldAddress(const std::string& field) const
 void AEObject::log()
 {
 	printf("Object %s@%x\n", m_type->m_name.c_str(), m_obj);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+void AEDynamicObject::setValue(const std::string& name, const AEValue& value)
+{
+	m_properties[name] = value;
 }

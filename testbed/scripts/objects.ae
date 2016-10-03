@@ -24,6 +24,19 @@ class ObjectsTest
 		b.doThings();
 		c.finish();
 
+		printVar(a.health);
+		a.health = 5;
+		printVar(a.health);
+
+		a.health = 10;
+		a.another = 0;
+		printVar(a.health);
+
+		printVar(a.another);
+		a.another = 5;
+		printVar(a.another);
+
+		printVar(a.x);
 		
 	}
 

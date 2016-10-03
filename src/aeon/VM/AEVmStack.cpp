@@ -17,6 +17,22 @@ void AEVmStack::popVariant(AEValue& v)
 	esp += sizeof(AEValue);
 }
 
+void AEVmStack::pushVariantRef(const AEValueRef& ref)
+{
+	esp -= sizeof(ref);
+	new (esp)AEValueRef();
+	*reinterpret_cast<AEValueRef*>(esp) = ref;
+}
+
+AEValueRef AEVmStack::popVariantRef()
+{
+	AEValueRef v;
+	v = *reinterpret_cast<AEValueRef*>(esp);
+	reinterpret_cast<AEValueRef*>(esp)->~AEValueRef();
+	esp += sizeof(AEValueRef);
+	return v;
+}
+
 void AEVmStack::pushMemory(const std::vector<uint8_t>& mem)
 {
 	esp -= mem.size();

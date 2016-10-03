@@ -113,6 +113,11 @@ bool aeQualType::isPod() const
 	return false;
 }
 
+bool aeQualType::isVariant() const
+{
+	return m_type->getSymbolName() == "var";
+}
+
 AEPrimitive aeQualType::getPrimitive() const
 {
 	return AE_PFLOAT; //todo

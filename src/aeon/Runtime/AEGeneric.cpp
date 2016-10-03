@@ -30,6 +30,13 @@ std::string AEGeneric::unpack_string()
 	return str;
 }
 
+/*AEValue AEGeneric::unpackVariant()
+{
+	AEValue v;
+	m_vm->m_stk.popVariant(v);
+	return v;
+}*/
+
 void AEGeneric::pack_int32(int32_t value)
 {
 

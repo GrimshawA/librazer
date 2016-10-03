@@ -67,6 +67,19 @@ public:
 
 	int identifierPoolIndex(const std::string& identifier);
 
+public:
+
+	int getDependencyId(const std::string& name);
+	int getDependencyId(AEModule* module);
+
+	bool depends(const std::string& name) const;
+	bool depends(AEModule* module) const;
+
+	int createDependency(const std::string& name);
+	int createDependency(AEModule* module);
+
+public:
+
 	std::string getName();
 
 
@@ -90,6 +103,13 @@ public:
 
 public:
 
+	struct ModuleDependency
+	{
+		std::string name;
+		std::string importAlias;
+		AEModule*   module;
+	};
+
 	std::string                          m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
 	AEContext*                           m_context;
 	std::vector<AEFunction>              m_functions;          ///< All script functions
@@ -100,7 +120,7 @@ public:
 	std::vector<int64_t>                 m_intPool;
 	std::vector<std::string>             m_identifierPool;
 	std::vector<AEInstruction>           m_code;               ///< The entire module's bytecode
-	std::vector<AEModule*>               m_dependencies;       ///< Dependencies of this module
+	std::vector<ModuleDependency>        m_dependencies;       ///< Dependencies of this module
 };
 
 #endif // AEMODULE_H__

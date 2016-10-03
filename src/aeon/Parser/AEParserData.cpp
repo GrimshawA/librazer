@@ -66,7 +66,7 @@ AEValue aeParser::parseDataValue()
 		getNextToken();
 
 		AEValue val = parseProperty();
-		objectValue.setProperty(ObjectType, val);
+		objectValue.setValue(ObjectType, val);
 	}
 	else if (Tok.type == AETK_OPENBRACKET)
 	{
@@ -88,7 +88,7 @@ AEValue aeParser::parseDataValue()
 
 				AEValue ChildValue = parseProperty();
 				printf("BODY %s\n", ChildValue.c_str());
-				objectValue.setProperty(identifier, ChildValue);
+				objectValue.setValue(identifier, ChildValue);
 			}
 			else
 			{
@@ -96,8 +96,8 @@ AEValue aeParser::parseDataValue()
 				if (obj.property("id"))
 				{
 					// Identified subobject
-					objectValue.setProperty(obj.property("id").str(), obj);
-					obj.setProperty("typename", AEValue(identifier));
+					objectValue.setValue(obj.property("id").str(), obj);
+					obj.setValue("typename", AEValue(identifier));
 				}
 			}
 		}
@@ -130,7 +130,7 @@ AEValue aeParser::parseDataObjectBody()
 		{
 			getNextToken();
 			AEValue v = parseProperty();
-			obj.setProperty(identifier, v);
+			obj.setValue(identifier, v);
 
 			print2("parsed property for " + identifier);
 		}
@@ -153,7 +153,7 @@ AEValue aeParser::parseProperty()
 		std::string identifier = Tok.text;
 		getNextToken();
 		AEValue obj = parseDataObjectBody();
-		obj.setProperty("typename", AEValue(identifier));
+		obj.setValue("typename", AEValue(identifier));
 		return obj;
 	}
 	if (Tok.type == AETK_STRINGLITERAL || Tok.type == AETK_IDENTIFIER)

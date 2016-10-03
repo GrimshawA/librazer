@@ -9,6 +9,13 @@ aeNodeAccessOperator::aeNodeAccessOperator()
 
 aeQualType aeNodeAccessOperator::getQualifiedType(AECompiler* c)
 {
+	// When the left side in a.b is a var, it can only yield another var as result
+	aeQualType leftType = m_a->getQualifiedType(c);
+	if (leftType.isVariant())
+	{
+		return leftType;
+	}
+
 	return m_b->getQualifiedType(c);
 }
 
