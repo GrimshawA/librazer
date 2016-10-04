@@ -5,7 +5,7 @@
 #include <AEON/aeTokenizer.h>
 #include <AEON/Compiler/aeCompiler.h>
 
-#include <AEON/STD/aeStdIo.h>
+#include <AEON/stdlib/ExportStd.h>
 
 std::string getFileSource(const std::string& filename)
 {
@@ -102,7 +102,7 @@ AEValue AEContext::evaluate(const std::string& expression)
 
 void AEContext::init_all()
 {
-	register_stdlib(this);
+	RegisterStd(this);
 }
 
 void AEContext::quick_build(const std::string& file)
@@ -123,8 +123,11 @@ void AEContext::quick_build(const std::string& file)
 	aeNodeModule* tree_root = parser.root;
 	//tree_root->printSelf(0);
 
+	AEModule* tempModule = createModule("tmp");
+	tempModule->createDependency(getModule("std"));
+
 	compiler.m_env = this;
-	compiler.m_module = createModule("main");
+	compiler.m_module = tempModule;
 	compiler.generate(parser.root);
 }
 

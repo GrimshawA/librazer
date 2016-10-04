@@ -67,7 +67,6 @@ SOURCES +=  ../../src/aeon/aeBindingHelper.cpp \
     ../../src/aeon/Runtime/AEType.cpp \
     ../../src/aeon/Runtime/AEValue.cpp \
     ../../src/aeon/Runtime/AEValueList.cpp \
-    ../../src/aeon/STD/aeStdIo.cpp \
     ../../src/aeon/stdlib/io/File.cpp \
     ../../src/aeon/stdlib/io/FileInfo.cpp \
     ../../src/aeon/stdlib/media/Device.cpp \
@@ -75,7 +74,8 @@ SOURCES +=  ../../src/aeon/aeBindingHelper.cpp \
     ../../src/aeon/stdlib/window/Window.cpp \
     ../../src/aeon/VM/AEVm.cpp \
     ../../src/aeon/VM/AEVmStack.cpp \
-    ../../src/aeon/VM/AEVmThread.cpp
+    ../../src/aeon/VM/AEVmThread.cpp \
+    ../../src/aeon/stdlib/ExportStd.cpp
 
 HEADERS +=   ../../src/aeon/aeBindingHelper.h \
     ../../src/aeon/aeBuilder.h \
@@ -120,14 +120,12 @@ HEADERS +=   ../../src/aeon/aeBindingHelper.h \
     ../../src/aeon/Compiler/aeCompilerWarningIds.h \
     ../../src/aeon/Runtime/AEByteCode.h \
     ../../src/aeon/Runtime/AEFunction.h \
-    ../../src/aeon/Runtime/AEGeneric.h \
-    ../../src/aeon/Runtime/AEModule.h \
+    ../../src/aeon/Runtime/AEGeneric.h \    
     ../../src/aeon/Runtime/AEObject.h \
     ../../src/aeon/Runtime/AEString.h \
     ../../src/aeon/Runtime/AEType.h \
     ../../src/aeon/Runtime/AEValue.h \
     ../../src/aeon/Runtime/AEValueList.h \
-    ../../src/aeon/STD/aeStdIo.h \
     ../../src/aeon/stdlib/io/File.h \
     ../../src/aeon/stdlib/io/FileInfo.h \
     ../../src/aeon/stdlib/media/Device.h \
@@ -143,7 +141,10 @@ HEADERS +=   ../../src/aeon/aeBindingHelper.h \
     ../../src/aeon/VM/VmDispatch.h \
     ../../src/aeon/VM/VmInstructions.h \
     ../../include/AEON/AEContext.h \
-    ../../include/AEON/AEDocument.h
+    ../../include/AEON/AEDocument.h \
+    ../../include/AEON/AEModule.h \
+    ../../src/aeon/stdlib/ExportStd.h
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

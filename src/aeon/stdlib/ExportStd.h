@@ -2,6 +2,9 @@
 #define ExportStdModule_h__
 
 class AEModule;
+class AEContext;
+
+void RegisterStd(AEContext* ctx);
 
 void RegisterWindow(AEModule* m);
 void RegisterIO(AEModule* m);
