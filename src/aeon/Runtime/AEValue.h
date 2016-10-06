@@ -123,6 +123,7 @@ public:
 
 	int toInteger();
 	std::string toString() const;
+	bool toBoolean() const;
 
 	static AEValue makeArray();
 
@@ -136,12 +137,24 @@ public:
 	AEValue& operator=(int v);
 	AEValue& operator=(float v);
 
-	AEValue operator+(AEValue v);
+public:
+	/* Variant operations */
+	AEValue operator+(const AEValue& b);
+	AEValue operator-(const AEValue& b);
+	AEValue operator*(const AEValue& b);
+	AEValue operator/(const AEValue& b);
+
+	bool    operator==(const AEValue& b);
+
+public:
+
 	AEValue operator+(int32_t v);
 	AEValue operator+(AEArray& v);
 	AEValue operator+(AEString& v);
 
 	operator bool();
+
+	void setFromObject(void* ptr, AEType* typeInfo);
 
 private:
 	friend class aeParser;

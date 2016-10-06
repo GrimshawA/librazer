@@ -81,6 +81,11 @@ public:
 	void registerEnumValue();
 	void registerTypedef();
 
+public:
+	// Type information
+
+	void resolveType(aeQualType& type);
+	bool hasType(const std::string& name);
 
 public:
 

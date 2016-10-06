@@ -220,6 +220,17 @@ void AEModule::registerTypedef()
 
 }
 
+void AEModule::resolveType(aeQualType& type)
+{
+	// Fill type information based on the module dependency graph
+
+}
+
+bool AEModule::hasType(const std::string& name)
+{
+	return false;
+}
+
 int AEModule::getDependencyId(const std::string& name)
 {
 	for (int i = 0; i < m_dependencies.size(); ++i)

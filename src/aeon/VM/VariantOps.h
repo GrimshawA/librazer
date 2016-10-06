@@ -1,7 +1,7 @@
 #ifndef VariantOps_h__
 #define VariantOps_h__
 
-inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int b, int c)
+inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int typeIndex, int c)
 {
 	vm_value operand = vm->m_stk.pop_value();
 	AEValueRef ref = vm->m_stk.popVariantRef();
@@ -22,6 +22,7 @@ inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int b, int c)
 									 memcpy(ref.data, &operand.i32, sizeof(int));
 									 printf("Setting var %x to int %d\n", ref.data, operand.i64);
 									 break;
+
 		}
 			/*case AE_VARIANTTYPE_FLOAT: varObj ? *varObj = operand.i64; break;
 			case AE_VARIANTTYPE_STRING: varObj ? *varObj = operand.i64; break;
@@ -35,6 +36,12 @@ inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int b, int c)
 		case AE_VARIANTTYPE_INT: {
 									 *ref.value = operand.i32;
 									 break;
+		}
+
+		case AE_VARIANTTYPE_OBJECT: {
+			AEType* typeInfo;// = vm->m_module;
+			(*ref.value).setFromObject(operand.ptr, typeInfo);
+			break;
 		}
 			/*case AE_VARIANTTYPE_FLOAT: varObj ? *varObj = operand.i64; break;
 			case AE_VARIANTTYPE_STRING: varObj ? *varObj = operand.i64; break;
@@ -79,6 +86,46 @@ inline void DoVarLoadRef(AEVirtualMachine* vm, int op, int data0)
 		ref.value = referredValue;
 		vm->m_stk.pushVariantRef(ref);
 	}
+}
+
+inline void DoAddV(AEVirtualMachine* vm)
+{
+	AEValue a,b;
+	vm->m_stk.popVariant(b);
+	vm->m_stk.popVariant(a);
+	vm->m_stk.pushVariant(a+b);
+}
+
+inline void DoSubV(AEVirtualMachine* vm)
+{
+	AEValue a,b;
+	vm->m_stk.popVariant(b);
+	vm->m_stk.popVariant(a);
+	vm->m_stk.pushVariant(a-b);
+}
+
+inline void DoMultV(AEVirtualMachine* vm)
+{
+	AEValue a,b;
+	vm->m_stk.popVariant(b);
+	vm->m_stk.popVariant(a);
+	vm->m_stk.pushVariant(a*b);
+}
+
+inline void DoDivV(AEVirtualMachine* vm)
+{
+	AEValue a,b;
+	vm->m_stk.popVariant(b);
+	vm->m_stk.popVariant(a);
+	vm->m_stk.pushVariant(a/b);
+}
+
+inline void DoCompareV(AEVirtualMachine* vm)
+{
+	AEValue a,b;
+	vm->m_stk.popVariant(b);
+	vm->m_stk.popVariant(a);
+	vm->m_stk.pushVariant(a==b);
 }
 
 #endif // VariantOps_h__

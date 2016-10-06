@@ -300,6 +300,22 @@ std::string AEValue::toString() const
 	return str();
 }
 
+bool AEValue::toBoolean() const
+{
+	if(m_valueType == VALUE_OBJECT)
+		return true;
+	else if(m_valueType == VALUE_INT)
+		return _int > 0;
+	else if(m_valueType == VALUE_REAL)
+		return _real > 0;
+	else if(m_valueType == VALUE_ANONOBJECT)
+		return true;
+	else if(m_valueType == VALUE_STRING)
+		return false;
+
+	return false;
+}
+
 AEValue AEValue::makeArray()
 {
 	AEValue v;
@@ -409,22 +425,42 @@ AEValue& AEValue::operator=(float v)
 	return *this;
 }
 
-AEValue AEValue::operator+(AEValue v)
+AEValue AEValue::operator+(const AEValue& b)
 {
-	if (v.m_valueType == VALUE_ARRAY)
+	if (b.m_valueType == VALUE_ARRAY)
 	{
-		return operator+(*v._array);
+		return operator+(*b._array);
 	}
-	else if (v.m_valueType == VALUE_INT)
+	else if (b.m_valueType == VALUE_INT)
 	{
-		return operator+(v._int);
+		return operator+(b._int);
 	}
-	else if (v.m_valueType == VALUE_STRING)
+	else if (b.m_valueType == VALUE_STRING)
 	{
-		return operator+(*v._string);
+		return operator+(*b._string);
 	}
 	else
 		return AEValue();
+}
+
+AEValue AEValue::operator-(const AEValue& b)
+{
+	return AEValue();
+}
+
+AEValue AEValue::operator*(const AEValue& b)
+{
+	return AEValue();
+}
+
+AEValue AEValue::operator/(const AEValue& b)
+{
+	return AEValue();
+}
+
+bool AEValue::operator==(const AEValue& b)
+{
+	return false;
 }
 
 AEValue AEValue::operator+(AEArray& v)
@@ -482,7 +518,7 @@ AEValue AEValue::operator+(int32_t v)
 
 AEValue::operator bool()
 {
-	return m_valueType != VALUE_UNDEFINED;
+	return toBoolean();
 }
 
 void AEValue::setFromArray(AEValue v)
@@ -493,4 +529,12 @@ void AEValue::setFromArray(AEValue v)
 void AEValue::setFromString(AEValue v) 
 {
 
+}
+
+void AEValue::setFromObject(void* ptr, AEType* typeInfo)
+{
+	_object = new AEObject();
+	_object->m_obj = ptr;
+	_object->m_type = typeInfo;
+	m_valueType = VALUE_OBJECT;
 }
