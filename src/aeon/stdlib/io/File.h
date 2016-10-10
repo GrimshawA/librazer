@@ -11,8 +11,17 @@ class File
 {
 public:
 
-	bool open(const std::string& filename);
+	File();
+	~File();
 
+	bool open(const std::string& filename);
+	void close();
+
+	int tell();
+
+
+private:
+	FILE* m_file;
 };
 
 #endif // AEFILEINFO_H__
