@@ -4,7 +4,7 @@
 #include <AEON/AST/Nodes.h>
 #include <AEON/Compiler/aeCompilerConv.h>
 #include <Rzr/RzModule.h>
-#include <AEON/aeReportManager.h>
+#include <AEON/Compiler/aeReportManager.h>
 
 #include <vector>
 #include <stack>

@@ -1,6 +1,6 @@
 #include <AEON/Runtime/AEFunction.h>
 #include <Rzr/RzModule.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 
 AEFunction::AEFunction()
 : aeSymbol()

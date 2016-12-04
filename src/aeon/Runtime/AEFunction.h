@@ -1,7 +1,7 @@
 #ifndef AEFunction_h__
 #define AEFunction_h__
 
-#include <AEON/aeSymbol.h>
+#include <AEON/Runtime/aeSymbol.h>
 #include <AEON/Runtime/AEType.h>
 
 #include <functional>

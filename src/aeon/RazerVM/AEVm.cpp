@@ -1,11 +1,11 @@
-#include <AEON/RazerVM/AEVm.h>
+#include <AEON/VM/AEVm.h>
 #include <AEON/Runtime/aeByteCode.h>
 #include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEGeneric.h>
 #include <AEON/DebugDefs.h>
 
-#include <AEON/RazerVM/AEVmCalls.h>
+#include <AEON/VM/AEVmCalls.h>
 
 #define vm_start(x) case x:{
 #define vm_end break;}

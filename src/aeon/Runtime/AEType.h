@@ -1,9 +1,9 @@
 #ifndef aeon_type_h__
 #define aeon_type_h__
 
-#include <AEON/aeQualType.h>
+#include <AEON/Runtime/aeQualType.h>
 #include <AEON/Runtime/AEGeneric.h>
-#include <AEON/aeSymbol.h>
+#include <AEON/Runtime/aeSymbol.h>
 #include <vector>
 #include <bitset>
 #include <string>

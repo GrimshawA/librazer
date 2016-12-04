@@ -1,6 +1,6 @@
 #include "testbed.h"
 #include <Rzr/RzEngine.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/AEDocument.h>
 #include <AEON/AEBuilder.h>

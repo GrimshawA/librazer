@@ -1,6 +1,6 @@
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEFunction.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 
 AEObject::AEObject()
 : m_ref(0)

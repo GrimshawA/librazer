@@ -1,6 +1,6 @@
 #include <AEON/Compiler/aeCompiler.h>
 #include <AEON/Runtime/aeByteCode.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 #include <Rzr/RzEngine.h>
 #include <AEON/DebugDefs.h>
 

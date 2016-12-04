@@ -1,8 +1,8 @@
 #ifndef RZENGINE_H__
 #define RZENGINE_H__
 
-#include <AEON/VM/AEVmStack.h>
-#include <AEON/aeQualType.h>
+#include <AEON/RazerVM/AEVmStack.h>
+#include <AEON/Runtime/aeQualType.h>
 #include <AEON/Runtime/AEType.h>
 #include <Rzr/RzValue.h>
 #include <Rzr/RzModule.h>

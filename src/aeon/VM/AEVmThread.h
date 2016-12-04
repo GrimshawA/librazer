@@ -1,7 +1,7 @@
 #ifndef AEVmThread_h__
 #define AEVmThread_h__
 
-#include <AEON/VM/AEVmStack.h>
+#include <AEON/RazerVM/AEVmStack.h>
 #include <thread>
 
 class AEVmThread

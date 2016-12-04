@@ -2,7 +2,7 @@
 #define aeClosure_h__
 
 #include <AEON/Runtime/AEByteCode.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 
 #include <vector>
 

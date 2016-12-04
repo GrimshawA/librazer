@@ -3,7 +3,7 @@
 #include <AEON/stdlib/window/Window.h>
 
 #include <Rzr/RzEngine.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 #include <AEON/Runtime/AEGeneric.h>
 
 #include <cmath>

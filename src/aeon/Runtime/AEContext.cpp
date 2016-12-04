@@ -1,6 +1,6 @@
 #include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVm.h>
 #include <AEON/Parser/RzParser.h>
 #include <AEON/Parser/RzTokens.h>
 #include <AEON/Compiler/aeCompiler.h>

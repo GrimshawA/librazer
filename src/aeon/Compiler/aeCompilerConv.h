@@ -1,7 +1,7 @@
 #ifndef aeCompilerConv_h__
 #define aeCompilerConv_h__
 
-#include <AEON/aeQualType.h>
+#include <AEON/Runtime/aeQualType.h>
 #include <vector>
 
 class AEType;

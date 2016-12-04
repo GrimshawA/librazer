@@ -1,5 +1,5 @@
-#include <AEON/VM/AEVmStack.h>
-#include <AEON/VM/AEVm.h>
+#include <AEON/RazerVM/AEVmStack.h>
+#include <AEON/RazerVM/AEVm.h>
 
 void AEVmStack::pushVariant(const RzValue& v)
 {

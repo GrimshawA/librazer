@@ -2,7 +2,7 @@
 #define aeNodeReturn_h__
 
 #include <AEON/AST/AEBaseNode.h>
-#include "../aeQualType.h"
+#include "../Runtime/aeQualType.h"
 
 #include <vector>
 #include <memory>

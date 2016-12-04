@@ -3,7 +3,7 @@
 
 #include <AEON/Runtime/AEByteCode.h>
 #include <AEON/Runtime/AEType.h>
-#include <AEON/aeQualType.h>
+#include <AEON/Runtime/aeQualType.h>
 #include <AEON/Runtime/AEFunction.h>
 #include <vector>
 #include <array>
