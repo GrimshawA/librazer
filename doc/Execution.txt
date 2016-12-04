@@ -1,0 +1,22 @@
+RazerVM
+----------------------------------------------------------------
+
+The primary target for executing the language is in the RazerVM. 
+This is a multi threaded code executor of RazerByteCode.
+
+JIT compilers will be pluggable into the vm.
+
+
+LLVM
+----------------------------------------------------------------
+
+A unimplemented but planned feature is to compile razer code into LLVM IR,
+then passing it on to the llvm infrastructure in order to have native speed execution.
+
+
+RzToCpp
+-----------------------------------------------------------------
+
+This alternative is still being designed but it converts the razer sources to C++ code.
+The idea is to have razer code as a platform for expressiveness. Write code once without
+caring where and how it will run. Modelling the solution to the problem should be the only focus.
