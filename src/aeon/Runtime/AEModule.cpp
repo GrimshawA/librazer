@@ -351,7 +351,7 @@ void RzModule::write(const char* filename)
 		{
 			int ic = m_code.size();
 			fwrite(&ic, sizeof(ic), 1, fp);
-			fwrite(&m_code[0], sizeof(AEInstruction), m_code.size(), fp);
+			fwrite(&m_code[0], sizeof(RzInstruction), m_code.size(), fp);
 			fclose(fp);
 		}
 }
@@ -364,7 +364,7 @@ void RzModule::write(const char* filename)
 			int ic;
 			fread(&ic, sizeof(ic), 1, fp);
 			m_code.resize(ic);
-			fread(&m_code[0], sizeof(AEInstruction), ic, fp);
+			fread(&m_code[0], sizeof(RzInstruction), ic, fp);
 			fclose(fp);
 		}
 	}

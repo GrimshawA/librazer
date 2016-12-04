@@ -1,8 +1,8 @@
 #ifndef aeClosure_h__
 #define aeClosure_h__
 
-#include <AEON/Runtime/AEByteCode.h>
-#include <AEON/RazerVM/AEVm.h>
+#include <RazerVM/InstructionSet.h>
+#include <RazerVM/AEVm.h>
 
 #include <vector>
 

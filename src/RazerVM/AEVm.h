@@ -1,9 +1,9 @@
 #ifndef aeon_vm_h__
 #define aeon_vm_h__
 
-#include <AEON/RazerVM/AEVmThread.h>
+#include <RazerVM/AEVmThread.h>
 #include <Rzr/RzModule.h>
-#include <AEON/RazerVM/AEVmStack.h>
+#include <RazerVM/AEVmStack.h>
 #include <AEON/Runtime/AEValueList.h>
 #include <Rzr/RzEngine.h>
 

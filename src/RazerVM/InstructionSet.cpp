@@ -1,4 +1,4 @@
-#include <AEON/Runtime/AEByteCode.h>
+#include <RazerVM/InstructionSet.h>
 #include <string>
 
 std::array<const char*, static_cast<int32_t>(EOpCodes::Count)> EOpCodeNames = {
@@ -23,18 +23,18 @@ void printBits(size_t const size, void const * const ptr)
 	puts("");
 }
 
-void setopcode(AEInstruction& inst, EOpCodes opcode)
+void setopcode(RzInstruction& inst, EOpCodes opcode)
 {
 	inst.opcode = opcode;
 	//printBits(sizeof(inst), &inst);
 }
 
-uint32_t getopcode(const AEInstruction& inst)
+uint32_t getopcode(const RzInstruction& inst)
 {
 	return inst.opcode;
 }
 
-uint32_t extract_uint32(const AEInstruction& inst, uint64_t _lsb)
+uint32_t extract_uint32(const RzInstruction& inst, uint64_t _lsb)
 {
 	const unsigned char* addr = reinterpret_cast<const unsigned char*>(&inst);
 	uint64_t roi = *(int64_t*)(addr);
@@ -44,29 +44,29 @@ uint32_t extract_uint32(const AEInstruction& inst, uint64_t _lsb)
 	return static_cast<uint32_t>(result);
 }
 
-void setinst_a(AEInstruction& inst, int val_a)
+void setinst_a(RzInstruction& inst, int val_a)
 {
 	//inst = inst | (static_cast<uint64_t>(val_a) << 24);
 	//printBits(sizeof(inst), &inst);
 	inst.arg0 = val_a;
 }
 
-uint32_t getinst_a(const AEInstruction& inst)
+uint32_t getinst_a(const RzInstruction& inst)
 {
 	return inst.arg0;
 }
 
-void setinst_b(AEInstruction& inst, int val_b)
+void setinst_b(RzInstruction& inst, int val_b)
 {
 	inst.arg1 = val_b;
 }
 
-uint32_t getinst_b(const AEInstruction& inst)
+uint32_t getinst_b(const RzInstruction& inst)
 {
 	return inst.arg1;
 }
 
-std::string inst_opcode_str(AEInstruction inst)
+std::string inst_opcode_str(RzInstruction inst)
 {
 	switch (inst.opcode)
 	{

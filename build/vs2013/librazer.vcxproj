@@ -175,11 +175,7 @@
     <ClCompile Include="..\..\src\AEON\Compiler\AECompilerData.cpp" />
     <ClCompile Include="..\..\src\AEON\Compiler\CompileExpressions.cpp" />
     <ClCompile Include="..\..\src\AEON\Compiler\CompileStatements.cpp" />
-    <ClCompile Include="..\..\src\AEON\RazerVM\AEVm.cpp" />
-    <ClCompile Include="..\..\src\AEON\RazerVM\AEVmStack.cpp" />
-    <ClCompile Include="..\..\src\AEON\RazerVM\AEVmThread.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\aeBindingHelper.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEByteCode.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\aeClosure.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\AEContext.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\AEFunction.cpp" />
@@ -198,6 +194,10 @@
     <ClCompile Include="..\..\src\AEON\stdlib\media\Device.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\net\Socket.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\window\Window.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\AEVm.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\AEVmStack.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\AEVmThread.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\InstructionSet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Rzr\RzDocument.h" />
@@ -236,16 +236,7 @@
     <ClInclude Include="..\..\src\AEON\DebugDefs.h" />
     <ClInclude Include="..\..\src\AEON\Parser\RzParser.h" />
     <ClInclude Include="..\..\src\AEON\Parser\RzTokens.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\AEVm.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\AEVmArithmetic.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\AEVmCalls.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\AEVmStack.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\AEVmThread.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\VariantOps.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\VmDispatch.h" />
-    <ClInclude Include="..\..\src\AEON\RazerVM\VmInstructions.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\aeBindingHelper.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEByteCode.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\aeClosure.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEFunction.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEGeneric.h" />
@@ -262,6 +253,15 @@
     <ClInclude Include="..\..\src\AEON\stdlib\media\Device.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\net\Socket.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\window\Window.h" />
+    <ClInclude Include="..\..\src\RazerVM\AEVm.h" />
+    <ClInclude Include="..\..\src\RazerVM\AEVmArithmetic.h" />
+    <ClInclude Include="..\..\src\RazerVM\AEVmCalls.h" />
+    <ClInclude Include="..\..\src\RazerVM\AEVmStack.h" />
+    <ClInclude Include="..\..\src\RazerVM\AEVmThread.h" />
+    <ClInclude Include="..\..\src\RazerVM\InstructionSet.h" />
+    <ClInclude Include="..\..\src\RazerVM\VariantOps.h" />
+    <ClInclude Include="..\..\src\RazerVM\VmDispatch.h" />
+    <ClInclude Include="..\..\src\RazerVM\VmInstructions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

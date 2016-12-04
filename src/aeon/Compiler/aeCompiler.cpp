@@ -1,6 +1,6 @@
 #include <AEON/Compiler/aeCompiler.h>
-#include <AEON/Runtime/aeByteCode.h>
-#include <AEON/RazerVM/AEVm.h>
+#include <RazerVM/InstructionSet.h>
+#include <RazerVM/AEVm.h>
 #include <Rzr/RzEngine.h>
 #include <AEON/DebugDefs.h>
 
@@ -61,7 +61,7 @@ void AECompiler::emitDebugPrint(const std::string& message)
 	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
 }
 
-uint32_t AECompiler::emitInstruction(AEInstruction instr)
+uint32_t AECompiler::emitInstruction(RzInstruction instr)
 {
 	m_module->m_code.push_back(instr);
 	return m_cursor++;
@@ -69,7 +69,7 @@ uint32_t AECompiler::emitInstruction(AEInstruction instr)
 
 uint32_t AECompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
 {
-	AEInstruction instr;
+	RzInstruction instr;
 	instr.opcode = opcode;
 	instr.arg0 = arg0;
 	instr.arg1 = arg1;

@@ -6,7 +6,7 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 
 	for (; threadInfo.cl->pc < threadInfo.cl->module->m_code.size(); ++threadInfo.cl->pc)
 	{
-		AEInstruction& inst = threadInfo.cl->module->m_code[threadInfo.cl->pc];
+		RzInstruction& inst = threadInfo.cl->module->m_code[threadInfo.cl->pc];
 #ifdef TRACE_VM
 		printf(" vm %s\n", inst_opcode_str(inst).c_str());
 #endif

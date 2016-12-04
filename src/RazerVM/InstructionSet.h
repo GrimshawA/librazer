@@ -1,9 +1,18 @@
-#ifndef aeon_bytecode_h__
-#define aeon_bytecode_h__
+#ifndef RAZERVMINSTRUCTIONSET_H__
+#define RAZERVMINSTRUCTIONSET_H__
 
 #include <vector>
 #include <array>
 #include <stdint.h>
+
+struct RzInstruction
+{
+	uint8_t opcode;
+	int8_t arg0;
+	int8_t arg1;
+	int8_t arg2;
+};
+
 
 /*
 	Instructions notation:
@@ -130,23 +139,15 @@ struct aeon_object_ref
 	void* addr;
 };
 
-struct AEInstruction
-{
-	uint8_t opcode;
-	int8_t arg0;
-	int8_t arg1;
-	int8_t arg2;
-};
+void setopcode(RzInstruction& inst, EOpCodes opcode);
+uint32_t getopcode(const RzInstruction& inst);
 
-void setopcode(AEInstruction& inst, EOpCodes opcode);
-uint32_t getopcode(const AEInstruction& inst);
+void setinst_a(RzInstruction& inst, int val_a);
+uint32_t getinst_a(const RzInstruction& inst);
 
-void setinst_a(AEInstruction& inst, int val_a);
-uint32_t getinst_a(const AEInstruction& inst);
+void setinst_b(RzInstruction& inst, int val_b);
+uint32_t getinst_b(const RzInstruction& inst);
 
-void setinst_b(AEInstruction& inst, int val_b);
-uint32_t getinst_b(const AEInstruction& inst);
+std::string inst_opcode_str(RzInstruction inst);
 
-std::string inst_opcode_str(AEInstruction inst);
-
-#endif // aeon_bytecode_h__
+#endif // RAZERVMINSTRUCTIONSET_H__

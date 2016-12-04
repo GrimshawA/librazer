@@ -1,4 +1,4 @@
-#include <AEON/RazerVM/AEVm.h>
+#include <RazerVM/AEVm.h>
 
 
 static inline void VM_DynamicAdd(AEVirtualMachine* vm, int functionIndex)

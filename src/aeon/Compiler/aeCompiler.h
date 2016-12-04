@@ -108,7 +108,7 @@ public:
 	aeQualType buildQualifiedType(aeNodeExpr* e);
 	
 	/// Emit an instruction
-	uint32_t emitInstruction(AEInstruction instr);
+	uint32_t emitInstruction(RzInstruction instr);
 
 	/// Emits an instruction at the cursor from premade arguments
 	uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);

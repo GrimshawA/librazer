@@ -1,7 +1,7 @@
 #ifndef RZMODULE_H__
 #define RZMODULE_H__
 
-#include <AEON/Runtime/AEByteCode.h>
+#include <RazerVM/InstructionSet.h>
 #include <AEON/Runtime/AEType.h>
 #include <AEON/Runtime/aeQualType.h>
 #include <AEON/Runtime/AEFunction.h>
@@ -139,7 +139,7 @@ public:
 	std::vector<double>                  m_doublePool;
 	std::vector<int64_t>                 m_intPool;
 	std::vector<std::string>             m_identifierPool;
-	std::vector<AEInstruction>           m_code;               ///< The entire module's bytecode
+	std::vector<RzInstruction>           m_code;               ///< The entire module's bytecode
 	std::vector<ModuleDependency>        m_dependencies;       ///< Dependencies of this module
 };
 
