@@ -1,6 +1,6 @@
 #include <Rzr/RzModule.h>
-#include <AEON/aeParser.h>
-#include <AEON/aeTokenizer.h>
+#include <AEON/Parser/RzParser.h>
+#include <AEON/Parser/RzTokens.h>
 
 RzModule::RzModule()
 {
@@ -130,7 +130,7 @@ void RzModule::registerGlobal(const std::string& sig, void* memory)
 void RzModule::registerType(const std::string& name, std::size_t size)
 {
 	AEType* typeInfo = new AEType(name, size);
-	auto parser = aeParser::create(name, this->m_context);
+	auto parser = RzParser::create(name, this->m_context);
 	std::string canonicalName = parser->Tok.text;
 	parser->getNextToken();
 	if (parser->Tok.text == "<")
@@ -161,7 +161,7 @@ void RzModule::registerTypeDestructor()
 void RzModule::registerMethod(const std::string& name, const std::string& sig, aeBindMethod fnPtr)
 {
 	aeon_lexer lex; lex.tokenize(sig);
-	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
+	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
 
 	auto typeInfo = getType(name);
 

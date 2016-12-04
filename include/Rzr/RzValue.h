@@ -157,7 +157,7 @@ public:
 	void setFromObject(void* ptr, AEType* typeInfo);
 
 private:
-	friend class aeParser;
+	friend class RzParser;
 
 	void setFromArray(RzValue v);
 	void setFromString(RzValue v);

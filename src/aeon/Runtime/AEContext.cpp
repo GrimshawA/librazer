@@ -1,8 +1,8 @@
 #include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/VM/AEVm.h>
-#include <AEON/aeParser.h>
-#include <AEON/aeTokenizer.h>
+#include <AEON/Parser/RzParser.h>
+#include <AEON/Parser/RzTokens.h>
 #include <AEON/Compiler/aeCompiler.h>
 
 #include <AEON/stdlib/ExportStd.h>
@@ -108,7 +108,7 @@ void RzEngine::init_all()
 void RzEngine::quick_build(const std::string& file)
 {
 	aeon_lexer lexer;
-	aeParser parser;
+	RzParser parser;
 	AECompiler compiler;
 	std::string source = getFileSource(file);
 
@@ -134,7 +134,7 @@ void RzEngine::quick_build(const std::string& file)
 RzValue RzEngine::readValue(const std::string& filename)
 {
 	aeon_lexer lexer;
-	aeParser parser;
+	RzParser parser;
 	std::string src = getFileSource(filename);
 
 	if (src.empty()){
@@ -247,7 +247,7 @@ void RzEngine::registerType(const std::string& name, std::size_t size, const std
 {
 	AEType* objinfo = new AEType(name, size);
 
-	auto parser = aeParser::create(name, this);
+	auto parser = RzParser::create(name, this);
 	std::string canonicalName = parser->Tok.text;
 	parser->getNextToken();
 	if (parser->Tok.text == "<")
@@ -269,7 +269,7 @@ void RzEngine::registerType(const std::string& name, std::size_t size, const std
 void RzEngine::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
 {
 	aeon_lexer lex; lex.tokenize(decl);
-	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
+	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
 	auto typeInfo = getTypeInfo(typeName);
 
@@ -301,7 +301,7 @@ void RzEngine::registerTypeMethod(const std::string& typeName, const std::string
 void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)
 {
 	aeon_lexer lex; lex.tokenize(decl);
-	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
+	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
 	AEFunction* fn = new AEFunction;
 	fn->fn = func;
