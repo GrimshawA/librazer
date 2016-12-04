@@ -3,7 +3,7 @@
 
 #include <AEON/AST/Nodes.h>
 #include <AEON/Compiler/aeCompilerConv.h>
-#include <AEON/AEModule.h>
+#include <Rzr/RzModule.h>
 #include <AEON/aeReportManager.h>
 
 #include <vector>
@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 class AEVirtualMachine;
-class AEContext;
+class RzEngine;
 
 /**
 	Any given variable can be a member of a class (field),
@@ -63,8 +63,8 @@ struct ScopeLocalData
 class AECompiler
 {
 public:
-		AEContext*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
-		AEModule*                        m_module;                ///< Current module being compiled
+		RzEngine*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
+		RzModule*                        m_module;                ///< Current module being compiled
 		AEType*                             m_currentStruct = nullptr;
 		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
 		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation

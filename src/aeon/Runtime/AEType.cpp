@@ -83,7 +83,7 @@ AEFunction* AEType::getFunction(const std::string& name)
 	return m_module->m_context->getFunctionByName(name);
 }
 
-AEModule* AEType::getModule()
+RzModule* AEType::getModule()
 {
 	return m_module;
 }

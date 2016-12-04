@@ -2,14 +2,14 @@
 #define aeon_parser_h__
 
 #include <AEON/AST/Nodes.h>
-#include <AEON/Runtime/AEValue.h>
+#include <Rzr/RzValue.h>
 #include <AEON/aeTokenizer.h>
 
 #include <vector>
 
 #define PARSE_EXPECTS(toks, msg) (void) 0;
 
-class AEContext;
+class RzEngine;
 
 /**
 	\class aeon_parser
@@ -54,12 +54,12 @@ class aeParser
 		aeon_lexer*   m_tokenizer;
 		std::unique_ptr<aeon_lexer> m_customTokenizer; ///< When we manage our own
 		aeon_token    Tok;              ///< Current token cursor
-		AEContext* ctx;              ///< The context of the application/library
+		RzEngine* ctx;              ///< The context of the application/library
 		aeNodeModule* root;
-		AEValue*   mDataValue;
+		RzValue*   mDataValue;
 
 		/// Tokenizes the source and is fully ready to use
-		static std::unique_ptr<aeParser> create(const std::string& source, AEContext* context);
+		static std::unique_ptr<aeParser> create(const std::string& source, RzEngine* context);
 
 	public:
 
@@ -73,15 +73,15 @@ class aeParser
 
 		bool                     matchesVarDecl();
 
-		void                     parseValue(aeon_lexer& lexer, AEValue& rootValue);
+		void                     parseValue(aeon_lexer& lexer, RzValue& rootValue);
 		aeNodeValue*             parsePropertyValue(); ///< Parses any of the language's values in form property: <value>
 		AEStmtNode*         parseStatement();
 		aeNodeBranch*            parseBranch();
 		AEBaseNode*              parseSymbol();
-		AEValue               parseDataValue();
-		AEValue                  parseDataObjectBody();
-		AEValue                  parseArrayValue();
-		AEValue                  parseProperty();
+		RzValue               parseDataValue();
+		RzValue                  parseDataObjectBody();
+		RzValue                  parseArrayValue();
+		RzValue                  parseProperty();
 		aeQualType               parseQualType();
 		aeNodeExpr*              parseExpression();
 		aeNodeExpr*              parsePrimaryExpression();

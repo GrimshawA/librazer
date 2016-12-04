@@ -1,13 +1,13 @@
 #ifndef ExportStdModule_h__
 #define ExportStdModule_h__
 
-class AEModule;
-class AEContext;
+class RzModule;
+class RzEngine;
 
-void RegisterStd(AEContext* ctx);
+void RegisterStd(RzEngine* ctx);
 
-void RegisterWindow(AEModule* m);
-void RegisterIO(AEModule* m);
-void RegisterNet(AEModule* m);
+void RegisterWindow(RzModule* m);
+void RegisterIO(RzModule* m);
+void RegisterNet(RzModule* m);
 
 #endif // ExportStdModule_h__

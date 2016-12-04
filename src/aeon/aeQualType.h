@@ -2,7 +2,7 @@
 #define aeQualType_h__
 
 class AEType;
-class AEContext;
+class RzEngine;
 
 #include <vector>
 #include <stdint.h>
@@ -110,7 +110,7 @@ public:
 	operator bool() const;
 
 	/// Parse a type
-	void parse(const std::string& str, AEContext* ctx);
+	void parse(const std::string& str, RzEngine* ctx);
 };
 
 #endif // aeQualType_h__

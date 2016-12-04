@@ -8,13 +8,13 @@ void print2(std::string s)
 	std::cout << s << std::endl;
 }
 
-AEValue ToValue(aeNodeValue* value)
+RzValue ToValue(aeNodeValue* value)
 {
-	AEValue r;
+	RzValue r;
 	return r;
 }
 
-void aeParser::parseValue(aeon_lexer& lexer, AEValue& rootValue)
+void aeParser::parseValue(aeon_lexer& lexer, RzValue& rootValue)
 {
 	if (lexer.tokens.size() == 0)
 	{
@@ -34,9 +34,9 @@ void aeParser::parseValue(aeon_lexer& lexer, AEValue& rootValue)
 	}
 }
 
-AEValue aeParser::parseDataValue()
+RzValue aeParser::parseDataValue()
 {
-	AEValue objectValue;
+	RzValue objectValue;
 
 	// we are on the first token of a data definition
 
@@ -65,7 +65,7 @@ AEValue aeParser::parseDataValue()
 	{
 		getNextToken();
 
-		AEValue val = parseProperty();
+		RzValue val = parseProperty();
 		objectValue.setValue(ObjectType, val);
 	}
 	else if (Tok.type == AETK_OPENBRACKET)
@@ -86,18 +86,18 @@ AEValue aeParser::parseDataValue()
 			{
 				getNextToken();
 
-				AEValue ChildValue = parseProperty();
+				RzValue ChildValue = parseProperty();
 				printf("BODY %s\n", ChildValue.c_str());
 				objectValue.setValue(identifier, ChildValue);
 			}
 			else
 			{
-				AEValue obj = parseDataObjectBody();
+				RzValue obj = parseDataObjectBody();
 				if (obj.property("id"))
 				{
 					// Identified subobject
 					objectValue.setValue(obj.property("id").str(), obj);
-					obj.setValue("typename", AEValue(identifier));
+					obj.setValue("typename", RzValue(identifier));
 				}
 			}
 		}
@@ -117,26 +117,30 @@ AEValue aeParser::parseDataValue()
 	return objectValue;
 }
 
-AEValue aeParser::parseDataObjectBody()
+RzValue aeParser::parseDataObjectBody()
 {
-	AEValue obj;
+	RzValue obj;
 	getNextToken();
 
 	while (Tok.type != AETK_CLOSEBRACKET)
 	{
+               // TODO ERROR: EOF Reached before matching brace
+               if(Tok.type == AETK_EOF)
+                   return obj;
+
 		std::string identifier = Tok.text;
 		getNextToken(); 
 		if (Tok.type == AETK_COLON)
 		{
 			getNextToken();
-			AEValue v = parseProperty();
+			RzValue v = parseProperty();
 			obj.setValue(identifier, v);
 
 			print2("parsed property for " + identifier);
 		}
 		else if (Tok.type == AETK_OPENBRACKET)
 		{
-			AEValue nestedObj = parseDataObjectBody();
+			RzValue nestedObj = parseDataObjectBody();
 		}
 	}
 
@@ -145,35 +149,35 @@ AEValue aeParser::parseDataObjectBody()
 	return obj;
 }
 
-AEValue aeParser::parseProperty()
+RzValue aeParser::parseProperty()
 {
 	if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_OPENBRACKET)
 	{
 		// Object value, like myproperty: Obj {}
 		std::string identifier = Tok.text;
 		getNextToken();
-		AEValue obj = parseDataObjectBody();
-		obj.setValue("typename", AEValue(identifier));
+		RzValue obj = parseDataObjectBody();
+		obj.setValue("typename", RzValue(identifier));
 		return obj;
 	}
 	if (Tok.type == AETK_STRINGLITERAL || Tok.type == AETK_IDENTIFIER)
 	{
 		std::string text = Tok.extract_stringliteral();
 		getNextToken();
-		return AEValue(text);
+		return RzValue(text);
 	}
 	if (Tok.type == AETK_INTLITERAL)
 	{
 		std::string text = Tok.text;
 		getNextToken();
-		return AEValue(atoi(text.c_str()));
+		return RzValue(atoi(text.c_str()));
 	}
 	if (Tok.type == AETK_OPENSQBRACKET)
 	{
 		return parseArrayValue();
 	}
 
-	return AEValue();
+	return RzValue();
 }
 
 aeNodeValue* aeParser::parsePropertyValue()
@@ -226,18 +230,18 @@ aeNodeValue* aeParser::parsePropertyValue()
 	return returnValue;
 }
 
-AEValue aeParser::parseArrayValue()
+RzValue aeParser::parseArrayValue()
 {
 	PARSE_EXPECTS(AETK_OPENSQBRACKET, "missing [");
 	
-	AEValue arrayValue = AEValue::makeArray();
+	RzValue arrayValue = RzValue::makeArray();
 
 	getNextToken();
 
 	int i = 0;
 	while (Tok.type != AETK_CLOSESQBRACKET && Tok.type != AETK_EOF)
 	{
-		AEValue elem = parseProperty();
+		RzValue elem = parseProperty();
 		arrayValue.setValue(i++, elem);
 
 		if (Tok.type != AETK_COMMA)
@@ -246,7 +250,9 @@ AEValue aeParser::parseArrayValue()
                     getNextToken();
 	}
 
-	std::cout << "Parsed array" << std::endl;
+        getNextToken();
+
+	std::cout << "Parsed array" << arrayValue.str() << std::endl;
 
 	return arrayValue;
 }

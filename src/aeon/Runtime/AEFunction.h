@@ -46,7 +46,7 @@ public:
 	uint32_t    paramsStorageSize; ///< The amount of storage needed to push the params
 	std::string decl;
 	aeBindMethod fn;
-	AEModule* m_module;
+	RzModule* m_module;
 	bool m_native;
 	bool m_compiled;               ///< Whether or not this function is compiled successfully, with a valid body
 	bool m_virtual;

@@ -144,7 +144,7 @@
     <ClCompile Include="..\..\src\AEON\aeBuilder.cpp" />
     <ClCompile Include="..\..\src\AEON\aeClosure.cpp" />
     <ClCompile Include="..\..\src\AEON\aeCodeFile.cpp" />
-    <ClCompile Include="..\..\src\AEON\AEDocument.cpp" />
+    <ClCompile Include="..\..\src\AEON\RzDocument.cpp" />
     <ClCompile Include="..\..\src\AEON\aeDynamicType.cpp" />
     <ClCompile Include="..\..\src\AEON\aeIR.cpp" />
     <ClCompile Include="..\..\src\AEON\AEParser.cpp" />
@@ -191,19 +191,23 @@
     <ClCompile Include="..\..\src\AEON\Runtime\AEObject.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\AEString.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\AEType.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEValue.cpp" />
+    <ClCompile Include="..\..\src\AEON\Runtime\RzValue.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\AEValueList.cpp" />
+    <ClCompile Include="..\..\src\AEON\stdlib\ExportStd.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\io\File.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\io\FileInfo.cpp" />
+    <ClCompile Include="..\..\src\AEON\stdlib\media\Device.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\net\Socket.cpp" />
-    <ClCompile Include="..\..\src\AEON\STD\aeStdIo.cpp" />
+    <ClCompile Include="..\..\src\AEON\stdlib\window\Window.cpp" />
     <ClCompile Include="..\..\src\AEON\VM\AEVmStack.cpp" />
     <ClCompile Include="..\..\src\AEON\VM\AEVm.cpp" />
     <ClCompile Include="..\..\src\AEON\VM\AEVmThread.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\AEON\AEContext.h" />
-    <ClInclude Include="..\..\include\AEON\AEDocument.h" />
+    <ClInclude Include="..\..\include\Rzr\RzDocument.h" />
+    <ClInclude Include="..\..\include\Rzr\RzEngine.h" />
+    <ClInclude Include="..\..\include\Rzr\RzModule.h" />
+    <ClInclude Include="..\..\include\Rzr\RzValue.h" />
     <ClInclude Include="..\..\src\AEON\aeBindingHelper.h" />
     <ClInclude Include="..\..\src\AEON\aeBuilder.h" />
     <ClInclude Include="..\..\src\AEON\aeClosure.h" />
@@ -251,12 +255,13 @@
     <ClInclude Include="..\..\src\AEON\Runtime\AEObject.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEString.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEType.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEValue.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEValueList.h" />
+    <ClInclude Include="..\..\src\AEON\stdlib\ExportStd.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\io\File.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\io\FileInfo.h" />
+    <ClInclude Include="..\..\src\AEON\stdlib\media\Device.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\net\Socket.h" />
-    <ClInclude Include="..\..\src\AEON\STD\aeStdIo.h" />
+    <ClInclude Include="..\..\src\AEON\stdlib\window\Window.h" />
     <ClInclude Include="..\..\src\AEON\VM\AEVmStack.h" />
     <ClInclude Include="..\..\src\AEON\VM\AEVm.h" />
     <ClInclude Include="..\..\src\AEON\VM\AEVmArithmetic.h" />

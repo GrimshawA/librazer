@@ -1,10 +1,10 @@
 #include "File.h"
 
-#include <AEON/AEModule.h>
+#include <Rzr/RzModule.h>
 
-void registerFile(AEModule* m, const std::string& name)
+void registerFile(RzModule* m, const std::string& name)
 {
-	m->registerType(name, sizeof(File));
+	m->registerType(name, sizeof(aiStd::File));
 	m->registerMethod(name, "void open(string)", [](AEGeneric g){
 		std::string str = g.unpack_string();
 		printf("%s\n", str.c_str());
@@ -17,38 +17,42 @@ void registerFile(AEModule* m, const std::string& name)
 	});
 }
 
-File::File()
-: m_file(nullptr)
-{
+namespace aiStd{
 
-}
-
-File::~File()
-{
-	if (m_file)
-		fclose(m_file);
-}
-
-bool File::open(const std::string& filename)
-{
-	if (m_file)
-		fclose(m_file);
-
-	m_file = fopen(filename.c_str(), "rb");
-
-	return m_file != nullptr;
-}
-
-void File::close()
-{
-	if (m_file)
+	File::File()
+		: m_file(nullptr)
 	{
-		fclose(m_file);
-		m_file = nullptr;
-	}
-}
 
-int File::tell()
-{
-	return m_file ? ftell(m_file) : -1;
+	}
+
+	File::~File()
+	{
+		if (m_file)
+			fclose(m_file);
+	}
+
+	bool File::open(const std::string& filename)
+	{
+		if (m_file)
+			fclose(m_file);
+
+		m_file = fopen(filename.c_str(), "rb");
+
+		return m_file != nullptr;
+	}
+
+	void File::close()
+	{
+		if (m_file)
+		{
+			fclose(m_file);
+			m_file = nullptr;
+		}
+	}
+
+	int File::tell()
+	{
+		return m_file ? ftell(m_file) : -1;
+	}
+
 }

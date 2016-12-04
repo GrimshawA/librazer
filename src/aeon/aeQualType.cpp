@@ -25,7 +25,7 @@ aeQualType::aeQualType(AEType* type)
 
 }
 
-void aeQualType::parse(const std::string& str, AEContext* ctx)
+void aeQualType::parse(const std::string& str, RzEngine* ctx)
 {
 
 }

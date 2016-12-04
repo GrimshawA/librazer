@@ -1,4 +1,4 @@
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/VM/AEVm.h>
 #include <AEON/aeParser.h>
@@ -21,12 +21,12 @@ std::string getFileSource(const std::string& filename)
 	return s;
 }
 
-int AEContext::exec(const std::string& filename)
+int RzEngine::exec(const std::string& filename)
 {
 	return 0;
 }
 
-AEContext::AEContext()
+RzEngine::RzEngine()
 {
 	m_config.allowNativeInheritance = true;
 	m_config.allowMultipleInheritance = false;
@@ -44,12 +44,12 @@ AEContext::AEContext()
 	registerPrimitive("float", sizeof(float));
 	registerPrimitive("double", sizeof(double));
 	registerPrimitive("string", sizeof(int32_t));
-	registerPrimitive("var", sizeof(AEValue));
+	registerPrimitive("var", sizeof(RzValue));
 
 	registerTypedef("int32", "int");
 }
 
-void AEContext::registerPrimitive(const std::string& name, uint32_t size)
+void RzEngine::registerPrimitive(const std::string& name, uint32_t size)
 {
 	AEType* type = new AEType(name, size);
 	type->m_name = name;
@@ -57,7 +57,7 @@ void AEContext::registerPrimitive(const std::string& name, uint32_t size)
 	typedb.push_back(type);
 }
 
-aeLiteralId AEContext::getIntegerLiteral(int64_t n)
+aeLiteralId RzEngine::getIntegerLiteral(int64_t n)
 {
 	for (std::size_t i = 0; i < int_literals.size(); ++i)
 	{
@@ -69,7 +69,7 @@ aeLiteralId AEContext::getIntegerLiteral(int64_t n)
 	return int_literals.size() - 1;
 }
 
-aeLiteralId AEContext::getStringLiteral(const std::string& s)
+aeLiteralId RzEngine::getStringLiteral(const std::string& s)
 {
 	for (std::size_t i = 0; i < string_literals.size(); ++i)
 	{
@@ -81,7 +81,7 @@ aeLiteralId AEContext::getStringLiteral(const std::string& s)
 	return string_literals.size() - 1;
 }
 
-aeLiteralId AEContext::getFloatLiteral(float v)
+aeLiteralId RzEngine::getFloatLiteral(float v)
 {
 	for (std::size_t i = 0; i < m_floatTable.size(); ++i)
 	{
@@ -93,19 +93,19 @@ aeLiteralId AEContext::getFloatLiteral(float v)
 	return m_floatTable.size() - 1;
 }
 
-AEValue AEContext::evaluate(const std::string& expression)
+RzValue RzEngine::evaluate(const std::string& expression)
 {
-	AEValue value;
+	RzValue value;
 //	value.mRawValue = "null";
 	return value;
 }
 
-void AEContext::init_all()
+void RzEngine::init_all()
 {
 	RegisterStd(this);
 }
 
-void AEContext::quick_build(const std::string& file)
+void RzEngine::quick_build(const std::string& file)
 {
 	aeon_lexer lexer;
 	aeParser parser;
@@ -123,7 +123,7 @@ void AEContext::quick_build(const std::string& file)
 	aeNodeModule* tree_root = parser.root;
 	//tree_root->printSelf(0);
 
-	AEModule* tempModule = createModule("tmp");
+	RzModule* tempModule = createModule("tmp");
 	tempModule->createDependency(getModule("std"));
 
 	compiler.m_env = this;
@@ -131,11 +131,15 @@ void AEContext::quick_build(const std::string& file)
 	compiler.generate(parser.root);
 }
 
-AEValue AEContext::readValue(const std::string& filename)
+RzValue RzEngine::readValue(const std::string& filename)
 {
 	aeon_lexer lexer;
 	aeParser parser;
 	std::string src = getFileSource(filename);
+
+	if (src.empty()){
+		return RzValue();
+	}
 	
 	lexer.tokenize(src);
 	parser.i = 0;
@@ -144,7 +148,7 @@ AEValue AEContext::readValue(const std::string& filename)
 	return parser.parseDataValue();
 }
 
-AEModule* AEContext::getModule(const std::string name)
+RzModule* RzEngine::getModule(const std::string name)
 {
 	for (auto& mod : modules)
 	{
@@ -154,7 +158,7 @@ AEModule* AEContext::getModule(const std::string name)
 	return nullptr;
 }
 
-AEObject* AEContext::createObject(const std::string& typen)
+AEObject* RzEngine::createObject(const std::string& typen)
 {
 	for (auto& heap : object_heaps)
 	{
@@ -173,7 +177,7 @@ AEObject* AEContext::createObject(const std::string& typen)
 	return nullptr;
 }
 
-void AEContext::destroyObject(AEObject* object)
+void RzEngine::destroyObject(AEObject* object)
 {
 	free(object->m_obj);
 	for (auto& heap : object_heaps)
@@ -186,7 +190,7 @@ void AEContext::destroyObject(AEObject* object)
 	}
 }
 
-AEFunction* AEContext::createFunction(const std::string& name)
+AEFunction* RzEngine::createFunction(const std::string& name)
 {
 	AEFunction* fn = getFunctionByName(name);
 	if (!fn)
@@ -198,12 +202,12 @@ AEFunction* AEContext::createFunction(const std::string& name)
 	return fn;
 }
 
-AEFunction* AEContext::getFunctionByIndex(uint32_t index)
+AEFunction* RzEngine::getFunctionByIndex(uint32_t index)
 {
 	return m_functionTable[index];
 }
 
-AEFunction* AEContext::getFunctionByName(const std::string& name)
+AEFunction* RzEngine::getFunctionByName(const std::string& name)
 {
 	for (auto fn : m_functionTable)
 	{
@@ -216,7 +220,7 @@ AEFunction* AEContext::getFunctionByName(const std::string& name)
 	return nullptr;
 }
 
-uint32_t AEContext::getFunctionIndexByName(const std::string& name)
+uint32_t RzEngine::getFunctionIndexByName(const std::string& name)
 {
 	for (uint32_t i = 0; i < m_functionTable.size(); ++i)
 	{
@@ -226,20 +230,20 @@ uint32_t AEContext::getFunctionIndexByName(const std::string& name)
 	return -1;
 }
 
-AEModule* AEContext::createModule(const std::string& name)
+RzModule* RzEngine::createModule(const std::string& name)
 {
 	if (getModule(name))
 		return getModule(name);
 
 
-	AEModule* mod = new AEModule;
+	RzModule* mod = new RzModule;
 	mod->m_name = name;
 	mod->m_context = this;
-	modules.push_back(std::move(std::unique_ptr<AEModule>(mod)));
+	modules.push_back(std::move(std::unique_ptr<RzModule>(mod)));
 	return mod;
 }
 
-void AEContext::registerType(const std::string& name, std::size_t size, const std::string& namespc)
+void RzEngine::registerType(const std::string& name, std::size_t size, const std::string& namespc)
 {
 	AEType* objinfo = new AEType(name, size);
 
@@ -262,7 +266,7 @@ void AEContext::registerType(const std::string& name, std::size_t size, const st
 	typedb.push_back(objinfo);
 }
 
-void AEContext::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
+void RzEngine::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
 {
 	aeon_lexer lex; lex.tokenize(decl);
 	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
@@ -294,7 +298,7 @@ void AEContext::registerTypeMethod(const std::string& typeName, const std::strin
 	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
-void AEContext::registerFunction(const std::string& decl, aeBindMethod func)
+void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)
 {
 	aeon_lexer lex; lex.tokenize(decl);
 	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
@@ -320,7 +324,7 @@ void AEContext::registerFunction(const std::string& decl, aeBindMethod func)
 	//printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
-void AEContext::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
+void RzEngine::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
 {
 	auto typeInfo = getTypeInfo(typeName);
 	AEType::MethodInfo info;
@@ -335,13 +339,13 @@ void AEContext::registerTypeBehavior(const std::string& typeName, const std::str
 	m_functionTable.push_back(ncall);
 }
 
-void AEContext::registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest)
+void RzEngine::registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest)
 {
 	auto typeInfo = getTypeInfo(typeName);
 	typeInfo->m_destructor = dest;
 }
 
-void AEContext::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
+void RzEngine::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
 {
 	auto typeInfo = getTypeInfo(typeName);
 	aeField info;
@@ -350,7 +354,7 @@ void AEContext::registerTypeField(const std::string& typeName, const std::string
 	typeInfo->m_fields.push_back(info);
 }
 
-void AEContext::registerTypedef(const std::string& from, const std::string& to)
+void RzEngine::registerTypedef(const std::string& from, const std::string& to)
 {
 	aeTypedef tdef;
 	tdef.from = from;
@@ -358,7 +362,7 @@ void AEContext::registerTypedef(const std::string& from, const std::string& to)
 	m_typedefs.push_back(tdef);
 }
 
-void AEContext::registerEnum(const std::string& enumName)
+void RzEngine::registerEnum(const std::string& enumName)
 {
 	aeEnum* enumDef = new aeEnum;
 	enumDef->m_absoluteName = enumName;
@@ -367,7 +371,7 @@ void AEContext::registerEnum(const std::string& enumName)
 	typedb.push_back(enumDef);
 }
 
-void AEContext::registerEnumValue(const std::string& enumName, const std::string& valueName, int value)
+void RzEngine::registerEnumValue(const std::string& enumName, const std::string& valueName, int value)
 {
 	aeEnum* enumDef = getEnumByName(enumName);
 	if (enumDef)
@@ -376,7 +380,7 @@ void AEContext::registerEnumValue(const std::string& enumName, const std::string
 	}
 }
 
-aeEnum* AEContext::getEnumByName(const std::string& name)
+aeEnum* RzEngine::getEnumByName(const std::string& name)
 {
 	for (auto& e : m_enums)
 	{
@@ -386,7 +390,7 @@ aeEnum* AEContext::getEnumByName(const std::string& name)
 	return nullptr;
 }
 
-aeFunctionId AEContext::getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior)
+aeFunctionId RzEngine::getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior)
 {
 	for (std::size_t i = 0; i < m_functionTable.size(); ++i)
 	{
@@ -399,7 +403,7 @@ aeFunctionId AEContext::getNativeBehaviorIndex(const std::string& typeName, cons
 	return -1;
 }
 
-AEType* AEContext::getTypeInfo(const std::string& name)
+AEType* RzEngine::getTypeInfo(const std::string& name)
 {
 	for (auto& obj : typedb)
 	{
@@ -419,7 +423,7 @@ AEType* AEContext::getTypeInfo(const std::string& name)
 	return nullptr;
 }
 
-int32_t AEContext::getTypeInfoIndex(AEType* typeInfo)
+int32_t RzEngine::getTypeInfoIndex(AEType* typeInfo)
 {
 	for (auto i = 0; i < typedb.size(); ++i)
 	{

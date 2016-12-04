@@ -6,7 +6,7 @@
 #include <map>
 #include <stdint.h>
 
-#include <AEON/Runtime/AEValue.h>
+#include <Rzr/RzValue.h>
 
 class AEVm;
 class AEType;
@@ -22,11 +22,11 @@ class AEObject
 public:
 	AEObject();
 
-	AEValue* getValueRef(const std::string& name);
+	RzValue* getValueRef(const std::string& name);
 	
 	void setProperty(const std::string& name, const std::string& value);
 
-	void setProperty(const std::string& name, AEValue value);
+	void setProperty(const std::string& name, RzValue value);
 
 	void call(const std::string& name);
 
@@ -55,10 +55,10 @@ public:
 
 	//private:
 	friend class AEVirtualMachine;
-	friend class AEContext;
+	friend class RzEngine;
 
 	std::vector<std::string> m_names;
-	std::vector<AEValue> m_properties;
+	std::vector<RzValue> m_properties;
 
 public:
 	void*   m_obj;
@@ -77,10 +77,10 @@ class AEDynamicObject
 {
 public:
 
-	void setValue(const std::string& name, const AEValue& value);
+	void setValue(const std::string& name, const RzValue& value);
 
 private:
-	std::map<std::string, AEValue> m_properties;
+	std::map<std::string, RzValue> m_properties;
 };
 
 #endif // AEOBJECT_H__

@@ -1,7 +1,7 @@
 #include "AEStructNode.h"
 #include "aeNodeFunction.h"
 #include <AEON/AST/aeNodeBlock.h>
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 
 AEFieldNode::AEFieldNode()
 {
@@ -20,7 +20,7 @@ std::string AEFieldNode::visibilityText()
 	return "undefined";
 }
 
-void AEFieldNode::deduceStaticType(AEContext* ctx)
+void AEFieldNode::deduceStaticType(RzEngine* ctx)
 {
 	if (!initializer)
 	{

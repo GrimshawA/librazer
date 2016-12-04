@@ -1,20 +1,20 @@
 #include <AEON/VM/AEVmStack.h>
 #include <AEON/VM/AEVm.h>
 
-void AEVmStack::pushVariant(const AEValue& v)
+void AEVmStack::pushVariant(const RzValue& v)
 {
 	printf("push variant at offset %d (%s)\n", ebp - esp, v.str().c_str());
 
 	esp -= sizeof(v);
-	new (esp) AEValue();
-	*reinterpret_cast<AEValue*>(esp) = v;
+	new (esp) RzValue();
+	*reinterpret_cast<RzValue*>(esp) = v;
 }
 
-void AEVmStack::popVariant(AEValue& v)
+void AEVmStack::popVariant(RzValue& v)
 {
-	v = *reinterpret_cast<AEValue*>(esp);
-	reinterpret_cast<AEValue*>(esp)->~AEValue();
-	esp += sizeof(AEValue);
+	v = *reinterpret_cast<RzValue*>(esp);
+	reinterpret_cast<RzValue*>(esp)->~RzValue();
+	esp += sizeof(RzValue);
 }
 
 void AEVmStack::pushVariantRef(const AEValueRef& ref)

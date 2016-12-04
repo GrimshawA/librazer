@@ -55,9 +55,6 @@
     <ClCompile Include="..\..\src\AEON\Runtime\AEType.cpp">
       <Filter>Runtime</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Runtime\AEValue.cpp">
-      <Filter>Runtime</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\AEON\Runtime\AEValueList.cpp">
       <Filter>Runtime</Filter>
     </ClCompile>
@@ -71,9 +68,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\AEON\aeCodeFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AEDocument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\AEON\aeDynamicType.cpp">
@@ -160,9 +154,6 @@
     <ClCompile Include="..\..\src\AEON\Compiler\aeCompilerConv.cpp">
       <Filter>Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AEON\STD\aeStdIo.cpp">
-      <Filter>stdlib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\AEON\Runtime\AEGeneric.cpp">
       <Filter>Runtime</Filter>
     </ClCompile>
@@ -217,6 +208,21 @@
     <ClCompile Include="..\..\src\AEON\Runtime\AEString.cpp">
       <Filter>Runtime</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\AEON\stdlib\ExportStd.cpp">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\stdlib\media\Device.cpp">
+      <Filter>stdlib\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\stdlib\window\Window.cpp">
+      <Filter>stdlib\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\RzDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AEON\Runtime\RzValue.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\AEON\Runtime\AEByteCode.h">
@@ -232,9 +238,6 @@
       <Filter>Runtime</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\AEON\Runtime\AEType.h">
-      <Filter>Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\Runtime\AEValue.h">
       <Filter>Runtime</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\AEON\Runtime\AEValueList.h">
@@ -342,20 +345,11 @@
     <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerErrorIds.h">
       <Filter>Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\AEON\STD\aeStdIo.h">
-      <Filter>stdlib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\AEON\Runtime\AEGeneric.h">
       <Filter>Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AEON\AEDocument.h">
-      <Filter>API</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerWarningIds.h">
       <Filter>Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\AEON\AEContext.h">
-      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\AEON\VM\AEVm.h">
       <Filter>VM</Filter>
@@ -405,6 +399,27 @@
     </ClInclude>
     <ClInclude Include="..\..\src\aeon\VM\VariantOps.h">
       <Filter>VM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\stdlib\ExportStd.h">
+      <Filter>stdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\stdlib\media\Device.h">
+      <Filter>stdlib\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AEON\stdlib\window\Window.h">
+      <Filter>stdlib\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzDocument.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzEngine.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzModule.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzValue.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

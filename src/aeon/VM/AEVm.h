@@ -2,10 +2,10 @@
 #define aeon_vm_h__
 
 #include <AEON/VM/AEVmThread.h>
-#include <AEON/AEModule.h>
+#include <Rzr/RzModule.h>
 #include <AEON/VM/AEVmStack.h>
 #include <AEON/Runtime/AEValueList.h>
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 
 #include <vector>
 #include <stdint.h>
@@ -44,16 +44,16 @@ class AEVirtualMachine
 public:
 
 	AEVirtualMachine();
-	AEVirtualMachine(AEContext* context);
+	AEVirtualMachine(RzEngine* context);
 
-	AEValue call(AEValue obj, const std::string& functionName, AEValueList args = AEValueList());
+	RzValue call(RzValue obj, const std::string& functionName, AEValueList args = AEValueList());
 
-	void setContext(AEContext* context);
+	void setContext(RzEngine* context);
 
 
 public:
 
-		AEModule* get_current_mod();
+		RzModule* get_current_mod();
 
 
 		void prepare(aeFunctionId function);
@@ -67,7 +67,7 @@ public:
 		void callMethod(AEObject* object, uint32_t methodId);
 
 		/// Call a script function
-		void call(AEModule& module, const char* func);
+		void call(RzModule& module, const char* func);
 
 		int call(AEFunction* fn);
 
@@ -77,7 +77,7 @@ public:
 
 //private:
 	std::vector<AEVmThread> hw_threads;
-	AEContext*           m_ctx;
+	RzEngine*           m_ctx;
 	AEVmStack           m_stk;
 };
 

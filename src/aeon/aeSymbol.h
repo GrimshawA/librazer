@@ -4,7 +4,7 @@
 #include <AEON/aeQualType.h>
 
 class AEType;
-class AEContext;
+class RzEngine;
 
 #include <vector>
 #include <stdint.h>

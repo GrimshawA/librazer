@@ -1,6 +1,6 @@
 #include <AEON/aeParser.h>
 #include <AEON/aeTokenizer.h>
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 #include <AEON/AST/Nodes.h>
 #include <AEON/AST/aeNodeValue.h>
 
@@ -36,7 +36,7 @@ AEStructNode::Visibility TokToVisib(const std::string& str)
 	return AEStructNode::VISIBILITY_PUBLIC;
 }
 
-std::unique_ptr<aeParser> aeParser::create(const std::string& source, AEContext* context)
+std::unique_ptr<aeParser> aeParser::create(const std::string& source, RzEngine* context)
 {
 	std::unique_ptr<aeParser> parser(new aeParser(source));
 	parser->i = 0; parser->ctx = context; parser->getNextToken();

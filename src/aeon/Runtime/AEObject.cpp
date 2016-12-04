@@ -8,7 +8,7 @@ AEObject::AEObject()
 
 }
 
-AEValue* AEObject::getValueRef(const std::string& name)
+RzValue* AEObject::getValueRef(const std::string& name)
 {
 	for (int i = 0; i < m_properties.size(); ++i)
 	{
@@ -35,7 +35,7 @@ std::string AEObject::propertyName(int index)
 	return m_names[index];
 }
 
-void AEObject::setProperty(const std::string& name, AEValue value)
+void AEObject::setProperty(const std::string& name, RzValue value)
 {
 	m_names.push_back(name);
 	m_properties.push_back(value);
@@ -108,7 +108,7 @@ void AEObject::log()
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-void AEDynamicObject::setValue(const std::string& name, const AEValue& value)
+void AEDynamicObject::setValue(const std::string& name, const RzValue& value)
 {
 	m_properties[name] = value;
 }

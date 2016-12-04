@@ -1,15 +1,15 @@
-﻿Build started 21/09/2016 22:36:19.
+﻿Build started 04/12/2016 12:45:56.
      1>Project "D:\Development\Projects\libaeon\build\vs2013\libaeon.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(357,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\include /I..\..\src /ZI /nologo /W1 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\src\AEON\AEParser.cpp
-         AEParser.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\include /I..\..\src /ZI /nologo /W1 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\src\AEON\RzDocument.cpp
+         RzDocument.cpp
        Lib:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"D:\Development\Projects\libaeon\build\vs2013\..\..\bin\libaeond.lib" /NOLOGO Debug\aeBindingHelper.obj
          Debug\aeBuilder.obj
          Debug\aeClosure.obj
          Debug\aeCodeFile.obj
-         Debug\AEDocument.obj
+         Debug\RzDocument.obj
          Debug\aeDynamicType.obj
          Debug\aeIR.obj
          Debug\AEParser.obj
@@ -54,13 +54,16 @@
          Debug\AEGeneric.obj
          Debug\AEModule.obj
          Debug\AEObject.obj
+         Debug\AEString.obj
          Debug\AEType.obj
-         Debug\AEValue.obj
+         Debug\RzValue.obj
          Debug\AEValueList.obj
+         Debug\ExportStd.obj
          Debug\File.obj
          Debug\FileInfo.obj
+         Debug\Device.obj
          Debug\Socket.obj
-         Debug\aeStdIo.obj
+         Debug\Window.obj
          Debug\AEVmStack.obj
          Debug\AEVm.obj
          Debug\AEVmThread.obj
@@ -72,4 +75,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.71
+Time Elapsed 00:00:01.58

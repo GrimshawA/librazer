@@ -52,13 +52,13 @@ inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int typeIndex
 
 inline void DoVarLoad(AEVirtualMachine* vm, int memberIndex)
 {
-	AEValue varObj;
+	RzValue varObj;
 	vm->m_stk.popVariant(varObj);
 	std::string fieldName = vm->m_stk.cl->module->m_identifierPool[memberIndex];
 
 	//if (varObj)
 	//{
-		AEValue memberField = varObj.property(fieldName);
+		RzValue memberField = varObj.property(fieldName);
 		vm->m_stk.pushVariant(memberField);
 	//}
 }
@@ -80,7 +80,7 @@ inline void DoVarLoadRef(AEVirtualMachine* vm, int op, int data0)
 	if (op == 1)
 	{
 		// Load a local variable as a ref
-		AEValue* referredValue = reinterpret_cast<AEValue*>(vm->m_stk.ebp - data0 - sizeof(AEValue));
+		RzValue* referredValue = reinterpret_cast<RzValue*>(vm->m_stk.ebp - data0 - sizeof(RzValue));
 		AEValueRef ref;
 		ref.type = AEValueRef::REF_VALUE;
 		ref.value = referredValue;
@@ -90,7 +90,7 @@ inline void DoVarLoadRef(AEVirtualMachine* vm, int op, int data0)
 
 inline void DoAddV(AEVirtualMachine* vm)
 {
-	AEValue a,b;
+	RzValue a,b;
 	vm->m_stk.popVariant(b);
 	vm->m_stk.popVariant(a);
 	vm->m_stk.pushVariant(a+b);
@@ -98,7 +98,7 @@ inline void DoAddV(AEVirtualMachine* vm)
 
 inline void DoSubV(AEVirtualMachine* vm)
 {
-	AEValue a,b;
+	RzValue a,b;
 	vm->m_stk.popVariant(b);
 	vm->m_stk.popVariant(a);
 	vm->m_stk.pushVariant(a-b);
@@ -106,7 +106,7 @@ inline void DoSubV(AEVirtualMachine* vm)
 
 inline void DoMultV(AEVirtualMachine* vm)
 {
-	AEValue a,b;
+	RzValue a,b;
 	vm->m_stk.popVariant(b);
 	vm->m_stk.popVariant(a);
 	vm->m_stk.pushVariant(a*b);
@@ -114,7 +114,7 @@ inline void DoMultV(AEVirtualMachine* vm)
 
 inline void DoDivV(AEVirtualMachine* vm)
 {
-	AEValue a,b;
+	RzValue a,b;
 	vm->m_stk.popVariant(b);
 	vm->m_stk.popVariant(a);
 	vm->m_stk.pushVariant(a/b);
@@ -122,7 +122,7 @@ inline void DoDivV(AEVirtualMachine* vm)
 
 inline void DoCompareV(AEVirtualMachine* vm)
 {
-	AEValue a,b;
+	RzValue a,b;
 	vm->m_stk.popVariant(b);
 	vm->m_stk.popVariant(a);
 	vm->m_stk.pushVariant(a==b);

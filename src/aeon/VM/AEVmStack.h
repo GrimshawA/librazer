@@ -1,7 +1,7 @@
 #ifndef aeon_threadstate_h__
 #define aeon_threadstate_h__
 
-#include <AEON/Runtime/AEValue.h>
+#include <Rzr/RzValue.h>
 #include <AEON/Runtime/AEObject.h>
 #include <vector>
 #include <stdint.h>
@@ -9,7 +9,7 @@
 
 class AEFunction;
 class aeVM;
-class AEModule;
+class RzModule;
 
 
 /**
@@ -67,7 +67,7 @@ struct aeStackFrame
 	std::string    name;          ///< Name?
 	uint32_t       pc;            ///< So we can restore the program counter of the caller
 	unsigned char* ebp;           ///< So we can restore the base pointer of the caller
-	AEModule*      module;
+	RzModule*      module;
 	void*          object;
 };
 
@@ -97,8 +97,8 @@ public:
 		ebp = esp;
 	}
 
-	void pushVariant(const AEValue& v);
-	void popVariant(AEValue& v);
+	void pushVariant(const RzValue& v);
+	void popVariant(RzValue& v);
 
 	void pushVariantRef(const AEValueRef& ref);
 	AEValueRef popVariantRef();

@@ -2,7 +2,7 @@
 
 #include <AEON/stdlib/window/Window.h>
 
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 #include <AEON/VM/AEVm.h>
 #include <AEON/Runtime/AEGeneric.h>
 
@@ -30,7 +30,7 @@ void aeonTestClass_setSomething(AEGeneric g){
 
 }
 
-void RegisterStd(AEContext* ctx)
+void RegisterStd(RzEngine* ctx)
 {
 	/*ctx->registerFunction("t1", &t1);
 	ctx->registerFunction("t2", &t2);
@@ -51,7 +51,7 @@ void RegisterStd(AEContext* ctx)
 	});
 
 	ctx->registerFunction("void printVar(var)", [](AEGeneric g){
-		AEValue v; g.m_vm->m_stk.popVariant(v);
+		RzValue v; g.m_vm->m_stk.popVariant(v);
 		printf("VAR: %s\n", v.toString().c_str());
 	});
 
@@ -59,7 +59,7 @@ void RegisterStd(AEContext* ctx)
 
 	printf("Registered interface!\n");
 
-	AEModule* stdModule = ctx->createModule("std");
+	RzModule* stdModule = ctx->createModule("std");
 	registerFile(stdModule, "File");
 
 	stdModule->registerType("TestClass", sizeof(TestClass));
@@ -70,17 +70,17 @@ void RegisterStd(AEContext* ctx)
     RegisterWindow(stdModule);
 }
 
-void RegisterWindow(AEModule* m)
+void RegisterWindow(RzModule* m)
 {
    // m->registerType("Window", sizeof(Window));
 }
 
-void RegisterIO(AEModule* m)
+void RegisterIO(RzModule* m)
 {
 
 }
 
-void RegisterNet(AEModule* m)
+void RegisterNet(RzModule* m)
 {
 
 }

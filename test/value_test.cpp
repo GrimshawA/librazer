@@ -1,7 +1,7 @@
 #include "value_test.h"
 #include <stdio.h>
 #include <string>
-#include <AEON/Runtime/AEValue.h>
+#include <Rzr/RzValue.h>
 
 void UT_Begin(std::string msg)
 {
@@ -25,7 +25,7 @@ void unit_test_values()
 
 	v1 = 5;
 
-	UT_Print("AEValue retains the integer value", v1.asInt() == 5);
+	UT_Print("AEValue retains the integer value", v1.toInteger() == 5);
 	UT_Print("AEValue str correctly shows the integers", v1.str() == "5");
 
 	v1 = "tstring";

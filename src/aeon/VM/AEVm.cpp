@@ -1,6 +1,6 @@
 #include <AEON/VM/AEVm.h>
 #include <AEON/Runtime/aeByteCode.h>
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEGeneric.h>
 #include <AEON/DebugDefs.h>
@@ -22,19 +22,19 @@ AEVirtualMachine::AEVirtualMachine()
 	memset(m_stk.stack.data(), 0, m_stk.stack.size());
 }
 
-AEVirtualMachine::AEVirtualMachine(AEContext* context)
+AEVirtualMachine::AEVirtualMachine(RzEngine* context)
 {
 	m_ctx = context;
 }
 
-AEValue AEVirtualMachine::call(AEValue obj, const std::string& functionName, AEValueList args)
+RzValue AEVirtualMachine::call(RzValue obj, const std::string& functionName, AEValueList args)
 {
-	AEValue returnValue;
+	RzValue returnValue;
 
 	return returnValue;
 }
 
-AEModule* AEVirtualMachine::get_current_mod()
+RzModule* AEVirtualMachine::get_current_mod()
 {
 	return m_stk.frames[m_stk.frames.size() - 1].module;
 }
@@ -65,7 +65,7 @@ void AEVirtualMachine::pushThis(void* obj)
 	m_stk.push_addr(obj);
 }
 
-void AEVirtualMachine::setContext(AEContext* context)
+void AEVirtualMachine::setContext(RzEngine* context)
 {
 	m_ctx = context;
 } 
@@ -88,7 +88,7 @@ void printBits2(size_t const size, void const * const ptr)
 		puts("");
 }
 
-void AEVirtualMachine::call(AEModule& module, const char* func)
+void AEVirtualMachine::call(RzModule& module, const char* func)
 {
 	aeFunctionId functionId = 0;
 

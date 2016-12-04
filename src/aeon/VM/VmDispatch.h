@@ -191,21 +191,21 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 #if defined TRACE_VM
 			printf("Pushed var to stack from offset %d\n", inst.arg0);
 #endif
-			AEValue* referredValue = reinterpret_cast<AEValue*>(m_stk.ebp - inst.arg0 - sizeof(AEValue));
+			RzValue* referredValue = reinterpret_cast<RzValue*>(m_stk.ebp - inst.arg0 - sizeof(RzValue));
 			m_stk.pushVariant(*referredValue);
 
 			vm_end
 
 				vm_start(OP_POPVAR)
-				AEValue v;
+				RzValue v;
 				m_stk.popVariant(v);
 				vm_end
 
 				vm_start(OP_VARCALL)
-				AEValue ptr;
+				RzValue ptr;
 				m_stk.popVariant(ptr);
 			std::string methodName = m_stk.cl->module->m_identifierPool[inst.arg0];
-			AEValue fnValue = ptr.property(methodName);
+			RzValue fnValue = ptr.property(methodName);
 
 #if defined TRACE_VM
 			printf("Calling late bound method\n");

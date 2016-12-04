@@ -1,19 +1,19 @@
 #ifndef AEValueList_h__
 #define AEValueList_h__
 
-#include <AEON/Runtime/AEValue.h>
+#include <Rzr/RzValue.h>
 
-class AEValueList : public AEValue
+class AEValueList : public RzValue
 {
 public:
 
-	AEValueList& operator << (const AEValue& v)
+	AEValueList& operator << (const RzValue& v)
 	{
 		m_list.push_back(v);
 		return *this;
 	}
 
-	std::vector<AEValue> m_list;
+	std::vector<RzValue> m_list;
 };
 
 #endif // AEValueList_h__

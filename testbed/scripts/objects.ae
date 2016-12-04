@@ -19,7 +19,7 @@ class ObjectsTest
 
 	function sum2(var a, var b, var c) -> var
 	{
-		print("Hello");
+		/*print("Hello");
 		a.kill();
 		b.doThings();
 		c.finish();
@@ -36,8 +36,9 @@ class ObjectsTest
 		a.another = 5;
 		printVar(a.another);
 
-		printVar(a.x);
+		printVar(a.x);*/
 		
+		c = new TestClass();
 	}
 
 	public enum Kinds

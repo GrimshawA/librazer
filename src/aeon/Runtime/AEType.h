@@ -9,8 +9,8 @@
 #include <string>
 #include <stdint.h>
 
-class AEModule;
-class AEContext;
+class RzModule;
+class RzEngine;
 class AEVirtualMachine;
 class AEFunction;
 
@@ -31,7 +31,7 @@ typedef void(*aeConstructorMethod)(void*, AEVirtualMachine*);
 class AEType : public aeSymbol
 {
 	public:
-		friend class AEContext;
+		friend class RzEngine;
 
 		enum ETypeFlags
 		{
@@ -101,7 +101,7 @@ class AEType : public aeSymbol
 		std::vector<NestedTypeInfo> m_structs;
 		std::vector<ProtocolInfo>   m_protocols;
 		std::vector<std::string>    m_templateParams;
-		AEModule*                   m_module;
+		RzModule*                   m_module;
 		bool is_native = false;
 		void*                       m_userData;            ///< This allows the user to inject additional info on the type
 		aeDestructorMethod          m_destructor;
@@ -163,7 +163,7 @@ class AEType : public aeSymbol
 		uint32_t getSize();
 
 		/// Get the module this type is a part of
-		AEModule* getModule();
+		RzModule* getModule();
 
 		/// Takes some input parameters and properly prepares the type for the new field
 		void createField(aeField fieldInfo);

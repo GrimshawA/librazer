@@ -1,18 +1,18 @@
-#include <AEON/AEModule.h>
+#include <Rzr/RzModule.h>
 #include <AEON/aeParser.h>
 #include <AEON/aeTokenizer.h>
 
-AEModule::AEModule()
+RzModule::RzModule()
 {
 
 }
 
-AEModule::~AEModule()
+RzModule::~RzModule()
 {
 
 }
 
-AEFunction* AEModule::getFunction(const std::string& name)
+AEFunction* RzModule::getFunction(const std::string& name)
 {
 	for (int i = 0; i < m_functions.size(); ++i)
 	{
@@ -25,12 +25,12 @@ AEFunction* AEModule::getFunction(const std::string& name)
 	return nullptr;
 }
 
-AEFunction* AEModule::getFunction(FnIndex index)
+AEFunction* RzModule::getFunction(FnIndex index)
 {
 	return &m_functions[index];
 }
 
-FnIndex AEModule::getFunctionIndex(const std::string& name)
+FnIndex RzModule::getFunctionIndex(const std::string& name)
 {
 	for (int i = 0; i < m_functions.size(); ++i)
 	{
@@ -42,17 +42,17 @@ FnIndex AEModule::getFunctionIndex(const std::string& name)
 	return -1;
 }
 
-uint64_t AEModule::getFunctionOffset(const std::string& name)
+uint64_t RzModule::getFunctionOffset(const std::string& name)
 {
 	return getFunctionOffset(getFunctionIndex(name));
 }
 
-uint64_t AEModule::getFunctionOffset(FnIndex functionIndex)
+uint64_t RzModule::getFunctionOffset(FnIndex functionIndex)
 {
 	return m_functions[functionIndex].m_offset;
 }
 
-int64_t AEModule::getTypeIndex(const std::string& name)
+int64_t RzModule::getTypeIndex(const std::string& name)
 {
 	for (int i = 0; i < m_types.size(); ++i)
 	{
@@ -63,7 +63,7 @@ int64_t AEModule::getTypeIndex(const std::string& name)
 	return -1;
 }
 
-int64_t AEModule::getTypeIndex(AEType* type)
+int64_t RzModule::getTypeIndex(AEType* type)
 {
 	for (int i = 0; i < m_types.size(); ++i)
 	{
@@ -74,7 +74,7 @@ int64_t AEModule::getTypeIndex(AEType* type)
 	return -1;
 }
 
-AEType* AEModule::getType(const std::string& name)
+AEType* RzModule::getType(const std::string& name)
 {
 	for (int i = 0; i < m_types.size(); ++i)
 	{
@@ -85,27 +85,27 @@ AEType* AEModule::getType(const std::string& name)
 	return nullptr;
 }
 
-AEType* AEModule::getType(int64_t index)
+AEType* RzModule::getType(int64_t index)
 {
 	return m_types[index];
 }
 
-std::string AEModule::getStringFromPool(uint32_t index)
+std::string RzModule::getStringFromPool(uint32_t index)
 {
 	return m_stringPool[index];
 }
 
-double AEModule::getDoubleLiteral(uint32_t index)
+double RzModule::getDoubleLiteral(uint32_t index)
 {
 	return m_doublePool[index];
 }
 
-uint64_t AEModule::getIntegerLiteral(uint32_t index)
+uint64_t RzModule::getIntegerLiteral(uint32_t index)
 {
 	return m_intPool[index];
 }
 
-int AEModule::identifierPoolIndex(const std::string& identifier)
+int RzModule::identifierPoolIndex(const std::string& identifier)
 {
 	for (int i = 0; i < m_identifierPool.size(); ++i)
 	{
@@ -117,17 +117,17 @@ int AEModule::identifierPoolIndex(const std::string& identifier)
 	return m_identifierPool.size() - 1;
 }
 
-void AEModule::registerFunction(const std::string& sig, aeBindMethod fn)
+void RzModule::registerFunction(const std::string& sig, aeBindMethod fn)
 {
 
 }
 
-void AEModule::registerGlobal(const std::string& sig, void* memory)
+void RzModule::registerGlobal(const std::string& sig, void* memory)
 {
 
 }
 
-void AEModule::registerType(const std::string& name, std::size_t size)
+void RzModule::registerType(const std::string& name, std::size_t size)
 {
 	AEType* typeInfo = new AEType(name, size);
 	auto parser = aeParser::create(name, this->m_context);
@@ -148,17 +148,17 @@ void AEModule::registerType(const std::string& name, std::size_t size)
 	m_types.push_back(typeInfo);
 }
 
-void AEModule::registerTypeConstructor()
+void RzModule::registerTypeConstructor()
 {
 
 }
 
-void AEModule::registerTypeDestructor()
+void RzModule::registerTypeDestructor()
 {
 
 }
 
-void AEModule::registerMethod(const std::string& name, const std::string& sig, aeBindMethod fnPtr)
+void RzModule::registerMethod(const std::string& name, const std::string& sig, aeBindMethod fnPtr)
 {
 	aeon_lexer lex; lex.tokenize(sig);
 	aeParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
@@ -190,48 +190,48 @@ void AEModule::registerMethod(const std::string& name, const std::string& sig, a
 	printf("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }
 
-void AEModule::registerField()
+void RzModule::registerField()
 {
 
 }
 
-void AEModule::registerPropertyGet()
+void RzModule::registerPropertyGet()
 {
 
 }
 
-void AEModule::registerPropertySet()
+void RzModule::registerPropertySet()
 {
 
 }
 
-void AEModule::registerEnum()
+void RzModule::registerEnum()
 {
 
 }
 
-void AEModule::registerEnumValue()
+void RzModule::registerEnumValue()
 {
 
 }
 
-void AEModule::registerTypedef()
+void RzModule::registerTypedef()
 {
 
 }
 
-void AEModule::resolveType(aeQualType& type)
+void RzModule::resolveType(aeQualType& type)
 {
 	// Fill type information based on the module dependency graph
 
 }
 
-bool AEModule::hasType(const std::string& name)
+bool RzModule::hasType(const std::string& name)
 {
 	return false;
 }
 
-int AEModule::getDependencyId(const std::string& name)
+int RzModule::getDependencyId(const std::string& name)
 {
 	for (int i = 0; i < m_dependencies.size(); ++i)
 	{
@@ -242,7 +242,7 @@ int AEModule::getDependencyId(const std::string& name)
 	return -1;
 }
 
-int AEModule::getDependencyId(AEModule* module)
+int RzModule::getDependencyId(RzModule* module)
 {
 	for (int i = 0; i < m_dependencies.size(); ++i)
 	{
@@ -253,7 +253,7 @@ int AEModule::getDependencyId(AEModule* module)
 	return -1;
 }
 
-bool AEModule::depends(const std::string& name) const
+bool RzModule::depends(const std::string& name) const
 {
 	for (auto& dep : m_dependencies)
 	{
@@ -264,7 +264,7 @@ bool AEModule::depends(const std::string& name) const
 	return false;
 }
 
-bool AEModule::depends(AEModule* module) const
+bool RzModule::depends(RzModule* module) const
 {
 	for (auto& dep : m_dependencies)
 	{
@@ -275,7 +275,7 @@ bool AEModule::depends(AEModule* module) const
 	return false;
 }
 
-int AEModule::createDependency(const std::string& name)
+int RzModule::createDependency(const std::string& name)
 {
 	// This overload creates a unlinked dependency, potentially loaded later
 
@@ -295,7 +295,7 @@ int AEModule::createDependency(const std::string& name)
 	return m_dependencies.size() - 1;
 }
 
-int AEModule::createDependency(AEModule* module)
+int RzModule::createDependency(RzModule* module)
 {
 	if (!module)
 	{
@@ -319,12 +319,12 @@ int AEModule::createDependency(AEModule* module)
 	return m_dependencies.size() - 1;
 }
 
-std::string AEModule::getName()
+std::string RzModule::getName()
 {
 	return m_name;
 }
 
-uint32_t AEModule::storeString(std::string s)
+uint32_t RzModule::storeString(std::string s)
 {
 	uint32_t index = 0;
 	for (auto str : m_stringPool)
@@ -339,12 +339,12 @@ uint32_t AEModule::storeString(std::string s)
 	return index;
 }
 
-bool AEModule::hasFunction(const std::string& name)
+bool RzModule::hasFunction(const std::string& name)
 {
 	return false;
 }
 
-void AEModule::write(const char* filename)
+void RzModule::write(const char* filename)
 {
 		FILE* fp = fopen(filename, "wb");
 		if (fp)
@@ -356,7 +356,7 @@ void AEModule::write(const char* filename)
 		}
 }
 
-	void AEModule::read(const char* filename)
+	void RzModule::read(const char* filename)
 	{
 		FILE* fp = fopen(filename, "rb");
 		if (fp)
@@ -370,7 +370,7 @@ void AEModule::write(const char* filename)
 	}
 
 	/// Write the program source to a human readable format ( hopefully )
-	void AEModule::dumpToFile(const std::string& filename)
+	void RzModule::dumpToFile(const std::string& filename)
 	{
 		/*File outFile(filename, IODevice::TextWrite);
 		if (outFile)
@@ -393,7 +393,7 @@ void AEModule::write(const char* filename)
 		}*/
 	}
 
-	void AEModule::debugCode()
+	void RzModule::debugCode()
 	{
 		for (auto i : m_code)
 		{
@@ -402,7 +402,7 @@ void AEModule::write(const char* filename)
 		}
 	}
 
-int AEModule::getFunctionIndexByName(const std::string& name)
+int RzModule::getFunctionIndexByName(const std::string& name)
 {
 		for (std::size_t i = 0; i < m_functions.size(); ++i)
 		{

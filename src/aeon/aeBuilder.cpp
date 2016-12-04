@@ -1,8 +1,8 @@
 #include "aeBuilder.h"
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 #include <cstdlib>
 
-aeBuilder::aeBuilder(AEContext& context)
+aeBuilder::aeBuilder(RzEngine& context)
 : m_context(&context)
 {
 
@@ -26,7 +26,7 @@ void aeBuilder::build()
 
 void aeBuilder::buildApp(const std::string& appPath, AEBuildSpec spec)
 {
-	AEContext ctx;
+	RzEngine ctx;
 
 	for (auto& f : spec.files)
 	{

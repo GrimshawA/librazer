@@ -1,7 +1,7 @@
 #include <AEON/Compiler/aeCompiler.h>
 #include <AEON/Runtime/aeByteCode.h>
 #include <AEON/VM/AEVm.h>
-#include <AEON/AEContext.h>
+#include <Rzr/RzEngine.h>
 #include <AEON/DebugDefs.h>
 
 #include <cassert>
@@ -271,7 +271,7 @@ void AECompiler::emitClassCode(AEStructNode* clss)
 	typeInfo->m_module = m_module;
 	m_env->typedb.push_back(typeInfo);
 	m_module->m_types.push_back(typeInfo);
-	AEContext::object_heap objectHeap;
+	RzEngine::object_heap objectHeap;
 	objectHeap.type = typeInfo;
 	m_env->object_heaps.push_back(objectHeap);
 

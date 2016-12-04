@@ -57,7 +57,7 @@ public:
 
 	std::string visibilityText();
 
-	void deduceStaticType(AEContext* ctx);
+	void deduceStaticType(RzEngine* ctx);
 
 	std::string name;
 	aeQualType type;
