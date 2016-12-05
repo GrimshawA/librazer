@@ -5,7 +5,7 @@
 //#include <Rzr/RzValue.h>
 #include <stdint.h>
 
-class AEVirtualMachine;
+class RzVirtualMachine;
 
 /**
 	\class AEGeneric
@@ -39,7 +39,7 @@ public:
 	void pack_string(const std::string& value);
 
 //private:
-	AEVirtualMachine* m_vm;
+	RzVirtualMachine* m_vm;
 };
 
 typedef void(*aeBindMethod)(AEGeneric);

@@ -2,7 +2,7 @@
 #define aeClosure_h__
 
 #include <RazerVM/InstructionSet.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 
 #include <vector>
 
@@ -10,11 +10,11 @@ class aeClosure
 {
 public:
 
-	AEVirtualMachine*                 m_vm;
+	RzVirtualMachine*                 m_vm;
 	int                   m_executionId;
 	int                   m_methodId;
 	void*                 m_object;
-	std::vector<vm_value> m_boundArgs;
+	std::vector<RzStackValue> m_boundArgs;
 
 public:
 

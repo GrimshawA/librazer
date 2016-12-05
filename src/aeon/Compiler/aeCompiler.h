@@ -10,7 +10,7 @@
 #include <stack>
 #include <stdint.h>
 
-class AEVirtualMachine;
+class RzVirtualMachine;
 class RzEngine;
 
 /**

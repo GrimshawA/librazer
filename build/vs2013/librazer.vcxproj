@@ -194,9 +194,11 @@
     <ClCompile Include="..\..\src\AEON\stdlib\media\Device.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\net\Socket.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\window\Window.cpp" />
-    <ClCompile Include="..\..\src\RazerVM\AEVm.cpp" />
-    <ClCompile Include="..\..\src\RazerVM\AEVmStack.cpp" />
-    <ClCompile Include="..\..\src\RazerVM\AEVmThread.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\StackFrame.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\StackValue.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\VirtualMachine.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\ThreadContext.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\ThreadHandler.cpp" />
     <ClCompile Include="..\..\src\RazerVM\InstructionSet.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -253,15 +255,17 @@
     <ClInclude Include="..\..\src\AEON\stdlib\media\Device.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\net\Socket.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\window\Window.h" />
-    <ClInclude Include="..\..\src\RazerVM\AEVm.h" />
-    <ClInclude Include="..\..\src\RazerVM\AEVmArithmetic.h" />
-    <ClInclude Include="..\..\src\RazerVM\AEVmCalls.h" />
-    <ClInclude Include="..\..\src\RazerVM\AEVmStack.h" />
-    <ClInclude Include="..\..\src\RazerVM\AEVmThread.h" />
+    <ClInclude Include="..\..\src\RazerVM\Executor\AEVmArithmetic.h" />
+    <ClInclude Include="..\..\src\RazerVM\Executor\AEVmCalls.h" />
+    <ClInclude Include="..\..\src\RazerVM\Executor\VariantOps.h" />
+    <ClInclude Include="..\..\src\RazerVM\Executor\VmDispatch.h" />
+    <ClInclude Include="..\..\src\RazerVM\Executor\VmInstructions.h" />
+    <ClInclude Include="..\..\src\RazerVM\StackFrame.h" />
+    <ClInclude Include="..\..\src\RazerVM\StackValue.h" />
+    <ClInclude Include="..\..\src\RazerVM\VirtualMachine.h" />
+    <ClInclude Include="..\..\src\RazerVM\ThreadContext.h" />
+    <ClInclude Include="..\..\src\RazerVM\ThreadHandler.h" />
     <ClInclude Include="..\..\src\RazerVM\InstructionSet.h" />
-    <ClInclude Include="..\..\src\RazerVM\VariantOps.h" />
-    <ClInclude Include="..\..\src\RazerVM\VmDispatch.h" />
-    <ClInclude Include="..\..\src\RazerVM\VmInstructions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

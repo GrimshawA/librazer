@@ -1,16 +1,16 @@
-#include <RazerVM/AEVmThread.h>
+#include <RazerVM/ThreadHandler.h>
 
-void AEVmThread::start()
+void RzThreadHandler::start()
 {
-	m_thread = std::thread(&AEVmThread::threadFunc, this);
+	m_thread = std::thread(&RzThreadHandler::threadFunc, this);
 }
 
-uint64_t AEVmThread::stackSize()
+uint64_t RzThreadHandler::stackSize()
 {
-	return stack.size();
+	return m_context.size();
 }
 
-void AEVmThread::threadFunc()
+void RzThreadHandler::threadFunc()
 {
 	// Threads launched by the vm, will be tied to the execution of this function.
 	// Once this function terminates, the thread has exited and the vm will handle the proper signaling

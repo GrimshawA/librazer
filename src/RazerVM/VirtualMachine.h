@@ -1,23 +1,21 @@
-#ifndef aeon_vm_h__
-#define aeon_vm_h__
+#ifndef RZVIRTUALMACHINE_H__
+#define RZVIRTUALMACHINE_H__
 
-#include <RazerVM/AEVmThread.h>
+#include <RazerVM/ThreadHandler.h>
 #include <Rzr/RzModule.h>
-#include <RazerVM/AEVmStack.h>
+#include <RazerVM/ThreadContext.h>
 #include <AEON/Runtime/AEValueList.h>
 #include <Rzr/RzEngine.h>
 
 #include <vector>
 #include <stdint.h>
 
-
-class AEVirtualMachine;
 class AEObject;
 
 #define STATE_ASSERT (assert((esp > m_stack.data() + m_stack.size()); assert((esp < m_stack.data())); 
 
 /**
-	\class aeon_vm
+	\class RzVirtualMachine
 	\brief The vm is in charge of executing the program in its byte code form
 
 	The responsibility of the vm is to execute bytecode from the aeon language. With the exception of JIT
@@ -39,12 +37,22 @@ class AEObject;
 	[Coroutines]
 	Coroutines are implemented by preservation of call state for restoration.
 */
-class AEVirtualMachine
+class RzVirtualMachine
 {
 public:
+	// [API]
 
-	AEVirtualMachine();
-	AEVirtualMachine(RzEngine* context);
+	RzVirtualMachine();
+	RzVirtualMachine(RzEngine* context);
+
+	void execute(int functionId);
+	void executeAsync(int functionId);
+
+
+
+
+
+public:
 
 	RzValue call(RzValue obj, const std::string& functionName, AEValueList args = AEValueList());
 
@@ -58,7 +66,7 @@ public:
 
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
-		void execute(AEVmStack& threadInfo);
+		void execute(RzThreadContext& threadInfo);
 
 		/// Call a method on the given script object by its name
 		void callMethod(AEObject* object, const std::string& prototype);
@@ -71,14 +79,17 @@ public:
 
 		int call(AEFunction* fn);
 
-		void startThread(AEVmThreadEnv threadEnv);
+		void startThread();
 
 public:
 
 //private:
-	std::vector<AEVmThread> hw_threads;
-	RzEngine*           m_ctx;
-	AEVmStack           m_stk;
+
+	typedef std::shared_ptr<RzThreadHandler> RzThreadHandlerPtr;
+
+	RzThreadContext                 m_mainContext;       ///< The context for the host thread (for host synchronous execution)
+	std::vector<RzThreadHandlerPtr> m_threads;           ///< Hardware threads spawned by the vm
+	RzEngine*                       m_ctx;               ///< The engine that encapsulates all code the vm executes
 };
 
-#endif // aeon_vm_h__
+#endif // RZVIRTUALMACHINE_H__

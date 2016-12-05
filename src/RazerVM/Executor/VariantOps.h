@@ -1,10 +1,10 @@
 #ifndef VariantOps_h__
 #define VariantOps_h__
 
-inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int typeIndex, int c)
+inline static void DoVarStore(RzVirtualMachine* vm, int storeType, int typeIndex, int c)
 {
-	vm_value operand = vm->m_stk.pop_value();
-	AEValueRef ref = vm->m_stk.popVariantRef();
+	RzStackValue operand = vm->m_mainContext.pop_value();
+	AEValueRef ref = vm->m_mainContext.popVariantRef();
 
 	if (!ref.data && !ref.createOnAssign())
 	{
@@ -50,82 +50,82 @@ inline static void DoVarStore(AEVirtualMachine* vm, int storeType, int typeIndex
 	}
 }
 
-inline void DoVarLoad(AEVirtualMachine* vm, int memberIndex)
+inline void DoVarLoad(RzVirtualMachine* vm, int memberIndex)
 {
 	RzValue varObj;
-	vm->m_stk.popVariant(varObj);
-	std::string fieldName = vm->m_stk.cl->module->m_identifierPool[memberIndex];
+	vm->m_mainContext.popVariant(varObj);
+	std::string fieldName = vm->m_mainContext.cl->module->m_identifierPool[memberIndex];
 
 	//if (varObj)
 	//{
 		RzValue memberField = varObj.property(fieldName);
-		vm->m_stk.pushVariant(memberField);
+		vm->m_mainContext.pushVariant(memberField);
 	//}
 }
 
-inline void DoVarLoadRef(AEVirtualMachine* vm, int op, int data0)
+inline void DoVarLoadRef(RzVirtualMachine* vm, int op, int data0)
 {
 	if (op == 0)
 	{
 		// There is already a ref in the stack, now get a subref out of it
-		AEValueRef ref = vm->m_stk.popVariantRef();
+		AEValueRef ref = vm->m_mainContext.popVariantRef();
 		if (ref.type == AEValueRef::REF_VALUE)
 		{
 
 			AEValueRef subRef = (*ref.value).makeRefForChild(vm->get_current_mod()->m_identifierPool[data0]);			
-			vm->m_stk.pushVariantRef(subRef);
+			vm->m_mainContext.pushVariantRef(subRef);
 		}
 	}
 
 	if (op == 1)
 	{
 		// Load a local variable as a ref
-		RzValue* referredValue = reinterpret_cast<RzValue*>(vm->m_stk.ebp - data0 - sizeof(RzValue));
+		RzValue* referredValue = reinterpret_cast<RzValue*>(vm->m_mainContext.ebp - data0 - sizeof(RzValue));
 		AEValueRef ref;
 		ref.type = AEValueRef::REF_VALUE;
 		ref.value = referredValue;
-		vm->m_stk.pushVariantRef(ref);
+		vm->m_mainContext.pushVariantRef(ref);
 	}
 }
 
-inline void DoAddV(AEVirtualMachine* vm)
+inline void DoAddV(RzVirtualMachine* vm)
 {
 	RzValue a,b;
-	vm->m_stk.popVariant(b);
-	vm->m_stk.popVariant(a);
-	vm->m_stk.pushVariant(a+b);
+	vm->m_mainContext.popVariant(b);
+	vm->m_mainContext.popVariant(a);
+	vm->m_mainContext.pushVariant(a+b);
 }
 
-inline void DoSubV(AEVirtualMachine* vm)
+inline void DoSubV(RzVirtualMachine* vm)
 {
 	RzValue a,b;
-	vm->m_stk.popVariant(b);
-	vm->m_stk.popVariant(a);
-	vm->m_stk.pushVariant(a-b);
+	vm->m_mainContext.popVariant(b);
+	vm->m_mainContext.popVariant(a);
+	vm->m_mainContext.pushVariant(a-b);
 }
 
-inline void DoMultV(AEVirtualMachine* vm)
+inline void DoMultV(RzVirtualMachine* vm)
 {
 	RzValue a,b;
-	vm->m_stk.popVariant(b);
-	vm->m_stk.popVariant(a);
-	vm->m_stk.pushVariant(a*b);
+	vm->m_mainContext.popVariant(b);
+	vm->m_mainContext.popVariant(a);
+	vm->m_mainContext.pushVariant(a*b);
 }
 
-inline void DoDivV(AEVirtualMachine* vm)
+inline void DoDivV(RzVirtualMachine* vm)
 {
 	RzValue a,b;
-	vm->m_stk.popVariant(b);
-	vm->m_stk.popVariant(a);
-	vm->m_stk.pushVariant(a/b);
+	vm->m_mainContext.popVariant(b);
+	vm->m_mainContext.popVariant(a);
+	vm->m_mainContext.pushVariant(a/b);
 }
 
-inline void DoCompareV(AEVirtualMachine* vm)
+inline void DoCompareV(RzVirtualMachine* vm)
 {
 	RzValue a,b;
-	vm->m_stk.popVariant(b);
-	vm->m_stk.popVariant(a);
-	vm->m_stk.pushVariant(a==b);
+	vm->m_mainContext.popVariant(b);
+	vm->m_mainContext.popVariant(a);
+	vm->m_mainContext.pushVariant(a==b);
 }
 
 #endif // VariantOps_h__

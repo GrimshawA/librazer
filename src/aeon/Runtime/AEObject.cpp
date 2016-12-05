@@ -1,6 +1,6 @@
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEFunction.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 
 AEObject::AEObject()
 : m_ref(0)
@@ -53,7 +53,7 @@ void AEObject::call(const std::string& name)
 		printf("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
 		if (fn)
 		{
-			AEVirtualMachine vm;
+			RzVirtualMachine vm;
 			vm.setContext(getType()->m_module->m_context);
 			//		vm.call(fn);
 		}

@@ -1,8 +1,8 @@
 #include "VariantOps.h"
 
-void AEVirtualMachine::execute(AEVmStack& threadInfo)
+void RzVirtualMachine::execute(RzThreadContext& threadInfo)
 {
-	threadInfo.cl = &m_stk.frames[m_stk.frames.size() - 1];
+	threadInfo.cl = &m_mainContext.frames[m_mainContext.frames.size() - 1];
 
 	for (; threadInfo.cl->pc < threadInfo.cl->module->m_code.size(); ++threadInfo.cl->pc)
 	{
@@ -19,7 +19,7 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 
 			vm_start(OP_PREPARE)
 				AEFunction* functionData = m_ctx->m_functionTable[inst.arg0];
-			m_stk.esp -= functionData->returnValueSize;
+			m_mainContext.esp -= functionData->returnValueSize;
 			vm_end
 
 				vm_start(OP_CALL)
@@ -87,9 +87,9 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 			vm_end
 
 				vm_start(OP_LOADENUM)
-				vm_value v;
+				RzStackValue v;
 			v.i32 = inst.arg0;
-			m_stk.push_value(v);
+			m_mainContext.push_value(v);
 			vm_end
 
 				vm_start(OP_LT)
@@ -149,8 +149,8 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 			vm_end
 
 				vm_start(OP_PUSHTHIS)
-				vm_value v = m_stk.getThisPtr();
-			m_stk.push_value(v);
+				RzStackValue v = m_mainContext.getThisPtr();
+			m_mainContext.push_value(v);
 			vm_end
 
 				vm_start(OP_SIZEOF)
@@ -159,7 +159,7 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 
 				vm_start(OP_TYPEINFO)
 				int index = inst.arg0;
-			m_stk.push_value(vm_value::make_ptr(m_ctx->typedb[index]));
+			m_mainContext.push_value(RzStackValue::make_ptr(m_ctx->typedb[index]));
 			printf("LOADED TYPE INFO %s\n", m_ctx->typedb[index]->getName().c_str());
 			vm_end
 
@@ -172,7 +172,7 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 				vm_end
 
 				vm_start(OP_MOV)
-				m_stk.esp += inst.arg1;
+				m_mainContext.esp += inst.arg1;
 			vm_end
 
 				vm_start(OP_BREAKPOINT)
@@ -191,20 +191,20 @@ void AEVirtualMachine::execute(AEVmStack& threadInfo)
 #if defined TRACE_VM
 			printf("Pushed var to stack from offset %d\n", inst.arg0);
 #endif
-			RzValue* referredValue = reinterpret_cast<RzValue*>(m_stk.ebp - inst.arg0 - sizeof(RzValue));
-			m_stk.pushVariant(*referredValue);
+			RzValue* referredValue = reinterpret_cast<RzValue*>(m_mainContext.ebp - inst.arg0 - sizeof(RzValue));
+			m_mainContext.pushVariant(*referredValue);
 
 			vm_end
 
 				vm_start(OP_POPVAR)
 				RzValue v;
-				m_stk.popVariant(v);
+				m_mainContext.popVariant(v);
 				vm_end
 
 				vm_start(OP_VARCALL)
 				RzValue ptr;
-				m_stk.popVariant(ptr);
-			std::string methodName = m_stk.cl->module->m_identifierPool[inst.arg0];
+				m_mainContext.popVariant(ptr);
+			std::string methodName = m_mainContext.cl->module->m_identifierPool[inst.arg0];
 			RzValue fnValue = ptr.property(methodName);
 
 #if defined TRACE_VM

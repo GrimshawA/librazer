@@ -54,7 +54,7 @@ public:
 	}
 
 	//private:
-	friend class AEVirtualMachine;
+	friend class RzVirtualMachine;
 	friend class RzEngine;
 
 	std::vector<std::string> m_names;

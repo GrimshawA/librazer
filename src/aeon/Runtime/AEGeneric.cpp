@@ -1,10 +1,10 @@
 #include <AEON/Runtime/AEGeneric.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 #include <AEON/Runtime/AEGeneric.h>
 
 int32_t AEGeneric::unpack_int32()
 {
-	vm_value strIndex = m_vm->m_stk.pop_value();
+	RzStackValue strIndex = m_vm->m_mainContext.pop_value();
 	return strIndex.i32;
 }
 
@@ -25,7 +25,7 @@ double AEGeneric::unpack_double()
 
 std::string AEGeneric::unpack_string()
 {
-	vm_value strIndex = m_vm->m_stk.pop_value();
+	RzStackValue strIndex = m_vm->m_mainContext.pop_value();
 	std::string str = m_vm->m_ctx->string_literals[strIndex.i32];
 	return str;
 }

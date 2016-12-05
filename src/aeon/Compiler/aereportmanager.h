@@ -2,7 +2,7 @@
 #define aeReportManager_h__
 
 #include <RazerVM/InstructionSet.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 
 #include <vector>
 

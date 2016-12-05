@@ -1,96 +1,40 @@
-#ifndef aeon_threadstate_h__
-#define aeon_threadstate_h__
+#ifndef RZTHREADCONTEXT_H__
+#define RZTHREADCONTEXT_H__
+
+#include <RazerVM/StackFrame.h>
+#include <RazerVM/StackValue.h>
 
 #include <Rzr/RzValue.h>
 #include <AEON/Runtime/AEObject.h>
 #include <vector>
 #include <stdint.h>
 
-
 class AEFunction;
 class aeVM;
 class RzModule;
 
-
 /**
-When pushing operands to the stack they
-must be properly aligned and padded.
-This struct helps with this, making the code more
-portable and easier to handle.
-*/
-struct vm_value
-{
-	union
-	{
-		uint8_t  u8;
-		int8_t   i8;
-		uint16_t u16;
-		int16_t  i16;
-		uint32_t u32;
-		int32_t  i32;
-		uint64_t u64;
-		int64_t  i64;
-		float    fp;
-		float    dp;
-		void*    ptr;
-	};
+	\struct RzThreadContext
+	\brief Provides environment for each thread of execution in the vm
 
-	static vm_value from_int32(int32_t v)
-	{
-		vm_value vmv; vmv.i32 = v; return vmv;
-	}
-
-	static vm_value make_uint32(uint32_t v)
-	{
-		vm_value vmv; vmv.u32 = v; return vmv;
-	}
-
-	static vm_value make_float(float v)
-	{
-		vm_value vmv; vmv.fp = v; return vmv;
-	}
-
-	static vm_value make_double(double v)
-	{
-		vm_value vmv; vmv.dp = v; return vmv;
-	}
-
-	static vm_value make_ptr(void* v)
-	{
-		vm_value vmv; vmv.ptr = v; return vmv;
-	}
-};
-
-struct aeStackFrame
-{
-	AEFunction*    function;      ///< The function this frame represents
-	std::string    name;          ///< Name?
-	uint32_t       pc;            ///< So we can restore the program counter of the caller
-	unsigned char* ebp;           ///< So we can restore the base pointer of the caller
-	RzModule*      module;
-	void*          object;
-};
-
-/**
-	\struct aeThreadState
-	\brief Each thread of execution gets its own context information
+	This is also the entry point for starting to run code until the call stack collapses.
 
 	Threads have their own unique state, including the program counter, the entire call stack, the stack for operations and so on.
 	Advanced debugging is done by pausing execution and inspecting the thread state.
 */
-class AEVmStack
+class RzThreadContext
 {
 public:
 	std::vector<unsigned char>  stack;
-	std::vector<aeStackFrame>   frames;
+	std::vector<RzStackFrame>   frames;
 	unsigned char*              esp;
 	unsigned char*              ebp;
 	int                         pc;
-	aeStackFrame*               cl;
+	RzStackFrame*               cl;
 
 public:
 
-	AEVmStack()
+	RzThreadContext()
 	{
 		stack.resize(512000);
 		esp = &stack[512000 - 1];
@@ -121,25 +65,25 @@ public:
 		printf("[ebp] %x : index %d\n", ebp, stack.data() + stack.size() - ebp);
 	}
 
-	void push_value(vm_value v)
+	void push_value(RzStackValue v)
 	{
 		esp -= sizeof(v);
-		*reinterpret_cast<vm_value*>(esp) = v;
+		*reinterpret_cast<RzStackValue*>(esp) = v;
 	}
 
-	vm_value pop_value()
+	RzStackValue pop_value()
 	{
-		vm_value v;
-		v = *reinterpret_cast<vm_value*>(esp);
-		esp += sizeof(vm_value);
+		RzStackValue v;
+		v = *reinterpret_cast<RzStackValue*>(esp);
+		esp += sizeof(RzStackValue);
 
 		return v;
 	}
 
-	vm_value getThisPtr()
+	RzStackValue getThisPtr()
 	{
-		vm_value thisvm;
-		thisvm.ptr = reinterpret_cast<vm_value*>(ebp - int32_t(sizeof(vm_value)))->ptr;
+		RzStackValue thisvm;
+		thisvm.ptr = reinterpret_cast<RzStackValue*>(ebp - int32_t(sizeof(RzStackValue)))->ptr;
 		//thisvm.u64 -= sizeof(vm_value);
 		//thisvm = *(vm_value*)(ebp - sizeof(vm_value));
 		//printf("thisptr is %x from %x - 8\n", thisvm.ptr, ebp);
@@ -148,7 +92,7 @@ public:
 
 	void pushThisPtr(void* ptr)
 	{
-		vm_value v;
+		RzStackValue v;
 		v.ptr = ptr;
 		push_value(v);
 
@@ -180,4 +124,4 @@ public:
 		return rv;
 	}
 };
-#endif // aeon_threadstate_h__
+#endif // RZTHREADCONTEXT_H__

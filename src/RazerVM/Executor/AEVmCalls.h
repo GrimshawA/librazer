@@ -1,7 +1,7 @@
 #ifndef AEVmCalls_h__
 #define AEVmCalls_h__
 
-static inline void DoCall(AEVirtualMachine* vm, int functionIndex)
+static inline void DoCall(RzVirtualMachine* vm, int functionIndex)
 {
 	AEFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
 
@@ -10,17 +10,17 @@ static inline void DoCall(AEVirtualMachine* vm, int functionIndex)
 	functionData->printByteCode();
 #endif
 
-	aeStackFrame callinfo;
+	RzStackFrame callinfo;
 	callinfo.name = "unknown";
 	callinfo.pc = functionData->m_offset - 1;
 	callinfo.module = functionData->m_module;
-	callinfo.ebp = vm->m_stk.ebp;
+	callinfo.ebp = vm->m_mainContext.ebp;
 	callinfo.function = functionData;
-	vm->m_stk.frames.push_back(callinfo);
-	vm->m_stk.cl = &vm->m_stk.frames[vm->m_stk.frames.size() - 1];
+	vm->m_mainContext.frames.push_back(callinfo);
+	vm->m_mainContext.cl = &vm->m_mainContext.frames[vm->m_mainContext.frames.size() - 1];
 }
 
-static inline void DoDynamicCall(AEVirtualMachine* vm, int functionIndex)
+static inline void DoDynamicCall(RzVirtualMachine* vm, int functionIndex)
 {
 	//AEValue v = vm->m_stk.popVar();
 	

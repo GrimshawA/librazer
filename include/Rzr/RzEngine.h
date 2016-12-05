@@ -1,7 +1,7 @@
 #ifndef RZENGINE_H__
 #define RZENGINE_H__
 
-#include <RazerVM/AEVmStack.h>
+#include <RazerVM/ThreadContext.h>
 #include <AEON/Runtime/aeQualType.h>
 #include <AEON/Runtime/AEType.h>
 #include <Rzr/RzValue.h>
@@ -12,7 +12,7 @@
 #include <map>
 #include <stdint.h>
 
-class AEVirtualMachine;
+class RzVirtualMachine;
 class AEObject;
 
 struct aeon_config
@@ -25,7 +25,7 @@ struct aeon_config
 
 typedef void(*aeBindMethod)(AEGeneric);
 typedef void(*aeDestructorMethod)(void*);
-typedef void(*aeConstructorMethod)(void*, AEVirtualMachine*);
+typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
 
 typedef int aeLiteralId;
 typedef int aeFunctionId;
@@ -150,7 +150,7 @@ public:
 	void destroyObject(AEObject* object);
 
 private:
-	AEVirtualMachine* m_vm;
+	RzVirtualMachine* m_vm;
 };
 
 #endif // RZENGINE_H__

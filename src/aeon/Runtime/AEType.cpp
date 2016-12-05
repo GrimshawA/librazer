@@ -1,5 +1,5 @@
 #include <AEON/Runtime/AEType.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 
 AEType::AEType()
 : is_native(false)

@@ -3,7 +3,7 @@
 #include <AEON/stdlib/window/Window.h>
 
 #include <Rzr/RzEngine.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 #include <AEON/Runtime/AEGeneric.h>
 
 #include <cmath>
@@ -51,7 +51,7 @@ void RegisterStd(RzEngine* ctx)
 	});
 
 	ctx->registerFunction("void printVar(var)", [](AEGeneric g){
-		RzValue v; g.m_vm->m_stk.popVariant(v);
+		RzValue v; g.m_vm->m_mainContext.popVariant(v);
 		printf("VAR: %s\n", v.toString().c_str());
 	});
 

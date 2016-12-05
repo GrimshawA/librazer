@@ -7,15 +7,15 @@ template<typename T>
 class aeBindingHelper
 {
 public:
-	static void DefaultConstructor(AEVirtualMachine* vm)
+	static void DefaultConstructor(RzVirtualMachine* vm)
 	{
-		void* memory = vm->m_stk.pop_value().ptr;
+		void* memory = vm->m_mainContext.pop_value().ptr;
 		new (memory) T();
 	}
 
-	static void Destructor(AEVirtualMachine* vm)
+	static void Destructor(RzVirtualMachine* vm)
 	{
-		void* memory = vm->m_stk.pop_value().ptr;
+		void* memory = vm->m_mainContext.pop_value().ptr;
 		static_cast<T*>(memory)->~T();
 	}
 };

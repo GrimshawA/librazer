@@ -11,12 +11,12 @@
 
 class RzModule;
 class RzEngine;
-class AEVirtualMachine;
+class RzVirtualMachine;
 class AEFunction;
 
 typedef void(*aeBindMethod)(AEGeneric);
 typedef void(*aeDestructorMethod)(void*);
-typedef void(*aeConstructorMethod)(void*, AEVirtualMachine*);
+typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
 
 #define 	aeOFFSET(s, m)   ((size_t)(&reinterpret_cast<s*>(100000)->m)-100000)
 

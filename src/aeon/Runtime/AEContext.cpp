@@ -1,6 +1,6 @@
 #include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 #include <AEON/Parser/RzParser.h>
 #include <AEON/Parser/RzTokens.h>
 #include <AEON/Compiler/aeCompiler.h>
@@ -167,7 +167,7 @@ AEObject* RzEngine::createObject(const std::string& typen)
 			AEObject* object = new AEObject();
 			object->m_obj = malloc(heap.type->getSize());
 			object->m_type = heap.type;
-			AEVirtualMachine vm(this);
+			RzVirtualMachine vm(this);
 			vm.callMethod(object, typen + "." + typen);
 			return object;
 		}

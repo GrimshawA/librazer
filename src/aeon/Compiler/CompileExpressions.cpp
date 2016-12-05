@@ -1,6 +1,6 @@
 #include <AEON/Compiler/aeCompiler.h>
 #include <RazerVM/InstructionSet.h>
-#include <RazerVM/AEVm.h>
+#include <RazerVM/VirtualMachine.h>
 #include <Rzr/RzEngine.h>
 
 #include <cassert>
