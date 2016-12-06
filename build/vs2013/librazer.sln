@@ -1,13 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbed", "..\..\testbed\build\testbed\testbed.vcxproj", "{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{59E792E6-2282-4D0B-AB8A-4FE99002EE50} = {59E792E6-2282-4D0B-AB8A-4FE99002EE50}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "aion", "..\..\aion\build\msvc2013\aion.vcxproj", "{D40F8305-9619-4510-8A28-4EA29B6F328A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{59E792E6-2282-4D0B-AB8A-4FE99002EE50} = {59E792E6-2282-4D0B-AB8A-4FE99002EE50}
@@ -28,16 +23,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Debug|Android.ActiveCfg = Debug|Android
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Debug|Android.Build.0 = Debug|Android
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Debug|Android.Deploy.0 = Debug|Android
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Debug|Win32.Build.0 = Debug|Win32
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Release|Android.ActiveCfg = Release|Android
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Release|Android.Build.0 = Release|Android
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Release|Android.Deploy.0 = Release|Android
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Release|Win32.ActiveCfg = Release|Win32
-		{A8D2B2CA-982E-4369-825F-B0A3FFCC086B}.Release|Win32.Build.0 = Release|Win32
 		{D40F8305-9619-4510-8A28-4EA29B6F328A}.Debug|Android.ActiveCfg = Debug|Android
 		{D40F8305-9619-4510-8A28-4EA29B6F328A}.Debug|Android.Build.0 = Debug|Android
 		{D40F8305-9619-4510-8A28-4EA29B6F328A}.Debug|Android.Deploy.0 = Debug|Android

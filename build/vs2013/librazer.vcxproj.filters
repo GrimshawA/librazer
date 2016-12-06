@@ -56,14 +56,20 @@
     <ClCompile Include="..\..\src\AEON\stdlib\net\Socket.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\window\Window.cpp" />
     <ClCompile Include="..\..\src\RazerVM\Executor\ExecDispatch.cpp" />
-    <ClCompile Include="..\..\src\RazerVM\StackValue.cpp" />
     <ClCompile Include="..\..\src\RazerVM\VirtualMachine.cpp" />
-    <ClCompile Include="..\..\src\RazerVM\ThreadContext.cpp" />
-    <ClCompile Include="..\..\src\RazerVM\ThreadHandler.cpp" />
     <ClCompile Include="..\..\src\RazerVM\InstructionSet.cpp">
       <Filter>RazerVM</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\RazerVM\StackFrame.cpp">
+      <Filter>RazerVM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerVM\StackValue.cpp">
+      <Filter>RazerVM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerVM\ThreadContext.cpp">
+      <Filter>RazerVM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerVM\ThreadHandler.cpp">
       <Filter>RazerVM</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,14 +131,20 @@
     <ClInclude Include="..\..\src\RazerVM\Executor\VariantOps.h" />
     <ClInclude Include="..\..\src\RazerVM\Executor\ExecDispatch.h" />
     <ClInclude Include="..\..\src\RazerVM\Executor\VmInstructions.h" />
-    <ClInclude Include="..\..\src\RazerVM\StackValue.h" />
     <ClInclude Include="..\..\src\RazerVM\VirtualMachine.h" />
-    <ClInclude Include="..\..\src\RazerVM\ThreadContext.h" />
-    <ClInclude Include="..\..\src\RazerVM\ThreadHandler.h" />
     <ClInclude Include="..\..\src\RazerVM\InstructionSet.h">
       <Filter>RazerVM</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\RazerVM\StackFrame.h">
+      <Filter>RazerVM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerVM\ThreadHandler.h">
+      <Filter>RazerVM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerVM\StackValue.h">
+      <Filter>RazerVM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerVM\ThreadContext.h">
       <Filter>RazerVM</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,25 @@
+RazerVM command - rzr
+----------------
+
+The rzr command is the standardized way to run razer programs targeting the RazerVM. Programs are compiled into modules which must be loaded
+by the vm to execute.
+
+There is always the option to manually create a new project that hosts the vm in order to boostrap execution in the app itself, rather than having to invoke rzr.
+
+However, during development, demos and utilities, most programs will use rzr to launch the vm.
+
+Launching from source
+----------------------
+
+In order to have rzr directly compile and execute an input file, do:
+
+rzr sourcefile.rz
+
+The main function will be executed and the program will run.
+
+Launching from module
+-----------------------
+
+Run the vm by loading a precompiled program module where the main resides. Modules have links to their dependencies so those are loaded automatically.
+
+rzr app.dll
