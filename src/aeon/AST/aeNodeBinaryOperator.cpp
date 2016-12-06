@@ -39,5 +39,8 @@ aeQualType aeNodeBinaryOperator::getQualifiedType(AECompiler* c)
 
 std::string aeNodeBinaryOperator::str() const
 {
+	if (!operandA || !operandB)
+		return std::string();
+
 	return std::string("(") + operandA->str() + " " + oper + " " + operandB->str() + ")";
 }

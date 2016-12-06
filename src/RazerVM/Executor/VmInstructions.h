@@ -1,8 +1,8 @@
 
-inline static void DoAdd(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoAdd(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
-	RzStackValue b = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
+	RzStackValue b = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -18,13 +18,13 @@ inline static void DoAdd(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 + b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoSub(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoSub(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue b = vm->m_mainContext.pop_value();
-	RzStackValue a = vm->m_mainContext.pop_value();
+	RzStackValue b = ctx.pop_value();
+	RzStackValue a = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -40,13 +40,13 @@ inline static void DoSub(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 - b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoMul(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoMul(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
-	RzStackValue b = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
+	RzStackValue b = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -62,13 +62,13 @@ inline static void DoMul(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 * b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoDiv(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoDiv(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue b = vm->m_mainContext.pop_value();
-	RzStackValue a = vm->m_mainContext.pop_value();
+	RzStackValue b = ctx.pop_value();
+	RzStackValue a = ctx.pop_value();
 
 	//printf("DIV %d %d\n", a.i32, b.i32);
 
@@ -86,13 +86,13 @@ inline static void DoDiv(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 / b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoMod(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoMod(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
-	RzStackValue b = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
+	RzStackValue b = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -108,12 +108,12 @@ inline static void DoMod(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 % b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoConversion(RzVirtualMachine* vm, AeonPrimitiveType t1, AeonPrimitiveType t2)
+inline static void DoConversion(RzThreadContext& ctx, AeonPrimitiveType t1, AeonPrimitiveType t2)
 {
-	RzStackValue v = vm->m_mainContext.pop_value();
+	RzStackValue v = ctx.pop_value();
 
 	if (t1 == AEP_INT32 && t2 == AEP_FLOAT)
 		v.fp = static_cast<float>(v.i32);
@@ -128,13 +128,13 @@ inline static void DoConversion(RzVirtualMachine* vm, AeonPrimitiveType t1, Aeon
 	else if (t1 == AEP_DOUBLE && t2 == AEP_INT32)
 		v.i32 = static_cast<int32_t>(v.dp);
 
-	vm->m_mainContext.push_value(v);
+	ctx.push_value(v);
 }
 
-inline static void DoEquals(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoEquals(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
-	RzStackValue b = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
+	RzStackValue b = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -150,13 +150,13 @@ inline static void DoEquals(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 == b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoNotEquals(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoNotEquals(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
-	RzStackValue b = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
+	RzStackValue b = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -172,16 +172,16 @@ inline static void DoNotEquals(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 != b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoAssign(RzVirtualMachine* vm, int mode, int offset, int type)
+inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type)
 {
 	// Assign modes:
 	// pod_copy - simply copy N bytes from the loaded value into the target address
 
-	RzStackValue operand = vm->m_mainContext.pop_value();
-	RzStackValue addr = vm->m_mainContext.pop_value();
+	RzStackValue operand = ctx.pop_value();
+	RzStackValue addr = ctx.pop_value();
 	if (type == AEP_PTR)
 	{
 		memcpy(addr.ptr, &operand.ptr, 4);
@@ -194,19 +194,19 @@ inline static void DoAssign(RzVirtualMachine* vm, int mode, int offset, int type
 	}
 }
 
-inline static void DoLoad(RzVirtualMachine* vm, int addressMode, int offset, int kind)
+inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int kind)
 {
 	void* dataPtr = nullptr;
 
 	if (addressMode == AEK_THIS)
 	{
-		RzStackValue thisPtr = vm->m_mainContext.pop_value();
+		RzStackValue thisPtr = ctx.pop_value();
 		dataPtr = static_cast<unsigned char*>(thisPtr.ptr) + offset;
 		//printf("LOAD FROM POPPED THIS|\n");
 	}
 	else if (addressMode == AEK_EBP)
 	{
-		dataPtr = vm->m_mainContext.ebp - offset;
+		dataPtr = ctx.ebp - offset;
 	}
 	else if (addressMode == AEK_ESP)
 	{
@@ -219,55 +219,55 @@ inline static void DoLoad(RzVirtualMachine* vm, int addressMode, int offset, int
 		{
 			RzStackValue v;
 			memcpy(&v.ptr, dataPtr, sizeof(void*));
-			vm->m_mainContext.push_value(v);
+			ctx.push_value(v);
 			//printf("Loading ptr %x\n", v.ptr);
 		}
 		else
 		{
 			RzStackValue v;
 			v.i32 = *static_cast<int32_t*>(dataPtr);
-			vm->m_mainContext.push_value(v);
+			ctx.push_value(v);
 			//printf("Loading %d\n", v.i32);
 		}
 	}
 }
 
-inline static void DoLoadAddr(RzVirtualMachine* vm, int addressMode, int offset, int x)
+inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset, int x)
 {
 	if (addressMode == AEK_THIS)
 	{
-		RzStackValue thisPtr = vm->m_mainContext.pop_value();
+		RzStackValue thisPtr = ctx.pop_value();
 		thisPtr.ptr = (unsigned char*)thisPtr.ptr + offset;
-		vm->m_mainContext.push_value(thisPtr);
-		printf("OP_LOADADDR THIS = %x (offset %d)\n", vm->m_mainContext.getThisPtr().ptr, offset);
+		ctx.push_value(thisPtr);
+		printf("OP_LOADADDR THIS = %x (offset %d)\n", ctx.getThisPtr().ptr, offset);
 	}
 	else if (addressMode == AEK_EBP)
 	{
 		RzStackValue val;
-		val.ptr = vm->m_mainContext.ebp - offset;
-		vm->m_mainContext.push_value(val);
+		val.ptr = ctx.ebp - offset;
+		ctx.push_value(val);
 		//printf("OP_LOADADDR EBP address %x (offset %d)\n", val.ptr, offset);
 	}
 	else if (addressMode == AEK_ESP)
 	{
 		RzStackValue v;
-		v.ptr = vm->m_mainContext.esp;
-		vm->m_mainContext.push_value(v);
+		v.ptr = ctx.esp;
+		ctx.push_value(v);
 		//printf("OP_LOAD ESP address %x\n", v.ptr);
 	}
 }
 
-inline static void DoLoadConstant(RzVirtualMachine* vm, int primType, int index, int x)
+inline static void DoLoadConstant(RzThreadContext& ctx, int primType, int index, int x)
 {
 	RzStackValue kVal;
 	if (primType == AEK_FLOAT)
 	{
-		kVal.fp = vm->m_ctx->m_floatTable[index];
+		kVal.fp = ctx.engine->m_floatTable[index];
 		//printf("OP_LOADK FLOAT %f constant\n", kVal.fp);
 	}
 	else if (primType == AEK_INT)
 	{
-		kVal.i32 = vm->m_ctx->int_literals[index];
+		kVal.i32 = ctx.engine->int_literals[index];
 		//printf("OP_LOADK INT32 %d constant\n", kVal.i32);
 	}
 	else if (primType == AEK_STRING)
@@ -275,29 +275,29 @@ inline static void DoLoadConstant(RzVirtualMachine* vm, int primType, int index,
 		kVal.i32 = index;
 		//printf("OP_LOADK string %d constant\n", kVal.i32);
 	}
-	vm->m_mainContext.push_value(kVal);
+	ctx.push_value(kVal);
 }
 
-inline static void DoLogicalNot(RzVirtualMachine* vm)
+inline static void DoLogicalNot(RzThreadContext& ctx)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
 	a.i64 = !a.i64;
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoNewObject(RzVirtualMachine* vm, int module_id, int type)
+inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
 {
-	void* objectMem = malloc(vm->get_current_mod()->m_types[type]->getSize());
+	/*void* objectMem = malloc(vm->get_current_mod()->m_types[type]->getSize());
 
 	RzStackValue obj;
 	obj.ptr = objectMem;
-	vm->m_mainContext.push_value(obj);
+	vm->m_mainContext.push_value(obj);*/
 }
 
-inline static void DoLessThan(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoLessThan(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue b = vm->m_mainContext.pop_value();
-	RzStackValue a = vm->m_mainContext.pop_value();
+	RzStackValue b = ctx.pop_value();
+	RzStackValue a = ctx.pop_value();
 	//printf("LT OP %d < %d = %d\n", a.i32, b.i32, a.i32 < b.i32);
 
 	switch (ptype)
@@ -314,13 +314,13 @@ inline static void DoLessThan(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 < b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-inline static void DoGreaterThan(RzVirtualMachine* vm, AeonPrimitiveType ptype)
+inline static void DoGreaterThan(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-	RzStackValue a = vm->m_mainContext.pop_value();
-	RzStackValue b = vm->m_mainContext.pop_value();
+	RzStackValue a = ctx.pop_value();
+	RzStackValue b = ctx.pop_value();
 
 	switch (ptype)
 	{
@@ -336,14 +336,14 @@ inline static void DoGreaterThan(RzVirtualMachine* vm, AeonPrimitiveType ptype)
 	case AEP_INT64: a.i64 = a.i64 > b.i64; break;
 	}
 
-	vm->m_mainContext.push_value(a);
+	ctx.push_value(a);
 }
 
-static inline void DoJumpIfZero(RzVirtualMachine* vm, int jumpOffset)
+static inline void DoJumpIfZero(RzThreadContext& ctx, int jumpOffset)
 {
-	RzStackFrame* cl = &vm->m_mainContext.frames[vm->m_mainContext.frames.size() - 1];
+	RzStackFrame* cl = &ctx.frames[ctx.frames.size() - 1];
 
-	int value = vm->m_mainContext.pop_value().i32;
+	int value = ctx.pop_value().i32;
 	if (value == 0)
 	{
 		cl->pc += jumpOffset;
@@ -356,29 +356,29 @@ static inline void DoJumpIfZero(RzVirtualMachine* vm, int jumpOffset)
 	//Log("[jz] test %d %d", cond, pcoffset);
 }
 
-static inline void DoJump(RzVirtualMachine* vm, int address)
+static inline void DoJump(RzThreadContext& ctx, int address)
 {
-	RzStackFrame* cl = &vm->m_mainContext.frames[vm->m_mainContext.frames.size() - 1];
+	RzStackFrame* cl = &ctx.frames[ctx.frames.size() - 1];
 	cl->pc = address;
 }
 
-static inline bool DoReturn(RzVirtualMachine* vm)
+static inline bool DoReturn(RzThreadContext& ctx)
 {
-	vm->m_mainContext.frames.pop_back();
-	if (vm->m_mainContext.frames.size() == 0)
+	ctx.frames.pop_back();
+	if (ctx.frames.size() == 0)
 	{
 		return true;
 	}
 	else
 	{
-		if (vm->m_mainContext.ebp != vm->m_mainContext.esp)
+		if (ctx.ebp != ctx.esp)
 			printf("Script function returned without popping all stack memory!\n");
 		else
 			printf("All memory is as expected\n");
 
 		// restore underlying function
-		vm->m_mainContext.cl = &vm->m_mainContext.frames[vm->m_mainContext.frames.size() - 1];
-		vm->m_mainContext.ebp = vm->m_mainContext.cl->ebp;
+		ctx.cl = &ctx.frames[ctx.frames.size() - 1];
+		ctx.ebp = ctx.cl->ebp;
 	}
 
 	return false;

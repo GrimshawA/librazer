@@ -2,8 +2,8 @@
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
 #include <AEON/Runtime/AEObject.h>
-#include <AEON/AEDocument.h>
-#include <AEON/AEBuilder.h>
+#include <Rzr/RzDocument.h>
+#include <AEON/Build/aeBuilder.h>
 
 #include "../test/test_framework.h"
 
@@ -22,7 +22,7 @@
 }*/
 void objects_test()
 {
-	AEContext ctx;
+	RzEngine ctx;
 	ctx.init_all();
 	ctx.quick_build("objects.ae");
 	//ctx.quick_build("a.ae");
@@ -30,35 +30,35 @@ void objects_test()
 	AEObject* myObject = ctx.createObject("ObjectsTest");
 	if (myObject)
 	{
-		AEValue myObj;
-		myObj.setValue("kill", AEValue([](){
+		RzValue myObj;
+		myObj.setValue("kill", RzValue([](){
 			printf("		kill on A\n");
 		}));
 		myObj.setValue("health", 100);
 
 		myObj.makeRefForChild("health");
 
-		AEValue objB;
-		objB.setValue("doThings", AEValue([](){
+		RzValue objB;
+		objB.setValue("doThings", RzValue([](){
 			printf("           doThings on B\n");
 		}));
 		//objB.setValue("a", myObj);
 
-		AEValue objC;
-		objC.setValue("finish", AEValue([](){
+		RzValue objC;
+		objC.setValue("finish", RzValue([](){
 			printf("			FINISH ON C OBJECT\n");
 		}));
 
 		//myObject->call("sum2");
 
-		AEVirtualMachine vm;
+		RzVirtualMachine vm;
 		vm.setContext(&ctx);
 
 		//vm.m_stk.push_addr(myObject->m_obj);
-		vm.m_stk.pushObject(myObject);
-		vm.m_stk.pushVariant(myObj);
-		vm.m_stk.pushVariant(objB);
-		vm.m_stk.pushVariant(objC);
+		vm.m_mainContext.pushObject(myObject);
+		vm.m_mainContext.pushVariant(myObj);
+		vm.m_mainContext.pushVariant(objB);
+		vm.m_mainContext.pushVariant(objC);
 		//vm.m_stk.pushVariant(AEValue());
 		vm.call(*ctx.modules[0].get(), "ObjectsTest.sum2");
 

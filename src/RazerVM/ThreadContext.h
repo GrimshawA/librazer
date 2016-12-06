@@ -31,6 +31,7 @@ public:
 	unsigned char*              ebp;
 	int                         pc;
 	RzStackFrame*               cl;
+	RzEngine*                   engine;
 
 public:
 

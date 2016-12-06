@@ -1,9 +1,9 @@
 #ifndef AEVmCalls_h__
 #define AEVmCalls_h__
 
-static inline void DoCall(RzVirtualMachine* vm, int functionIndex)
+static inline void DoCall(RzThreadContext& ctx, int functionIndex)
 {
-	AEFunction* functionData = vm->m_ctx->m_functionTable[functionIndex];
+	AEFunction* functionData = ctx.engine->m_functionTable[functionIndex];
 
 #if defined TRACE_VM
 	printf("Calling function %s\n", functionData->getName().c_str());
@@ -14,13 +14,13 @@ static inline void DoCall(RzVirtualMachine* vm, int functionIndex)
 	callinfo.name = "unknown";
 	callinfo.pc = functionData->m_offset - 1;
 	callinfo.module = functionData->m_module;
-	callinfo.ebp = vm->m_mainContext.ebp;
+	callinfo.ebp = ctx.ebp;
 	callinfo.function = functionData;
-	vm->m_mainContext.frames.push_back(callinfo);
-	vm->m_mainContext.cl = &vm->m_mainContext.frames[vm->m_mainContext.frames.size() - 1];
+	ctx.frames.push_back(callinfo);
+	ctx.cl = &ctx.frames[ctx.frames.size() - 1];
 }
 
-static inline void DoDynamicCall(RzVirtualMachine* vm, int functionIndex)
+static inline void DoDynamicCall(RzThreadContext& ctx, int functionIndex)
 {
 	//AEValue v = vm->m_stk.popVar();
 	

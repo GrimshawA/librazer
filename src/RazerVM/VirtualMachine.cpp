@@ -1,21 +1,11 @@
 #include <RazerVM/VirtualMachine.h>
+#include <RazerVM/Executor/ExecDispatch.h>
 #include <RazerVM/InstructionSet.h>
+
 #include <Rzr/RzEngine.h>
 #include <AEON/Runtime/AEObject.h>
 #include <AEON/Runtime/AEGeneric.h>
 #include <AEON/DebugDefs.h>
-
-#include <RazerVM/Executor/AEVmCalls.h>
-
-#define vm_start(x) case x:{
-#define vm_end break;}
-
-#define LOGVM(x, a, b, c) printf("[vm] %s %d %d %d\n", #x, a, b, c);
-
-#define VMLOGLEVEL 5
-#define vm_log(tag, level, STR) if(level > VMLOGLEVEL) printf("%s: %s\n", tag, STR);
-
-#include <RazerVM/Executor/VmInstructions.h>
 
 // [API]
 
@@ -27,6 +17,7 @@ RzVirtualMachine::RzVirtualMachine()
 RzVirtualMachine::RzVirtualMachine(RzEngine* context)
 {
 	m_ctx = context;
+	m_mainContext.engine = m_ctx;
 }
 
 void RzVirtualMachine::execute(int functionId)
@@ -162,9 +153,7 @@ int RzVirtualMachine::call(AEFunction* fn)
 	}
 
 	// Launch the thread from this entry point
-	execute(m_mainContext);
+	dispatch_execute(m_mainContext);
 
 	return 0;
 }
-
-#include <RazerVM/Executor/VmDispatch.h>

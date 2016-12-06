@@ -194,6 +194,7 @@
     <ClCompile Include="..\..\src\AEON\stdlib\media\Device.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\net\Socket.cpp" />
     <ClCompile Include="..\..\src\AEON\stdlib\window\Window.cpp" />
+    <ClCompile Include="..\..\src\RazerVM\Executor\ExecDispatch.cpp" />
     <ClCompile Include="..\..\src\RazerVM\StackFrame.cpp" />
     <ClCompile Include="..\..\src\RazerVM\StackValue.cpp" />
     <ClCompile Include="..\..\src\RazerVM\VirtualMachine.cpp" />
@@ -255,10 +256,9 @@
     <ClInclude Include="..\..\src\AEON\stdlib\media\Device.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\net\Socket.h" />
     <ClInclude Include="..\..\src\AEON\stdlib\window\Window.h" />
-    <ClInclude Include="..\..\src\RazerVM\Executor\AEVmArithmetic.h" />
     <ClInclude Include="..\..\src\RazerVM\Executor\AEVmCalls.h" />
     <ClInclude Include="..\..\src\RazerVM\Executor\VariantOps.h" />
-    <ClInclude Include="..\..\src\RazerVM\Executor\VmDispatch.h" />
+    <ClInclude Include="..\..\src\RazerVM\Executor\ExecDispatch.h" />
     <ClInclude Include="..\..\src\RazerVM\Executor\VmInstructions.h" />
     <ClInclude Include="..\..\src\RazerVM\StackFrame.h" />
     <ClInclude Include="..\..\src\RazerVM\StackValue.h" />

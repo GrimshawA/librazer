@@ -66,7 +66,6 @@ public:
 
 		void prepare(aeFunctionId function);
 		void pushThis(void* obj);
-		void execute(RzThreadContext& threadInfo);
 
 		/// Call a method on the given script object by its name
 		void callMethod(AEObject* object, const std::string& prototype);
