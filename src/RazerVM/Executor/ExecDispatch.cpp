@@ -72,7 +72,7 @@ void dispatch_execute(RzThreadContext& ctx)
 				vm_end
 
 				vm_start(OP_CALLMETHOD_NAT)
-				AEGeneric g; //g.m_vm = this;
+				AEGeneric g; g.m_threadCtx = &ctx;
 			ctx.engine->m_functionTable[inst.arg0]->fn(g);
 			vm_end
 

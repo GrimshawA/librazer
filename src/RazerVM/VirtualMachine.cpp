@@ -16,6 +16,7 @@ RzVirtualMachine::RzVirtualMachine()
 
 RzVirtualMachine::RzVirtualMachine(RzEngine* context)
 {
+	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
 	m_ctx = context;
 	m_mainContext.engine = m_ctx;
 }

@@ -51,7 +51,7 @@ void RegisterStd(RzEngine* ctx)
 	});
 
 	ctx->registerFunction("void printVar(var)", [](AEGeneric g){
-		RzValue v; g.m_vm->m_mainContext.popVariant(v);
+		RzValue v; g.m_threadCtx->popVariant(v);
 		printf("VAR: %s\n", v.toString().c_str());
 	});
 

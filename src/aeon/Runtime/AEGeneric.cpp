@@ -4,7 +4,7 @@
 
 int32_t AEGeneric::unpack_int32()
 {
-	RzStackValue strIndex = m_vm->m_mainContext.pop_value();
+	RzStackValue strIndex = m_threadCtx->pop_value();
 	return strIndex.i32;
 }
 
@@ -25,8 +25,8 @@ double AEGeneric::unpack_double()
 
 std::string AEGeneric::unpack_string()
 {
-	RzStackValue strIndex = m_vm->m_mainContext.pop_value();
-	std::string str = m_vm->m_ctx->string_literals[strIndex.i32];
+	RzStackValue strIndex = m_threadCtx->pop_value();
+	std::string str = m_threadCtx->engine->string_literals[strIndex.i32];
 	return str;
 }
 

@@ -1,25 +1,8 @@
 class ObjectsTest
 {
-	/*function ObjectsTest()
-	{
-
-	}
-
-	function execute()
-	{
-		int32 a = 0;
-		int32 b = 1;
-		print("Hello world!0");
-	}*/
-
-	function done()
-	{
-		print("DONE");
-	}
-
 	function sum2(var a, var b, var c) -> var
 	{
-		/*print("Hello");
+		print("Hello");
 		a.kill();
 		b.doThings();
 		c.finish();
@@ -36,16 +19,9 @@ class ObjectsTest
 		a.another = 5;
 		printVar(a.another);
 
-		printVar(a.x);*/
+		printVar(a.another);
 		
-		c = new TestClass();
-	}
-
-	public enum Kinds
-	{
-		TypeA,
-		TypeB,
-		TypeC,
+		//c = new TestClass();
 	}
 
 public:

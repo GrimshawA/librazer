@@ -24,7 +24,7 @@ void objects_test()
 {
 	RzEngine ctx;
 	ctx.init_all();
-	ctx.quick_build("objects.ae");
+	ctx.quick_build("playground.rz");
 	//ctx.quick_build("a.ae");
 
 	AEObject* myObject = ctx.createObject("ObjectsTest");
@@ -51,7 +51,7 @@ void objects_test()
 
 		//myObject->call("sum2");
 
-		RzVirtualMachine vm;
+		RzVirtualMachine vm(&ctx);
 		vm.setContext(&ctx);
 
 		//vm.m_stk.push_addr(myObject->m_obj);

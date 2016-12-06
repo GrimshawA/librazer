@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 class RzVirtualMachine;
+class RzThreadContext;
 
 /**
 	\class AEGeneric
@@ -39,7 +40,7 @@ public:
 	void pack_string(const std::string& value);
 
 //private:
-	RzVirtualMachine* m_vm;
+	RzThreadContext* m_threadCtx;
 };
 
 typedef void(*aeBindMethod)(AEGeneric);
