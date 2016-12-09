@@ -42,6 +42,8 @@ public:
 		ebp = esp;
 	}
 
+	RzModule& getModule();
+
 	void pushVariant(const RzValue& v);
 	void popVariant(RzValue& v);
 
@@ -102,8 +104,9 @@ public:
 
 	void push_addr(void* ptr)
 	{
-		esp -= sizeof(ptr);
-		memcpy(esp, ptr, sizeof(ptr));
+		RzStackValue v;
+		v.ptr = ptr;
+		push_value(v);
 	}
 
 	void* pop_addr()

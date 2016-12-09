@@ -609,6 +609,18 @@ std::vector<aeNodeVarDecl*> RzParser::parseParamsList()
 	return temp;
 }
 
+aeNodeNew* RzParser::parseNew()
+{
+	if (Tok.type != AETK_NEW)
+		return nullptr;
+
+	getNextToken();
+
+	aeNodeNew* node = new aeNodeNew;
+	node->m_instanceType = parseQualType();
+	return node;
+}
+
 void RzParser::serialize(const std::string& filename)
 {
 	
@@ -875,6 +887,13 @@ aeNodeExpr* RzParser::parseExpression()
 		// no way we can get a valid expression here
 		if (Tok.type == AETK_CLOSEPAREN || Tok.type == AETK_SEMICOLON || Tok.type == AETK_COMMA)
 			return nullptr;
+
+		// The new X() expression
+		if (Tok.type == AETK_NEW)
+		{
+			aeNodeNew* node = parseNew();
+			return node;
+		}
 
 		// var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
 

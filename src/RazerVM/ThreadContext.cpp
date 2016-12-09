@@ -1,6 +1,11 @@
 #include <RazerVM/ThreadContext.h>
 #include <RazerVM/VirtualMachine.h>
 
+RzModule& RzThreadContext::getModule()
+{
+	return *cl->module;
+}
+
 void RzThreadContext::pushVariant(const RzValue& v)
 {
 	printf("push variant at offset %d (%s)\n", ebp - esp, v.str().c_str());

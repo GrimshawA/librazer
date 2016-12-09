@@ -1,9 +1,9 @@
 class ObjectsTest
 {
-	function sum2(var a, var b, var c) -> var
+	function sum2(var a, var b, var c, var d) -> var
 	{
 		print("Hello");
-		a.kill();
+		/*a.kill();
 		b.doThings();
 		c.finish();
 
@@ -19,9 +19,23 @@ class ObjectsTest
 		a.another = 5;
 		printVar(a.another);
 
-		printVar(a.another);
+		printVar(a.another);*/
 		
-		//c = new TestClass();
+		// d is a FILE in a variant
+		d.open("test.txt", "w");
+		d.write("Hello world");
+		d.write("\nHIHiHI\nHey");
+
+		d.open("test.txt", "r");
+		var line = d.getline();
+
+		printVar(line);
+
+		var f = new File();
+		f.open("new.bin", "w");
+		f.write("NEW WORKS");
+		f.close();
+
 	}
 
 public:

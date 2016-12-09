@@ -16,6 +16,9 @@
 class aeNodeNew : public aeNodeExpr
 {
 public:
+	aeNodeNew();
+
+
 	aeQualType m_instanceType;
 
 public:

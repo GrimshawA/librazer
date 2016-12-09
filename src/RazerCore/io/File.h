@@ -7,9 +7,12 @@ class RzModule;
 
 void registerFile(RzModule* m, const std::string& name);
 
-namespace aiStd{
+namespace Rz{
 
-
+	/**
+		\class File
+		\brief Provides file manipulation abilities
+	*/
 	class File
 	{
 	public:
@@ -17,8 +20,12 @@ namespace aiStd{
 		File();
 		~File();
 
-		bool open(const std::string& filename);
+		bool open(const std::string& filename, const std::string& openMode);
 		void close();
+
+		std::string getline();
+
+		void write(const std::string& buffer);
 
 		int tell();
 
@@ -26,6 +33,5 @@ namespace aiStd{
 	private:
 		FILE* m_file;
 	};
-
 };
 #endif // AEFILEINFO_H__

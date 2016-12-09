@@ -103,6 +103,7 @@ class RzParser
 		aeNodeVarDecl*           parseVariableDecl();
 		std::vector<aeNodeExpr*> parseArgsList();
 		std::vector<aeNodeVarDecl*> parseParamsList();
+		aeNodeNew*               parseNew();
 
 		void                     serialize(const std::string& filename);
 		void                     print();

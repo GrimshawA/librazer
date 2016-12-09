@@ -1,6 +1,7 @@
 #ifndef aeon_compiler_h__
 #define aeon_compiler_h__
 
+#include <AEON/Compiler/CompileResult.h>
 #include <AEON/AST/Nodes.h>
 #include <AEON/Compiler/aeCompilerConv.h>
 #include <Rzr/RzModule.h>
@@ -180,7 +181,7 @@ public:
 	void emitBranchCode(aeNodeBranch* cond);
 	void emitWhileLoop(aeNodeWhile* whileloop);
 	void emitForLoop(aeNodeFor* forloop);
-	void emitVarDecl(const aeNodeVarDecl& varDecl);
+	RzCompileResult compileVarDecl(const aeNodeVarDecl& varDecl);
 
 	// Expression evaluation
 	void emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext);
@@ -193,18 +194,20 @@ public:
 	void emitLoadLiteral(aeNodeLiteral* lt);
 	void emitMemberOp(aeNodeAccessOperator* acs);
 	void emitImplicitConversion(aeQualType typeA, aeQualType typeB);
-	void emitNew(aeNodeNew* newExpr);
+	void compileNew(aeNodeNew& newExpr);
 	void emitSubscriptOp(aeNodeSubscript* subscript);
 	void emitLambdaFunction(aeNodeFunction* function);
 	void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
 	void emitPushThis();
 	void compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
 	void loadVarRef(aeNodeExpr* e);
+	RzCompileResult compileVariantStackAlloc(const std::string& identifier, aeNodeExpr* initExpr);
 
 	/// Function calls
 	void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
-	void emitVariantCall(aeNodeFunctionCall* fn);
+	void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
 	void emitLateBoundCall(aeNodeFunctionCall* fn);
+
 
 };
 

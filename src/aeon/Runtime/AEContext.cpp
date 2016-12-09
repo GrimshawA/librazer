@@ -5,7 +5,7 @@
 #include <AEON/Parser/RzTokens.h>
 #include <AEON/Compiler/aeCompiler.h>
 
-#include <AEON/stdlib/ExportStd.h>
+#include <RazerCore/ExportStd.h>
 
 std::string getFileSource(const std::string& filename)
 {
@@ -418,6 +418,14 @@ AEType* RzEngine::getTypeInfo(const std::string& name)
 		{
 			return getTypeInfo(td.from);
 		}
+	}
+
+	// Search the modules loaded
+	for (auto& mod : modules)
+	{
+		auto ti = mod->getType(name);
+		if (ti)
+			return ti;
 	}
 
 	return nullptr;

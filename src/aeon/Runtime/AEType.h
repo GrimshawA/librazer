@@ -60,9 +60,7 @@ class AEType : public aeSymbol
 			union
 			{
 				aeBindMethod methodCallback;
-				aeConstructorMethod constructorCallback;
-
-				
+				aeConstructorMethod constructorCallback;				
 			};
 		};
 
@@ -115,6 +113,9 @@ class AEType : public aeSymbol
 		/// Build the type info object, explicitly used when declaring c++ types
 		AEType(const std::string& _name, uint32_t _size);
 
+		/// Creates a new instance of the native object
+		void* construct();
+
 		/// Is this type an enum
 		bool isEnum();
 
@@ -155,6 +156,9 @@ class AEType : public aeSymbol
 		int getFunctionId(const std::string& name);
 
 		AEFunction* getFunction(const std::string& name);
+
+		/// Fetch the direct function pointer used to register the API
+		aeBindMethod getNativeFunction(const std::string& name);
 
 		/// Get the field information for a given type
 		aeField* getField(std::string name);

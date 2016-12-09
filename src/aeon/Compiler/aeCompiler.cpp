@@ -530,7 +530,7 @@ void AECompiler::emitStatement(AEStmtNode* stmt)
 	}
 	else if (stmt->m_nodeType == AEN_VARDECL)
 	{
-		emitVarDecl(*static_cast<aeNodeVarDecl*>(stmt));
+		compileVarDecl(*static_cast<aeNodeVarDecl*>(stmt));
 	}
 	else if (stmt->m_nodeType == AEN_BINARYOP && ((aeNodeBinaryOperator*)stmt)->oper == "=")
 	{
@@ -549,49 +549,6 @@ void AECompiler::emitStatement(AEStmtNode* stmt)
 	else
 	{
 		CompilerLog("NOT compiling other expression '%s'\n", ((aeNodeExpr*)stmt)->str().c_str());
-	}
-}
-
-void AECompiler::emitVarDecl(const aeNodeVarDecl& varDecl)
-{
-	aeQualType declType = varDecl.m_type;
-
-	if (!declType.getType())
-	{
-		CompilerError("0003", "Declared local variable with unknown type.");
-		return;
-	}
-
-
-	AEType* varType = varDecl.m_type.m_type;
-	auto& scope = m_scopes[m_scopes.size() - 1]; 
-
-	declareStackVar(varDecl.m_decls[0].m_name, varDecl.m_type);
-
-	if (declType.getName() == "var")
-	{
-		emitInstruction(OP_PUSHVAR);
-		return;
-	}
-
-	emitInstruction(OP_MOV, AEK_ESP, -(int)varType->getSize());
-
-	// Now the variable is initialized and part of its scope, initialize it
-	if (varDecl.m_decls[0].m_init)
-	{
-		if (m_logAllocs)
-			emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
-
-		emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
-	}
-	else
-	{
-		// Default initialization
-		if (varType->is_native)
-		{
-			emitInstruction(OP_LOAD, AEK_ESP);
-			emitInstruction(OP_CALLMETHOD_NAT, m_env->getNativeBehaviorIndex(varType->getName(), "f"));
-		}
 	}
 }
 

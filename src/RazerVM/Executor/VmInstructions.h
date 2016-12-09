@@ -287,11 +287,12 @@ inline static void DoLogicalNot(RzThreadContext& ctx)
 
 inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
 {
-	/*void* objectMem = malloc(vm->get_current_mod()->m_types[type]->getSize());
+	AEType* typeInfo = ctx.getModule().resolveType(module_id, type);
+	void* obj = typeInfo->construct();
 
-	RzStackValue obj;
-	obj.ptr = objectMem;
-	vm->m_mainContext.push_value(obj);*/
+	RzStackValue v;
+	v.ptr = obj;
+	ctx.push_value(v);
 }
 
 inline static void DoLessThan(RzThreadContext& ctx, AeonPrimitiveType ptype)

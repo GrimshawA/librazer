@@ -216,24 +216,8 @@ void dispatch_execute(RzThreadContext& ctx)
 			ctx.popVariant(v);
 			vm_end
 
-				vm_start(OP_VARCALL)
-				RzValue ptr;
-			ctx.popVariant(ptr);
-			std::string methodName = ctx.cl->module->m_identifierPool[inst.arg0];
-			RzValue fnValue = ptr.property(methodName);
-
-#if defined TRACE_VM
-			printf("Calling late bound method\n");
-#endif
-			if (!fnValue.isUndefined())
-			{
-				fnValue.call();
-				printf("CALLING VAR METHOD %s\n", methodName.c_str());
-			}
-			else
-			{
-				printf("No such property\n");
-			}
+			vm_start(OP_VARCALL)
+				ExecVariantCall(ctx, inst.arg0);
 			vm_end
 
 				vm_start(OP_VARSTORE)

@@ -19,6 +19,14 @@ RzValue::RzValue()
 	
 }
 
+RzValue::RzValue(void* obj, AEType* typeInfo)
+{
+	m_valueType = VALUE_OBJECT;
+	_object = new AEObject();
+	_object->m_obj = obj;
+	_object->m_type = typeInfo;
+}
+
 RzValue::RzValue(std::initializer_list<int> v)
 {
 	m_valueType = VALUE_ARRAY;

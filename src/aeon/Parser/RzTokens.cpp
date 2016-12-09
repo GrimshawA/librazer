@@ -3,6 +3,22 @@
 #include <string>
 #include <locale>
 
+void myReplace(std::string& str,
+	const std::string& oldStr,
+	const std::string& newStr)
+{
+	std::string::size_type pos = 0u;
+	while ((pos = str.find(oldStr, pos)) != std::string::npos){
+		str.replace(pos, oldStr.length(), newStr);
+		pos += newStr.length();
+	}
+}
+
+void EscapeString(std::string& in)
+{
+	myReplace(in, "\\n", "\n");
+}
+
 aeon_lexer::aeon_lexer()
 : i(-1)
 {
@@ -239,6 +255,7 @@ void aeon_lexer::tokenize(std::string src)
 				token.text += LastChar;
 			}
 			token.text += LastChar;
+			EscapeString(token.text);
 			return token;
 		}
 

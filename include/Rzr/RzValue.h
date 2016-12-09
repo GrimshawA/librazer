@@ -81,6 +81,7 @@ public:
 public:
 
 	RzValue();
+	RzValue(void* obj, AEType* typeInfo); ///< Constructs from arbitrary object and its type information
 	RzValue(std::initializer_list<int> v);
 	RzValue(int v);
 	RzValue(const std::string& v);
@@ -156,7 +157,7 @@ public:
 
 	void setFromObject(void* ptr, AEType* typeInfo);
 
-private:
+//private:
 	friend class RzParser;
 
 	void setFromArray(RzValue v);

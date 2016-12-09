@@ -1,0 +1,43 @@
+#include "aeBuilder.h"
+#include <Rzr/RzEngine.h>
+#include <cstdlib>
+
+aeBuilder::aeBuilder(RzEngine& context)
+: m_context(&context)
+{
+
+}
+
+void aeBuilder::addFile(const std::string& sourcefile)
+{
+	m_sources.push_back(sourcefile);
+}
+
+void aeBuilder::build()
+{
+	printf("------- Build started: %s.\n", m_module.c_str());
+	for (std::size_t i = 0; i < m_sources.size(); ++i)
+	{
+		printf("%s\n", m_sources[i].c_str());
+		m_context->quick_build(m_sources[i]);
+	}
+	printf("------- Build finished.\n");
+}
+
+void aeBuilder::buildApp(const std::string& appPath, AEBuildSpec spec)
+{
+	RzEngine ctx;
+
+	for (auto& f : spec.files)
+	{
+		ctx.quick_build(f);
+	}
+
+	FILE* fp = fopen(appPath.c_str(), "wb");
+	for (auto& m : ctx.modules)
+	{
+		fwrite(m->m_code.data(), sizeof(AEInstruction), m->m_code.size(), fp);
+	}
+	fclose(fp);
+	printf("Built application: %s\n", appPath.c_str());
+}

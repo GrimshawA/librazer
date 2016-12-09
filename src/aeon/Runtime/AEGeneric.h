@@ -30,6 +30,7 @@ public:
 	float unpack_float();
 	double unpack_double();
 	std::string unpack_string();
+	void* unpack_ptr();
 	//AEValue unpackVariant();
 
 	/// [Argument packing: host -> script]
@@ -41,6 +42,7 @@ public:
 
 //private:
 	RzThreadContext* m_threadCtx;
+	bool m_variantCall = false;
 };
 
 typedef void(*aeBindMethod)(AEGeneric);

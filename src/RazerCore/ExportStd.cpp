@@ -1,15 +1,12 @@
-#include <AEON/stdlib/ExportStd.h>
-
-#include <AEON/stdlib/window/Window.h>
+#include <RazerCore/ExportStd.h>
+#include <RazerCore/window/Window.h>
+#include <RazerCore/io/File.h>
 
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
 #include <AEON/Runtime/AEGeneric.h>
 
 #include <cmath>
-
-#include <AEON/stdlib/io/File.h>
-#include <AEON/stdlib/window/Window.h>
 
 class MySprite
 {

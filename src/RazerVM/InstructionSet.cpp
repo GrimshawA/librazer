@@ -70,6 +70,7 @@ std::string inst_opcode_str(RzInstruction inst)
 {
 	switch (inst.opcode)
 	{
+	case OP_NEW: return "OP_NEW";
 	case OP_CALL: return "OP_CALL";
 	case OP_CALLNATIVE: return "OP_CALLNATIVE";
 	case OP_CALLMETHOD_NAT: return "OP_CALLMETHOD_NAT";
@@ -80,6 +81,7 @@ std::string inst_opcode_str(RzInstruction inst)
 	case OP_VARLOAD: return "OP_VARLOAD";
 	case OP_VARLOADREF: return "OP_VARLOADREF";
 	case OP_VARSTORE: return "OP_VARSTORE";
+	case OP_POPVAR: return "OP_POPVAR";
 	case OP_LOADK: return "OP_LOADK";
 	}
 	return std::to_string(inst.opcode);

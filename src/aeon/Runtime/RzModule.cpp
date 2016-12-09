@@ -1,4 +1,5 @@
 #include <Rzr/RzModule.h>
+#include <Rzr/RzEngine.h>
 #include <AEON/Parser/RzParser.h>
 #include <AEON/Parser/RzTokens.h>
 
@@ -90,6 +91,13 @@ AEType* RzModule::getType(int64_t index)
 	return m_types[index];
 }
 
+AEType* RzModule::resolveType(int dependency_id, int type_id)
+{
+	// HACK to quickly get std stuff to work
+	auto std = m_context->getModule("std");
+	return std->getType(type_id);
+}
+
 std::string RzModule::getStringFromPool(uint32_t index)
 {
 	return m_stringPool[index];
@@ -148,9 +156,14 @@ void RzModule::registerType(const std::string& name, std::size_t size)
 	m_types.push_back(typeInfo);
 }
 
-void RzModule::registerTypeConstructor()
+void RzModule::registerTypeConstructor(const std::string& name, aeConstructorMethod constructor)
 {
+	auto typeInfo = getType(name);
 
+	AEType::MethodInfo info;
+	info.constructorCallback = constructor;
+	info.name = name;
+	typeInfo->m_methods.push_back(info);
 }
 
 void RzModule::registerTypeDestructor()
@@ -163,16 +176,19 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	aeon_lexer lex; lex.tokenize(sig);
 	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
 
+	aeQualType retType = parser.parseQualType();
+	std::string methodName = parser.Tok.text;
+
 	auto typeInfo = getType(name);
 
 	AEType::MethodInfo info;
 	info.methodCallback = fnPtr;
-	info.name = sig;
+	info.name = methodName;
 	typeInfo->m_methods.push_back(info);
 
 	AEFunction fn;
-	fn.returnType = parser.parseQualType();
-	fn.m_absoluteName = name + "." + parser.Tok.text;
+	fn.returnType = retType;
+	fn.m_absoluteName = name + "." + methodName;
 	fn.decl = name;
 	fn.fn = fnPtr;
 	fn.m_native = true;

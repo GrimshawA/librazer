@@ -1,8 +1,70 @@
 #ifndef VariantOps_h__
 #define VariantOps_h__
 
-inline static void DoVarStore(RzThreadContext& ctx, int storeType, int typeIndex, int c)
+#define TRACE_VM
+
+/*
+	x.f()
+
+	Calls function named f on object x (variant type)
+*/
+inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 {
+	RzValue ptr;
+	ctx.popVariant(ptr);
+	std::string methodName = ctx.cl->module->m_identifierPool[identifierIndex];
+	
+#if defined TRACE_VM
+	printf("Attempting to call method %s\n", methodName.c_str());
+#endif
+
+	if (ptr._object->m_obj)
+	{
+		// Must push the native object pointer to call the method on
+		ctx.push_addr(ptr._object->m_obj);
+
+		AEGeneric g; g.m_threadCtx = &ctx;
+		g.m_variantCall = true;
+		aeBindMethod funPtr = ptr._object->m_type->getNativeFunction(methodName);
+		if (funPtr){
+			printf("About to call an actual function\n");
+			funPtr(g);
+		}			
+		return;
+	}
+
+	RzValue fnValue = ptr.property(methodName);
+
+#if defined TRACE_VM
+	printf("Calling late bound method\n");
+#endif
+	if (!fnValue.isUndefined())
+	{
+		fnValue.call();
+		printf("CALLING VAR METHOD %s\n", methodName.c_str());
+	}
+	else
+	{
+		printf("No such property\n");
+	}
+}
+
+inline static void DoVarStore(RzThreadContext& ctx, int storeType, int moduleIndex, int typeIndex)
+{
+	if (storeType == AE_VARIANTTYPE_VAR)
+	{
+		// RHS is another var
+		RzValue rhs;
+		ctx.popVariant(rhs);
+
+		AEValueRef ref = ctx.popVariantRef();
+
+		(*ref.value) = rhs;
+
+		return;
+	}
+
+
 	RzStackValue operand = ctx.pop_value();
 	AEValueRef ref = ctx.popVariantRef();
 
@@ -39,7 +101,7 @@ inline static void DoVarStore(RzThreadContext& ctx, int storeType, int typeIndex
 		}
 
 		case AE_VARIANTTYPE_OBJECT: {
-			AEType* typeInfo;// = vm->m_module;
+			AEType* typeInfo = ctx.getModule().resolveType(moduleIndex, typeIndex);
 			(*ref.value).setFromObject(operand.ptr, typeInfo);
 			break;
 		}

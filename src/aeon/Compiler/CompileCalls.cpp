@@ -45,12 +45,6 @@ void AECompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 
 	}
 
-	if (beingCalledOn.getName() == "var")
-	{
-		emitVariantCall(fn);
-		return;
-	}
-
 	CompilerLog("Function call %s\n", finalSymbolName.c_str());
 	AEFunction* func = m_env->getFunctionByName(finalSymbolName);
 	if (!func)
@@ -89,8 +83,21 @@ void AECompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 	}
 }
 
-void AECompiler::emitVariantCall(aeNodeFunctionCall* fn)
+void AECompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn)
 {
+	// Emit the arguments
+	int i = 0;
+	for (auto it = fn->m_args.rbegin(); it != fn->m_args.rend(); ++it)
+	{
+		aeExprContext arg_ctx;
+		arg_ctx.rx_value = true;
+		arg_ctx.expectedResult = fn->getArgType(i);
+		emitExpressionEval((*it), arg_ctx);
+	}
+
+	/// Push the variant this function was called on
+	emitExpressionEval(lhs, aeExprContext());
+
 	// Calls a function on a dynamic variable
 	int fnNameIndex = m_module->identifierPoolIndex(fn->m_name);
 	emitInstruction(OP_VARCALL, fnNameIndex);

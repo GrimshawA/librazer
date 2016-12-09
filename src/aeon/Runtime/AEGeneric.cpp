@@ -30,6 +30,12 @@ std::string AEGeneric::unpack_string()
 	return str;
 }
 
+void* AEGeneric::unpack_ptr()
+{
+	RzStackValue stckValue = m_threadCtx->pop_value();
+	return stckValue.ptr;
+}
+
 /*AEValue AEGeneric::unpackVariant()
 {
 	AEValue v;
@@ -58,5 +64,17 @@ void AEGeneric::pack_double(double value)
 }
 void AEGeneric::pack_string(const std::string& value)
 {
-	
+	if (m_variantCall)
+	{
+		RzValue str(value);
+		m_threadCtx->pushVariant(str);
+	}
+	else
+	{
+		AEString* strValue = new AEString();
+
+		RzStackValue strIndex;
+		strIndex.ptr = strValue;
+		m_threadCtx->push_value(strIndex);
+	}
 }

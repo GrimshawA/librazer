@@ -7,6 +7,8 @@
 
 #include "../test/test_framework.h"
 
+#include <RazerCore/io/File.h>
+
 /*#include "aeBindingHelper.h"
 #include "aeon_type_utils.h"
 
@@ -26,6 +28,8 @@ void objects_test()
 	ctx.init_all();
 	ctx.quick_build("playground.rz");
 	//ctx.quick_build("a.ae");
+
+	Rz::File* myFile = new Rz::File();
 
 	AEObject* myObject = ctx.createObject("ObjectsTest");
 	if (myObject)
@@ -49,6 +53,8 @@ void objects_test()
 			printf("			FINISH ON C OBJECT\n");
 		}));
 
+		RzValue natObj(myFile, ctx.getTypeInfo("File"));
+
 		//myObject->call("sum2");
 
 		RzVirtualMachine vm(&ctx);
@@ -59,6 +65,7 @@ void objects_test()
 		vm.m_mainContext.pushVariant(myObj);
 		vm.m_mainContext.pushVariant(objB);
 		vm.m_mainContext.pushVariant(objC);
+		vm.m_mainContext.pushVariant(natObj);
 		//vm.m_stk.pushVariant(AEValue());
 		vm.call(*ctx.modules[0].get(), "ObjectsTest.sum2");
 

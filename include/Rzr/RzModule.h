@@ -61,6 +61,8 @@ public:
 	AEType* getType(const std::string& name);
 	AEType* getType(int64_t index);
 
+	AEType* resolveType(int dependency_id, int type_id);
+
 	std::string getStringFromPool(uint32_t index);
 	double      getDoubleLiteral(uint32_t index);
 	uint64_t    getIntegerLiteral(uint32_t index);
@@ -71,7 +73,7 @@ public:
 	void registerGlobal(const std::string& sig, void* memory);
 
 	void registerType(const std::string& name, std::size_t size);
-	void registerTypeConstructor();
+	void registerTypeConstructor(const std::string& name, aeConstructorMethod constructor);
 	void registerTypeDestructor();
 	void registerMethod(const std::string& name, const std::string& sig, aeBindMethod fn);
 	void registerField();

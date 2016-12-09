@@ -17,6 +17,20 @@ AEType::AEType(const std::string& _name, uint32_t _size)
 	m_size = _size;
 }
 
+void* AEType::construct()
+{
+	for (auto& method : m_methods)
+	{
+		if (method.name == m_name)
+		{
+			void* mem = malloc(m_size);
+			method.constructorCallback(mem, nullptr);
+			return mem;
+		}
+	}
+	return nullptr;
+}
+
 bool AEType::isEnum()
 {
 	return m_typeKind == KindEnum;
@@ -81,6 +95,16 @@ int AEType::getFunctionId(const std::string& name)
 AEFunction* AEType::getFunction(const std::string& name)
 {
 	return m_module->m_context->getFunctionByName(name);
+}
+
+aeBindMethod AEType::getNativeFunction(const std::string& name)
+{
+	for (auto& m : m_methods)
+	{
+		if (m.name == name)
+			return m.methodCallback;
+	}
+	return nullptr;
 }
 
 RzModule* AEType::getModule()
