@@ -243,6 +243,22 @@ RzModule* RzEngine::createModule(const std::string& name)
 	return mod;
 }
 
+RzModule* RzEngine::resolveModule(const std::string& name)
+{
+	// name is a symbol identifier in the form x.y.z
+
+	for (auto& m : modules)
+	{
+		std::string modName = m->getName();
+		if (modName == name.substr(0, modName.size()))
+		{
+			return m.get();
+		}
+	}
+
+	return nullptr;
+}
+
 void RzEngine::registerType(const std::string& name, std::size_t size, const std::string& namespc)
 {
 	AEType* objinfo = new AEType(name, size);

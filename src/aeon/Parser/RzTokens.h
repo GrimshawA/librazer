@@ -77,6 +77,7 @@ enum TokenType
 	AETK_DECREMENT,
 	AETK_ARROW,
 	AETK_LAMBDA, //< =>
+	AETK_IMPORT, //< import
 	AETK_UNKNOWN
 };
 

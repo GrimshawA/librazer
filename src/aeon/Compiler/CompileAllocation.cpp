@@ -73,5 +73,8 @@ void AECompiler::compileNew(aeNodeNew& newExpr)
 {
 	// new X() expression must generate a new object instance.
 	//int typeId = newExpr.m_instanceType
+	
+	//m_module->resolveTypeModuleIndex(newExpr.m_instanceType);
+
 	emitInstruction(OP_NEW, 0, 0);
 }

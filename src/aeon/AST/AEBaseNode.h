@@ -35,7 +35,8 @@ enum NodeTypes
 	AEN_IDENTIFIER,
 	AEN_ENUM,
 	AEN_TYPEDEF,
-	AEN_OBJECTINIT
+	AEN_OBJECTINIT,
+	AEN_IMPORT
 };
 
 class AEBaseNode
@@ -58,6 +59,17 @@ class AEStmtNode : public AEBaseNode
 {
 public:
 	virtual bool isNullStatement();
+};
+
+class aeNodeImport : public AEBaseNode
+{
+public:
+	aeNodeImport()
+	{
+		m_nodeType = AEN_IMPORT;
+	}
+
+	std::string symbol;
 };
 
 #endif // aeNodeBase_h__

@@ -1,3 +1,5 @@
+import std
+
 class ObjectsTest
 {
 	function sum2(var a, var b, var c, var d) -> var

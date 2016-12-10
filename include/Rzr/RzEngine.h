@@ -7,10 +7,9 @@
 #include <Rzr/RzValue.h>
 #include <Rzr/RzModule.h>
 #include <AEON/Runtime/AEGeneric.h>
-#include <vector>
-#include <memory>
+#include <vector> 
 #include <map>
-#include <stdint.h>
+#include <stdint.h> 
 
 class RzVirtualMachine;
 class AEObject;
@@ -120,6 +119,9 @@ public:
 	RzModule* getModule(const std::string name);
 
 	RzModule* createModule(const std::string& name);
+	
+	/// Resolve to which module the symbol resolves to, e.g 'std.io.File' would resolve to 'std'
+	RzModule* resolveModule(const std::string& name);
 
 
 	/// Registers a native type to work with the language

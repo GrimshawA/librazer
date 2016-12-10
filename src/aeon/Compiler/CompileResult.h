@@ -8,13 +8,14 @@
 class RzCompileResult
 {
 public:
+	RzCompileResult(int status = OK);
 
 	enum {
 		OK,
 		FAILED
 	};
 
-	int status;
+	int m_status;
 };
 
 #endif // CompileResult_h__

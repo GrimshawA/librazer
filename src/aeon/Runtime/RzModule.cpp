@@ -332,6 +332,8 @@ int RzModule::createDependency(RzModule* module)
 	dep.name = module->getName();
 	m_dependencies.push_back(dep);
 
+	printf("Module '%s' now depends on '%s'\n", getName().c_str(), module->getName().c_str());
+
 	return m_dependencies.size() - 1;
 }
 

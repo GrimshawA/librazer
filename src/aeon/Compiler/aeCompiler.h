@@ -173,6 +173,7 @@ public:
 	void emitClassConstructors(AEType* classType, AEStructNode* classNode);
 	void emitClassDestructors(AEType* classType, AEStructNode* classNode);
 	void emitConstructorInjection(aeNodeFunction* node, AEFunction* function);
+	RzCompileResult compileImport(aeNodeImport& node);
 
 
 	// Statement compilation

@@ -206,6 +206,8 @@ void AECompiler::generate(AEBaseNode* root)
 	// Entry point, let's set a proper offset
 	m_cursor = m_module->m_code.size();
 
+	RzCompileResult ret;
+
 	for (std::size_t i = 0; i < root->m_items.size(); ++i)
 	{
 		if (root->m_items[i]->m_nodeType == AEN_FUNCTION)
@@ -224,6 +226,22 @@ void AECompiler::generate(AEBaseNode* root)
 		{
 			emitGlobalVarCode(static_cast<aeNodeIdentifier*>(root->m_items[i]));
 		}
+		else if (root->m_items[i]->m_nodeType == AEN_IMPORT)
+		{
+			ret = compileImport((aeNodeImport&)*root->m_items[i]);
+		}
+
+		if (ret.m_status == RzCompileResult::FAILED)
+			break;
+	}
+
+	if (ret.m_status == RzCompileResult::FAILED)
+	{
+		printf("Compilation finished with errors.\n");
+	}
+	else
+	{
+		printf("Compilation finished\n");
 	}
 }
 
@@ -478,6 +496,23 @@ void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* func
 			printf("INJECTED CONSTRUCTION %s\n", field.name.c_str());
 		}
 	}
+}
+
+RzCompileResult AECompiler::compileImport(aeNodeImport& node)
+{
+	RzModule* importedModule = m_env->resolveModule(node.symbol);
+
+	if (!importedModule)
+	{
+		printf("Couldn't resolve the import '%s' to any module\n", node.symbol.c_str());
+		return RzCompileResult(RzCompileResult::FAILED);
+	}
+
+	printf("Import resolved to %s\n", importedModule->getName().c_str());
+
+	m_module->createDependency(importedModule);
+
+	return RzCompileResult();
 }
 
 void AECompiler::emitLambdaFunction(aeNodeFunction* function)

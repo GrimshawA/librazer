@@ -162,6 +162,16 @@ void RzParser::startParse(aeon_lexer& lexer)
 				getNextToken();
 				root->add(using_node);*/
 			}
+			else if (Tok.type == AETK_IMPORT)
+			{
+				getNextToken();
+				std::string name = Tok.text;
+				getNextToken();
+
+				aeNodeImport* node = new aeNodeImport();
+				node->symbol = name;
+				root->add(node);
+			}
 			else
 			{
 				AEBaseNode* symbol = parseSymbol();

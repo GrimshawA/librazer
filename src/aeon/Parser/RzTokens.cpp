@@ -396,6 +396,8 @@ void aeon_lexer::tokenize(std::string src)
 				token.type = AETK_ISNOT;
 			else if (token.text == "not")
 				token.type = AETK_NOT;
+			else if (token.text == "import")
+				token.type = AETK_IMPORT;
 			else
 				token.type = AETK_IDENTIFIER;
 			return token;
