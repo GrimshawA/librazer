@@ -12,6 +12,13 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 {
 	RzValue ptr;
 	ctx.popVariant(ptr);
+
+	if (ptr.isUndefined())
+	{
+		printf("Exception: Calling a method on undefined\n");
+		return;
+	}
+
 	std::string methodName = ctx.cl->module->m_identifierPool[identifierIndex];
 	
 #if defined TRACE_VM

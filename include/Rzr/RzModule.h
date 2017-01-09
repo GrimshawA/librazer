@@ -83,6 +83,8 @@ public:
 	void registerEnumValue();
 	void registerTypedef();
 
+	int resolveTypeModuleIndex(AEType* type);
+
 public:
 	// Type information
 
@@ -99,6 +101,8 @@ public:
 
 	int createDependency(const std::string& name);
 	int createDependency(RzModule* module);
+
+	RzModule* getDependantModule(int index);
 
 public:
 

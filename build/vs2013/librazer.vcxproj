@@ -81,12 +81,15 @@
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\include;..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\dev\librazer\3rdparty\include;..\..\include;..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>D:\dev\librazer\3rdparty\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Android'">
     <ClCompile>
@@ -190,6 +193,7 @@
     <ClCompile Include="..\..\src\AEON\Runtime\AEType.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\RzValue.cpp" />
     <ClCompile Include="..\..\src\AEON\Runtime\AEValueList.cpp" />
+    <ClCompile Include="..\..\src\RazerCore\container\Array.cpp" />
     <ClCompile Include="..\..\src\RazerCore\ExportStd.cpp" />
     <ClCompile Include="..\..\src\RazerCore\io\File.cpp" />
     <ClCompile Include="..\..\src\RazerCore\io\FileInfo.cpp" />
@@ -252,6 +256,7 @@
     <ClInclude Include="..\..\src\AEON\Runtime\aesymbol.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEType.h" />
     <ClInclude Include="..\..\src\AEON\Runtime\AEValueList.h" />
+    <ClInclude Include="..\..\src\RazerCore\container\Array.h" />
     <ClInclude Include="..\..\src\RazerCore\ExportStd.h" />
     <ClInclude Include="..\..\src\RazerCore\io\File.h" />
     <ClInclude Include="..\..\src\RazerCore\io\FileInfo.h" />

@@ -6,6 +6,16 @@
 
 #include <cassert>
 
+void debugCodeRange(RzModule* module, int start, int end)
+{
+	printf("Code %d to %d\n", start, end);
+	for (int i = start; i < end; ++i)
+	{
+		auto& in = module->m_code[i];
+		printf("%s %d %d %d\n", inst_opcode_str(in).c_str(), in.arg0, in.arg1, in.arg2);
+	}
+}
+
 AECompiler::AECompiler()
 : m_currentFunction(nullptr)
 , m_outputLogs(false)
@@ -460,10 +470,14 @@ void AECompiler::emitWhileLoop(aeNodeWhile* whileloop)
 
 	// After the block terminates normally, we always go back up to expression evaluation
 	// when the expression fails, it will jump right away to after this
-	emitInstruction(OP_JMP, pc_expreval - 1);
+	int jumpOffset = cursor() - pc_expreval + 1;
+	jumpOffset = -jumpOffset;
+	emitInstruction(OP_JMP, jumpOffset);
 
-	// if the expression evaluates false, jump to after the while
+	// if the expression evaluates false, jump to after the while OP_JZ
 	setinst_a(m_module->m_code[jmptestpc], (cursor() - 1) - jmptestpc);
+
+	debugCodeRange(m_module, pc_expreval, cursor());
 }
 
 void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* function)

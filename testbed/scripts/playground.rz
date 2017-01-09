@@ -4,7 +4,7 @@ class ObjectsTest
 {
 	function sum2(var a, var b, var c, var d) -> var
 	{
-		print("Hello");
+		
 		/*a.kill();
 		b.doThings();
 		c.finish();
@@ -24,7 +24,7 @@ class ObjectsTest
 		printVar(a.another);*/
 		
 		// d is a FILE in a variant
-		d.open("test.txt", "w");
+		/*d.open("test.txt", "w");
 		d.write("Hello world");
 		d.write("\nHIHiHI\nHey");
 
@@ -37,6 +37,14 @@ class ObjectsTest
 		f.open("new.bin", "w");
 		f.write("NEW WORKS");
 		f.close();
+*/
+		var w = new Window();
+		w.open();
+
+		while(w.running())
+		{
+			w.display();
+		}
 
 	}
 

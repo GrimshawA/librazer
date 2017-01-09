@@ -72,6 +72,8 @@ std::string inst_opcode_str(RzInstruction inst)
 	{
 	case OP_NEW: return "OP_NEW";
 	case OP_CALL: return "OP_CALL";
+	case OP_JMP: return "OP_JMP";
+	case OP_JZ: return "OP_JZ";
 	case OP_CALLNATIVE: return "OP_CALLNATIVE";
 	case OP_CALLMETHOD_NAT: return "OP_CALLMETHOD_NAT";
 	case OP_RETURN: return "OP_RETURN";

@@ -93,9 +93,7 @@ AEType* RzModule::getType(int64_t index)
 
 AEType* RzModule::resolveType(int dependency_id, int type_id)
 {
-	// HACK to quickly get std stuff to work
-	auto std = m_context->getModule("std");
-	return std->getType(type_id);
+	return m_dependencies[dependency_id].module->getType(type_id);
 }
 
 std::string RzModule::getStringFromPool(uint32_t index)
@@ -236,6 +234,19 @@ void RzModule::registerTypedef()
 
 }
 
+int RzModule::resolveTypeModuleIndex(AEType* type)
+{
+	for (int i = 0; i < m_dependencies.size(); ++i)
+	{
+		if (m_dependencies[i].module->hasType(type->getName()))
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 void RzModule::resolveType(aeQualType& type)
 {
 	// Fill type information based on the module dependency graph
@@ -244,6 +255,12 @@ void RzModule::resolveType(aeQualType& type)
 
 bool RzModule::hasType(const std::string& name)
 {
+	for (auto& t : m_types)
+	{
+		if (t->getName() == name)
+			return true;
+	}
+
 	return false;
 }
 
@@ -335,6 +352,11 @@ int RzModule::createDependency(RzModule* module)
 	printf("Module '%s' now depends on '%s'\n", getName().c_str(), module->getName().c_str());
 
 	return m_dependencies.size() - 1;
+}
+
+RzModule* RzModule::getDependantModule(int index)
+{
+	return m_dependencies[index].module;
 }
 
 std::string RzModule::getName()

@@ -2,6 +2,8 @@
 #include <RazerCore/window/Window.h>
 #include <RazerCore/io/File.h>
 
+#include <RazerCore/container/Array.h>
+
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
 #include <AEON/Runtime/AEGeneric.h>
@@ -58,6 +60,9 @@ void RegisterStd(RzEngine* ctx)
 
 	RzModule* stdModule = ctx->createModule("std");
 	registerFile(stdModule, "File");
+
+	VariantArray::registerApi(stdModule);
+	Window::registerApi(stdModule);
 
 	stdModule->registerType("TestClass", sizeof(TestClass));
 	stdModule->registerMethod("TestClass", "setSomething", aeonTestClass_setSomething);

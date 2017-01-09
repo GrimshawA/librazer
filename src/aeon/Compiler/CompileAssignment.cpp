@@ -71,7 +71,15 @@ void AECompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 	}
 	else
 	{
-		// Fallback to object, not fully correct outcome
-		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_OBJECT, 0, 0);
+		// Assigning an object to a variant, need to identify its type
+		int moduleIndex = m_module->resolveTypeModuleIndex(rhsType.getType());
+		if (moduleIndex == -1)
+		{
+			printf("Compiler error. Unresolved module\n");
+			return;
+		}
+
+		int typeIndex = m_module->getDependantModule(moduleIndex)->getTypeIndex(rhsType.getType());
+		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_OBJECT, moduleIndex, typeIndex);
 	}
 }

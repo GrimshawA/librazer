@@ -152,6 +152,9 @@
       <Filter>Compiler</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\AEON\Runtime\RzModule.cpp" />
+    <ClCompile Include="..\..\src\RazerCore\container\Array.cpp">
+      <Filter>RazerCore\container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Rzr\RzDocument.h" />
@@ -303,6 +306,9 @@
     <ClInclude Include="..\..\src\AEON\Compiler\CompileResult.h">
       <Filter>Compiler</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\RazerCore\container\Array.h">
+      <Filter>RazerCore\container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -331,6 +337,9 @@
     </Filter>
     <Filter Include="Compiler">
       <UniqueIdentifier>{8af2dc80-a5dc-47c0-87bb-6cae009134ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RazerCore\container">
+      <UniqueIdentifier>{6bc28ef6-32b5-4fec-87cd-b9437f7a5dcb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

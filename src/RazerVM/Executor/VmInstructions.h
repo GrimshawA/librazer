@@ -348,19 +348,21 @@ static inline void DoJumpIfZero(RzThreadContext& ctx, int jumpOffset)
 	if (value == 0)
 	{
 		cl->pc += jumpOffset;
-		//Log("the if condition was false. eax %d", eax);
+		
+		printf("the if condition was false\n");
 	}
 	else
 	{
-		//Log("the if condition was true. eax %d", eax);
+		printf("the if condition was true\n");
 	}
-	//Log("[jz] test %d %d", cond, pcoffset);
 }
 
 static inline void DoJump(RzThreadContext& ctx, int address)
 {
 	RzStackFrame* cl = &ctx.frames[ctx.frames.size() - 1];
-	cl->pc = address;
+	cl->pc += address;
+
+	printf("Jumping to %d %d\n", cl->pc+1, cl->module->m_code[cl->pc+1].opcode);
 }
 
 static inline bool DoReturn(RzThreadContext& ctx)

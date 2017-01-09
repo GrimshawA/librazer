@@ -73,8 +73,23 @@ void AECompiler::compileNew(aeNodeNew& newExpr)
 {
 	// new X() expression must generate a new object instance.
 	//int typeId = newExpr.m_instanceType
-	
-	//m_module->resolveTypeModuleIndex(newExpr.m_instanceType);
 
-	emitInstruction(OP_NEW, 0, 0);
+	if (newExpr.m_instanceType.getType() == nullptr)
+	{
+		printf("Compiler internal error. Unresolved type\n");
+		return;
+	}
+	
+	int moduleIndex = m_module->resolveTypeModuleIndex(newExpr.m_instanceType.getType());
+	if (moduleIndex == -1)
+	{
+		printf("Compiler error. Unresolved module\n");
+		return;
+	}
+
+	int typeIndex = m_module->getDependantModule(moduleIndex)->getTypeIndex(newExpr.m_instanceType.getType());
+
+	emitInstruction(OP_NEW, moduleIndex, typeIndex);
+
+	printf("Compiled new %d %d\n\n", moduleIndex, typeIndex);
 }

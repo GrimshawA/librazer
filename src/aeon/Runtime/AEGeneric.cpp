@@ -45,7 +45,9 @@ void* AEGeneric::unpack_ptr()
 
 void AEGeneric::pack_int32(int32_t value)
 {
-
+	RzStackValue val;
+	val.i32 = value;
+	m_threadCtx->push_value(val);
 }
 
 void AEGeneric::pack_uint32(uint32_t value)
