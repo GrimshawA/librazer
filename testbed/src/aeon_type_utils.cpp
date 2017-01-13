@@ -1,7 +1,7 @@
 #include "aeon_type_utils.h"
-#include <AEON/Runtime/AEType.h>
+#include <RazerRuntime/RzType.h>
 
-void printTypeDetails(AEType* type)
+void printTypeDetails(RzType* type)
 {
 	printf("typename: %s\n", type->m_name.c_str());
 }

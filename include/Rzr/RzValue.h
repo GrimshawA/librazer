@@ -1,15 +1,15 @@
 #ifndef RZVALUE_H__
 #define RZVALUE_H__
 
-#include <AEON/Runtime/AEFunction.h>
-#include <AEON/Runtime/AEString.h>
+#include <RazerRuntime/AEFunction.h>
+#include <RazerRuntime/AEString.h>
 
 #include <string>
 #include <vector>
 #include <memory>
 #include <functional>
 
-#include <AEON/AST/aeNodeValue.h>
+#include <RazerParser/AST/aeNodeValue.h>
 
 class AEValueList;
 class AEObject;
@@ -70,7 +70,7 @@ public:
 	{
 		VALUE_UNDEFINED,
 		VALUE_OBJECT,
-		VALUE_ANONOBJECT,
+		VALUE_PROTOTYPE,
 		VALUE_ARRAY,
 		VALUE_INT,
 		VALUE_REAL,
@@ -81,7 +81,7 @@ public:
 public:
 
 	RzValue();
-	RzValue(void* obj, AEType* typeInfo); ///< Constructs from arbitrary object and its type information
+	RzValue(void* obj, RzType* typeInfo); ///< Constructs from arbitrary object and its type information
 	RzValue(std::initializer_list<int> v);
 	RzValue(int v);
 	RzValue(const std::string& v);
@@ -155,7 +155,7 @@ public:
 
 	operator bool();
 
-	void setFromObject(void* ptr, AEType* typeInfo);
+	void setFromObject(void* ptr, RzType* typeInfo);
 
 //private:
 	friend class RzParser;

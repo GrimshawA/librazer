@@ -2,11 +2,11 @@
 #define RZENGINE_H__
 
 #include <RazerVM/ThreadContext.h>
-#include <AEON/Runtime/aeQualType.h>
-#include <AEON/Runtime/AEType.h>
+#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/RzType.h>
 #include <Rzr/RzValue.h>
 #include <Rzr/RzModule.h>
-#include <AEON/Runtime/AEGeneric.h>
+#include <RazerRuntime/AEGeneric.h>
 #include <vector> 
 #include <map>
 #include <stdint.h> 
@@ -31,7 +31,7 @@ typedef int aeFunctionId;
 
 class AEFunction;
 
-class aeEnum : public AEType
+class aeEnum : public RzType
 {
 public:
 	std::map<std::string, int> table;
@@ -79,14 +79,14 @@ public:
 		{
 			std::vector<unsigned char*> memory;
 			std::vector<unsigned char*> freestore;
-			AEType*                  type;
+			RzType*                  type;
 			// start with the most naive implementation
 			// allocates with malloc for every single object and frees when needed
 			// todo: fancier memory management and allocation
 			std::vector<AEObject*> objects;
 		};
 
-		std::vector<AEType*>                          typedb;               ///< All the types on the context
+		std::vector<RzType*>                          typedb;               ///< All the types on the context
 		std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
 		std::vector<std::unique_ptr<RzModule> >       modules;              ///< All the loaded modules
 		std::vector<std::string>                      string_literals;      ///< All the loaded string literals
@@ -142,8 +142,8 @@ public:
 	aeEnum*     getEnumByName(const std::string& name);
 	aeFunctionId getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior);
 
-	AEType* getTypeInfo(const std::string& name);
-	int32_t getTypeInfoIndex(AEType* typeInfo);
+	RzType* getTypeInfo(const std::string& name);
+	int32_t getTypeInfoIndex(RzType* typeInfo);
 
 	/// Creates a new object of that type
 	AEObject* createObject(const std::string& typen);

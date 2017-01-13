@@ -2,9 +2,9 @@
 #define RZMODULE_H__
 
 #include <RazerVM/InstructionSet.h>
-#include <AEON/Runtime/AEType.h>
-#include <AEON/Runtime/aeQualType.h>
-#include <AEON/Runtime/AEFunction.h>
+#include <RazerRuntime/RzType.h>
+#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/AEFunction.h>
 #include <vector>
 #include <array>
 #include <stdint.h>
@@ -56,12 +56,12 @@ public:
 	uint64_t getFunctionOffset(FnIndex functionIndex);
 
 	int64_t getTypeIndex(const std::string& name);
-	int64_t getTypeIndex(AEType* type);
+	int64_t getTypeIndex(RzType* type);
 	
-	AEType* getType(const std::string& name);
-	AEType* getType(int64_t index);
+	RzType* getType(const std::string& name);
+	RzType* getType(int64_t index);
 
-	AEType* resolveType(int dependency_id, int type_id);
+	RzType* resolveType(int dependency_id, int type_id);
 
 	std::string getStringFromPool(uint32_t index);
 	double      getDoubleLiteral(uint32_t index);
@@ -83,7 +83,7 @@ public:
 	void registerEnumValue();
 	void registerTypedef();
 
-	int resolveTypeModuleIndex(AEType* type);
+	int resolveTypeModuleIndex(RzType* type);
 
 public:
 	// Type information
@@ -140,7 +140,7 @@ public:
 	RzEngine*                           m_context;
 	std::vector<AEFunction>              m_functions;          ///< All script functions
 	std::vector<AENativeFunctionWrapper> m_nativeFunctions;    ///< All native functions exported
-	std::vector<AEType*>                 m_types;
+	std::vector<RzType*>                 m_types;
 	std::vector<std::string>             m_stringPool;
 	std::vector<double>                  m_doublePool;
 	std::vector<int64_t>                 m_intPool;

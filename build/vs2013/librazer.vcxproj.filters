@@ -1,24 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\src\AEON\Compiler\aeReportManager.cpp" />
-    <ClCompile Include="..\..\src\AEON\Parser\RzDocument.cpp" />
-    <ClCompile Include="..\..\src\AEON\Parser\RzParser.cpp" />
-    <ClCompile Include="..\..\src\AEON\Parser\RzParserData.cpp" />
-    <ClCompile Include="..\..\src\AEON\Parser\RzTokens.cpp" />
-    <ClCompile Include="..\..\src\AEON\AST\AEStructNode.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\aeBindingHelper.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\aeClosure.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEContext.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEFunction.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEGeneric.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEObject.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\aeQualType.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEString.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\aeSymbol.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEType.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\RzValue.cpp" />
-    <ClCompile Include="..\..\src\AEON\Runtime\AEValueList.cpp" />
     <ClCompile Include="..\..\src\RazerVM\InstructionSet.cpp">
       <Filter>RazerVM</Filter>
     </ClCompile>
@@ -52,131 +34,176 @@
     <ClCompile Include="..\..\src\RazerCore\media\Device.cpp">
       <Filter>RazerCore\media</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\AEBaseNode.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeAccessOperator.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeBinaryOperator.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeBlock.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeBranch.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeEcosystem.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeExpr.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeFor.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeFunction.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeFunctionCall.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeIdentifier.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeLiterals.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeModule.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeNamespace.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeNew.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeReturn.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeSubscript.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeTernaryOperator.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeUnaryOperator.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeValue.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeVarDecl.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\AST\aeNodeWhile.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\RazerVM\VirtualMachine.cpp">
       <Filter>RazerVM</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\RazerVM\Executor\ExecDispatch.cpp">
       <Filter>RazerVM\Execute</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\AECompiler.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\aeCompilerConv.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\AECompilerData.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\CompileCalls.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\CompileExpressions.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\CompileFunctions.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\CompileAssignment.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\CompileAllocation.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Compiler\CompileResult.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AEON\Runtime\RzModule.cpp" />
     <ClCompile Include="..\..\src\RazerCore\container\Array.cpp">
       <Filter>RazerCore\container</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\RzrAPI\RzBuilder.cpp">
+      <Filter>RazerCompiler\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\AECompiler.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\aeCompilerConv.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\AECompilerData.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\aeReportManager.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\CompileAllocation.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\CompileAssignment.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\CompileCalls.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\CompileExpressions.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\CompileFunctions.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\CompileResult.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerCompiler\RzCompilerCollect.cpp">
+      <Filter>RazerCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\AEBaseNode.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeAccessOperator.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeBinaryOperator.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeBlock.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeBranch.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeEcosystem.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeExpr.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeFor.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeFunction.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeFunctionCall.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeIdentifier.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeLiterals.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeNamespace.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeNew.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeReturn.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeSubscript.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeTernaryOperator.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeUnaryOperator.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeValue.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeVarDecl.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\aeNodeWhile.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\AEStructNode.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\AST\RzSourceUnit.cpp">
+      <Filter>RazerParser\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\Parser\RzDocument.cpp">
+      <Filter>RazerParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\Parser\RzParser.cpp">
+      <Filter>RazerParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\Parser\RzParserData.cpp">
+      <Filter>RazerParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\Parser\RzTokens.cpp">
+      <Filter>RazerParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerParser\TypeDesc.cpp">
+      <Filter>RazerParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\aeBindingHelper.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\aeClosure.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\AEFunction.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\AEGeneric.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\AEObject.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\aeQualType.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\AEString.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\aeSymbol.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\AEValueList.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\RzEngine.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\RzModule.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\RzType.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RazerRuntime\RzValue.cpp">
+      <Filter>RazerRuntime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\Rzr\RzDocument.h" />
-    <ClInclude Include="..\..\include\Rzr\RzEngine.h" />
-    <ClInclude Include="..\..\include\Rzr\RzModule.h" />
-    <ClInclude Include="..\..\include\Rzr\RzValue.h" />
-    <ClInclude Include="..\..\src\AEON\AST\AEStructNode.h" />
-    <ClInclude Include="..\..\src\AEON\AST\Nodes.h" />
-    <ClInclude Include="..\..\src\AEON\Compiler\aereportmanager.h" />
-    <ClInclude Include="..\..\src\AEON\DebugDefs.h" />
-    <ClInclude Include="..\..\src\AEON\Parser\RzParser.h" />
-    <ClInclude Include="..\..\src\AEON\Parser\RzTokens.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\aeBindingHelper.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\aeClosure.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEFunction.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEGeneric.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEObject.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\aeQualType.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEString.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\aesymbol.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEType.h" />
-    <ClInclude Include="..\..\src\AEON\Runtime\AEValueList.h" />
     <ClInclude Include="..\..\src\RazerVM\InstructionSet.h">
       <Filter>RazerVM</Filter>
     </ClInclude>
@@ -210,72 +237,6 @@
     <ClInclude Include="..\..\src\RazerCore\media\Device.h">
       <Filter>RazerCore\media</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\AEBaseNode.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeAccessOperator.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeBinaryOperator.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeWhile.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeBlock.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeBranch.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeEcosystem.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeExpr.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeFor.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeFunction.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeFunctionCall.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeIdentifier.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeLiterals.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeModule.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeNamespace.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeNew.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeReturn.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeSubscript.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeTernaryOperator.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeUnaryOperator.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeValue.h">
-      <Filter>AST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\AST\aeNodeVarDecl.h">
-      <Filter>AST</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\RazerVM\VirtualMachine.h">
       <Filter>RazerVM</Filter>
     </ClInclude>
@@ -291,27 +252,153 @@
     <ClInclude Include="..\..\src\RazerVM\Executor\AEVmCalls.h">
       <Filter>RazerVM\Execute</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\AEON\Compiler\AECompiler.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerConv.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerErrorIds.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\Compiler\aeCompilerWarningIds.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\AEON\Compiler\CompileResult.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\RazerCore\container\Array.h">
       <Filter>RazerCore\container</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClInclude Include="..\..\include\RzrAPI\RzBuilder.h">
+      <Filter>RazerCompiler\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerCompiler\AECompiler.h">
+      <Filter>RazerCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerCompiler\aeCompilerConv.h">
+      <Filter>RazerCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerCompiler\aeCompilerErrorIds.h">
+      <Filter>RazerCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerCompiler\aeCompilerWarningIds.h">
+      <Filter>RazerCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerCompiler\aereportmanager.h">
+      <Filter>RazerCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerCompiler\CompileResult.h">
+      <Filter>RazerCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\AEBaseNode.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeAccessOperator.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeBinaryOperator.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeBlock.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeBranch.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeEcosystem.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeExpr.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeFor.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeFunction.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeFunctionCall.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeIdentifier.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeLiterals.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeNamespace.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeNew.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeReturn.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeSubscript.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeTernaryOperator.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeUnaryOperator.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeValue.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeVarDecl.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\aeNodeWhile.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\AEStructNode.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\Nodes.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\AST\RzSourceUnit.h">
+      <Filter>RazerParser\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\Parser\RzParser.h">
+      <Filter>RazerParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\Parser\RzTokens.h">
+      <Filter>RazerParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerParser\TypeDesc.h">
+      <Filter>RazerParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\aeBindingHelper.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\aeClosure.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\AEFunction.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\AEGeneric.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\AEObject.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\aeQualType.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\AEString.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\aeSymbol.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\AEValueList.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RazerRuntime\RzType.h">
+      <Filter>RazerRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzDocument.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzEngine.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\RzModule.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Rzr\rzvalue.h">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="RazerVM">
@@ -329,17 +416,29 @@
     <Filter Include="RazerCore\media">
       <UniqueIdentifier>{6a91231e-37eb-44f5-a63d-42c222f69310}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AST">
-      <UniqueIdentifier>{a53eaa6e-fc93-42f9-906c-42b14eb70831}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RazerVM\Execute">
       <UniqueIdentifier>{6e3eb3f7-ce0d-4cc8-8964-422300bafbd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Compiler">
-      <UniqueIdentifier>{8af2dc80-a5dc-47c0-87bb-6cae009134ba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RazerCore\container">
       <UniqueIdentifier>{6bc28ef6-32b5-4fec-87cd-b9437f7a5dcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RazerParser">
+      <UniqueIdentifier>{692d7794-f0b7-412f-9199-b638fc425af0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RazerCompiler">
+      <UniqueIdentifier>{8af2dc80-a5dc-47c0-87bb-6cae009134ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RazerCompiler\Builder">
+      <UniqueIdentifier>{b93c6bc5-242e-4027-805f-b0e12c42fcc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RazerParser\AST">
+      <UniqueIdentifier>{a53eaa6e-fc93-42f9-906c-42b14eb70831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RazerRuntime">
+      <UniqueIdentifier>{adbc1822-7274-4f54-9fd6-2126ae548f18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API">
+      <UniqueIdentifier>{bef0e91b-1365-4623-9e79-b82a1517612b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

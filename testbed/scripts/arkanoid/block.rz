@@ -1,0 +1,9 @@
+import std
+
+class Block
+{
+	function render()
+	{
+		print("Rendering the block!");
+	}
+}

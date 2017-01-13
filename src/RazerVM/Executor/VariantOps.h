@@ -10,10 +10,10 @@
 */
 inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 {
-	RzValue ptr;
-	ctx.popVariant(ptr);
+	RzValue thisVar;
+	ctx.popVariant(thisVar);
 
-	if (ptr.isUndefined())
+	if (thisVar.m_valueType != RzValue::VALUE_OBJECT)
 	{
 		printf("Exception: Calling a method on undefined\n");
 		return;
@@ -25,34 +25,34 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 	printf("Attempting to call method %s\n", methodName.c_str());
 #endif
 
-	if (ptr._object->m_obj)
+	if (thisVar._object->m_obj)
 	{
-		// Must push the native object pointer to call the method on
-		ctx.push_addr(ptr._object->m_obj);
+		RzType* wrappedObjectType = thisVar._object->m_type;
+		RzType::MethodInfo* method = wrappedObjectType->getMethod(methodName);
 
-		AEGeneric g; g.m_threadCtx = &ctx;
-		g.m_variantCall = true;
-		aeBindMethod funPtr = ptr._object->m_type->getNativeFunction(methodName);
-		if (funPtr){
-			printf("About to call an actual function\n");
-			funPtr(g);
-		}			
-		return;
-	}
+		if (!method)
+		{
+			printf("EXCEPTION: No such method in the object %s\n", methodName.c_str());
+			return;
+		}
 
-	RzValue fnValue = ptr.property(methodName);
+		if (method->methodCallback)
+		{
+			// Must push the native object pointer to call the method on
+			ctx.push_addr(thisVar._object->m_obj);
 
-#if defined TRACE_VM
-	printf("Calling late bound method\n");
-#endif
-	if (!fnValue.isUndefined())
-	{
-		fnValue.call();
-		printf("CALLING VAR METHOD %s\n", methodName.c_str());
-	}
-	else
-	{
-		printf("No such property\n");
+			AEGeneric g; g.m_threadCtx = &ctx;
+			g.m_variantCall = true;
+			aeBindMethod funPtr = thisVar._object->m_type->getNativeFunction(methodName);
+			if (funPtr){
+				printf("About to call an actual function\n");
+				funPtr(g);
+			}
+		}
+		else
+		{
+			printf("Calling script function %s\n", methodName.c_str());
+		}
 	}
 }
 
@@ -108,7 +108,7 @@ inline static void DoVarStore(RzThreadContext& ctx, int storeType, int moduleInd
 		}
 
 		case AE_VARIANTTYPE_OBJECT: {
-			AEType* typeInfo = ctx.getModule().resolveType(moduleIndex, typeIndex);
+			RzType* typeInfo = ctx.getModule().resolveType(moduleIndex, typeIndex);
 			(*ref.value).setFromObject(operand.ptr, typeInfo);
 			break;
 		}

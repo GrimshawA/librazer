@@ -287,12 +287,14 @@ inline static void DoLogicalNot(RzThreadContext& ctx)
 
 inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
 {
-	AEType* typeInfo = ctx.getModule().resolveType(module_id, type);
+	RzType* typeInfo = ctx.getModule().resolveType(module_id, type);
 	void* obj = typeInfo->construct();
 
 	RzStackValue v;
 	v.ptr = obj;
 	ctx.push_value(v);
+
+	printf("Constructed a new %s\n", typeInfo->getName().c_str());
 }
 
 inline static void DoLessThan(RzThreadContext& ctx, AeonPrimitiveType ptype)

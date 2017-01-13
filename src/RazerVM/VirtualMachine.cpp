@@ -3,9 +3,9 @@
 #include <RazerVM/InstructionSet.h>
 
 #include <Rzr/RzEngine.h>
-#include <AEON/Runtime/AEObject.h>
-#include <AEON/Runtime/AEGeneric.h>
-#include <AEON/DebugDefs.h>
+#include <RazerRuntime/AEObject.h>
+#include <RazerRuntime/AEGeneric.h>
+#include <DebugDefs.h>
 
 // [API]
 

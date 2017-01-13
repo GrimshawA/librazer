@@ -1,0 +1,2 @@
+#include <RazerParser/TypeDesc.h>
+

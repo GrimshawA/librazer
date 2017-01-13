@@ -1,40 +1,30 @@
 #include "testbed.h"
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
-#include <AEON/Runtime/AEObject.h>
+#include <RazerRuntime/AEObject.h>
 #include <Rzr/RzDocument.h>
-#include <AEON/Build/aeBuilder.h>
+#include <RzrAPI/RzBuilder.h>
 
 #include "../test/test_framework.h"
 
 #include <RazerCore/io/File.h>
 
-/*#include "aeBindingHelper.h"
-#include "aeon_type_utils.h"
-
-#include <iostream>
-#include <aeon_vm.h>
-#include <aeon_context.h>
-#include <aeon_object.h>
-*/
-/*void vmexecute(aeon_vm* vm, std::string funcname, aeon_context& context)
-{
-	vm->setContext(&context);
-	vm->call(*context.getModule("main"), funcname.c_str());
-}*/
 void objects_test()
 {
 	RzEngine ctx;
 	ctx.init_all();
-	ctx.quick_build("playground.rz");
-	//ctx.quick_build("a.ae");
+	//ctx.quick_build("playground.rz");
+	
+	RzBuilder builder(ctx);
+	builder.build(RzBuilder::Batch()
+		<< "arkanoid/main.rz"
+		<< "arkanoid/gamecontroller.rz"
+		<< "arkanoid/block.rz");
 
-	Rz::File* myFile = new Rz::File();
-
-	AEObject* myObject = ctx.createObject("ObjectsTest");
+	AEObject* myObject = ctx.createObject("ArkanoidApp");
 	if (myObject)
 	{
-		RzValue myObj;
+/*		RzValue myObj;
 		myObj.setValue("kill", RzValue([](){
 			printf("		kill on A\n");
 		}));
@@ -54,52 +44,20 @@ void objects_test()
 		}));
 
 		RzValue natObj(myFile, ctx.getTypeInfo("File"));
-
-		//myObject->call("sum2");
-
+		*/
+		
 		RzVirtualMachine vm(&ctx);
 		vm.setContext(&ctx);
 
 		//vm.m_stk.push_addr(myObject->m_obj);
 		vm.m_mainContext.pushObject(myObject);
-		vm.m_mainContext.pushVariant(myObj);
-		vm.m_mainContext.pushVariant(objB);
-		vm.m_mainContext.pushVariant(objC);
-		vm.m_mainContext.pushVariant(natObj);
+		//vm.m_mainContext.pushVariant(myObj);
+		//vm.m_mainContext.pushVariant(objB);
+		//vm.m_mainContext.pushVariant(objC);
+		//vm.m_mainContext.pushVariant(natObj);
 		//vm.m_stk.pushVariant(AEValue());
-		vm.call(*ctx.modules[0].get(), "ObjectsTest.sum2");
-
-		printf("FINISH\n");
-
-		//vm.call(AEValue(myObject), "ObjectsTest.sum2", AEValueList() << myObj);
+		vm.call(*ctx.modules[0].get(), "ArkanoidApp.main");
 	}
-
-	/*
-	AEObject* objA = ctx.createObject("A");
-	if (objA)
-	{
-		printf("OBJ A is valid \n");
-		objA->call("do");
-	}*/
-
-
-	//AEDocument document;
-
-	//document.parse("Component { a: 5  }");
-	//document.print();
-
-	//document.load("AnimationSample.dmc");
-	//document.print();
-
-	//performTests();
-
-	// test builder
-	/*aeBuilder b;
-	AEBuildSpec bspec;
-	bspec.files.push_back("../../demo/sample_app/player.ds");
-	bspec.files.push_back("../../demo/sample_app/main.ds");
-	b.buildApp("../../demo/myApp.app", bspec);*/
-
 }
 
 void testbed::run()

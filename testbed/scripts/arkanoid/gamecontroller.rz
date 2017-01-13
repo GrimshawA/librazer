@@ -1,0 +1,14 @@
+import std
+
+class GameController
+{
+	function init()
+	{
+		print("Init");
+	}
+
+	function render()
+	{
+		print("Rendering the game!");
+	}
+}
