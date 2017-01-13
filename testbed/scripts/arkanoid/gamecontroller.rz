@@ -7,6 +7,11 @@ class GameController
 		print("Init");
 	}
 
+	function update()
+	{
+
+	}
+
 	function render()
 	{
 		print("Rendering the game!");

@@ -51,7 +51,19 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 		}
 		else
 		{
-			printf("Calling script function %s\n", methodName.c_str());
+			printf("Calling script function %s offset %d\n", methodName.c_str(), method->offset);
+
+			ctx.pc = ctx.cl->pc;
+			ctx.ebp = ctx.cl->ebp;			
+
+			RzStackFrame stackFrame;
+			stackFrame.name = methodName;
+			stackFrame.pc = method->offset - 1;
+			stackFrame.module = ctx.cl->module;
+			stackFrame.ebp = ctx.ebp;
+			//stackFrame.function = functionData;
+			ctx.frames.push_back(stackFrame);
+			ctx.cl = &ctx.frames[ctx.frames.size() - 1];			
 		}
 	}
 }

@@ -8,15 +8,15 @@ class ArkanoidApp
 
 		var gameController = new GameController();
 
-		gameController.init();
+		gameController.render();
 
-		/*var w = new Window();
+		var w = new Window();
 		w.open();
 
 		while(w.running())
 		{
 			gameController.render();
 			w.display();
-		}*/
+		}
 	}
 }
