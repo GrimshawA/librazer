@@ -55,9 +55,6 @@
     <ClCompile Include="..\..\src\RazerCompiler\AECompilerData.cpp">
       <Filter>RazerCompiler</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\RazerCompiler\aeReportManager.cpp">
-      <Filter>RazerCompiler</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\RazerCompiler\CompileAllocation.cpp">
       <Filter>RazerCompiler</Filter>
     </ClCompile>
@@ -202,6 +199,12 @@
     <ClCompile Include="..\..\src\RazerRuntime\RzValue.cpp">
       <Filter>RazerRuntime</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Logger.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BuildReport.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\RazerVM\InstructionSet.h">
@@ -268,9 +271,6 @@
       <Filter>RazerCompiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\RazerCompiler\aeCompilerWarningIds.h">
-      <Filter>RazerCompiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\RazerCompiler\aereportmanager.h">
       <Filter>RazerCompiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\RazerCompiler\CompileResult.h">
@@ -399,6 +399,12 @@
     <ClInclude Include="..\..\include\Rzr\rzvalue.h">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Logger.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\BuildReport.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="RazerVM">
@@ -439,6 +445,9 @@
     </Filter>
     <Filter Include="API">
       <UniqueIdentifier>{bef0e91b-1365-4623-9e79-b82a1517612b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{99c8d8a2-f493-4184-b8d9-520893457c06}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

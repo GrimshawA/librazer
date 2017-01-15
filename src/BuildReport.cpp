@@ -1,19 +1,20 @@
-#include "aeReportManager.h"
+#include <BuildReport.h>
+#include <Logger.h>
 
-aeReportManager::aeReportManager()
+RzBuildReport::RzBuildReport()
 : m_enableStdOut(true)
 {
 
 }
 
-void aeReportManager::emitLog(const std::string& message)
+void RzBuildReport::emitLog(const std::string& message)
 {
 	aeReportLog entry;
 	entry.m_message = message;
 	addEntry(entry);
 }
 
-void aeReportManager::emitCompilerError(const std::string& message)
+void RzBuildReport::emitCompilerError(const std::string& message)
 {
 	aeReportLog entry;
 	entry.m_message = message;
@@ -21,7 +22,7 @@ void aeReportManager::emitCompilerError(const std::string& message)
 	addEntry(entry);
 }
 
-void aeReportManager::addEntry(const aeReportLog& log)
+void RzBuildReport::addEntry(const aeReportLog& log)
 {
 	if (m_enableStdOut)
 	{

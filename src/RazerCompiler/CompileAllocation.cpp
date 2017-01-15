@@ -1,4 +1,6 @@
 #include <RazerCompiler/AECompiler.h>
+#include <Logger.h>
+#include <BuildReport.h>
 
 RzCompileResult AECompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 {
@@ -78,14 +80,15 @@ void AECompiler::compileNew(aeNodeNew& newExpr)
 
 	if (newExpr.m_instanceType.getType() == nullptr)
 	{
-		printf("Compiler internal error. Unresolved type\n");
+		m_report->emitCompilerError(std::string("new: unknown type ") + newExpr.m_instanceType.str().c_str());
+		RZLOG("Compiler internal error. Unresolved type\n");
 		return;
 	}
 	
 	int moduleIndex = m_module->resolveTypeModuleIndex(newExpr.m_instanceType.getType());
 	if (moduleIndex == -1)
 	{
-		printf("Compiler error. Unresolved module\n");
+		RZLOG("Compiler error. Unresolved module\n");
 		return;
 	}
 
@@ -97,5 +100,5 @@ void AECompiler::compileNew(aeNodeNew& newExpr)
 
 	emitInstruction(OP_NEW, moduleIndex, typeIndex);
 
-	printf("Compiled new %d %d\n\n", moduleIndex, typeIndex);
+	RZLOG("Compiled new %d %d\n\n", moduleIndex, typeIndex);
 }

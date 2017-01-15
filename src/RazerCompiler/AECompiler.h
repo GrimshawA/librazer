@@ -5,7 +5,7 @@
 #include <RazerParser/AST/Nodes.h>
 #include <RazerCompiler/aeCompilerConv.h>
 #include <Rzr/RzModule.h>
-#include <RazerCompiler/aeReportManager.h>
+#include <BuildReport.h>
 
 #include <vector>
 #include <stack>
@@ -74,7 +74,7 @@ public:
 		AEFunction*                         m_currentFunction;       ///< Current function being compiled to
 		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
 		TypeSystemInformation               m_typeSystem;            ///< Table that defines what can be converted to what and how
-		aeReportManager                     m_reporter;
+		RzBuildReport                     m_reporter;
 		bool                                m_logAllocs;
 		bool                                m_logExprStmt;
 		bool                                m_logExprOps;
@@ -212,6 +212,8 @@ public:
 	void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
 	void emitLateBoundCall(aeNodeFunctionCall* fn);
 
+
+	RzBuildReport* m_report;
 
 };
 

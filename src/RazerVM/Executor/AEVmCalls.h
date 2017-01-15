@@ -6,7 +6,7 @@ static inline void DoCall(RzThreadContext& ctx, int functionIndex)
 	AEFunction* functionData = ctx.engine->m_functionTable[functionIndex];
 
 #if defined TRACE_VM
-	printf("Calling function %s\n", functionData->getName().c_str());
+	RZLOG("Calling function %s\n", functionData->getName().c_str());
 	functionData->printByteCode();
 #endif
 

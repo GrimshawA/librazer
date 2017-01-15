@@ -21,6 +21,7 @@ public:
 	void display();
 
 	void* data;
+	bool m_running;
 };
 
 #endif

@@ -2,6 +2,8 @@
 #include <Rzr/RzModule.h>
 #include <RazerVM/VirtualMachine.h>
 
+#include <Logger.h>
+
 AEFunction::AEFunction()
 : aeSymbol()
 , m_struct(nullptr)
@@ -48,9 +50,9 @@ bool AEFunction::isNative()
 
 void AEFunction::printByteCode()
 {
-	printf("bytecode %s\n", getName().c_str());
+	RZLOG("bytecode %s\n", getName().c_str());
 	for (int i = m_offset; i < m_numInstructions; ++i)
 	{
-		printf("fn %s\n", inst_opcode_str(m_module->m_code[i]).c_str());
+		RZLOG("fn %s\n", inst_opcode_str(m_module->m_code[i]).c_str());
 	}
 }

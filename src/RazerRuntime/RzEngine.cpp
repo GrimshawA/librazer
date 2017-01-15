@@ -4,6 +4,7 @@
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/RzTokens.h>
 #include <RazerCompiler/aeCompiler.h>
+#include <Logger.h>
 
 #include <RazerCore/ExportStd.h>
 
@@ -173,7 +174,7 @@ AEObject* RzEngine::createObject(const std::string& typen)
 		}
 	}
 
-	printf("Cannot create objects of a unknown type\n");
+	RZLOG("Cannot create objects of a unknown type\n");
 	return nullptr;
 }
 
@@ -311,7 +312,7 @@ void RzEngine::registerTypeMethod(const std::string& typeName, const std::string
 	}
 	m_functionTable.push_back(fn);
 
-	printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
+	RZLOG("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)
@@ -330,14 +331,14 @@ void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)
 	{
 		aeQualType paramType = parser.parseQualType();
 		fn->params.push_back(paramType);
-		//printf("param %s\n", paramType.str().c_str());
+		//RZLOG("param %s\n", paramType.str().c_str());
 		if (parser.getNextToken().text != ",")
 			break;
 	}
 
 	m_functionTable.push_back(fn);
 
-	//printf("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
+	//RZLOG("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void RzEngine::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
@@ -423,7 +424,7 @@ RzType* RzEngine::getTypeInfo(const std::string& name)
 {
 	for (auto& obj : typedb)
 	{
-		//printf("%s = %s\n", name.c_str(), obj->getSymbolName().c_str());
+		//RZLOG("%s = %s\n", name.c_str(), obj->getSymbolName().c_str());
 		if (obj->m_absoluteName == name)
 			return obj;
 	}
@@ -451,7 +452,7 @@ int32_t RzEngine::getTypeInfoIndex(RzType* typeInfo)
 {
 	for (auto i = 0; i < typedb.size(); ++i)
 	{
-		//printf("%s = %s\n", name.c_str(), obj->getSymbolName().c_str());
+		//RZLOG("%s = %s\n", name.c_str(), obj->getSymbolName().c_str());
 		if (typedb[i] == typeInfo)
 			return i;
 	}

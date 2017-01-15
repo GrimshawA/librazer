@@ -1,5 +1,6 @@
 #include <RazerVM/ThreadContext.h>
 #include <RazerVM/VirtualMachine.h>
+#include <Logger.h>
 
 RzModule& RzThreadContext::getModule()
 {
@@ -8,7 +9,7 @@ RzModule& RzThreadContext::getModule()
 
 void RzThreadContext::pushVariant(const RzValue& v)
 {
-	printf("push variant at offset %d (%s)\n", ebp - esp, v.str().c_str());
+	RZLOG("push variant at offset %d (%s)\n", ebp - esp, v.str().c_str());
 
 	esp -= sizeof(v);
 	new (esp) RzValue();
@@ -54,7 +55,7 @@ std::vector<uint8_t> RzThreadContext::popMemory(int size)
 
 void RzThreadContext::pushObject(AEObject* obj)
 {
-	printf("pushed %d bytes : object\n", sizeof(obj->m_obj));
+	RZLOG("pushed %d bytes : object\n", sizeof(obj->m_obj));
 	esp -= sizeof(obj->m_obj);
 	memcpy(esp, &obj->m_obj, sizeof(obj->m_obj));
 }

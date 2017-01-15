@@ -9,10 +9,10 @@
 #define vm_start(x) case x:{
 #define vm_end break;}
 
-#define LOGVM(x, a, b, c) printf("[vm] %s %d %d %d\n", #x, a, b, c);
+#define LOGVM(x, a, b, c) RZLOG("[vm] %s %d %d %d\n", #x, a, b, c);
 
 #define VMLOGLEVEL 5
-#define vm_log(tag, level, STR) if(level > VMLOGLEVEL) printf("%s: %s\n", tag, STR);
+#define vm_log(tag, level, STR) if(level > VMLOGLEVEL) RZLOG("%s: %s\n", tag, STR);
 
 
 void dispatch_execute(RzThreadContext& ctx)
@@ -23,7 +23,7 @@ void dispatch_execute(RzThreadContext& ctx)
 	{
 		RzInstruction& inst = ctx.cl->module->m_code[ctx.cl->pc];
 #ifdef TRACE_VM
-		printf(" vm %s\n", inst_opcode_str(inst).c_str());
+		RZLOG(" vm %s\n", inst_opcode_str(inst).c_str());
 #endif
 
 		switch (inst.opcode)
@@ -175,7 +175,7 @@ void dispatch_execute(RzThreadContext& ctx)
 				vm_start(OP_TYPEINFO)
 				int index = inst.arg0;
 			ctx.push_value(RzStackValue::make_ptr(ctx.engine->typedb[index]));
-			printf("LOADED TYPE INFO %s\n", ctx.engine->typedb[index]->getName().c_str());
+			RZLOG("LOADED TYPE INFO %s\n", ctx.engine->typedb[index]->getName().c_str());
 			vm_end
 
 				vm_start(OP_DELETEOBJECT)
@@ -195,7 +195,7 @@ void dispatch_execute(RzThreadContext& ctx)
 			vm_end
 
 				vm_start(OP_DTEST)
-				printf("TEST VALUE %d\n", inst.arg0);
+				RZLOG("TEST VALUE %d\n", inst.arg0);
 			vm_end
 
 				vm_start(OP_DEBUG)
@@ -204,7 +204,7 @@ void dispatch_execute(RzThreadContext& ctx)
 
 				vm_start(OP_PUSHVAR)
 #if defined TRACE_VM
-				printf("Pushed var to stack from offset %d\n", inst.arg0);
+				RZLOG("Pushed var to stack from offset %d\n", inst.arg0);
 #endif
 			RzValue* referredValue = reinterpret_cast<RzValue*>(ctx.ebp - inst.arg0 - sizeof(RzValue));
 			ctx.pushVariant(*referredValue);

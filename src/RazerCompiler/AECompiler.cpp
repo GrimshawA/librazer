@@ -3,16 +3,17 @@
 #include <RazerVM/VirtualMachine.h>
 #include <Rzr/RzEngine.h>
 #include <DebugDefs.h>
+#include <Logger.h>
 
 #include <cassert>
 
 void debugCodeRange(RzModule* module, int start, int end)
 {
-	printf("Code %d to %d\n", start, end);
+	RZLOG("Code %d to %d\n", start, end);
 	for (int i = start; i < end; ++i)
 	{
 		auto& in = module->m_code[i];
-		printf("%s %d %d %d\n", inst_opcode_str(in).c_str(), in.arg0, in.arg1, in.arg2);
+		RZLOG("%s %d %d %d\n", inst_opcode_str(in).c_str(), in.arg0, in.arg1, in.arg2);
 	}
 }
 
@@ -127,7 +128,7 @@ void AECompiler::declareStackVar(const std::string& name, aeQualType type)
 	m_OffsetFromBasePtr += type.getSize();
 
 #if defined TRACE_STACK
-	printf("STACK VAR: %s offset %d\n", name.c_str(), bpOffset);
+	RZLOG("STACK VAR: %s offset %d\n", name.c_str(), bpOffset);
 #endif
 }
 
@@ -247,11 +248,11 @@ void AECompiler::generate(AEBaseNode* root)
 
 	if (ret.m_status == RzCompileResult::FAILED)
 	{
-		printf("Compilation finished with errors.\n");
+		RZLOG("Compilation finished with errors.\n");
 	}
 	else
 	{
-		printf("Compilation finished\n");
+		RZLOG("Compilation finished\n");
 	}
 }
 
@@ -487,7 +488,7 @@ void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* func
 
 	for (auto& field : cl->m_typeInfo->m_fields)
 	{
-		printf("INIT %s\n", field.name.c_str());
+		RZLOG("INIT %s\n", field.name.c_str());
 		if (!field.type.isPod())
 		{
 			emitPushThis();
@@ -507,7 +508,7 @@ void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* func
 			fnCall.m_name = "array";
 			emitFunctionCall(field.type, &fnCall, aeExprContext());
 
-			printf("INJECTED CONSTRUCTION %s\n", field.name.c_str());
+			RZLOG("INJECTED CONSTRUCTION %s\n", field.name.c_str());
 		}
 	}
 }
@@ -518,11 +519,11 @@ RzCompileResult AECompiler::compileImport(aeNodeImport& node)
 
 	if (!importedModule)
 	{
-		printf("Couldn't resolve the import '%s' to any module\n", node.symbol.c_str());
+		RZLOG("Couldn't resolve the import '%s' to any module\n", node.symbol.c_str());
 		return RzCompileResult(RzCompileResult::FAILED);
 	}
 
-	printf("Import resolved to %s\n", importedModule->getName().c_str());
+	RZLOG("Import resolved to %s\n", importedModule->getName().c_str());
 
 	m_module->createDependency(importedModule);
 

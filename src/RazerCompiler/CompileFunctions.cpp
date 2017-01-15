@@ -6,6 +6,8 @@
 
 #include <cassert>
 
+#include <Logger.h>
+
 
 AEFunction* AECompiler::compileFunction(aeNodeFunction* functionNode)
 {
@@ -19,7 +21,7 @@ AEFunction* AECompiler::compileFunction(aeNodeFunction* functionNode)
 	AEFunction* function = m_env->createFunction(symbol_prefix + functionNode->m_name);
 	
 #if defined TRACE_STACK
-	printf("::: Frame %s : Method\n", functionNode->m_name.c_str());
+	RZLOG("::: Frame %s : Method\n", functionNode->m_name.c_str());
 #endif
 
 	m_OffsetFromBasePtr = 0;

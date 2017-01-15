@@ -1,5 +1,6 @@
 #include <RazerCore/window/Window.h>
 #include <Rzr/RzModule.h>
+#include <Logger.h>
 
 #include <SDL.h>
 
@@ -38,7 +39,9 @@ struct SDLUserData
 
 Window::Window()
 {
-	printf("WINDOW INSTANCED\n");	
+	RZLOG("WINDOW INSTANCED\n");	
+
+	m_running = false;
 
 	SDLUserData* sd = new SDLUserData;
 	data = sd;
@@ -46,7 +49,7 @@ Window::Window()
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
-		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+		RZLOG("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 	}
 	else
 	{
@@ -54,7 +57,7 @@ Window::Window()
 		sd->window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 300, 300, SDL_WINDOW_SHOWN);
 		if (sd->window == NULL)
 		{
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			RZLOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		}
 		else
 		{
@@ -75,13 +78,14 @@ Window::Window()
 
 void Window::open()
 {
-	printf("WINDOW OPENING %x\n", this);
+	RZLOG("WINDOW OPENING %x\n", this);
+	m_running = true;
 }
 
 bool Window::running()
 {
-	printf("WINDOW RUNNING %x\n", this);
-	return true;
+	RZLOG("WINDOW RUNNING %x\n", this);
+	return m_running;
 }
 
 void Window::display()
@@ -93,7 +97,7 @@ void Window::display()
 	while (SDL_PollEvent(&e)){
 		//If user closes the window
 		if (e.type == SDL_QUIT){
-			//quit = true;
+			m_running = false;
 		}
 		//If user presses any key
 		if (e.type == SDL_KEYDOWN){
@@ -105,7 +109,7 @@ void Window::display()
 		}
 	}
 
-	SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, rand(), 0xFF, 0xFF));
+	//SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, rand(), 0xFF, 0xFF));
 
 	//Update the surface
 	SDL_UpdateWindowSurface(sd->window);

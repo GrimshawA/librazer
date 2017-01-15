@@ -70,8 +70,6 @@ inline static void DoDiv(RzThreadContext& ctx, AeonPrimitiveType ptype)
 	RzStackValue b = ctx.pop_value();
 	RzStackValue a = ctx.pop_value();
 
-	//printf("DIV %d %d\n", a.i32, b.i32);
-
 	switch (ptype)
 	{
 	case AEP_DOUBLE: a.dp = a.dp / b.dp; break;
@@ -185,12 +183,10 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
 	if (type == AEP_PTR)
 	{
 		memcpy(addr.ptr, &operand.ptr, 4);
-		//printf("OP_SET ptr [%x now %x]\n", addr.ptr, operand.ptr);
 	}
 	else
 	{
 		memcpy(addr.ptr, &operand.i32, 4);
-		//printf("OP_SET [%x now %d]\n", addr.ptr, operand.i32);
 	}
 }
 
@@ -202,7 +198,6 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
 	{
 		RzStackValue thisPtr = ctx.pop_value();
 		dataPtr = static_cast<unsigned char*>(thisPtr.ptr) + offset;
-		//printf("LOAD FROM POPPED THIS|\n");
 	}
 	else if (addressMode == AEK_EBP)
 	{
@@ -220,14 +215,12 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
 			RzStackValue v;
 			memcpy(&v.ptr, dataPtr, sizeof(void*));
 			ctx.push_value(v);
-			//printf("Loading ptr %x\n", v.ptr);
 		}
 		else
 		{
 			RzStackValue v;
 			v.i32 = *static_cast<int32_t*>(dataPtr);
 			ctx.push_value(v);
-			//printf("Loading %d\n", v.i32);
 		}
 	}
 }
@@ -239,21 +232,19 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
 		RzStackValue thisPtr = ctx.pop_value();
 		thisPtr.ptr = (unsigned char*)thisPtr.ptr + offset;
 		ctx.push_value(thisPtr);
-		printf("OP_LOADADDR THIS = %x (offset %d)\n", ctx.getThisPtr().ptr, offset);
+		RZLOG("OP_LOADADDR THIS = %x (offset %d)\n", ctx.getThisPtr().ptr, offset);
 	}
 	else if (addressMode == AEK_EBP)
 	{
 		RzStackValue val;
 		val.ptr = ctx.ebp - offset;
 		ctx.push_value(val);
-		//printf("OP_LOADADDR EBP address %x (offset %d)\n", val.ptr, offset);
 	}
 	else if (addressMode == AEK_ESP)
 	{
 		RzStackValue v;
 		v.ptr = ctx.esp;
 		ctx.push_value(v);
-		//printf("OP_LOAD ESP address %x\n", v.ptr);
 	}
 }
 
@@ -263,17 +254,14 @@ inline static void DoLoadConstant(RzThreadContext& ctx, int primType, int index,
 	if (primType == AEK_FLOAT)
 	{
 		kVal.fp = ctx.engine->m_floatTable[index];
-		//printf("OP_LOADK FLOAT %f constant\n", kVal.fp);
 	}
 	else if (primType == AEK_INT)
 	{
 		kVal.i32 = ctx.engine->int_literals[index];
-		//printf("OP_LOADK INT32 %d constant\n", kVal.i32);
 	}
 	else if (primType == AEK_STRING)
 	{
 		kVal.i32 = index;
-		//printf("OP_LOADK string %d constant\n", kVal.i32);
 	}
 	ctx.push_value(kVal);
 }
@@ -294,14 +282,13 @@ inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
 	v.ptr = obj;
 	ctx.push_value(v);
 
-	printf("Constructed a new %s\n", typeInfo->getName().c_str());
+	RZLOG("Constructed a new %s\n", typeInfo->getName().c_str());
 }
 
 inline static void DoLessThan(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
 	RzStackValue b = ctx.pop_value();
 	RzStackValue a = ctx.pop_value();
-	//printf("LT OP %d < %d = %d\n", a.i32, b.i32, a.i32 < b.i32);
 
 	switch (ptype)
 	{
@@ -351,11 +338,11 @@ static inline void DoJumpIfZero(RzThreadContext& ctx, int jumpOffset)
 	{
 		cl->pc += jumpOffset;
 		
-		printf("the if condition was false\n");
+		RZLOG("the if condition was false\n");
 	}
 	else
 	{
-		printf("the if condition was true\n");
+		RZLOG("the if condition was true\n");
 	}
 }
 
@@ -364,7 +351,7 @@ static inline void DoJump(RzThreadContext& ctx, int address)
 	RzStackFrame* cl = &ctx.frames[ctx.frames.size() - 1];
 	cl->pc += address;
 
-	printf("Jumping to %d %d\n", cl->pc+1, cl->module->m_code[cl->pc+1].opcode);
+	RZLOG("Jumping to %d %d\n", cl->pc+1, cl->module->m_code[cl->pc+1].opcode);
 }
 
 static inline bool DoReturn(RzThreadContext& ctx)
@@ -376,10 +363,11 @@ static inline bool DoReturn(RzThreadContext& ctx)
 	}
 	else
 	{
-		if (ctx.ebp != ctx.esp)
-			printf("Script function returned without popping all stack memory!\n");
+		if (ctx.ebp != ctx.esp){
+			RZLOG("Script function returned without popping all stack memory!\n");
+		}			
 		else
-			printf("All memory is as expected\n");
+			RZLOG("All memory is as expected\n");
 
 		// restore underlying function
 		ctx.cl = &ctx.frames[ctx.frames.size() - 1];

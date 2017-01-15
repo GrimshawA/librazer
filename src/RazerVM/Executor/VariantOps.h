@@ -1,6 +1,8 @@
 #ifndef VariantOps_h__
 #define VariantOps_h__
 
+#include <Logger.h>
+
 #define TRACE_VM
 
 /*
@@ -15,14 +17,14 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 
 	if (thisVar.m_valueType != RzValue::VALUE_OBJECT)
 	{
-		printf("Exception: Calling a method on undefined\n");
+		RZLOG("Exception: Calling a method on undefined\n");
 		return;
 	}
 
 	std::string methodName = ctx.cl->module->m_identifierPool[identifierIndex];
 	
 #if defined TRACE_VM
-	printf("Attempting to call method %s\n", methodName.c_str());
+	RZLOG("Attempting to call method %s\n", methodName.c_str());
 #endif
 
 	if (thisVar._object->m_obj)
@@ -32,7 +34,7 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 
 		if (!method)
 		{
-			printf("EXCEPTION: No such method in the object %s\n", methodName.c_str());
+			RZLOG("EXCEPTION: No such method in the object %s\n", methodName.c_str());
 			return;
 		}
 
@@ -45,13 +47,13 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 			g.m_variantCall = true;
 			aeBindMethod funPtr = thisVar._object->m_type->getNativeFunction(methodName);
 			if (funPtr){
-				printf("About to call an actual function\n");
+				RZLOG("About to call an actual function\n");
 				funPtr(g);
 			}
 		}
 		else
 		{
-			printf("Calling script function %s offset %d\n", methodName.c_str(), method->offset);
+			RZLOG("Calling script function %s offset %d\n", methodName.c_str(), method->offset);
 
 			ctx.pc = ctx.cl->pc;
 			ctx.ebp = ctx.cl->ebp;			
@@ -89,11 +91,11 @@ inline static void DoVarStore(RzThreadContext& ctx, int storeType, int moduleInd
 
 	if (!ref.data && !ref.createOnAssign())
 	{
-		printf("RUNTIME EXCEPTION: Cannot assign to undefined\n");
+		RZLOG("RUNTIME EXCEPTION: Cannot assign to undefined\n");
 		return;
 	}
 
-	printf("store type: %d\n", storeType);
+	RZLOG("store type: %d\n", storeType);
 
 	if (ref.type == AEValueRef::REF_RAW)
 	{
@@ -101,7 +103,7 @@ inline static void DoVarStore(RzThreadContext& ctx, int storeType, int moduleInd
 		{
 		case AE_VARIANTTYPE_INT: {
 									 memcpy(ref.data, &operand.i32, sizeof(int));
-									 printf("Setting var %x to int %d\n", ref.data, operand.i64);
+									 RZLOG("Setting var %x to int %d\n", ref.data, operand.i64);
 									 break;
 
 		}

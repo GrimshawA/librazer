@@ -2,6 +2,7 @@
 #include <Rzr/RzEngine.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/RzTokens.h>
+#include <Logger.h>
 
 RzModule::RzModule()
 {
@@ -205,7 +206,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	}
 	m_functions.push_back(fn);
 
-	printf("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
+	RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }
 
 void RzModule::registerField()
@@ -339,7 +340,7 @@ int RzModule::createDependency(RzModule* module)
 {
 	if (!module)
 	{
-		printf("Can't create dependencies to null modules\n");
+		RZLOG("Can't create dependencies to null modules\n");
 		return -1;
 	}
 
@@ -356,7 +357,7 @@ int RzModule::createDependency(RzModule* module)
 	dep.name = module->getName();
 	m_dependencies.push_back(dep);
 
-	printf("Module '%s' now depends on '%s'\n", getName().c_str(), module->getName().c_str());
+	RZLOG("Module '%s' now depends on '%s'\n", getName().c_str(), module->getName().c_str());
 
 	return m_dependencies.size() - 1;
 }

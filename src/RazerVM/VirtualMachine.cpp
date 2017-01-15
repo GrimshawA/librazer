@@ -6,6 +6,7 @@
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/AEGeneric.h>
 #include <DebugDefs.h>
+#include <Logger.h>
 
 // [API]
 
@@ -52,8 +53,6 @@ void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype
 
 	m_mainContext.pushThisPtr(object->m_obj);
 	  
-	//printf("callMethod: %s. pushing this, pointing to %x popped\n", prototype.c_str(), object->addr);
-
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
 
@@ -89,7 +88,7 @@ void printBits2(size_t const size, void const * const ptr)
 			{
 				byte = b[i] & (1 << j);
 				byte >>= j;
-				printf("%u", byte);
+				RZLOG("%u", byte);
 			}
 		}
 		puts("");
@@ -108,7 +107,7 @@ void RzVirtualMachine::call(RzModule& module, const char* func)
 	}
 	else
 	{
-		printf("Couldn't find the calling function\n");
+		RZLOG("Couldn't find the calling function\n");
 	}
 }
 
@@ -116,20 +115,19 @@ int RzVirtualMachine::call(AEFunction* fn)
 {
 	if (!fn->m_compiled)
 	{
-		//printf("This function is not compiled '%s'.\n", function->getSymbolName().c_str());
 		return 1;
 	}
 
 	prepare(fn->id);
 
 	// Get arguments
-	printf("Calling script func with %d args\n", fn->params.size());
+	RZLOG("Calling script func with %d args\n", fn->params.size());
 
 
 	std::vector<std::vector<uint8_t>> argsMem;
 	for (int i = 0; i < fn->params.size(); ++i)
 	{		
-		printf("pop memory for param %d\n", fn->params[i].getSize());
+		RZLOG("pop memory for param %d\n", fn->params[i].getSize());
 		argsMem.push_back(m_mainContext.popMemory(fn->params[i].getSize()));
 	}
 

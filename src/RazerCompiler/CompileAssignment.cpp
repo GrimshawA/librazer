@@ -1,4 +1,5 @@
 #include <RazerCompiler/AECompiler.h>
+#include <Logger.h>
 
 void AECompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {
@@ -8,7 +9,7 @@ void AECompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 	aeQualType T1 = buildQualifiedType(lhs);
 	aeQualType T2 = buildQualifiedType(rhs);
 
-	printf("T1 %s T2 %s\n", T1.str().c_str(), T2.str().c_str());
+	RZLOG("T1 %s T2 %s\n", T1.str().c_str(), T2.str().c_str());
 
 	if (!T1.isVariant() && (T1.getType() != T2.getType()) && !canImplicitlyConvert(T2, T1))
 	{
@@ -75,7 +76,7 @@ void AECompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 		int moduleIndex = m_module->resolveTypeModuleIndex(rhsType.getType());
 		if (moduleIndex == -1)
 		{
-			printf("Compiler error. Unresolved module\n");
+			RZLOG("Compiler error. Unresolved module\n");
 			return;
 		}
 

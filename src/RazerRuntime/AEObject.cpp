@@ -1,6 +1,7 @@
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/AEFunction.h>
 #include <RazerVM/VirtualMachine.h>
+#include <Logger.h>
 
 AEObject::AEObject()
 : m_ref(0)
@@ -50,7 +51,7 @@ void AEObject::call(const std::string& name)
 	else
 	{
 		AEFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
-		printf("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
+		RZLOG("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
 		if (fn)
 		{
 			RzVirtualMachine vm;
@@ -74,7 +75,7 @@ void AEObject::setField(const std::string& field, int32_t value)
 	}
 	else
 	{
-		printf("[setField] Type '%s' has no field named '%s'\n", m_type->getName().c_str(), field.c_str());
+		RZLOG("[setField] Type '%s' has no field named '%s'\n", m_type->getName().c_str(), field.c_str());
 	}
 }
 
@@ -87,7 +88,7 @@ void AEObject::getField(const std::string& field, int32_t& value) const
 	}
 	else
 	{
-		printf("[getField] Type '%s' has no field named '%s'\n", m_type->getName().c_str(), field.c_str());
+		RZLOG("[getField] Type '%s' has no field named '%s'\n", m_type->getName().c_str(), field.c_str());
 	}
 }
 
@@ -103,7 +104,7 @@ void* AEObject::getFieldAddress(const std::string& field) const
 
 void AEObject::log()
 {
-	printf("Object %s@%x\n", m_type->m_name.c_str(), m_obj);
+	RZLOG("Object %s@%x\n", m_type->m_name.c_str(), m_obj);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

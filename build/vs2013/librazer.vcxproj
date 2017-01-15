@@ -141,10 +141,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\RzrAPI\RzBuilder.cpp" />
+    <ClCompile Include="..\..\src\BuildReport.cpp" />
+    <ClCompile Include="..\..\src\Logger.cpp" />
     <ClCompile Include="..\..\src\RazerCompiler\AECompiler.cpp" />
     <ClCompile Include="..\..\src\RazerCompiler\aeCompilerConv.cpp" />
     <ClCompile Include="..\..\src\RazerCompiler\AECompilerData.cpp" />
-    <ClCompile Include="..\..\src\RazerCompiler\aeReportManager.cpp" />
     <ClCompile Include="..\..\src\RazerCompiler\CompileAllocation.cpp" />
     <ClCompile Include="..\..\src\RazerCompiler\CompileAssignment.cpp" />
     <ClCompile Include="..\..\src\RazerCompiler\CompileCalls.cpp" />
@@ -214,11 +215,12 @@
     <ClInclude Include="..\..\include\Rzr\RzEngine.h" />
     <ClInclude Include="..\..\include\Rzr\RzModule.h" />
     <ClInclude Include="..\..\include\Rzr\rzvalue.h" />
+    <ClInclude Include="..\..\src\BuildReport.h" />
+    <ClInclude Include="..\..\src\Logger.h" />
     <ClInclude Include="..\..\src\RazerCompiler\AECompiler.h" />
     <ClInclude Include="..\..\src\RazerCompiler\aeCompilerConv.h" />
     <ClInclude Include="..\..\src\RazerCompiler\aeCompilerErrorIds.h" />
     <ClInclude Include="..\..\src\RazerCompiler\aeCompilerWarningIds.h" />
-    <ClInclude Include="..\..\src\RazerCompiler\aereportmanager.h" />
     <ClInclude Include="..\..\src\RazerCompiler\CompileResult.h" />
     <ClInclude Include="..\..\src\RazerCore\container\Array.h" />
     <ClInclude Include="..\..\src\RazerCore\ExportStd.h" />

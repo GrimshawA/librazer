@@ -1,4 +1,5 @@
 #include <RazerVM/InstructionSet.h>
+#include <Logger.h>
 #include <string>
 
 std::array<const char*, static_cast<int32_t>(EOpCodes::Count)> EOpCodeNames = {
@@ -17,7 +18,7 @@ void printBits(size_t const size, void const * const ptr)
 		{
 			byte = b[i] & (1 << j);
 			byte >>= j;
-			printf("%u", byte);
+			RZLOG("%u", byte);
 		}
 	}
 	puts("");
