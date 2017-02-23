@@ -66,7 +66,7 @@ void testbed::run()
 
 	objects_test();
 
-	system("pause");
+	//system("pause");
 }
 
 void main()

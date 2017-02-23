@@ -54,7 +54,7 @@ Window::Window()
 	else
 	{
 		//Create window
-		sd->window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 300, 300, SDL_WINDOW_SHOWN);
+		sd->window = SDL_CreateWindow("Razer Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 300, 300, SDL_WINDOW_SHOWN);
 		if (sd->window == NULL)
 		{
 			RZLOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());

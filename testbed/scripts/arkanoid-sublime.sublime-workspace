@@ -1,0 +1,613 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/C/Users/Artur/Desktop/Nocturne",
+			"settings":
+			{
+				"buffer_size": 160,
+				"line_ending": "Windows",
+				"name": "Task list for prototype:"
+			}
+		},
+		{
+			"file": "/C/Users/Artur/Desktop/Summon System",
+			"settings":
+			{
+				"buffer_size": 467,
+				"line_ending": "Windows",
+				"name": "Summon System"
+			}
+		},
+		{
+			"file": "/D/dev/Nocturne/qml/Progression/qmldir",
+			"settings":
+			{
+				"buffer_size": 63,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/dev/DaevaWeb/index.html",
+			"settings":
+			{
+				"buffer_size": 3612,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/dev/Nocturne/qml/Controls/BaseDialog.qml",
+			"settings":
+			{
+				"buffer_size": 528,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/xampp/htdocs/index.php",
+			"settings":
+			{
+				"buffer_size": 25,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/xampp/htdocs/template.html",
+			"settings":
+			{
+				"buffer_size": 1252,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/xampp/htdocs/navigation/NavigationBar.html",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/dev/librazer/testbed/scripts/arkanoid"
+	],
+	"file_history":
+	[
+		"/D/Development/Projects/daevaengine/build-DaevaEngine-Desktop_Qt_5_6_1_MSVC2013_32bit-Debug/qmake/Makefile.libdaeva.Debug",
+		"/D/Development/Projects/daevaengine/app/qml/Framework/BaseHeader.qml",
+		"/D/Development/Projects/daevaengine/app/qml/Theme/qmldir",
+		"/C/Users/Artur/Desktop/task",
+		"/D/Dropbox/Crime game",
+		"/D/dev/librazer/testbed/scripts/playground.rz",
+		"/D/dev/librazer/testbed/scripts/arkanoid/gamecontroller.rz",
+		"/D/dev/librazer/testbed/scripts/arkanoid/block.rz",
+		"/D/dev/librazer/testbed/scripts/arkanoid/main.rz",
+		"/C/Users/Artur/Desktop/Bleach/assets/Shader/MeshFragShader.fsh",
+		"/C/Users/Artur/Desktop/Bleach/assets/Shader/MeshVertShader.vsh",
+		"/D/dev/Nocturne/tmp/save.bin",
+		"/C/Users/Artur/Desktop/Notes",
+		"/D/dev/librazer/src/AEON/Build/aeBuildMake.cpp",
+		"/D/dev/librazer/src/AEON/Build/aeBuilder.h",
+		"/D/dev/librazer/src/AEON/Build/aeBuilder.cpp",
+		"/C/Users/Artur/Desktop/Contentv1",
+		"/C/Users/Artur/Desktop/Crime game",
+		"/C/Users/Artur/Desktop/Class elements",
+		"/C/Users/Artur/Desktop/scripted game features",
+		"/C/Users/Artur/Desktop/index.html",
+		"/C/Users/Artur/Desktop/settings.json",
+		"/D/Development/Projects/aeon/src/AEON/AEValue.cpp",
+		"/D/Development/Projects/aeon/src/AEON/AEValue.h",
+		"/D/Development/Projects/aeon/testbed/scripts/objects.ae",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/main.cpp",
+		"/D/Development/Projects/daevaengine/devbox/main.cpp",
+		"/D/Development/Projects/daevaengine/app/qml.qrc",
+		"/D/Development/Projects/daevaengine/app/qml/Framework/qmldir",
+		"/D/Development/Projects/aeon/upcoming/RightHandedAttributes.aeon",
+		"/D/Development/Projects/aeon/upcoming/DynamicallyBoundCalls.aeon",
+		"/D/Development/Projects/aeon/upcoming/SeparatorOmission.aeon",
+		"/D/Development/Projects/daevaengine/sdk/DvScript/ScriptService.cpp",
+		"/D/Development/Projects/aeon/src/AEON/AEDocument.h",
+		"/D/Development/Projects/twistedcrime/Nocturne/Nocturne/qml/Theme/qmldir",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/Settings.cpp",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/TwistedCrime.pro.user",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/game/Crew/CrewModel.cpp",
+		"/D/Development/Projects/daevaengine/DaevaEngine/DaevaEngine.pro",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/game/Crew/CrewModel.h",
+		"/D/Development/Projects/forgeofgods/cpp/Quests/QuestModel.h",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/MainMenu.ark",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Player/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Progression/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Models/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Theme/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Navigation/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Crime/qmldir",
+		"/D/Development/Projects/twistedcrime/TwistedCrime/qml/Scenes/MainScene.qml",
+		"/D/Development/Projects/aeon/src/AEON/AST/aeNodeWhile.cpp",
+		"/D/Development/Projects/aeon/src/AEON/AST/aeNodeWhile.h",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/JoinByIP.ark",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/MenuView.dmc",
+		"/D/Development/PhysX-3.3/PhysXSDK/readme_win.html",
+		"/C/Users/Artur/Desktop/aeon prototypes.txt",
+		"/C/Users/Artur/Downloads/MAME (Emulator + 3500 roms)/MAME/MAME32 plus 0.83/cfg/default.cfg",
+		"/D/Development/Projects/roguelike/content/Characters/Moth/moth.dc",
+		"/D/testfile.h",
+		"/D/testfile_meta.cpp",
+		"/D/Development/Projects/roguelike/content/Characters/Moth/Scripts/moth_animations.aeon",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.777/Vec3.cpp",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.138/FrustumG.h",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.771/AABox.h",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.044/FrustumG.cpp",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.425/Plane.cpp",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.285/Plane.h",
+		"/C/Users/Artur/AppData/Local/Temp/Rar$DIa0.319/AABox.cpp",
+		"/C/Users/Artur/Desktop/GameEngine.cpp",
+		"/D/Development/Projects/daevaengine/bin/Rogue.exp",
+		"/D/Development/Projects/daevaengine/bin/source.cpp",
+		"/D/Development/Projects/daevaengine/sdk/DvThirdParty/include/sigc++/config.h",
+		"/D/Development/Projects/daevaengine/editor/DvEditor/EditorRuntime/GameSolution.h",
+		"/D/Development/Projects/daevaengine/editor/DvEditor/EditorRuntime/GameSolution.cpp",
+		"/D/Development/Projects/nephilim/source/Nephilim/Core/Object.cpp",
+		"/D/Development/Projects/daevaengine/.git/config",
+		"/D/Development/Projects/daevaengine/sdk/DvThirdParty/libfreetype/cidparse.h",
+		"/C/Users/Artur/Desktop/Don't Starve Together (v134235) (RoG)/Don't Starve Together/data/scripts/behaviours/follow.lua",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/ServiceScripting.cpp",
+		"/D/Development/Projects/daevaengine/bin/dev_game/boot.ax",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/Old/ScriptComponent.cpp",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/MainMenu.ax",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/main.ui",
+		"/D/Development/Projects/daevaengine/bin/dev_game/UI/GameView.dmc",
+		"/D/Development/Projects/daevaengine/sdk/DvPlugins/daeva-fbx/ModuleMain.cpp",
+		"/D/Development/Projects/daevaengine/sdk/DvGame/Components/CharacterComponent.h",
+		"/D/Development/Projects/daevaengine/sdk/DvGraphics/Skeleton.h",
+		"/D/Development/Projects/daevaengine/sdk/DvBase/GestureLongPress.cpp",
+		"/D/Development/Projects/daevaengine/sdk/DvBase/DvObject.h",
+		"/D/Development/Projects/daevaengine/src/Nephilim/Nephilim.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Core/Object.h",
+		"/D/Development/Projects/nephilim/bin/dev_game/gamecode/objects.ac",
+		"/D/Development/Projects/nephilim/bin/dev_game/gamecode/test.ac",
+		"/D/Development/Projects/nephilim/bin/dev_game/gamecode/monster.ac",
+		"/D/Development/Projects/roguelike/roguelike.pro",
+		"/D/Development/Projects/aeon/src/aeon.cpp",
+		"/D/Development/Projects/aeon/src/aeClosure.cpp",
+		"/D/Development/Projects/nephilim/source/NephilimGameplay/MatchBoard.cpp",
+		"/D/Development/Projects/aeon/src/AEON/5tylruil.yca",
+		"/D/Development/Projects/aeon/src/aeQualType.h",
+		"/D/Development/Projects/aeon/src/aeQualType.cpp",
+		"/D/Development/Projects/nephilim/source/Nephilim/Helpers/PlatformIOS.h",
+		"/D/Development/Projects/nephilim/android/apk/AndroidManifest.xml",
+		"/D/Development/Projects/nephilim/sdk/src/Chat/ChatService.h",
+		"/D/Development/Projects/nephilim/android/sdcard_assets/game/scripts/GameActivity.ae",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/Server/ServiceGameServer.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/Client/GameClient.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/Server/DiscoveryServer.h",
+		"/C/Defold/artifacts.xml",
+		"/C/Defold/configuration/config.ini",
+		"/C/Qt/5.5/msvc2013_64/include/QtNetwork/qauthenticator.h",
+		"/D/Development/Projects/nephilim/android/sdcard_assets/game/scripts/Boot.ae",
+		"/D/Development/Projects/aeon/src/aeCompilerConv.cpp",
+		"/D/Development/Projects/aeon/src/aeCompilerConv.h",
+		"/D/Development/Projects/aeon/src/aeon_compiler.h",
+		"/D/Development/Projects/aeon/src/aeon_bytecode.h",
+		"/D/Development/Projects/aeon/src/aeon_compiler.cpp",
+		"/C/Users/Artur/AppData/Roaming/Skype/My Skype Received Files/Isometric Forest v1/Isometric Forest by Acasas/PNG/ObjInfo.aeon",
+		"/C/Users/Artur/Desktop/toolset/IEngineShell.h",
+		"/D/Development/Projects/nephilim/source/Nephilim/Runtime/ServiceGameServer.h"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"throwError::"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"folders":
+	[
+		{
+			"path": "D:\\dev\\librazer\\testbed\\scripts\\arkanoid"
+		}
+	],
+	"groups":
+	[
+		{
+			"selected": 7,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/Users/Artur/Desktop/Nocturne",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 160,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								160,
+								160
+							]
+						],
+						"settings":
+						{
+							"auto_name": "Task list for prototype:",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/Users/Artur/Desktop/Summon System",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 467,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								467,
+								467
+							]
+						],
+						"settings":
+						{
+							"auto_name": "Summon System",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/D/dev/Nocturne/qml/Progression/qmldir",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 63,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/D/dev/DaevaWeb/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3612,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 731.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/D/dev/Nocturne/qml/Controls/BaseDialog.qml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 528,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								497,
+								497
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/C/xampp/htdocs/index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								25,
+								25
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/C/xampp/htdocs/template.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1252,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								984,
+								984
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 99.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/C/xampp/htdocs/navigation/NavigationBar.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 30.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"aeva",
+				"src\\AEON\\aeVariant.cpp"
+			],
+			[
+				"ac",
+				"src\\aeClosure.cpp"
+			],
+			[
+				"aeon_compiler",
+				"src\\aeon_compiler.h"
+			],
+			[
+				"aeon_c",
+				"src\\aeon_compiler.h"
+			],
+			[
+				"aeco",
+				"src\\aeCompilerConv.h"
+			],
+			[
+				"aecompi",
+				"src\\aeCompilerConv.cpp"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 244.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

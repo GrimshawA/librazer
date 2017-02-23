@@ -1,0 +1,11 @@
+/*function main()
+{
+	return 0;
+}*/
+
+class X{
+	function Z()
+	{
+		int32 a;
+	}
+}
