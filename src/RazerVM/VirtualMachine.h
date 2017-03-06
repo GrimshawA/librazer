@@ -6,6 +6,7 @@
 #include <RazerVM/ThreadContext.h>
 #include <RazerRuntime/AEValueList.h>
 #include <Rzr/RzEngine.h>
+#include <RazerVM/Debugger/IDebugger.h>
 
 #include <vector>
 #include <stdint.h>
@@ -48,10 +49,6 @@ public:
 	void execute(int functionId);
 	void executeAsync(int functionId);
 
-
-
-
-
 public:
 
 	RzValue call(RzValue obj, const std::string& functionName, AEValueList args = AEValueList());
@@ -61,34 +58,33 @@ public:
 
 public:
 
-		RzModule* get_current_mod();
+	RzModule* get_current_mod();
 
 
-		void prepare(aeFunctionId function);
-		void pushThis(void* obj);
+	void prepare(aeFunctionId function);
+	void pushThis(void* obj);
 
-		/// Call a method on the given script object by its name
-		void callMethod(AEObject* object, const std::string& prototype);
+	/// Call a method on the given script object by its name
+	void callMethod(AEObject* object, const std::string& prototype);
 
-		/// Call a method on the given script object by the method id
-		void callMethod(AEObject* object, uint32_t methodId);
+	/// Call a method on the given script object by the method id
+	void callMethod(AEObject* object, uint32_t methodId);
 
-		/// Call a script function
-		void call(RzModule& module, const char* func);
+	/// Call a script function
+	void call(RzModule& module, const char* func);
 
-		int call(AEFunction* fn);
+	int call(AEFunction* fn);
 
-		void startThread();
+	void startThread();
 
 public:
-
-//private:
 
 	typedef std::shared_ptr<RzThreadHandler> RzThreadHandlerPtr;
 
 	RzThreadContext                 m_mainContext;       ///< The context for the host thread (for host synchronous execution)
 	std::vector<RzThreadHandlerPtr> m_threads;           ///< Hardware threads spawned by the vm
-	RzEngine*                       m_ctx;               ///< The engine that encapsulates all code the vm executes
+	RzEngine*                       m_ctx; ///< The engine that encapsulates all code the vm executes
+	std::shared_ptr<IDebugger>      m_dbg;
 };
 
 #endif // RZVIRTUALMACHINE_H__

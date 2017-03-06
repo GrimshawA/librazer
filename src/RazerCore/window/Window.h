@@ -14,11 +14,11 @@ public:
 public:
 	Window();
 
-	void open();
+	virtual void open();
 
-	bool running();
+	virtual bool running();
 
-	void display();
+	virtual void display();
 
 	void* data;
 	bool m_running;
