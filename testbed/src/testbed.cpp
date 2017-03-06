@@ -5,7 +5,9 @@
 #include <Rzr/RzDocument.h>
 #include <RzrAPI/RzBuilder.h>
 
-#include "../test/test_framework.h"
+#include <iostream>
+
+//#include "../test/test_framework.h"
 
 #include <RazerCore/io/File.h>
 
@@ -62,7 +64,7 @@ void objects_test()
 
 void testbed::run()
 {
-	//std::cout << "Hey" << std::endl;
+	std::cout << "Hey" << std::endl;
 
 	objects_test();
 
