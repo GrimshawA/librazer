@@ -43,6 +43,22 @@ std::unique_ptr<RzParser> RzParser::create(const std::string& source, RzEngine* 
 	return std::move(parser);
 }
 
+std::shared_ptr<RzSourceUnit> RzParser::getParseTree(const std::string& source, RzEngine& ctx)
+{
+	if (source.empty())
+		return nullptr;
+
+	aeon_lexer lexer;
+	RzParser parser;
+
+	lexer.tokenize(source);
+
+	parser.ctx = &ctx;
+	parser.startParse(lexer);
+
+	return std::shared_ptr<RzSourceUnit>(parser.root);
+}
+
 RzParser::RzParser()
 {
 	pass = Gather;

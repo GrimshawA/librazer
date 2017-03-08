@@ -1,4 +1,5 @@
 #include <Rzr/RzEngine.h>
+#include <Base/FileUtils.h>
 #include <RazerRuntime/AEObject.h>
 #include <RazerVM/VirtualMachine.h>
 #include <RazerParser/Parser/RzParser.h>
@@ -7,20 +8,6 @@
 #include <Logger.h>
 
 #include <RazerCore/ExportStd.h>
-
-std::string getFileSource(const std::string& filename)
-{
-	FILE* fp = fopen(filename.c_str(), "r");
-	std::string s;
-	if (fp)
-	{
-		while (!feof(fp))
-		{
-			s += fgetc(fp);
-		}
-	}
-	return s;
-}
 
 int RzEngine::exec(const std::string& filename)
 {

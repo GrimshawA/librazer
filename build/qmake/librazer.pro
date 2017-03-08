@@ -85,7 +85,9 @@ HEADERS += \
     ../../src/RazerCore/window/SDLWindowImpl.h \
     ../../src/RazerVM/Debugger/Debugger.h \
     ../../src/RazerVM/Debugger/IDebugger.h \
-    ../../src/RazerVM/InstructionIterator.h
+    ../../src/RazerVM/InstructionIterator.h \
+    ../../src/STS/CPP/Compiler/CppBuilder.h \
+    ../../src/Base/FileUtils.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -159,4 +161,6 @@ SOURCES += \
     ../../src/RazerCore/window/SDLWindowImpl.cpp \
     ../../src/RazerVM/Debugger/Debugger.cpp \
     ../../src/RazerVM/Debugger/IDebugger.cpp \
-    ../../src/RazerVM/InstructionIterator.cpp
+    ../../src/RazerVM/InstructionIterator.cpp \
+    ../../src/STS/CPP/Compiler/CppBuilder.cpp \
+    ../../src/Base/FileUtils.cpp

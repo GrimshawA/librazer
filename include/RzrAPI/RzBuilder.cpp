@@ -3,22 +3,7 @@
 #include <RazerCompiler/AECompiler.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/RzTokens.h>
-
-namespace {
-	std::string getFileSource(const std::string& filename)
-	{
-		FILE* fp = fopen(filename.c_str(), "r");
-		std::string s;
-		if (fp)
-		{
-			while (!feof(fp))
-			{
-				s += fgetc(fp);
-			}
-		}
-		return s;
-	}
-}
+#include <Base/FileUtils.h>
 
 RzBuilder::RzBuilder(RzEngine& engine)
 : m_engine(engine)

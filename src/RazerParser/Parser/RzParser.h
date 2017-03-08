@@ -41,8 +41,10 @@ class RzEngine;
 */
 class RzParser
 {
-	public:
+public:
+	static std::shared_ptr<RzSourceUnit> getParseTree(const std::string& source, RzEngine& ctx);
 
+public:
 		enum ParsingPass
 		{
 			Gather,

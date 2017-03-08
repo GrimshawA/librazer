@@ -10,18 +10,31 @@
 //#include "../test/test_framework.h"
 
 #include <RazerCore/io/File.h>
+#include <STS/CPP/Compiler/CppBuilder.h>
+
+#include <QDir>
+#include <QDebug>
 
 void objects_test()
 {
+	QDir::setCurrent("../../testbed/scripts");
+	qDebug() << QDir::current().absolutePath();
+
 	RzEngine ctx;
 	ctx.init_all();
 	//ctx.quick_build("playground.rz");
 	
-	RzBuilder builder(ctx);
-	builder.build(RzBuilder::Batch()
+	RzBuilder::Batch batch;
+	batch
 		<< "arkanoid/main.rz"
 		<< "arkanoid/gamecontroller.rz"
-		<< "arkanoid/block.rz");
+		<< "arkanoid/block.rz";
+
+	RzCppBuilder cppBuild(ctx);
+	cppBuild.build(batch);
+
+	/*RzBuilder builder(ctx);
+	builder.build(*/
 
 	AEObject* myObject = ctx.createObject("ArkanoidApp");
 	if (myObject)
