@@ -14,6 +14,6 @@ class GameController
 
 	function render()
 	{
-		//print("Rendering the game!");
+		print("Rendering the game!");
 	}
 }

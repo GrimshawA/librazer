@@ -4,7 +4,9 @@ class ArkanoidApp
 {
 	function main() 
 	{
-		//print("Hello");
+		Block b = new Block();
+
+		print("Hello");
 
 		var gameController = new GameController();
 
@@ -13,10 +15,14 @@ class ArkanoidApp
 		var w = new Window();
 		w.open();
 
+		print("Hello");
+
 		while(w.running())
 		{
 			gameController.render();
 			w.display();
 		}
+
+		print("Done");
 	}
 }

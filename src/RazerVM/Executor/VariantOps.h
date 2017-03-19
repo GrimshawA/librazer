@@ -34,7 +34,7 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 
 		if (!method)
 		{
-			RZLOG("EXCEPTION: No such method in the object %s\n", methodName.c_str());
+            RZEXCEPTION("EXCEPTION: No such method in the object %s\n", methodName.c_str());
 			return;
 		}
 

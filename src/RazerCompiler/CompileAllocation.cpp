@@ -1,4 +1,5 @@
 #include <RazerCompiler/AECompiler.h>
+#include <RazerCompiler/Errors.h>
 #include <Logger.h>
 #include <BuildReport.h>
 
@@ -20,9 +21,11 @@ RzCompileResult AECompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 		return RzCompileResult();		
 	}
 
+   // declType = aeQualType(m_env->getTypeInfo(newExpr.type));
+
 	if (!declType.getType())
 	{
-		CompilerError("0003", "Declared local variable with unknown type.");
+        rzcerr_unknown_type("TYPEZ");
 		return RzCompileResult();
 	}
 

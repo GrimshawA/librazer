@@ -87,7 +87,8 @@ HEADERS += \
     ../../src/RazerVM/Debugger/IDebugger.h \
     ../../src/RazerVM/InstructionIterator.h \
     ../../src/STS/CPP/Compiler/CppBuilder.h \
-    ../../src/Base/FileUtils.h
+    ../../src/Base/FileUtils.h \
+    ../../src/RazerCompiler/Errors.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -163,4 +164,5 @@ SOURCES += \
     ../../src/RazerVM/Debugger/IDebugger.cpp \
     ../../src/RazerVM/InstructionIterator.cpp \
     ../../src/STS/CPP/Compiler/CppBuilder.cpp \
-    ../../src/Base/FileUtils.cpp
+    ../../src/Base/FileUtils.cpp \
+    ../../src/RazerCompiler/Errors.cpp

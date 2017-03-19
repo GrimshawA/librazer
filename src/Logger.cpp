@@ -8,6 +8,11 @@ void RzLogger::log(const std::string& msg)
 #endif
 }
 
+void RzLogger::exception(const std::string& msg)
+{
+    printf("RUNTIME EXCEPTION: %s\n", msg.c_str());
+}
+
 std::string RzLogger::format(const char* str, ...)
 {
 	char buffer[2560];
