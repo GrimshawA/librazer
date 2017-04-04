@@ -3,7 +3,7 @@
 
 #include <RazerParser/AST/aeNodeFunction.h>
 
-void AECompiler::collect(RzSourceUnit& parseTree)
+void RzCompiler::collect(RzSourceUnit& parseTree)
 {
 	for (std::size_t i = 0; i < parseTree.m_items.size(); ++i)
 	{	
@@ -15,7 +15,7 @@ void AECompiler::collect(RzSourceUnit& parseTree)
 	}
 }
 
-void AECompiler::collect(AEStructNode& cls)
+void RzCompiler::collect(AEStructNode& cls)
 {
 	// Collect class data
 	RzType* typeInfo = new RzType();
@@ -33,9 +33,9 @@ void AECompiler::collect(AEStructNode& cls)
 		method.offset = 0;
 		typeInfo->m_methods.push_back(method);
 
-		printf("Collected fn %s\n", fn.m_name.c_str());
+        //printf("Collected fn %s\n", fn.m_name.c_str());
 		
 	}
 
-	printf("Collected %s\n", typeInfo->m_name.c_str());
+    //printf("Collected %s\n", typeInfo->m_name.c_str());
 }

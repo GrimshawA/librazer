@@ -12,7 +12,7 @@ aeNodeExpr* aeNodeExpr::getParentExpression()
 	return m_parentExpr;
 }
 
-aeQualType aeNodeExpr::getQualifiedType(AECompiler* c)
+aeQualType aeNodeExpr::getQualifiedType(RzCompiler* c)
 {
 	return aeQualType();
 }

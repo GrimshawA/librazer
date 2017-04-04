@@ -7,7 +7,7 @@
 #include <map>
 #include <memory>
 
-class AECompiler;
+class RzCompiler;
 
 /**
 	\class aeNodeExpr
@@ -29,7 +29,7 @@ public:
 	/// Get the parent expression if any
 	aeNodeExpr* getParentExpression();
 
-	virtual aeQualType getQualifiedType(AECompiler* c);
+	virtual aeQualType getQualifiedType(RzCompiler* c);
 
 	bool isFloat();
 

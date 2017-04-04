@@ -1,5 +1,5 @@
-#ifndef aeon_compiler_h__
-#define aeon_compiler_h__
+#ifndef RZCOMPILER_H__
+#define RZCOMPILER_H__
 
 #include <RazerCompiler/CompileResult.h>
 #include <RazerParser/AST/Nodes.h>
@@ -15,205 +15,203 @@ class RzVirtualMachine;
 class RzEngine;
 
 /**
-	Any given variable can be a member of a class (field),
-	a global or a function local that lives only during function execution.
+    Any given variable can be a member of a class (field),
+    a global or a function local that lives only during function execution.
 */
 enum EVariableStorageLocations
 {
-	AE_VAR_INVALID,
-	AE_VAR_LOCAL,
-	AE_VAR_FIELD,
-	AE_VAR_GLOBAL
+    AE_VAR_INVALID,
+    AE_VAR_LOCAL,
+    AE_VAR_FIELD,
+    AE_VAR_GLOBAL
 };
 
 struct VariableStorageInfo
 {
-	int mode = AE_VAR_INVALID; ///< Reference frame, or where the varable belongs to
-	int offset = 0;            ///< Offset within reference frame
-	aeQualType type;           ///< Qualified type of this object
-	std::string name;          
+    int mode = AE_VAR_INVALID; ///< Reference frame, or where the varable belongs to
+    int offset = 0;            ///< Offset within reference frame
+    aeQualType type;           ///< Qualified type of this object
+    std::string name;
 };
 
 /*
-	\class aeExprContext
-	\brief Context for compiling expressions passed from node to node
+    \class aeExprContext
+    \brief Context for compiling expressions passed from node to node
 */
 struct aeExprContext
 {
-	aeQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
+    aeQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
 
-	aeNodeExpr* rootExpr;
-	bool is_temporary = false; ///< If the expression is isolated, it should evaluate for side effects and leave nothing on the stack
-	bool must_be_rvalue = false;
-	bool rx_value = false; ///< Tells the expression it must load a temporary rvalue (to be consumed shortly after in expression handling)
-	bool lvalue = false; ///< Must load as an editable value (loadaddress)
+    aeNodeExpr* rootExpr;
+    bool is_temporary = false; ///< If the expression is isolated, it should evaluate for side effects and leave nothing on the stack
+    bool must_be_rvalue = false;
+    bool rx_value = false; ///< Tells the expression it must load a temporary rvalue (to be consumed shortly after in expression handling)
+    bool lvalue = false; ///< Must load as an editable value (loadaddress)
 };
 
 struct ScopeLocalData
 {
-	std::vector<VariableStorageInfo> locals;
-	int offset = 0;
+    std::vector<VariableStorageInfo> locals;
+    int offset = 0;
 };
 
 /**
-	\class aeon_compiler
-	\brief Generates byte code for aeon programs
-
-	This compiler generates bytecode from validated AST
+    \class RzCompiler
+    \brief Compiles source code into bytecode
 */
-class AECompiler
+class RzCompiler
 {
 public:
-		RzEngine*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
-		RzModule*                        m_module;                ///< Current module being compiled
-		RzType*                             m_currentStruct = nullptr;
-		int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
-		std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
-		std::vector<AEStructNode*>           m_classes;               ///< Class we are compiling right now
-		aeNodeFunction*                     m_caller;                ///< Current function node we're compiling
-		AEFunction*                         m_currentFunction;       ///< Current function being compiled to
-		int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
-		TypeSystemInformation               m_typeSystem;            ///< Table that defines what can be converted to what and how
-		RzBuildReport                     m_reporter;
-		bool                                m_logAllocs;
-		bool                                m_logExprStmt;
-		bool                                m_logExprOps;
-		bool                                m_outputLogs;
-
-	public:
-
-		/// Construct initial values
-		AECompiler();
-
-		/// Emit a compiler class error of what happened
-		void throwError(const std::string& errorCode, const std::string& message);
-
-		int findLocalObject(const std::string& refname);
-
-		/// Emit byte code for the passed AST
-		void generate(AEBaseNode* root);
-
-		/// Get the cursor position, aka the index of the last added instruction
-		int32_t cursor();
+    RzEngine*                       m_env;                   ///< The environment of modules for figuring interdependencies and other things
+    RzModule*                        m_module;                ///< Current module being compiled
+    RzType*                             m_currentStruct = nullptr;
+    int                                 m_cursor = 0;            ///< Current index within the bytecode we are in
+    std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
+    std::vector<AEStructNode*>           m_classes;               ///< Class we are compiling right now
+    aeNodeFunction*                     m_caller;                ///< Current function node we're compiling
+    AEFunction*                         m_currentFunction;       ///< Current function being compiled to
+    int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
+    TypeSystemInformation               m_typeSystem;            ///< Table that defines what can be converted to what and how
+    RzBuildReport                     m_reporter;
+    bool                                m_logAllocs;
+    bool                                m_logExprStmt;
+    bool                                m_logExprOps;
+    bool                                m_outputLogs;
 
 public:
 
-	void collect(RzSourceUnit& parseTree);
-	void collect(AEStructNode& cls);
+    /// Construct initial values
+    RzCompiler();
 
-	bool canImplicitlyConvert(aeQualType origin, aeQualType dest);
+    /// Emit a compiler class error of what happened
+    void throwError(const std::string& errorCode, const std::string& message);
 
-	AEStructNode* getTopClassNode();
+    int findLocalObject(const std::string& refname);
 
-	/// Builds a qualified type identifier based on context
-	aeQualType buildQualifiedType(const std::string& type);
+    /// Emit byte code for the passed AST
+    bool generate(AEBaseNode* root);
 
-	/// Find the qualified type of a given expression
-	aeQualType buildQualifiedType(aeNodeExpr* e);
-	
-	/// Emit an instruction
-	uint32_t emitInstruction(RzInstruction instr);
+    /// Get the cursor position, aka the index of the last added instruction
+    int32_t cursor();
 
-	/// Emits an instruction at the cursor from premade arguments
-	uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
+public:
 
-	/// Starts a new nested scope for locals
-	void push_scope();
+    void collect(RzSourceUnit& parseTree);
+    void collect(AEStructNode& cls);
 
-	/// Emits code for destructing the topmost scope level
-	void pop_scope();
+    bool canImplicitlyConvert(aeQualType origin, aeQualType dest);
 
-	/// Declares a function local variable that can be addressed within it
-	/// The stack frame of a function is basically a sequence of slots, each being a variable, at discrete offsets from the base pointer
-	void declareStackVar(const std::string& name, aeQualType type);
+    AEStructNode* getTopClassNode();
 
-	/// Pops the function arguments from the stack
-	void releaseParametersContext();
+    /// Builds a qualified type identifier based on context
+    aeQualType buildQualifiedType(const std::string& type);
 
-	/// Emit a local construction of a POD variable
-	void emit_local_construct_pod(int32_t size);
+    /// Find the qualified type of a given expression
+    aeQualType buildQualifiedType(aeNodeExpr* e);
 
-	/// Emit a local construction of a OBJECT variable
-	void emit_local_construct_object(int32_t size);
+    /// Emit an instruction
+    uint32_t emitInstruction(RzInstruction instr);
 
-	/// Emits code to pop a scoped variable, considering all its type traits
-	void destructLocalVar(VariableStorageInfo& var);
+    /// Emits an instruction at the cursor from premade arguments
+    uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
 
-	/// Emit a local destruction of an OBJECT variable
-	void emit_local_destruct_object(int32_t size);
+    /// Starts a new nested scope for locals
+    void push_scope();
 
-	/// Get the variable info by its identifier name (respects the current compilation scope)
-	VariableStorageInfo getVariable(std::string name);
+    /// Emits code for destructing the topmost scope level
+    void pop_scope();
 
-	/// Evaluates the type of the expression/variable, taking into account the scope of the cursor
-	/// Any given variable 'x' can have different types depending from where its referenced.
-	/// Returns nullptr if it couldn't evaluate the scope
-	RzType* evaluateType(aeNodeExpr* expr);
+    /// Declares a function local variable that can be addressed within it
+    /// The stack frame of a function is basically a sequence of slots, each being a variable, at discrete offsets from the base pointer
+    void declareStackVar(const std::string& name, aeQualType type);
 
-	/// Evaluates the class node to an actual type
-	RzType* evaluateType(AEStructNode* class_node);
+    /// Pops the function arguments from the stack
+    void releaseParametersContext();
 
-	/// Evaluates a typename to a real type depending on context
-	RzType* evaluateType(const std::string& type_name);
+    /// Emit a local construction of a POD variable
+    void emit_local_construct_pod(int32_t size);
 
-	/// Evaluate which function fn is trying to call (derived from context)
-	AEFunction* selectFunction(aeNodeFunctionCall* fn);
+    /// Emit a local construction of a OBJECT variable
+    void emit_local_construct_object(int32_t size);
 
-	/// All the dirty tricks
-	void emitDebugPrint(const std::string& message);
+    /// Emits code to pop a scoped variable, considering all its type traits
+    void destructLocalVar(VariableStorageInfo& var);
 
-	/// Regarding scope, tries to deduce if we know how to convert typeB to typeA
-	bool canConvertType(RzType* typeA, RzType* typeB);
+    /// Emit a local destruction of an OBJECT variable
+    void emit_local_destruct_object(int32_t size);
 
-	// High level constructs compilation
-	void emitClassCode(AEStructNode* clss);
-	AEFunction* compileFunction(aeNodeFunction* func);
-	void emitNamespaceCode(aeNodeNamespace* namespace_node);
-	void emitGlobalVarCode(aeNodeIdentifier* global_var);
-	void emitStatement(AEStmtNode* stmt);
-	void emitEnumValue(aeEnum* enumDef, const std::string& valueDef);
-	void emitBreakpoint();
-	void emitClassConstructors(RzType* classType, AEStructNode* classNode);
-	void emitClassDestructors(RzType* classType, AEStructNode* classNode);
-	void emitConstructorInjection(aeNodeFunction* node, AEFunction* function);
-	RzCompileResult compileImport(aeNodeImport& node);
+    /// Get the variable info by its identifier name (respects the current compilation scope)
+    VariableStorageInfo getVariable(std::string name);
 
+    /// Evaluates the type of the expression/variable, taking into account the scope of the cursor
+    /// Any given variable 'x' can have different types depending from where its referenced.
+    /// Returns nullptr if it couldn't evaluate the scope
+    RzType* evaluateType(aeNodeExpr* expr);
 
-	// Statement compilation
-	void emitBlock(aeNodeBlock* codeblock);
-	void emitReturnCode(aeNodeReturn* ret);
-	void emitBranchCode(aeNodeBranch* cond);
-	void emitWhileLoop(aeNodeWhile* whileloop);
-	void emitForLoop(aeNodeFor* forloop);
-	RzCompileResult compileVarDecl(const aeNodeVarDecl& varDecl);
+    /// Evaluates the class node to an actual type
+    RzType* evaluateType(AEStructNode* class_node);
 
-	// Expression evaluation
-	void emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext);
-	void emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs);
-	void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
-	void emitBinaryOp(aeNodeBinaryOperator* operation);
-	void emitConditionalOp(aeNodeBinaryOperator* operation);
-	void emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
-	void emitLoadAddress(aeNodeExpr* expr);
-	void emitLoadLiteral(aeNodeLiteral* lt);
-	void emitMemberOp(aeNodeAccessOperator* acs);
-	void emitImplicitConversion(aeQualType typeA, aeQualType typeB);
-	void compileNew(aeNodeNew& newExpr);
-	void emitSubscriptOp(aeNodeSubscript* subscript);
-	void emitLambdaFunction(aeNodeFunction* function);
-	void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
-	void emitPushThis();
-	void compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
-	void loadVarRef(aeNodeExpr* e);
-	RzCompileResult compileVariantStackAlloc(const std::string& identifier, aeNodeExpr* initExpr);
+    /// Evaluates a typename to a real type depending on context
+    RzType* evaluateType(const std::string& type_name);
 
-	/// Function calls
-	void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
-	void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
-	void emitLateBoundCall(aeNodeFunctionCall* fn);
+    /// Evaluate which function fn is trying to call (derived from context)
+    AEFunction* selectFunction(aeNodeFunctionCall* fn);
+
+    /// All the dirty tricks
+    void emitDebugPrint(const std::string& message);
+
+    /// Regarding scope, tries to deduce if we know how to convert typeB to typeA
+    bool canConvertType(RzType* typeA, RzType* typeB);
+
+    // High level constructs compilation
+    RzCompileResult emitClassCode(AEStructNode* clss);
+    AEFunction* compileFunction(aeNodeFunction* func);
+    void emitNamespaceCode(aeNodeNamespace* namespace_node);
+    void emitGlobalVarCode(aeNodeIdentifier* global_var);
+    RzCompileResult emitStatement(AEStmtNode* stmt);
+    void emitEnumValue(aeEnum* enumDef, const std::string& valueDef);
+    void emitBreakpoint();
+    void emitClassConstructors(RzType* classType, AEStructNode* classNode);
+    void emitClassDestructors(RzType* classType, AEStructNode* classNode);
+    void emitConstructorInjection(aeNodeFunction* node, AEFunction* function);
+    RzCompileResult compileImport(aeNodeImport& node);
 
 
-	RzBuildReport* m_report;
+    // Statement compilation
+    RzCompileResult emitBlock(aeNodeBlock* codeblock);
+    void emitReturnCode(aeNodeReturn* ret);
+    void emitBranchCode(aeNodeBranch* cond);
+    void emitWhileLoop(aeNodeWhile* whileloop);
+    void emitForLoop(aeNodeFor* forloop);
+    RzCompileResult compileVarDecl(const aeNodeVarDecl& varDecl);
+
+    // Expression evaluation
+    RzCompileResult emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext);
+    RzCompileResult emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs);
+    void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
+    void emitBinaryOp(aeNodeBinaryOperator* operation);
+    void emitConditionalOp(aeNodeBinaryOperator* operation);
+    void emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
+    void emitLoadAddress(aeNodeExpr* expr);
+    void emitLoadLiteral(aeNodeLiteral* lt);
+    void emitMemberOp(aeNodeAccessOperator* acs);
+    void emitImplicitConversion(aeQualType typeA, aeQualType typeB);
+    RzCompileResult compileNew(aeNodeNew& newExpr);
+    void emitSubscriptOp(aeNodeSubscript* subscript);
+    void emitLambdaFunction(aeNodeFunction* function);
+    void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
+    void emitPushThis();
+    void compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
+    void loadVarRef(aeNodeExpr* e);
+    RzCompileResult compileVariantStackAlloc(const std::string& identifier, aeNodeExpr* initExpr);
+
+    /// Function calls
+    void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
+    void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
+    void emitLateBoundCall(aeNodeFunctionCall* fn);
+
+
+    RzBuildReport* m_report;
 
 };
 
@@ -224,4 +222,4 @@ public:
 #undef CompilerLog
 #define CompilerLog
 
-#endif // aeon_compiler_h__
+#endif // RZCOMPILER_H__

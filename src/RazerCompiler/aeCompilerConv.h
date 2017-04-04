@@ -5,10 +5,10 @@
 #include <vector>
 
 class RzType;
-class AECompiler;
+class RzCompiler;
 
 /// Every time the compiler has to convert a type into another, he uses one of these functions
-typedef void(*ICGenerator)(AECompiler*);
+typedef void(*ICGenerator)(RzCompiler*);
 
 /**
 	\class ConversionProcedure
@@ -86,7 +86,7 @@ struct OperatorOverloadTable
 	/// In success, the response carries the return type of the custom overload
 	/// First, it matches compatibility literally, if nothing satisfies these types, it will start trying to find implicit conversions.
 	/// The current context of expression counts, as which overloads can be seen and have precedence is relative to that.
-	OperatorOverloadInfo findAppropriate(aeQualType t1, aeQualType t2, std::string operatr, AECompiler* c)
+	OperatorOverloadInfo findAppropriate(aeQualType t1, aeQualType t2, std::string operatr, RzCompiler* c)
 	{
 		OperatorOverloadInfo info;
 		return info;
@@ -97,9 +97,9 @@ struct TypeSystemInformation
 {
 	std::vector<ConversionProcedure> m_table;
 
-	void init(AECompiler* c);
+	void init(RzCompiler* c);
 
-	void performConversion(aeQualType T1, aeQualType T2, AECompiler* compiler);
+	void performConversion(aeQualType T1, aeQualType T2, RzCompiler* compiler);
 
 	bool canConvert(aeQualType T1, aeQualType T2);
 };

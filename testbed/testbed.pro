@@ -2,7 +2,7 @@
 INCLUDEPATH += ../src/ \
                ../include
 
-LIBS += -L../lib -llibrazer
+LIBS += -L$$PWD/../lib -llibrazer
 
 HEADERS += \
     src/aeon_type_utils.h \
@@ -16,3 +16,7 @@ SOURCES += \
 
 PRE_TARGETDEPS += $$PWD/../lib
 PRE_TARGETDEPS += $$PWD/../lib/librazer.lib
+
+DEPENDPATH += $$PWD/../lib
+PRE_TARGETDEPS += $$PWD/../lib
+$${TARGET}.depends += $$PWD/../lib

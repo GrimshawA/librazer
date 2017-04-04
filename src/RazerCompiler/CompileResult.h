@@ -12,8 +12,18 @@ public:
 
 	enum {
 		OK,
-		FAILED
+        FAILED,
+        ABORTED
 	};
+
+    bool operator==(const RzCompileResult& o)
+    {
+        return o.m_status == m_status;
+    }
+
+    static RzCompileResult ok;
+    static RzCompileResult aborted;
+    static RzCompileResult failed;
 
 	int m_status;
 };

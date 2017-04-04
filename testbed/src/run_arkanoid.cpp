@@ -17,7 +17,7 @@
 
 void run_arkanoid()
 {
-    QDir::setCurrent("../testbed/scripts");
+    QDir::setCurrent("D:\\Development\\librazer\\testbed\\scripts");
     qDebug() << QDir::current().absolutePath();
 
     RzEngine ctx;
@@ -29,11 +29,14 @@ void run_arkanoid()
         << "arkanoid/gamecontroller.rz"
         << "arkanoid/block.rz";
 
-    RzCppBuilder cppBuild(ctx);
-    cppBuild.build(batch);
+    /*RzCppBuilder cppBuild(ctx);
+    cppBuild.build(batch);*/
 
     RzBuilder builder(ctx);
-    builder.build(batch);
+    bool result = builder.build(batch);
+    if (!result) {
+        return;
+    }
 
     AEObject* myObject = ctx.createObject("ArkanoidApp");
     if (!myObject)
@@ -50,4 +53,6 @@ void run_arkanoid()
         vm.m_mainContext.pushObject(myObject);
         vm.call(*ctx.modules[0].get(), "ArkanoidApp.main");
     }
+
+    printf("Finished successfully\n");
 }

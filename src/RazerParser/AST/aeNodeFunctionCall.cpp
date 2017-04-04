@@ -19,7 +19,7 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	}
 }
 
-aeQualType aeNodeFunctionCall::getQualifiedType(AECompiler* c)
+aeQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c)
 {
 	if (!m_fn)
 	{

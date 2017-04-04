@@ -11,10 +11,10 @@ RzBuilder::RzBuilder(RzEngine& engine)
 
 }
 
-void RzBuilder::build(const Batch& b)
+bool RzBuilder::build(const Batch& b)
 {
 	RzModule* mainModule = m_engine.createModule("main");
-	AECompiler compiler;
+	RzCompiler compiler;
 	compiler.m_report = new RzBuildReport();
 	compiler.m_env = &m_engine;
 	compiler.m_module = mainModule;
@@ -29,7 +29,7 @@ void RzBuilder::build(const Batch& b)
 		std::string source = getFileSource(b.files[i]);
 
 		if (source.empty())
-			return;
+            return false;
 
 		lexer.tokenize(source);
 
@@ -48,6 +48,10 @@ void RzBuilder::build(const Batch& b)
 	// Everything is now available, compile full speed
 	for (int i = 0; i < parseTrees.size(); ++i)
 	{					
-		compiler.generate(parseTrees[i]);
+        bool r = compiler.generate(parseTrees[i]);
+        if (!r)
+            return false;
 	}
+
+    return true;
 }

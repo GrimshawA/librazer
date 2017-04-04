@@ -3,12 +3,17 @@
 #include <Logger.h>
 #include <BuildReport.h>
 
-RzCompileResult AECompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
+RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 {
 	/*
 		Compiles a declaration within a code scope.
 		Includes stack space allocation, object preparation, constructor calling etc.
 	*/
+
+    if (varDecl.m_decls.size() != 1) {
+        RZLOG("error: only one variable allowed in var declaration");
+        return RzCompileResult::aborted;
+    }
 
 	aeQualType declType = varDecl.m_type;
 
@@ -18,21 +23,21 @@ RzCompileResult AECompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 		{
 			compileVariantStackAlloc(varDecl.m_decls[i].m_name, varDecl.m_decls[i].m_init);
 		}
-		return RzCompileResult();		
+        return RzCompileResult::ok;
 	}
 
-   // declType = aeQualType(m_env->getTypeInfo(newExpr.type));
+    declType = aeQualType(m_env->getTypeInfo(varDecl.m_type.m_typeString));
 
 	if (!declType.getType())
 	{
-        rzcerr_unknown_type("TYPEZ");
-		return RzCompileResult();
+        rzcerr_unknown_type(varDecl.m_type.m_typeString);
+        return RzCompileResult::aborted;
 	}
 
-	RzType* varType = varDecl.m_type.m_type;
+    RzType* varType = declType.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1];
 
-	declareStackVar(varDecl.m_decls[0].m_name, varDecl.m_type);
+    declareStackVar(varDecl.m_decls[0].m_name, declType);
 
 
 	emitInstruction(OP_MOV, AEK_ESP, -(int)varType->getSize());
@@ -43,22 +48,15 @@ RzCompileResult AECompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 		if (m_logAllocs)
 			emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
 
-		emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
-	}
-	else
-	{
-		// Default initialization
-		if (varType->is_native)
-		{
-			emitInstruction(OP_LOAD, AEK_ESP);
-			emitInstruction(OP_CALLMETHOD_NAT, m_env->getNativeBehaviorIndex(varType->getName(), "f"));
-		}
+        RzCompileResult r = emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
+        if (r.m_status == RzCompileResult::ABORTED)
+            return r;
 	}
 
-	return RzCompileResult();
+    return RzCompileResult::ok;
 }
 
-RzCompileResult AECompiler::compileVariantStackAlloc(const std::string& identifier, aeNodeExpr* initExpr)
+RzCompileResult RzCompiler::compileVariantStackAlloc(const std::string& identifier, aeNodeExpr* initExpr)
 {
 	declareStackVar(identifier, m_env->getTypeInfo("var"));
 	emitInstruction(OP_PUSHVAR);
@@ -74,10 +72,11 @@ RzCompileResult AECompiler::compileVariantStackAlloc(const std::string& identifi
 	return RzCompileResult();
 }
 
-void AECompiler::compileNew(aeNodeNew& newExpr)
+RzCompileResult RzCompiler::compileNew(aeNodeNew& newExpr)
 {
 	// new X() expression must generate a new object instance.
-	//int typeId = newExpr.m_instanceType
+
+    RZLOG("NEW: %s\n", newExpr.str().c_str());
 
 	newExpr.m_instanceType = aeQualType(m_env->getTypeInfo(newExpr.type));
 
@@ -85,14 +84,14 @@ void AECompiler::compileNew(aeNodeNew& newExpr)
 	{
 		m_report->emitCompilerError(std::string("new: unknown type ") + newExpr.m_instanceType.str().c_str());
 		RZLOG("Compiler internal error. Unresolved type\n");
-		return;
+        return RzCompileResult(RzCompileResult::ABORTED);
 	}
 	
 	int moduleIndex = m_module->resolveTypeModuleIndex(newExpr.m_instanceType.getType());
 	if (moduleIndex == -1)
 	{
 		RZLOG("Compiler error. Unresolved module\n");
-		return;
+        return RzCompileResult(RzCompileResult::ABORTED);
 	}
 
 	int typeIndex;
@@ -104,4 +103,6 @@ void AECompiler::compileNew(aeNodeNew& newExpr)
 	emitInstruction(OP_NEW, moduleIndex, typeIndex);
 
 	RZLOG("Compiled new %d %d\n\n", moduleIndex, typeIndex);
+
+    return RzCompileResult(RzCompileResult::OK);
 }

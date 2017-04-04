@@ -9,7 +9,7 @@
 #include <Logger.h>
 
 
-AEFunction* AECompiler::compileFunction(aeNodeFunction* functionNode)
+AEFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 {
 	std::string symbol_prefix;
 	auto topClass = getTopClassNode();
@@ -96,7 +96,9 @@ AEFunction* AECompiler::compileFunction(aeNodeFunction* functionNode)
 	}
 
 	// let's just generate code for the executable block
-	emitBlock(functionNode->m_block.get());
+    RzCompileResult ret = emitBlock(functionNode->m_block.get());
+    if (ret == RzCompileResult::aborted)
+        return nullptr;
 	 
 	emitReturnCode(nullptr);
 	m_caller = nullptr;

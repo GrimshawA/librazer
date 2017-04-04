@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-void AECompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
+RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
 {
 	if (expr->m_nodeType == AEN_IDENTIFIER)
 	{
@@ -37,21 +37,24 @@ void AECompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
 		}
 		else if (binaryop->oper == "=")
 		{
-			emitAssignOp(binaryop->operandA, binaryop->operandB);
+            return emitAssignOp(binaryop->operandA, binaryop->operandB);
 		}
 	}
 	else if (expr->m_nodeType == AEN_NEW)
 	{
-		compileNew((aeNodeNew&)*expr);
+        RzCompileResult res = compileNew((aeNodeNew&)*expr);
+        return res;
 	}
+
+    return RzCompileResult::ok;
 }
 
-void AECompiler::emitPushThis()
+void RzCompiler::emitPushThis()
 {
 	emitInstruction(OP_PUSHTHIS);
 }
 
-void AECompiler::loadVarRef(aeNodeExpr* e)
+void RzCompiler::loadVarRef(aeNodeExpr* e)
 {
 	if (e->m_nodeType == AEN_ACCESSOPERATOR)
 	{
@@ -73,7 +76,7 @@ void AECompiler::loadVarRef(aeNodeExpr* e)
 	}
 }
 
-void AECompiler::emitBinaryOp(aeNodeBinaryOperator* operation)
+void RzCompiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 {
 	if (m_logExprOps)
 		emitDebugPrint("OP " + operation->oper + " " + operation->operandA->str() + " " + operation->operandB->str());
@@ -92,7 +95,7 @@ void AECompiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void AECompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context)
+void RzCompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context)
 {
 	if (op->oper == "+")
 	{
@@ -131,17 +134,17 @@ void AECompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext&
 	}
 }
 
-bool AECompiler::canConvertType(RzType* typeA, RzType* typeB)
+bool RzCompiler::canConvertType(RzType* typeA, RzType* typeB)
 {
 	return false;
 }
 
-void AECompiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
+void RzCompiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
 {
 	m_typeSystem.performConversion(typeA, typeB, this);
 }
 
-void AECompiler::emitLoadAddress(aeNodeExpr* expr)
+void RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 {
 	if (expr->m_nodeType != AEN_IDENTIFIER)
 	{
@@ -176,7 +179,7 @@ void AECompiler::emitLoadAddress(aeNodeExpr* expr)
 	}
 }
 
-void AECompiler::emitLoadLiteral(aeNodeLiteral* lt)
+void RzCompiler::emitLoadLiteral(aeNodeLiteral* lt)
 {
 	// Always leaves temporary rvalues in the stack
 
@@ -197,7 +200,7 @@ void AECompiler::emitLoadLiteral(aeNodeLiteral* lt)
 	}
 }
 
-void AECompiler::emitMemberOp(aeNodeAccessOperator* acs)
+void RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 {
 	/**
 		We are compiling a.b
@@ -250,7 +253,7 @@ void AECompiler::emitMemberOp(aeNodeAccessOperator* acs)
 	}
 }
 
-void AECompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
+void RzCompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 {
 	/*
 		Operators: >, >=, <, <=, ==, !=, &&, ||
@@ -300,7 +303,7 @@ void AECompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void AECompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext)
+void RzCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);
@@ -339,7 +342,7 @@ void AECompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentE
 	}
 }
 
-void AECompiler::emitSubscriptOp(aeNodeSubscript* subscript)
+void RzCompiler::emitSubscriptOp(aeNodeSubscript* subscript)
 {
 
 }

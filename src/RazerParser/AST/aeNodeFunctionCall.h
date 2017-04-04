@@ -43,7 +43,7 @@ public:
 	bool hasLinkedFunction();
 
 
-	aeQualType getQualifiedType(AECompiler* c);
+	aeQualType getQualifiedType(RzCompiler* c);
 
 	/// Returns a simple string representation
 	std::string str() const;

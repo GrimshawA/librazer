@@ -1,27 +1,27 @@
 #include "aeCompilerConv.h"
 #include <RazerCompiler/aeCompiler.h>
 
-void ICG_FloatToDouble(AECompiler* c)
+void ICG_FloatToDouble(RzCompiler* c)
 {
 	// In the vm operand stack, no action is required to convert a float to a double
 }
 
-void ICG_DoubleToFloat(AECompiler* c)
+void ICG_DoubleToFloat(RzCompiler* c)
 {
 	// For operands, double would lose precision converting to float, but float is able to hold the double in the context of expression handling.
 }
 
-void ICG_DoubleToInt64(AECompiler* c)
+void ICG_DoubleToInt64(RzCompiler* c)
 {
 
 }
 
-void ICG_BoolToInt32(AECompiler* c)
+void ICG_BoolToInt32(RzCompiler* c)
 {
 
 }
 
-void TypeSystemInformation::init(AECompiler* c)
+void TypeSystemInformation::init(RzCompiler* c)
 {
 //	ImplicitConversion floatToDouble(AE_PFLOAT, AE_PDOUBLE, &ICG_FloatToDouble);
 	//m_table.push_back(floatToDouble);
@@ -41,7 +41,7 @@ bool TypeSystemInformation::canConvert(aeQualType T1, aeQualType T2)
 	return false;
 }
 
-void TypeSystemInformation::performConversion(aeQualType T1, aeQualType T2, AECompiler* compiler)
+void TypeSystemInformation::performConversion(aeQualType T1, aeQualType T2, RzCompiler* compiler)
 {
 	if (T1.getTypeName() == "int32" && T2.getTypeName() == "float")
 	{

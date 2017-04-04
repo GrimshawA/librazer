@@ -9,7 +9,12 @@
 #define vm_start(x) case x:{
 #define vm_end break;}
 
-#define LOGVM(x, a, b, c) RZLOG("[vm] %s %d %d %d\n", #x, a, b, c);
+#ifdef ENABLE_VM_LOGS
+#define RZLOGVM(x, a, b, c) RZLOG("[vm] %s %d %d %d\n", #x, a, b, c)
+#else
+#define RZLOGVM(x, a, b, c)
+#endif
+
 
 #define VMLOGLEVEL 5
 #define vm_log(tag, level, STR) if(level > VMLOGLEVEL) RZLOG("%s: %s\n", tag, STR);
@@ -22,9 +27,8 @@ void dispatch_execute(RzThreadContext& ctx)
 	for (; ctx.cl->pc < ctx.cl->module->m_code.size(); ++ctx.cl->pc)
 	{
 		RzInstruction& inst = ctx.cl->module->m_code[ctx.cl->pc];
-#ifdef TRACE_VM
-		RZLOG(" vm %s\n", inst_opcode_str(inst).c_str());
-#endif
+
+        RZLOGVM(" vm %s\n", inst_opcode_str(inst).c_str());
 
 		switch (inst.opcode)
 		{

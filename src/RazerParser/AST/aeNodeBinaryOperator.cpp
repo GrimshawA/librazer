@@ -22,7 +22,7 @@ bool aeNodeBinaryOperator::isArithmetic()
 	return oper == "+" || oper == "-" || oper == "*" || oper == "/";
 }
 
-aeQualType aeNodeBinaryOperator::getQualifiedType(AECompiler* c)
+aeQualType aeNodeBinaryOperator::getQualifiedType(RzCompiler* c)
 {
 	aeQualType qt;
 	if (isRelational())

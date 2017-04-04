@@ -3,6 +3,7 @@
 #include <Rzr/RzEngine.h>
 #include <RazerParser/AST/Nodes.h>
 #include <RazerParser/AST/aeNodeValue.h>
+#include <Logger.h>
 
 #include <map>
 #include <cstdlib>
@@ -580,9 +581,10 @@ aeQualType RzParser::parseQualType()
 {
     aeQualType type;
     type.m_type = ctx->getTypeInfo(Tok.text);
+    type.m_typeString = Tok.text;
     if (!type.m_type)
     {
-        std::cout << "Couldn't parse type %s" << Tok.text;
+        //std::cout << "Couldn't parse type %s" << Tok.text;
     }
 
     getNextToken();
@@ -657,7 +659,7 @@ aeNodeNew* RzParser::parseNew()
     getNextToken();
     getNextToken();
     getNextToken();
-    //getNextToken();
+
     return node;
 }
 

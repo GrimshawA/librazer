@@ -4,9 +4,12 @@ class ArkanoidApp
 {
 	function main() 
 	{
-		Block b = new Block();
+		Block a, c;
+		//Block b = new Block();
 
-		print("Hello");
+		Block d = new Ghoul();
+
+		/*print("Hello");
 
 		var gameController = new GameController();
 
@@ -23,6 +26,6 @@ class ArkanoidApp
 			w.display();
 		}
 
-		print("Done");
+		print("Done");*/
 	}
 }

@@ -9,7 +9,9 @@ QT       -= core gui
 TARGET = librazer
 TEMPLATE = lib
 CONFIG += staticlib
-DESTDIR = ../../lib
+DESTDIR = $$PWD/../../lib
+
+DEFINES += LOGGING_ENABLED
 
 INCLUDEPATH += ../../src \
                 ../../include

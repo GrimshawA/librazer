@@ -23,7 +23,7 @@ public:
 
 
 public:
-	aeQualType getQualifiedType(AECompiler* c);
+	aeQualType getQualifiedType(RzCompiler* c);
 
 };
 

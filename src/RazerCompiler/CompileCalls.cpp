@@ -1,6 +1,6 @@
 #include <RazerCompiler/aeCompiler.h>
 
-AEFunction* AECompiler::selectFunction(aeNodeFunctionCall* fn)
+AEFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn)
 {
 	AEFunction* r = nullptr;
 
@@ -20,7 +20,7 @@ AEFunction* AECompiler::selectFunction(aeNodeFunctionCall* fn)
 }
 
 
-void AECompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
+void RzCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
 {
 	std::string finalSymbolName = fn->m_name;
 
@@ -83,7 +83,7 @@ void AECompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 	}
 }
 
-void AECompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn)
+void RzCompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn)
 {
 	// Emit the arguments
 	int i = 0;
@@ -103,7 +103,7 @@ void AECompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn)
 	emitInstruction(OP_VARCALL, fnNameIndex);
 }
 
-void AECompiler::emitLateBoundCall(aeNodeFunctionCall* fn)
+void RzCompiler::emitLateBoundCall(aeNodeFunctionCall* fn)
 {
 	// Calls a function on a static object, if it supports it
 }

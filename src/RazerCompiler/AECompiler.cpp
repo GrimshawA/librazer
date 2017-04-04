@@ -17,7 +17,7 @@ void debugCodeRange(RzModule* module, int start, int end)
 	}
 }
 
-AECompiler::AECompiler()
+RzCompiler::RzCompiler()
 : m_currentFunction(nullptr)
 , m_outputLogs(false)
 {
@@ -30,12 +30,12 @@ AECompiler::AECompiler()
 	m_caller = nullptr;
 }
 
-int32_t AECompiler::cursor()
+int32_t RzCompiler::cursor()
 { 
 	return m_cursor;
 }
 
-bool AECompiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
+bool RzCompiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
 {
 	for (auto& conv : m_typeSystem.m_table)
 	{
@@ -45,7 +45,7 @@ bool AECompiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
 	return false;
 }
 
-void AECompiler::emitEnumValue(aeEnum* enumDef, const std::string& valueDef)
+void RzCompiler::emitEnumValue(aeEnum* enumDef, const std::string& valueDef)
 {
 	if (enumDef->table.find(valueDef) == enumDef->table.end())
 	{
@@ -55,30 +55,30 @@ void AECompiler::emitEnumValue(aeEnum* enumDef, const std::string& valueDef)
 	emitInstruction(OP_LOADENUM, enumDef->table[valueDef]);
 }
 
-aeQualType AECompiler::buildQualifiedType(const std::string& type)
+aeQualType RzCompiler::buildQualifiedType(const std::string& type)
 {
 	aeQualType qtype;
 	qtype.m_type = m_env->getTypeInfo(type);
 	return qtype;
 }
 
-aeQualType AECompiler::buildQualifiedType(aeNodeExpr* e)
+aeQualType RzCompiler::buildQualifiedType(aeNodeExpr* e)
 {
 	return e->getQualifiedType(this);
 }
 
-void AECompiler::emitDebugPrint(const std::string& message)
+void RzCompiler::emitDebugPrint(const std::string& message)
 {
 	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
 }
 
-uint32_t AECompiler::emitInstruction(RzInstruction instr)
+uint32_t RzCompiler::emitInstruction(RzInstruction instr)
 {
 	m_module->m_code.push_back(instr);
 	return m_cursor++;
 }
 
-uint32_t AECompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
+uint32_t RzCompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)
 {
 	RzInstruction instr;
 	instr.opcode = opcode;
@@ -89,20 +89,20 @@ uint32_t AECompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, i
 	return m_cursor++;
 }
 
-AEStructNode* AECompiler::getTopClassNode()
+AEStructNode* RzCompiler::getTopClassNode()
 {
 	if (m_classes.size() > 0)
 		return m_classes[m_classes.size() - 1];
 	return nullptr;
 }
 
-void AECompiler::push_scope()
+void RzCompiler::push_scope()
 {
 	ScopeLocalData newScope;
 	m_scopes.push_back(newScope);
 }
 
-void AECompiler::pop_scope()
+void RzCompiler::pop_scope()
 {
 	assert(m_scopes.size() != 0);
 
@@ -114,7 +114,7 @@ void AECompiler::pop_scope()
 	m_scopes.pop_back();
 }
 
-void AECompiler::declareStackVar(const std::string& name, aeQualType type)
+void RzCompiler::declareStackVar(const std::string& name, aeQualType type)
 {
 	int bpOffset = m_OffsetFromBasePtr;
 
@@ -132,12 +132,12 @@ void AECompiler::declareStackVar(const std::string& name, aeQualType type)
 #endif
 }
 
-void AECompiler::releaseParametersContext()
+void RzCompiler::releaseParametersContext()
 {
 	pop_scope();
 }
 
-VariableStorageInfo AECompiler::getVariable(std::string name)
+VariableStorageInfo RzCompiler::getVariable(std::string name)
 {
 	// Let's see if this is a local variable
 	for (auto it = m_scopes.rbegin(); it != m_scopes.rend(); ++it)
@@ -173,7 +173,7 @@ VariableStorageInfo AECompiler::getVariable(std::string name)
 	return VariableStorageInfo();
 }
 
-void AECompiler::destructLocalVar(VariableStorageInfo& var)
+void RzCompiler::destructLocalVar(VariableStorageInfo& var)
 {
 	if (var.type.getType()->is_native)
 	{
@@ -195,22 +195,22 @@ void AECompiler::destructLocalVar(VariableStorageInfo& var)
 	}
 }
 
-void AECompiler::emitBreakpoint()
+void RzCompiler::emitBreakpoint()
 {
 	emitInstruction(OP_BREAKPOINT);
 }
 
-void AECompiler::emit_local_construct_pod(int32_t size)
+void RzCompiler::emit_local_construct_pod(int32_t size)
 {
 
 }
 
-void AECompiler::emit_local_construct_object(int32_t size)
+void RzCompiler::emit_local_construct_object(int32_t size)
 {
 
 }
 
-void AECompiler::generate(AEBaseNode* root)
+bool RzCompiler::generate(AEBaseNode* root)
 {
 	m_typeSystem.init(this);
 
@@ -223,11 +223,14 @@ void AECompiler::generate(AEBaseNode* root)
 	{
 		if (root->m_items[i]->m_nodeType == AEN_FUNCTION)
 		{
-			compileFunction(static_cast<aeNodeFunction*>(root->m_items[i]));
+            compileFunction(static_cast<aeNodeFunction*>(root->m_items[i]));
+
 		}
 		else if (root->m_items[i]->m_nodeType == AEN_CLASS)
 		{
-			emitClassCode(static_cast<AEStructNode*>(root->m_items[i]));
+            ret = emitClassCode(static_cast<AEStructNode*>(root->m_items[i]));
+            if (ret == RzCompileResult::aborted)
+                break;
 		}
 		else if (root->m_items[i]->m_nodeType == AEN_NAMESPACE)
 		{
@@ -240,23 +243,29 @@ void AECompiler::generate(AEBaseNode* root)
 		else if (root->m_items[i]->m_nodeType == AEN_IMPORT)
 		{
 			ret = compileImport((aeNodeImport&)*root->m_items[i]);
+            if (ret == RzCompileResult::aborted)
+                break;
 		}
 
-		if (ret.m_status == RzCompileResult::FAILED)
+        if (ret.m_status == RzCompileResult::ABORTED)
 			break;
 	}
 
-	if (ret.m_status == RzCompileResult::FAILED)
+    if (ret.m_status == RzCompileResult::ABORTED)
 	{
 		RZLOG("Compilation finished with errors.\n");
+        return false;
 	}
 	else
 	{
 		RZLOG("Compilation finished\n");
+        return true;
 	}
+
+    return true;
 }
 
-void AECompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
+void RzCompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 {
 	for (std::size_t i = 0; i < namespace_node->m_items.size(); ++i)
 	{
@@ -279,19 +288,19 @@ void AECompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
 	 }
 }
 
-void AECompiler::emitGlobalVarCode(aeNodeIdentifier* global_var)
+void RzCompiler::emitGlobalVarCode(aeNodeIdentifier* global_var)
 {
 	
 }
 
-void AECompiler::emitClassCode(AEStructNode* clss)
+RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
 {
 	m_classes.push_back(clss);
 
 	if (clss->parents.size() > 1 && !m_env->m_config.allowMultipleInheritance)
 	{
 		CompilerError("0002", "The class '" + clss->m_name + "' can't inherit from multiple classes.");
-		return;
+        return RzCompileResult::aborted;
 	}
 
 	
@@ -322,6 +331,8 @@ void AECompiler::emitClassCode(AEStructNode* clss)
 	for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
 	{
 		AEFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
+        if (!fn)
+            return RzCompileResult::aborted;
 	}
 
 	for (std::size_t i = 0; i < clss->m_items.size(); ++i)
@@ -355,9 +366,11 @@ void AECompiler::emitClassCode(AEStructNode* clss)
 	m_classes.pop_back();
 
 	m_currentStruct = nullptr;
+
+    return RzCompileResult::ok;
 }
 
-void AECompiler::emitClassConstructors(RzType* classType, AEStructNode* classNode)
+void RzCompiler::emitClassConstructors(RzType* classType, AEStructNode* classNode)
 {
 	aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
 
@@ -373,12 +386,12 @@ void AECompiler::emitClassConstructors(RzType* classType, AEStructNode* classNod
 	}
 }
 
-void AECompiler::emitClassDestructors(RzType* classType, AEStructNode* classNode)
+void RzCompiler::emitClassDestructors(RzType* classType, AEStructNode* classNode)
 {
 
 }
 
-void AECompiler::throwError(const std::string& errorCode, const std::string& message)
+void RzCompiler::throwError(const std::string& errorCode, const std::string& message)
 {
 	m_reporter.emitLog("error C" + errorCode + ": " + message);
 
@@ -388,7 +401,7 @@ void AECompiler::throwError(const std::string& errorCode, const std::string& mes
 	}
 }
 
-void AECompiler::emitBranchCode(aeNodeBranch* cond)
+void RzCompiler::emitBranchCode(aeNodeBranch* cond)
 {
 	aeNodeExpr* test_expr = cond->m_expression.get();
 	aeNodeBlock* nested_code = cond->m_block.get();
@@ -409,7 +422,7 @@ void AECompiler::emitBranchCode(aeNodeBranch* cond)
 	setinst_a(m_module->m_code[jmptestpc], (m_cursor - 1) - jmptestpc);
 }
 
-int AECompiler::findLocalObject(const std::string& refname)
+int RzCompiler::findLocalObject(const std::string& refname)
 {
 	/*for (std::size_t i = 0; i < mFunctionLocals.size(); ++i)
 	{
@@ -419,12 +432,12 @@ int AECompiler::findLocalObject(const std::string& refname)
 	return -1;
 }
 
-void AECompiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
+void RzCompiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
 {
 
 }
 
-void AECompiler::emitForLoop(aeNodeFor* forloop)
+void RzCompiler::emitForLoop(aeNodeFor* forloop)
 {
 	push_scope();
 
@@ -457,7 +470,7 @@ void AECompiler::emitForLoop(aeNodeFor* forloop)
 }
 
 
-void AECompiler::emitWhileLoop(aeNodeWhile* whileloop)
+void RzCompiler::emitWhileLoop(aeNodeWhile* whileloop)
 {
 	int pc_expreval = cursor();
 
@@ -481,7 +494,7 @@ void AECompiler::emitWhileLoop(aeNodeWhile* whileloop)
 	debugCodeRange(m_module, pc_expreval, cursor());
 }
 
-void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* function)
+void RzCompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* function)
 {
 	// This is where the initialization is done, before any user constructor instruction is executed
 	AEStructNode* cl = getTopClassNode();
@@ -513,14 +526,14 @@ void AECompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* func
 	}
 }
 
-RzCompileResult AECompiler::compileImport(aeNodeImport& node)
+RzCompileResult RzCompiler::compileImport(aeNodeImport& node)
 {
 	RzModule* importedModule = m_env->resolveModule(node.symbol);
 
 	if (!importedModule)
 	{
 		RZLOG("Couldn't resolve the import '%s' to any module\n", node.symbol.c_str());
-		return RzCompileResult(RzCompileResult::FAILED);
+        return RzCompileResult(RzCompileResult::ABORTED);
 	}
 
 	RZLOG("Import resolved to %s\n", importedModule->getName().c_str());
@@ -530,24 +543,29 @@ RzCompileResult AECompiler::compileImport(aeNodeImport& node)
 	return RzCompileResult();
 }
 
-void AECompiler::emitLambdaFunction(aeNodeFunction* function)
+void RzCompiler::emitLambdaFunction(aeNodeFunction* function)
 {
 	// todo
 }
 
-void AECompiler::emitBlock(aeNodeBlock* codeblock)
+RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
 {
 	push_scope();
 
 	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{
-		emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
+        auto ret = emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
+        if (ret == RzCompileResult::aborted)
+        {
+            pop_scope();
+            return ret;
+        }
 	}
 	
 	pop_scope();
 }
 
-void AECompiler::emitStatement(AEStmtNode* stmt)
+RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt)
 {
 	/*
 		List of statements accepted as "standalone" within blocks of code
@@ -580,7 +598,11 @@ void AECompiler::emitStatement(AEStmtNode* stmt)
 	}
 	else if (stmt->m_nodeType == AEN_VARDECL)
 	{
-		compileVarDecl(*static_cast<aeNodeVarDecl*>(stmt));
+        RzCompileResult ret = compileVarDecl(*static_cast<aeNodeVarDecl*>(stmt));
+        if (ret == RzCompileResult::aborted) {
+
+            return ret;
+        }
 	}
 	else if (stmt->m_nodeType == AEN_BINARYOP && ((aeNodeBinaryOperator*)stmt)->oper == "=")
 	{
@@ -600,19 +622,21 @@ void AECompiler::emitStatement(AEStmtNode* stmt)
 	{
 		CompilerLog("NOT compiling other expression '%s'\n", ((aeNodeExpr*)stmt)->str().c_str());
 	}
+
+    return RzCompileResult::ok;
 }
 
-void AECompiler::emitReturnCode(aeNodeReturn* ret)
+void RzCompiler::emitReturnCode(aeNodeReturn* ret)
 {
 	emitInstruction(OP_RETURN);
 }
 
-RzType* AECompiler::evaluateType(aeNodeExpr* expr)
+RzType* RzCompiler::evaluateType(aeNodeExpr* expr)
 {
 	return nullptr;
 }
 
-RzType* AECompiler::evaluateType(const std::string& type_name)
+RzType* RzCompiler::evaluateType(const std::string& type_name)
 {
 	// Walk the scope stack from current to top level to search the decl
 	for (auto it = m_scopes.rbegin(); it != m_scopes.rend(); ++it)
@@ -644,7 +668,7 @@ RzType* AECompiler::evaluateType(const std::string& type_name)
 	return type;
 }
 
-RzType* AECompiler::evaluateType(AEStructNode* class_node)
+RzType* RzCompiler::evaluateType(AEStructNode* class_node)
 {
 	return class_node->m_typeInfo;
 }

@@ -97,7 +97,7 @@ void RzEngine::quick_build(const std::string& file)
 {
 	aeon_lexer lexer;
 	RzParser parser;
-	AECompiler compiler;
+	RzCompiler compiler;
 	std::string source = getFileSource(file);
 
 	if (source.empty())
@@ -299,7 +299,7 @@ void RzEngine::registerTypeMethod(const std::string& typeName, const std::string
 	}
 	m_functionTable.push_back(fn);
 
-	RZLOG("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
+    //RZLOG("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
 }
 
 void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)

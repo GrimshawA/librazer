@@ -23,7 +23,7 @@ public:
 public:
 	RzBuilder(RzEngine& engine);
 
-	void build(const Batch& b);
+    bool build(const Batch& b);
 
 private:
 	RzEngine& m_engine;

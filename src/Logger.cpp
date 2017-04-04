@@ -3,7 +3,7 @@
 
 void RzLogger::log(const std::string& msg)
 {
-#if defined LOGGING_ENABLED && LOGGING_ENABLED == 1
+#if defined LOGGING_ENABLED
 	printf("%s", msg.c_str());
 #endif
 }
