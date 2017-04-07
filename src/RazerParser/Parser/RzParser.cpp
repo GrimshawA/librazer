@@ -655,8 +655,8 @@ aeNodeNew* RzParser::parseNew()
 
     aeNodeNew* node = new aeNodeNew;
     //node->m_instanceType = parseQualType();
-    node->type = Tok.text;
-    getNextToken();
+    SymbolTypename typeName = parseTypename();
+    node->type = typeName.str();
     getNextToken();
     getNextToken();
 
@@ -858,6 +858,25 @@ aeNodeFunctionCall* RzParser::parseFunctionCall()
         //Log("parsed function call '%s'", funccall->funcName.c_str());
     }
     return funccall;
+}
+
+SymbolTypename RzParser::parseTypename()
+{
+    SymbolTypename st;
+    do {
+        if (Tok.type == AETK_DOT)
+            getNextToken();
+
+        std::string part = Tok.text;
+        getNextToken();
+        st.addPart(part);
+    } while(Tok.type == AETK_DOT);
+
+    SymbolTypename st2;
+    st2.parse(st.str());
+    RZLOG("ST2 %s\n\n", st2.str().c_str());
+
+    return st;
 }
 
 aeNodeExpr* RzParser::parsePrimaryExpression()

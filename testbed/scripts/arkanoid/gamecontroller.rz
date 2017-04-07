@@ -2,6 +2,7 @@ import std
 
 class GameController
 {
+
 	function init()
 	{
 		print("Init");

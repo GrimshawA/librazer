@@ -37,8 +37,13 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
     RzType* varType = declType.m_type;
 	auto& scope = m_scopes[m_scopes.size() - 1];
 
-    declareStackVar(varDecl.m_decls[0].m_name, declType);
+    // Ensure the variable is not already declared
+    if (getVariable(varDecl.m_decls[0].m_name).mode == AE_VAR_LOCAL) {
+        RZLOG("error: Local variable redefinition '%s'\n", varDecl.m_decls[0].m_name.c_str());
+        return RzCompileResult::aborted;
+    }
 
+    declareStackVar(varDecl.m_decls[0].m_name, declType);
 
 	emitInstruction(OP_MOV, AEK_ESP, -(int)varType->getSize());
 

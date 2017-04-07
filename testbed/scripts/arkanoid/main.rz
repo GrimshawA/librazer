@@ -2,12 +2,14 @@ import std
 
 class ArkanoidApp
 {
-	function main() 
-	{
-		Block a, c;
-		//Block b = new Block();
+	function main() {
+		Block b = new Block();
 
-		Block d = new Ghoul();
+		File s = new File();
+	}
+
+	function test() {
+		//Block d = new Ghoul();
 
 		/*print("Hello");
 

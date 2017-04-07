@@ -4,6 +4,7 @@
 #include <RazerParser/AST/Nodes.h>
 #include <Rzr/RzValue.h>
 #include <RazerParser/Parser/RzTokens.h>
+#include <RazerCompiler/SymbolTypename.h>
 
 #include <vector>
 
@@ -115,6 +116,8 @@ public:
 
 		/// We're about to read a function call, get it
 		aeNodeFunctionCall* parseFunctionCall();
+
+        SymbolTypename parseTypename();
 
 		bool checkForFunction();
 

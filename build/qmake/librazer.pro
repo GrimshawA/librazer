@@ -90,7 +90,8 @@ HEADERS += \
     ../../src/RazerVM/InstructionIterator.h \
     ../../src/STS/CPP/Compiler/CppBuilder.h \
     ../../src/Base/FileUtils.h \
-    ../../src/RazerCompiler/Errors.h
+    ../../src/RazerCompiler/Errors.h \
+    ../../src/RazerCompiler/SymbolTypename.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -167,4 +168,5 @@ SOURCES += \
     ../../src/RazerVM/InstructionIterator.cpp \
     ../../src/STS/CPP/Compiler/CppBuilder.cpp \
     ../../src/Base/FileUtils.cpp \
-    ../../src/RazerCompiler/Errors.cpp
+    ../../src/RazerCompiler/Errors.cpp \
+    ../../src/RazerCompiler/SymbolTypename.cpp

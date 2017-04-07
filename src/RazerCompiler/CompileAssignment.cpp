@@ -10,7 +10,7 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 	aeQualType T2 = buildQualifiedType(rhs);
 
     if (!T2) {
-        RZLOG("Unknown type %s\n" , T2.m_typeString.c_str());
+        RZLOG("Unknown type right of the assignment: '%s'\n" , T2.m_typeString.c_str());
         return RzCompileResult::aborted;
     }
 
