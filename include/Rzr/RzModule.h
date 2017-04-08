@@ -47,6 +47,9 @@ public:
 	RzModule();
 	~RzModule();
 
+    /// Index of this module within the engine
+    int index();
+
 	AEFunction* getFunction(const std::string& name);
 	AEFunction* getFunction(FnIndex index);
 
@@ -137,7 +140,7 @@ public:
 	};
 
 	std::string                          m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
-	RzEngine*                           m_context;
+    RzEngine*                            m_context;
 	std::vector<AEFunction>              m_functions;          ///< All script functions
 	std::vector<AENativeFunctionWrapper> m_nativeFunctions;    ///< All native functions exported
 	std::vector<RzType*>                 m_types;
@@ -147,6 +150,7 @@ public:
 	std::vector<std::string>             m_identifierPool;
 	std::vector<RzInstruction>           m_code;               ///< The entire module's bytecode
 	std::vector<ModuleDependency>        m_dependencies;       ///< Dependencies of this module
+    int                                  m_moduleIndex;        ///< Module index within the engine
 };
 
 #endif // RZMODULE_H__

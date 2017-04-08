@@ -335,6 +335,7 @@ begin:
             field->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
             useVisib.clear();
             classDeclNode->m_fields.push_back(field);
+            printf("%d\n\n", classDeclNode->m_fields.size());
         }
     }
 }
@@ -365,16 +366,21 @@ AEFieldNode* RzParser::parseStructField()
                 printf("Field '%s': unknown type %s\n", f->name.c_str(), typeIdentifier.c_str());
             }
         }
-        else
-        {
+        else if (Tok.type == AETK_IDENTIFIER) {
+            // Parsing a type inferred property, with no init
+            f->type.m_typeString = Tok.text;
+            getNextToken();
+        }
+        else {
             auto node = parsePropertyValue();
             f->initializer = new AEFieldInitNode;
             f->initializer->value = node;
             f->deduceStaticType(ctx);
         }
     }
-    else
-        f->type = ctx->getTypeInfo("var");
+
+
+       // f->type = ctx->getTypeInfo("var");
 
     return f;
 }

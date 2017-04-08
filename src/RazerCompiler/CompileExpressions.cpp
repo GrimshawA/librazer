@@ -226,7 +226,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 
 	aeExprContext exprContext;
 	exprContext.expectedResult = Ta;
-	if (Ta.m_handle)
+    if (1) // always loaded as a ptr for now
 		exprContext.rx_value = true; // for handles we want to load their value
 	else
 		exprContext.lvalue = true; // for values we want to get them loaded for edit

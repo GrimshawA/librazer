@@ -28,7 +28,7 @@ enum EOpCodes
 	OP_DCALL,          ///< Call a dynamic method on any object, resolved at runtime
 	OP_CALLVIRTUAL,	   ///< Call a virtual method on an aeon object, separate to avoid overhead of checking
 	OP_CALLNATIVE,	   ///< Call a native function on the host environment
-	OP_CALLMETHOD_NAT, ///< Call non-static member function on a native object
+	OP_NATIVECALL, ///< Call non-static member function on a native object
 	OP_RETURN,         ///< Returns from a function immediately
 	OP_JZ,             ///< Jump if eax == 0 to relative address (pc += offset)
 	OP_JMP,            ///< jmp to an absolute location pc = x

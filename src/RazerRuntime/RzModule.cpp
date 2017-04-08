@@ -15,6 +15,10 @@ RzModule::~RzModule()
 
 }
 
+int RzModule::index() {
+    return m_moduleIndex;
+}
+
 AEFunction* RzModule::getFunction(const std::string& name)
 {
 	for (int i = 0; i < m_functions.size(); ++i)
@@ -188,6 +192,13 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	RzType::MethodInfo info;
 	info.methodCallback = fnPtr;
 	info.name = methodName;
+    info.native = true;
+
+    AENativeFunctionWrapper wrapper;
+    wrapper.f = fnPtr;
+    m_nativeFunctions.push_back(wrapper);
+    info.offset = m_nativeFunctions.size() - 1;
+
 	typeInfo->m_methods.push_back(info);
 
 	AEFunction fn;
@@ -205,7 +216,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 		if (parser.getNextToken().text != ",")
 			break;
 	}
-	m_functions.push_back(fn);
+    m_functions.push_back(fn);
 
     //RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }

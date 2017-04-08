@@ -119,6 +119,13 @@ void aeon_lexer::tokenize(std::string src)
 			return token;
 		}
 
+        // Disable newline tokens until its better supported
+        if (LastChar == '\n') {
+            token.text = "\n";
+            token.type = AETK_NEWLINE;
+            return token;
+        }
+
 		if (LastChar == ':')
 		{
 			token.text = ":";

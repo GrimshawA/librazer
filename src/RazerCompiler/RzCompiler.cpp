@@ -303,6 +303,7 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
         return RzCompileResult::aborted;
 	}
 
+
 	
 	RzType* typeInfo = m_module->getType(clss->m_name);
 	typeInfo->m_absoluteName = clss->m_name;
@@ -327,12 +328,20 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
 		}
 	}
 
+    for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
+        aeField fld;
+        fld.name = clss->m_fields[i]->name;
+        typeInfo->m_fields.push_back(fld);
+    }
+
+    typeInfo->computeMetrics();
+
 	for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
 	{
 		AEFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
         if (!fn)
             return RzCompileResult::aborted;
-	}
+	}  
 
 	for (std::size_t i = 0; i < clss->m_items.size(); ++i)
 	{
@@ -371,7 +380,7 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
 
 void RzCompiler::emitClassConstructors(RzType* classType, AEStructNode* classNode)
 {
-	aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
+    /*aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
 
 	if (!classType->isPod())
 	{
@@ -382,7 +391,7 @@ void RzCompiler::emitClassConstructors(RzType* classType, AEStructNode* classNod
 		}
 
 	//	injectMemberConstruction(defaultConstructor, classType, classNode);
-	}
+    }*/
 }
 
 void RzCompiler::emitClassDestructors(RzType* classType, AEStructNode* classNode)

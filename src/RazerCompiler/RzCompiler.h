@@ -211,6 +211,8 @@ public:
     void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
     void emitLateBoundCall(aeNodeFunctionCall* fn);
     RzCompileResult compileStaticObjectCall(aeQualType obj, aeNodeFunctionCall& call);
+    RzCompileResult compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info);
+    RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*> args);
 
 
     RzBuildReport* m_report;

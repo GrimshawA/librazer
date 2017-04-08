@@ -2,8 +2,8 @@
 #include <RazerVM/ThreadContext.h>
 #include <RazerVM/ThreadHandler.h>
 
-#include <RazerVM/Executor/AEVmCalls.h>
-#include <RazerVM/Executor/VariantOps.h>
+#include <RazerVM/Executor/vm_calls.h>
+#include <RazerVM/Executor/vm_dynamic.h>
 #include <RazerVM/Executor/VmInstructions.h>
 
 #define vm_start(x) case x:{
@@ -53,7 +53,7 @@ void dispatch_execute(RzThreadContext& ctx)
 				// todo
 				vm_end
 
-				vm_start(OP_CALLNATIVE)
+                vm_start(OP_NATIVECALL)
 				/*uint32_t funcid = getinst_a(inst);
 				uint32_t params = getinst_b(inst);
 
@@ -73,12 +73,10 @@ void dispatch_execute(RzThreadContext& ctx)
 				push(gen->retarg._u64);
 
 				delete gen;*/
+                    DoNativeCall(ctx, inst.arg0, inst.arg1);
 				vm_end
 
-				vm_start(OP_CALLMETHOD_NAT)
-				AEGeneric g; g.m_threadCtx = &ctx;
-			ctx.engine->m_functionTable[inst.arg0]->fn(g);
-			vm_end
+
 
 				vm_start(OP_RETURN)
 			if (DoReturn(ctx))

@@ -88,30 +88,31 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeQualType obj, aeNodeFuncti
         return RzCompileResult::aborted;
     }
 
+    RzType::MethodInfo method = typeInfo->selectMethod(call.m_name, std::vector<aeQualType>());
 
-
-    AEFunction* func = typeInfo->getFunction(call.m_name);
-    if (!func)
+    if (method.name.empty())
     {
         RZLOG("error: '%s' is not a method of '%s'\n", call.m_name.c_str(), typeInfo->getName().c_str());
         return RzCompileResult::aborted;
     }
 
+    if (!method.native) {
+        RZLOG("error: unsupported script call on static typed object");
+        return RzCompileResult::aborted;
+    }
+
+    auto argsResult = compileArgsPush(call.m_args);
+    if (argsResult == RzCompileResult::aborted)
+        return argsResult;
+
+    if (method.native) {
+        return compileNativeObjectCall(typeInfo->getModule()->index(), method);
+    }
+
     // First allocate some room for the return value
     //emitInstruction(OP_MOV, fn->getReturnTypeSize());
 
-    // Emit the arguments
-    int i = 0;
-    for (auto it = call.m_args.rbegin(); it != call.m_args.rend(); ++it)
-    {
-        aeExprContext arg_ctx;
-        arg_ctx.rx_value = true;
-        arg_ctx.expectedResult = call.getArgType(i);
-        emitExpressionEval((*it), arg_ctx);
-    }
-
-
-    //int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
+     //int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
 
     /*if (functionIndex == -1)
         CompilerError("0002", "Could not find the function to call! " + finalSymbolName);
@@ -119,12 +120,29 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeQualType obj, aeNodeFuncti
     if (func->m_native)
     {
         emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
-        emitInstruction(OP_CALLMETHOD_NAT, functionIndex);
+
     }
     else
     {
         emitInstruction(OP_CALL, functionIndex);
     }*/
 
+    return RzCompileResult::ok;
+}
+
+RzCompileResult RzCompiler::compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info) {
+    emitInstruction(OP_NATIVECALL, moduleIndex, info.offset);
+    return RzCompileResult::ok;
+}
+
+RzCompileResult RzCompiler::compileArgsPush(const std::vector<aeNodeExpr*> args) {
+    int i = 0;
+    for (auto it = args.rbegin(); it != args.rend(); ++it)
+    {
+        aeExprContext arg_ctx;
+        arg_ctx.rx_value = true;
+        //arg_ctx.expectedResult = call.getArgType(i);
+        emitExpressionEval((*it), arg_ctx);
+    }
     return RzCompileResult::ok;
 }

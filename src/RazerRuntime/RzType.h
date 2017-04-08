@@ -57,6 +57,8 @@ public:
 		std::vector<std::string> args; ///< The arguments it takes
 		int type;
 		int offset;
+        AEFunction* func = nullptr; // the vm function if applicable
+        bool native = false;
 
 		union
 		{
@@ -85,6 +87,9 @@ public:
 	void* construct();
 	void* constructNative();
 	void* constructScript();
+
+    // Figure the final size of the struct
+    void computeMetrics();
 
 	/// Is this type an enum
 	bool isEnum();
@@ -133,6 +138,9 @@ public:
 	/// Fetch the direct function pointer used to register the API
 	aeBindMethod getNativeFunction(const std::string& name);
 
+    /// Select the appropriate method to call based on name and arg list
+    MethodInfo selectMethod(const std::string& name, const std::vector<aeQualType>& argsList);
+
 	/// Get the field information for a given type
 	aeField* getField(std::string name);
 
@@ -171,7 +179,8 @@ public:
 	std::bitset<32>             m_flags;
 	std::vector<MethodInfo>     m_methods;
 	std::vector<EnumInfo>       m_enums;
-	std::vector<std::string>    m_templateParams;
+
+    std::vector<std::string>    m_templateParams;
 
 	bool is_native = false;
 	void*                       m_userData;            ///< This allows the user to inject additional info on the type

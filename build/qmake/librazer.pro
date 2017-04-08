@@ -70,9 +70,7 @@ HEADERS += \
     ../../src/RazerRuntime/aeSymbol.h \
     ../../src/RazerRuntime/AEValueList.h \
     ../../src/RazerRuntime/RzType.h \
-    ../../src/RazerVM/Executor/AEVmCalls.h \
     ../../src/RazerVM/Executor/ExecDispatch.h \
-    ../../src/RazerVM/Executor/VariantOps.h \
     ../../src/RazerVM/Executor/VmInstructions.h \
     ../../src/RazerVM/InstructionSet.h \
     ../../src/RazerVM/StackFrame.h \
@@ -91,7 +89,9 @@ HEADERS += \
     ../../src/Base/FileUtils.h \
     ../../src/RazerCompiler/Errors.h \
     ../../src/RazerCompiler/SymbolTypename.h \
-    ../../src/RazerCompiler/RzCompiler.h
+    ../../src/RazerCompiler/RzCompiler.h \
+    ../../src/RazerVM/Executor/vm_dynamic.h \
+    ../../src/RazerVM/Executor/vm_calls.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \

@@ -78,6 +78,7 @@ enum TokenType
 	AETK_ARROW,
 	AETK_LAMBDA, //< =>
 	AETK_IMPORT, //< import
+    AETK_NEWLINE,
 	AETK_UNKNOWN
 };
 

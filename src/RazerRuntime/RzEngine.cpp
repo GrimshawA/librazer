@@ -232,6 +232,7 @@ RzModule* RzEngine::createModule(const std::string& name)
 	mod->m_name = name;
 	mod->m_context = this;
 	modules.push_back(std::move(std::unique_ptr<RzModule>(mod)));
+    mod->m_moduleIndex = modules.size() - 1;
 	return mod;
 }
 

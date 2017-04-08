@@ -1,6 +1,8 @@
 #ifndef AEVmCalls_h__
 #define AEVmCalls_h__
 
+#include <Logger.h>
+
 static inline void DoCall(RzThreadContext& ctx, int functionIndex)
 {
 	AEFunction* functionData = ctx.engine->m_functionTable[functionIndex];
@@ -24,6 +26,11 @@ static inline void DoDynamicCall(RzThreadContext& ctx, int functionIndex)
 {
 	//AEValue v = vm->m_stk.popVar();
 	
+}
+
+static inline void DoNativeCall(RzThreadContext& ctx, int moduleIndex, int functionIndex) {
+    AEGeneric g; g.m_threadCtx = &ctx;
+    ctx.engine->modules[moduleIndex]->m_nativeFunctions[functionIndex].f(g);
 }
 
 #endif // AEVmCalls_h__

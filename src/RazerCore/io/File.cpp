@@ -70,11 +70,12 @@ namespace Rz{
 
 	void File::close()
 	{
-		if (m_file)
-		{
-			fclose(m_file);
-			m_file = nullptr;
-		}
+        printf("-> FILE CLOSE %x\n", this);
+//		if (m_file)
+//		{
+//			fclose(m_file);
+//			m_file = nullptr;
+//		}
 	}
 
 	std::string File::getline()

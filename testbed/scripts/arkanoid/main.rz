@@ -2,6 +2,8 @@ import std
 
 class ArkanoidApp
 {
+	m_file: File 
+
 	function main() {
 		//Block b = new Block();
 

@@ -43,6 +43,13 @@ void* RzType::constructScript()
 	return memory;
 }
 
+void RzType::computeMetrics() {
+    m_size = 0;
+    for (std::size_t i = 0; i < m_fields.size(); ++i) {
+        m_size += 4; //hardcoded ptr size
+    }
+}
+
 bool RzType::isEnum()
 {
 	return m_typeKind == KindEnum;
@@ -128,6 +135,15 @@ aeBindMethod RzType::getNativeFunction(const std::string& name)
 			return m.methodCallback;
 	}
 	return nullptr;
+}
+
+RzType::MethodInfo RzType::selectMethod(const std::string& name, const std::vector<aeQualType>& argsList) {
+    for(auto& m : m_methods) {
+        if (m.name == name)
+            return m;
+    }
+
+    return MethodInfo();
 }
 
 RzModule* RzType::getModule()
