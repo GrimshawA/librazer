@@ -78,12 +78,8 @@ public:
 	};
 
 public:
-
-	/// Build the type info object
-	RzType();
-
 	/// Build the type info object, explicitly used when declaring c++ types
-	RzType(const std::string& _name, uint32_t _size);
+    RzType(RzModule& module, const std::string& _name, uint32_t _size);
 
 	/// Creates a new instance of the native object
 	void* construct();
@@ -176,11 +172,14 @@ public:
 	std::vector<MethodInfo>     m_methods;
 	std::vector<EnumInfo>       m_enums;
 	std::vector<std::string>    m_templateParams;
-	RzModule*                   m_module;
+
 	bool is_native = false;
 	void*                       m_userData;            ///< This allows the user to inject additional info on the type
 	aeDestructorMethod          m_destructor;
 	bool m_pod = true;
+
+private:
+    RzModule&                   m_module;
 };
 
 #endif // RZTYPE_H__

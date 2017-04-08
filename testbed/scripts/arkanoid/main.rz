@@ -3,12 +3,13 @@ import std
 class ArkanoidApp
 {
 	function main() {
-		Block b = new Block();
+		//Block b = new Block();
 
 		File s = new File();
+		s.close();
 	}
 
-	function test() {
+	//function test() {
 		//Block d = new Ghoul();
 
 		/*print("Hello");
@@ -29,5 +30,5 @@ class ArkanoidApp
 		}
 
 		print("Done");*/
-	}
+	//}
 }

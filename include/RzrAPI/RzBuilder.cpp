@@ -1,6 +1,6 @@
 #include <RzrAPI/RzBuilder.h>
 
-#include <RazerCompiler/AECompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/RzTokens.h>
 #include <Base/FileUtils.h>

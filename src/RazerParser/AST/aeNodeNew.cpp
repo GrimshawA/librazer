@@ -1,5 +1,5 @@
 #include "aeNodeNew.h"
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 
 aeNodeNew::aeNodeNew()
 {

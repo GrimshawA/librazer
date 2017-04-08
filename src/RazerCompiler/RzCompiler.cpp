@@ -1,4 +1,4 @@
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <RazerVM/InstructionSet.h>
 #include <RazerVM/VirtualMachine.h>
 #include <Rzr/RzEngine.h>
@@ -49,7 +49,7 @@ void RzCompiler::emitEnumValue(aeEnum* enumDef, const std::string& valueDef)
 {
 	if (enumDef->table.find(valueDef) == enumDef->table.end())
 	{
-		CompilerError("0010", "The value '" + valueDef + "' is not a part of the enum '" + enumDef->getName() + "'");
+//		CompilerError("0010", "The value '" + valueDef + "' is not a part of the enum '" + enumDef->getName() + "'");
 		return;
 	}
 	emitInstruction(OP_LOADENUM, enumDef->table[valueDef]);
@@ -306,7 +306,6 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
 	
 	RzType* typeInfo = m_module->getType(clss->m_name);
 	typeInfo->m_absoluteName = clss->m_name;
-	typeInfo->m_module = m_module;
 	m_env->typedb.push_back(typeInfo);
 	m_module->m_types.push_back(typeInfo);
 	RzEngine::object_heap objectHeap;
@@ -582,7 +581,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt)
 
 	if (stmt->m_nodeType == AEN_FUNCTIONCALL)
 	{
-		emitFunctionCall(aeQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
+        return emitFunctionCall(aeQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
 	}
 	else if (stmt->m_nodeType == AEN_BRANCH)
 	{
@@ -616,7 +615,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt)
 		if (m_logExprStmt)
 			emitDebugPrint("Evaluating " + stmt->str());
 
-		emitMemberOp(((aeNodeAccessOperator*)stmt));
+        return emitMemberOp(((aeNodeAccessOperator*)stmt));
 	}
 	else
 	{

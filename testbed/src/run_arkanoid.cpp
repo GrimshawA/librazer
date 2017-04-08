@@ -25,9 +25,9 @@ void run_arkanoid()
 
     RzBuilder::Batch batch;
     batch
-        << "arkanoid/main.rz"
-        << "arkanoid/gamecontroller.rz"
-        << "arkanoid/block.rz";
+        << "arkanoid/main.rz";
+        //<< "arkanoid/gamecontroller.rz"
+        //<< "arkanoid/block.rz";
 
     /*RzCppBuilder cppBuild(ctx);
     cppBuild.build(batch);*/

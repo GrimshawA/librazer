@@ -1,7 +1,7 @@
 #include "aeNodeFunctionCall.h"
 #include "aeNodeFunction.h"
 #include "AEStructNode.h"
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 
 aeNodeFunctionCall::aeNodeFunctionCall()
 : aeNodeExpr()

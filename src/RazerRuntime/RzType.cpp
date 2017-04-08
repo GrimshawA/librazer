@@ -1,16 +1,9 @@
 #include <RazerRuntime/RzType.h>
 #include <RazerVM/VirtualMachine.h>
 
-RzType::RzType()
-: is_native(false)
-, m_userData(nullptr)
-{
-	m_size = 1;
-	m_name = "null";
-}
-
-RzType::RzType(const std::string& _name, uint32_t _size)
-: is_native(false)
+RzType::RzType(RzModule& module, const std::string& _name, uint32_t _size)
+: m_module(module)
+, is_native(false)
 , m_userData(nullptr)
 {
 	m_name = _name;
@@ -119,12 +112,12 @@ std::string RzType::getName()
 
 int RzType::getFunctionId(const std::string& name)
 {
-	return m_module->m_context->getFunctionIndexByName(name);
+    return m_module.m_context->getFunctionIndexByName(name);
 }
 
 AEFunction* RzType::getFunction(const std::string& name)
 {
-	return m_module->m_context->getFunctionByName(name);
+    return m_module.m_context->getFunctionByName(name);
 }
 
 aeBindMethod RzType::getNativeFunction(const std::string& name)
@@ -139,7 +132,7 @@ aeBindMethod RzType::getNativeFunction(const std::string& name)
 
 RzModule* RzType::getModule()
 {
-	return m_module;
+    return &m_module;
 }
 
 bool RzType::isScriptSide()

@@ -194,21 +194,23 @@ public:
     void emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
     void emitLoadAddress(aeNodeExpr* expr);
     void emitLoadLiteral(aeNodeLiteral* lt);
-    void emitMemberOp(aeNodeAccessOperator* acs);
+    RzCompileResult emitMemberOp(aeNodeAccessOperator* acs);
     void emitImplicitConversion(aeQualType typeA, aeQualType typeB);
     RzCompileResult compileNew(aeNodeNew& newExpr);
     void emitSubscriptOp(aeNodeSubscript* subscript);
     void emitLambdaFunction(aeNodeFunction* function);
     void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
     void emitPushThis();
-    void compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
+    RzCompileResult compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
     void loadVarRef(aeNodeExpr* e);
     RzCompileResult compileVariantStackAlloc(const std::string& identifier, aeNodeExpr* initExpr);
+    RzCompileResult compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs);
 
     /// Function calls
-    void emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
+    RzCompileResult emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
     void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
     void emitLateBoundCall(aeNodeFunctionCall* fn);
+    RzCompileResult compileStaticObjectCall(aeQualType obj, aeNodeFunctionCall& call);
 
 
     RzBuildReport* m_report;
@@ -218,6 +220,8 @@ public:
 #define CompilerLog(...) printf(__VA_ARGS__);
 #define CompilerError(...) throwError(__VA_ARGS__);
 #define CompilerWarning(...) printf(__VA_ARGS__);
+
+#define RZASSERTCOMPILER(r) if (r.status == RzCompileResult::aborted) return r;
 
 #undef CompilerLog
 #define CompilerLog

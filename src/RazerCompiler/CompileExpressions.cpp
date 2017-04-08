@@ -1,4 +1,4 @@
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <RazerVM/InstructionSet.h>
 #include <RazerVM/VirtualMachine.h>
 #include <Rzr/RzEngine.h>
@@ -14,11 +14,11 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext e
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
-		emitFunctionCall(aeQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
+        return emitFunctionCall(aeQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{
-		emitMemberOp(static_cast<aeNodeAccessOperator*>(expr));
+        return emitMemberOp(static_cast<aeNodeAccessOperator*>(expr));
 	}
 	else if (expr->m_nodeType == AEN_INTEGER || expr->m_nodeType == AEN_STRING || expr->m_nodeType == AEN_FLOAT)
 	{
@@ -200,7 +200,7 @@ void RzCompiler::emitLoadLiteral(aeNodeLiteral* lt)
 	}
 }
 
-void RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
+RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 {
 	/**
 		We are compiling a.b
@@ -213,7 +213,7 @@ void RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 	if (!Ta)
 	{
 		CompilerError("0002","Cannot find the type of '" + acs->m_a->str() + "'");
-		return;
+        return RzCompileResult::aborted;
 	}
 
 	// When the left side evaluates to a variant and the right side is a call
@@ -221,7 +221,7 @@ void RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 	if (acs->m_b->m_nodeType == AEN_FUNCTIONCALL && Ta.getName() == "var")
 	{
 		compileVariantCall(acs->m_a, static_cast<aeNodeFunctionCall*>(acs->m_b));
-		return;
+        return RzCompileResult::ok;
 	}
 
 	aeExprContext exprContext;
@@ -237,7 +237,7 @@ void RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 		CompilerLog("Calling function on %s\n", Ta.str().c_str());
 
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
-		emitFunctionCall(Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
+        return emitFunctionCall(Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
 	}
 	else
 	{
@@ -251,6 +251,7 @@ void RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 			emitInstruction(OP_VARLOAD, m_module->identifierPoolIndex(((aeNodeIdentifier*)acs->m_b)->m_name));
 		}
 	}
+    return RzCompileResult::ok;
 }
 
 void RzCompiler::emitConditionalOp(aeNodeBinaryOperator* operation)

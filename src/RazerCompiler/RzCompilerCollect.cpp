@@ -1,4 +1,4 @@
-#include <RazerCompiler/AECompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <RazerRuntime/RzType.h>
 
 #include <RazerParser/AST/aeNodeFunction.h>
@@ -18,8 +18,7 @@ void RzCompiler::collect(RzSourceUnit& parseTree)
 void RzCompiler::collect(AEStructNode& cls)
 {
 	// Collect class data
-	RzType* typeInfo = new RzType();
-	typeInfo->m_name = cls.m_name;
+    RzType* typeInfo = new RzType(*m_module, cls.m_name, 0);
 	typeInfo->m_absoluteName = cls.m_name;
 	m_module->m_types.push_back(typeInfo);
 

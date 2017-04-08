@@ -31,14 +31,14 @@ typedef int aeFunctionId;
 
 class AEFunction;
 
-class aeEnum : public RzType
+class aeEnum
 {
 public:
 	std::map<std::string, int> table;
 
 	aeEnum()
 	{
-		m_typeKind = KindEnum;
+        //m_typeKind = KindEnum;
 	}
 };
 
@@ -124,8 +124,7 @@ public:
 	RzModule* resolveModule(const std::string& name);
 
 
-	/// Registers a native type to work with the language
-	void registerType(const std::string& name, std::size_t size, const std::string& namespc = "");
+    /// Registers a native type to work with the language
 	void registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method);
 	void registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod dest);
 	void registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest);

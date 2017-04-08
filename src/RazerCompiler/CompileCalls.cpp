@@ -1,4 +1,5 @@
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
+#include <Logger.h>
 
 AEFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn)
 {
@@ -20,7 +21,7 @@ AEFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn)
 }
 
 
-void RzCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
+RzCompileResult RzCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx)
 {
 	std::string finalSymbolName = fn->m_name;
 
@@ -45,42 +46,13 @@ void RzCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* 
 
 	}
 
-	CompilerLog("Function call %s\n", finalSymbolName.c_str());
-	AEFunction* func = m_env->getFunctionByName(finalSymbolName);
-	if (!func)
-	{
-		CompilerError("0002", "Calling an unknown function " + finalSymbolName);
-		return;
-	}
-
-	// First allocate some room for the return value
-	//emitInstruction(OP_MOV, fn->getReturnTypeSize());
-
-	// Emit the arguments
-	int i = 0;
-	for (auto it = fn->m_args.rbegin(); it != fn->m_args.rend(); ++it)
-	{
-		aeExprContext arg_ctx;
-		arg_ctx.rx_value = true;
-		arg_ctx.expectedResult = fn->getArgType(i);
-		emitExpressionEval((*it), arg_ctx);
-	}
-
-
-	int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
-
-	if (functionIndex == -1)
-		CompilerError("0002", "Could not find the function to call! " + finalSymbolName);
-
-	if (func->m_native)
-	{
-		emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
-		emitInstruction(OP_CALLMETHOD_NAT, functionIndex);
-	}
-	else
-	{
-		emitInstruction(OP_CALL, functionIndex);
-	}
+    if (beingCalledOn) {
+        return compileStaticObjectCall(beingCalledOn, *fn);
+    }
+    else {
+        RZLOG("Don't know how to call global functions yet.");
+        return RzCompileResult::aborted;
+    }
 }
 
 void RzCompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn)
@@ -106,4 +78,53 @@ void RzCompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn)
 void RzCompiler::emitLateBoundCall(aeNodeFunctionCall* fn)
 {
 	// Calls a function on a static object, if it supports it
+}
+
+RzCompileResult RzCompiler::compileStaticObjectCall(aeQualType obj, aeNodeFunctionCall& call) {
+
+    RzType* typeInfo = obj.getType();
+    if (!typeInfo) {
+        RZLOG("Calling function on unknown type");
+        return RzCompileResult::aborted;
+    }
+
+
+
+    AEFunction* func = typeInfo->getFunction(call.m_name);
+    if (!func)
+    {
+        RZLOG("error: '%s' is not a method of '%s'\n", call.m_name.c_str(), typeInfo->getName().c_str());
+        return RzCompileResult::aborted;
+    }
+
+    // First allocate some room for the return value
+    //emitInstruction(OP_MOV, fn->getReturnTypeSize());
+
+    // Emit the arguments
+    int i = 0;
+    for (auto it = call.m_args.rbegin(); it != call.m_args.rend(); ++it)
+    {
+        aeExprContext arg_ctx;
+        arg_ctx.rx_value = true;
+        arg_ctx.expectedResult = call.getArgType(i);
+        emitExpressionEval((*it), arg_ctx);
+    }
+
+
+    //int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
+
+    /*if (functionIndex == -1)
+        CompilerError("0002", "Could not find the function to call! " + finalSymbolName);
+
+    if (func->m_native)
+    {
+        emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
+        emitInstruction(OP_CALLMETHOD_NAT, functionIndex);
+    }
+    else
+    {
+        emitInstruction(OP_CALL, functionIndex);
+    }*/
+
+    return RzCompileResult::ok;
 }

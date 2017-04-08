@@ -179,14 +179,15 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
 	// pod_copy - simply copy N bytes from the loaded value into the target address
 
 	RzStackValue operand = ctx.pop_value();
-	RzStackValue addr = ctx.pop_value();
+    RzStackValue dest_addr = ctx.pop_value();
 	if (type == AEP_PTR)
 	{
-		memcpy(addr.ptr, &operand.ptr, 4);
+        RZLOG("Copied ptr %x to %x\n", operand.ptr, dest_addr.ptr);
+        memcpy(dest_addr.ptr, &operand.ptr, 4);
 	}
 	else
 	{
-		memcpy(addr.ptr, &operand.i32, 4);
+        memcpy(dest_addr.ptr, &operand.i32, 4);
 	}
 }
 
@@ -239,6 +240,8 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
 		RzStackValue val;
 		val.ptr = ctx.ebp - offset;
 		ctx.push_value(val);
+
+        RZLOG("Loaded ebp relative address (local) %x\n", val.ptr);
 	}
 	else if (addressMode == AEK_ESP)
 	{

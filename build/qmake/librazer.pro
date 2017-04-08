@@ -22,7 +22,6 @@ HEADERS += \
     ../../include/Rzr/RzModule.h \
     ../../include/Rzr/RzValue.h \
     ../../include/RzrAPI/RzBuilder.h \
-    ../../src/RazerCompiler/AECompiler.h \
     ../../src/RazerCompiler/aeCompilerConv.h \
     ../../src/RazerCompiler/aeCompilerErrorIds.h \
     ../../src/RazerCompiler/aeCompilerWarningIds.h \
@@ -91,11 +90,11 @@ HEADERS += \
     ../../src/STS/CPP/Compiler/CppBuilder.h \
     ../../src/Base/FileUtils.h \
     ../../src/RazerCompiler/Errors.h \
-    ../../src/RazerCompiler/SymbolTypename.h
+    ../../src/RazerCompiler/SymbolTypename.h \
+    ../../src/RazerCompiler/RzCompiler.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
-    ../../src/RazerCompiler/AECompiler.cpp \
     ../../src/RazerCompiler/aeCompilerConv.cpp \
     ../../src/RazerCompiler/AECompilerData.cpp \
     ../../src/RazerCompiler/CompileAllocation.cpp \
@@ -169,4 +168,5 @@ SOURCES += \
     ../../src/STS/CPP/Compiler/CppBuilder.cpp \
     ../../src/Base/FileUtils.cpp \
     ../../src/RazerCompiler/Errors.cpp \
-    ../../src/RazerCompiler/SymbolTypename.cpp
+    ../../src/RazerCompiler/SymbolTypename.cpp \
+    ../../src/RazerCompiler/RzCompiler.cpp

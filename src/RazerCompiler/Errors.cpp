@@ -1,5 +1,5 @@
 #include <RazerCompiler/Errors.h>
-#include <RazerCompiler/AECompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
 void rzcerr_unknown_type(const std::string& type)

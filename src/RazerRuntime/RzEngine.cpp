@@ -4,7 +4,7 @@
 #include <RazerVM/VirtualMachine.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/RzTokens.h>
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
 #include <RazerCore/ExportStd.h>
@@ -39,7 +39,11 @@ RzEngine::RzEngine()
 
 void RzEngine::registerPrimitive(const std::string& name, uint32_t size)
 {
-	RzType* type = new RzType(name, size);
+    auto mod = getModule("__");
+    if (!mod)
+        mod = createModule("__");
+
+    RzType* type = new RzType(*mod, name, size);
 	type->m_name = name;
 	type->m_absoluteName = name;
 	typedb.push_back(type);
@@ -247,29 +251,6 @@ RzModule* RzEngine::resolveModule(const std::string& name)
 	return nullptr;
 }
 
-void RzEngine::registerType(const std::string& name, std::size_t size, const std::string& namespc)
-{
-	RzType* objinfo = new RzType(name, size);
-
-	auto parser = RzParser::create(name, this);
-	std::string canonicalName = parser->Tok.text;
-	parser->getNextToken();
-	if (parser->Tok.text == "<")
-	{
-		parser->getNextToken();
-		while (parser->Tok.type == AETK_IDENTIFIER)
-		{
-			objinfo->m_templateParams.push_back(parser->Tok.text);
-			parser->getNextToken(); if (parser->Tok.type == AETK_COMMA) parser->getNextToken();
-		}
-	}
-
-	objinfo->m_id = typedb.size() + 1;
-	objinfo->is_native = true;
-	objinfo->m_absoluteName = canonicalName;
-	typedb.push_back(objinfo);
-}
-
 void RzEngine::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
 {
 	aeon_lexer lex; lex.tokenize(decl);
@@ -368,11 +349,11 @@ void RzEngine::registerTypedef(const std::string& from, const std::string& to)
 
 void RzEngine::registerEnum(const std::string& enumName)
 {
-	aeEnum* enumDef = new aeEnum;
-	enumDef->m_absoluteName = enumName;
-	enumDef->m_name = enumName;
-	m_enums.push_back(enumDef);
-	typedb.push_back(enumDef);
+    //aeEnum* enumDef = new aeEnum;
+//	enumDef->m_absoluteName = enumName;
+//	enumDef->m_name = enumName;
+//	m_enums.push_back(enumDef);
+//	typedb.push_back(enumDef);
 }
 
 void RzEngine::registerEnumValue(const std::string& enumName, const std::string& valueName, int value)
@@ -386,11 +367,11 @@ void RzEngine::registerEnumValue(const std::string& enumName, const std::string&
 
 aeEnum* RzEngine::getEnumByName(const std::string& name)
 {
-	for (auto& e : m_enums)
-	{
-		if (e->m_absoluteName == name)
-			return e;
-	}
+//	for (auto& e : m_enums)
+//	{
+//		if (e->m_absoluteName == name)
+//			return e;
+//	}
 	return nullptr;
 }
 

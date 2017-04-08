@@ -1,4 +1,4 @@
-#include <RazerCompiler/AECompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
 RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
@@ -22,44 +22,15 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
         return RzCompileResult::aborted;
 	}
 
-	if (T1.isVariant())
-	{
-		compileVarAssign(lhs, rhs);
-        return RzCompileResult::aborted;
+	if (T1.isVariant())	{
+        return compileVarAssign(lhs, rhs);
 	}
-
-	// Left hand gets loaded (Address of it)
-	emitLoadAddress(lhs);
-
-	// Right hand gets loaded (value)
-	aeExprContext exprContext;
-	exprContext.expectedResult = buildQualifiedType(lhs);
-	emitExpressionEval(rhs, exprContext);
-
-	if ((T1.getType() != T2.getType()) && canImplicitlyConvert(T2, T1))
-	{
-		m_typeSystem.performConversion(T2, T1, this);
-	}
-
-
-	int assignType = -1;
-	emitDebugPrint("ASSIGNING TO " + exprContext.expectedResult.str());
-	if (exprContext.expectedResult.m_handle)
-	{
-		assignType = AEP_PTR;
-	}
-	else
-	{
-		assignType = AEP_INT32;
-	}
-
-	// Finalize the assignment
-	emitInstruction(OP_SET, 0, 0, assignType);
-
-    return RzCompileResult::ok;
+    else {
+        return compileStaticAssign(*lhs, *rhs);
+    }
 }
 
-void RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
+RzCompileResult RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {
 	aeQualType varType = m_env->getTypeInfo("var");
 	aeQualType rhsType = buildQualifiedType(rhs);
@@ -83,7 +54,7 @@ void RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 		if (moduleIndex == -1)
 		{
 			RZLOG("Compiler error. Unresolved module\n");
-			return;
+            return RzCompileResult::aborted;
 		}
 
 		int typeIndex;
@@ -95,4 +66,42 @@ void RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 
 		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_OBJECT, moduleIndex, typeIndex);
 	}
+
+    return RzCompileResult::ok;
 }
+
+RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs) {
+
+    // Left hand gets loaded (Address of it)
+    emitLoadAddress(&lhs);
+
+    // Right hand gets loaded (value)
+    aeExprContext exprContext;
+    exprContext.expectedResult = buildQualifiedType(&lhs);
+    emitExpressionEval(&rhs, aeExprContext());
+
+    // Convert if required
+    /*if ((T1.getType() != T2.getType()) && canImplicitlyConvert(T2, T1))
+    {
+        m_typeSystem.performConversion(T2, T1, this);
+    }*/
+
+    // Generate actual assignment
+    int assignType = -1;
+    if (1)
+    {
+        assignType = AEP_PTR;
+    }
+    else
+    {
+        assignType = AEP_INT32;
+    }
+
+    emitDebugPrint("OP_SET gen " + std::to_string(assignType));
+
+    // Finalize the assignment
+    emitInstruction(OP_SET, 0, 0, assignType);
+
+    return RzCompileResult::ok;
+}
+

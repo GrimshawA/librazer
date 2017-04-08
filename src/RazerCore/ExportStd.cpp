@@ -54,8 +54,6 @@ void RegisterStd(RzEngine* ctx)
 		printf("VAR: %s\n", v.toString().c_str());
 	});
 
-	ctx->registerType("Sprite", sizeof(MySprite));
-
 	printf("Registered interface!\n");
 
 	RzModule* stdModule = ctx->createModule("std");

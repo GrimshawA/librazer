@@ -55,7 +55,7 @@ void AEObject::call(const std::string& name)
 		if (fn)
 		{
 			RzVirtualMachine vm;
-			vm.setContext(getType()->m_module->m_context);
+            vm.setContext(getType()->getModule()->m_context);
 			//		vm.call(fn);
 		}
 	}	

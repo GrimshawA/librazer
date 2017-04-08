@@ -140,7 +140,8 @@ void RzModule::registerGlobal(const std::string& sig, void* memory)
 
 void RzModule::registerType(const std::string& name, std::size_t size)
 {
-	RzType* typeInfo = new RzType(name, size);
+    RzType* typeInfo = new RzType(*this, name, size);
+
 	auto parser = RzParser::create(name, this->m_context);
 	std::string canonicalName = parser->Tok.text;
 	parser->getNextToken();

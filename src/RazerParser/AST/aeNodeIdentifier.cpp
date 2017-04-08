@@ -1,5 +1,5 @@
 #include <RazerParser/AST/aeNodeIdentifier.h>
-#include <RazerCompiler/aeCompiler.h>
+#include <RazerCompiler/RzCompiler.h>
 
 aeNodeIdentifier::aeNodeIdentifier()
 {
