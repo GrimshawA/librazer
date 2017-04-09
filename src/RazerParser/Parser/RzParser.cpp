@@ -108,6 +108,10 @@ AEStmtNode* RzParser::parseStatement()
         {
             return parseVariableDecl();
         }
+        else {
+            // we were on an identifier, this is an expression
+            return parseExpression();
+        }
     }
     default:
     {
@@ -1016,6 +1020,11 @@ aeNodeExpr* RzParser::parseExpression()
         {
             aeNodeExpr* primaryExpr = parsePrimaryExpression();
             leafexpr = primaryExpr;
+        }
+        else if (Tok.type == AETK_NEW)
+        {
+            aeNodeNew* node = parseNew();
+            leafexpr = node;
         }
         else if (Tok.type == AETK_INTLITERAL)
         {

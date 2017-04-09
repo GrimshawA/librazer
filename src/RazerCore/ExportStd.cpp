@@ -3,6 +3,7 @@
 #include <RazerCore/io/File.h>
 
 #include <RazerCore/container/Array.h>
+#include <RazerCore/container/String.h>
 
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
@@ -77,7 +78,7 @@ void RegisterWindow(RzModule* m)
 
 void RegisterIO(RzModule* m)
 {
-
+    registerString(m);
 }
 
 void RegisterNet(RzModule* m)

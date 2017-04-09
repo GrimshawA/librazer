@@ -91,7 +91,8 @@ HEADERS += \
     ../../src/RazerCompiler/SymbolTypename.h \
     ../../src/RazerCompiler/RzCompiler.h \
     ../../src/RazerVM/Executor/vm_dynamic.h \
-    ../../src/RazerVM/Executor/vm_calls.h
+    ../../src/RazerVM/Executor/vm_calls.h \
+    ../../src/RazerCore/container/String.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -169,4 +170,5 @@ SOURCES += \
     ../../src/Base/FileUtils.cpp \
     ../../src/RazerCompiler/Errors.cpp \
     ../../src/RazerCompiler/SymbolTypename.cpp \
-    ../../src/RazerCompiler/RzCompiler.cpp
+    ../../src/RazerCompiler/RzCompiler.cpp \
+    ../../src/RazerCore/container/String.cpp

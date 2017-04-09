@@ -45,7 +45,7 @@ void run_arkanoid()
         return;
     }
 
-    printf("ArkanoidApp size: %d\n", myObject->m_type->getSize());
+    printf("ArkanoidApp size: %d obj: %x\n", myObject->m_type->getSize(), myObject->m_obj);
 
     if (myObject)
     {

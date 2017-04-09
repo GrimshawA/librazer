@@ -202,7 +202,8 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
 	}
 	else if (addressMode == AEK_EBP)
 	{
-		dataPtr = ctx.ebp - offset;
+        dataPtr = ctx.ebp - offset;
+
 	}
 	else if (addressMode == AEK_ESP)
 	{
@@ -214,8 +215,10 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
 		if (kind == AEP_PTR)
 		{
 			RzStackValue v;
-			memcpy(&v.ptr, dataPtr, sizeof(void*));
+            memcpy(&v.ptr, dataPtr, sizeof(void*));
 			ctx.push_value(v);
+
+            RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
 		}
 		else
 		{
@@ -239,7 +242,7 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
 	{
 		RzStackValue val;
 		val.ptr = ctx.ebp - offset;
-		ctx.push_value(val);
+        ctx.push_value(val);
 
         RZLOG("Loaded ebp relative address (local) %x\n", val.ptr);
 	}

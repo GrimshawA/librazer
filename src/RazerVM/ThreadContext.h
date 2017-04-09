@@ -62,6 +62,10 @@ public:
 		return stack.size();
 	}
 
+    int relativeStackPointer() {
+        return stack.data() + stack.size() - 1 - esp;
+    }
+
 	void print_registers()
 	{
 		printf("[esp] %x : index %d\n", esp, stack.data() + stack.size() - esp);

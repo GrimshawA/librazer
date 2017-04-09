@@ -115,6 +115,9 @@ bool aeQualType::isPod() const
 
 bool aeQualType::isVariant() const
 {
+    if (!m_type)
+        return false;
+
 	return m_type->getSymbolName() == "var";
 }
 

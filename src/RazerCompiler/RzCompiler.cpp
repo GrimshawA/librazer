@@ -331,6 +331,7 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
     for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
         aeField fld;
         fld.name = clss->m_fields[i]->name;
+        fld.type = clss->m_fields[i]->type;
         typeInfo->m_fields.push_back(fld);
     }
 
@@ -341,7 +342,7 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
 		AEFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
         if (!fn)
             return RzCompileResult::aborted;
-	}  
+    }
 
 	for (std::size_t i = 0; i < clss->m_items.size(); ++i)
 	{
@@ -559,6 +560,8 @@ void RzCompiler::emitLambdaFunction(aeNodeFunction* function)
 RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
 {
 	push_scope();
+
+    RZLOG("TREE: %s\n", codeblock->str().c_str());
 
 	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{

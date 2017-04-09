@@ -2,13 +2,23 @@ import std
 
 class ArkanoidApp
 {
-	m_file: File 
+	m_file: File
+	m_name: String
 
 	function main() {
 		//Block b = new Block();
 
-		File s = new File();
-		s.close();
+		//File s = new File();
+		//s.close();
+
+		m_file = new File();
+
+		//m_file.close();
+		m_file.close();
+		m_file.erase();
+
+		m_name = new String();
+		m_name.size();
 	}
 
 	//function test() {

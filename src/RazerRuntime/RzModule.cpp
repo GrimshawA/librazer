@@ -218,7 +218,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	}
     m_functions.push_back(fn);
 
-    //RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
+    RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }
 
 void RzModule::registerField()

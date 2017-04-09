@@ -18,6 +18,9 @@ aeQualType aeNodeIdentifier::getQualifiedType(RzCompiler* c)
 	}
 
 	aeQualType qt = c->getVariable(m_name).type;
+    if (!qt.m_type) {
+        qt.m_type = c->m_env->getTypeInfo(qt.m_typeString);
+    }
 	return qt;
 }
 

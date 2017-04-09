@@ -9,6 +9,11 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 	aeQualType T1 = buildQualifiedType(lhs);
 	aeQualType T2 = buildQualifiedType(rhs);
 
+    if (!T1.m_typeString.empty() && !T1.m_type) {
+        // TODO: Do it right
+        T1.m_type = m_env->getTypeInfo(T1.m_typeString);
+    }
+
     if (!T2) {
         RZLOG("Unknown type right of the assignment: '%s'\n" , T2.m_typeString.c_str());
         return RzCompileResult::aborted;

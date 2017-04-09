@@ -1,5 +1,6 @@
 #include <RazerRuntime/RzType.h>
 #include <RazerVM/VirtualMachine.h>
+#include <Logger.h>
 
 RzType::RzType(RzModule& module, const std::string& _name, uint32_t _size)
 : m_module(module)
@@ -139,8 +140,10 @@ aeBindMethod RzType::getNativeFunction(const std::string& name)
 
 RzType::MethodInfo RzType::selectMethod(const std::string& name, const std::vector<aeQualType>& argsList) {
     for(auto& m : m_methods) {
-        if (m.name == name)
+        RZLOG("COMPARING %s %s\n", m.name.c_str(), name.c_str());
+        if (m.name == name) {
             return m;
+        }
     }
 
     return MethodInfo();

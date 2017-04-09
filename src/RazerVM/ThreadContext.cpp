@@ -55,7 +55,7 @@ std::vector<uint8_t> RzThreadContext::popMemory(int size)
 
 void RzThreadContext::pushObject(AEObject* obj)
 {
-	RZLOG("pushed %d bytes : object\n", sizeof(obj->m_obj));
+    RZLOG("pushed %d bytes : object %x\n", sizeof(obj->m_obj), obj->m_obj);
 	esp -= sizeof(obj->m_obj);
 	memcpy(esp, &obj->m_obj, sizeof(obj->m_obj));
 }

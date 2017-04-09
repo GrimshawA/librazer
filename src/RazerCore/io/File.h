@@ -29,6 +29,8 @@ namespace Rz{
 
 		int tell();
 
+        bool atEnd();
+
 
 	private:
 		FILE* m_file;

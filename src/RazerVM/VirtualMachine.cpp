@@ -148,6 +148,7 @@ int RzVirtualMachine::call(AEFunction* fn)
 
 	for (int i = argsMem.size() - 1; i >= 0; --i)
 	{
+        void* ptr = reinterpret_cast<void*>(argsMem[i].data());
 		m_mainContext.pushMemory(argsMem[i]);
 	}
 

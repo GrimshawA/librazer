@@ -158,6 +158,7 @@ AEObject* RzEngine::createObject(const std::string& typen)
 		{
 			AEObject* object = new AEObject();
 			object->m_obj = malloc(heap.type->getSize());
+            memset(object->m_obj, 0, heap.type->getSize());
 			object->m_type = heap.type;
 			RzVirtualMachine vm(this);
 			vm.callMethod(object, typen + "." + typen);

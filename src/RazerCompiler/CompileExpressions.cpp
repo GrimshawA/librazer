@@ -51,7 +51,11 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext e
 
 void RzCompiler::emitPushThis()
 {
-	emitInstruction(OP_PUSHTHIS);
+    // Find where in the stack frame the this ptr is and load it from there
+    // It means to load stack memory relative to the base pointer, found
+    // at offset the this resides in, plus its size (stack grows backwards)
+    VariableStorageInfo var = getVariable("this");
+    emitInstruction(OP_LOAD, AEK_EBP, var.offset + sizeof(void*), AEP_PTR);
 }
 
 void RzCompiler::loadVarRef(aeNodeExpr* e)
@@ -164,8 +168,8 @@ void RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	{
 //		emitInstruction(OP_LOAD, AEK_THIS, varStorage.type->getField(varStorage.name)->offset);
 		//printf("'' beiNOT DONEng loaded from this->\n");
-		emitPushThis();
-		emitInstruction(OP_LOADADDR, AEK_THIS, varStorage.offset, 0);
+        emitPushThis();
+        emitInstruction(OP_LOADADDR, AEK_THIS, varStorage.offset, 0);
 	}
 	else if (varStorage.mode == AE_VAR_GLOBAL)
 	{
