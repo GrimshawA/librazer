@@ -10,6 +10,10 @@ class RzString
 public:
     RzString();
 
+    void set(const std::string& content);
+
+    void print();
+
     int size();
 
 private:

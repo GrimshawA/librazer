@@ -101,6 +101,11 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeQualType obj, aeNodeFuncti
         return RzCompileResult::aborted;
     }
 
+    if (method.args.size() != call.m_args.size()) {
+        RZLOG("error: arguments list differ for '%s'. Expects %d, %d provided\n", call.m_name.c_str(), method.args.size(), call.m_args.size());
+        return RzCompileResult::aborted;
+    }
+
     auto argsResult = compileArgsPush(call.m_args);
     if (argsResult == RzCompileResult::aborted)
         return argsResult;

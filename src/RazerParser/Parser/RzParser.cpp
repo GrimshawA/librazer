@@ -1194,11 +1194,10 @@ void RzParser::parseTopLevel()
 
 }
 
-
 aeon_token RzParser::getNextToken()
 {
     if (Tok.type == AETK_EOF)
-        return Tok;;
+        return Tok;
 
     Tok = m_tokenizer->tokens[i++];
 

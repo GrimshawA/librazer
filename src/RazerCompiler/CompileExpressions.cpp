@@ -2,6 +2,7 @@
 #include <RazerVM/InstructionSet.h>
 #include <RazerVM/VirtualMachine.h>
 #include <Rzr/RzEngine.h>
+#include <Logger.h>
 
 #include <cassert>
 
@@ -327,7 +328,7 @@ void RzCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentE
 	{
 		if (varInfo.type.str() == "var"){
 			emitInstruction(OP_PUSHVAR, varInfo.offset);
-			printf(" Loading var: %s offset %d\n", varInfo.name.c_str(), varInfo.offset);
+            RZLOG(" Loading var: %s offset %d\n", varInfo.name.c_str(), varInfo.offset);
 			return;
 		}
 	}

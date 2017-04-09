@@ -167,6 +167,10 @@ void RzModule::registerType(const std::string& name, std::size_t size)
 void RzModule::registerTypeConstructor(const std::string& name, aeConstructorMethod constructor)
 {
 	auto typeInfo = getType(name);
+    if (!typeInfo) {
+        RZLOG("No such type %s\n", name.c_str());
+        return;
+    }
 
 	RzType::MethodInfo info;
 	info.constructorCallback = constructor;
@@ -199,7 +203,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
     m_nativeFunctions.push_back(wrapper);
     info.offset = m_nativeFunctions.size() - 1;
 
-	typeInfo->m_methods.push_back(info);
+
 
 	AEFunction fn;
 	fn.returnType = retType;
@@ -207,16 +211,19 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	fn.decl = name;
 	fn.fn = fnPtr;
 	fn.m_native = true;
-	parser.getNextToken(); parser.getNextToken();
+    parser.getNextToken();
+    parser.getNextToken();
 	while (parser.Tok.text != ")")
 	{
 		aeQualType paramType = parser.parseQualType();
 		fn.params.push_back(paramType);
+        info.args.push_back(paramType.str());
 		//printf("param %s\n", paramType.str().c_str());
 		if (parser.getNextToken().text != ",")
 			break;
 	}
     m_functions.push_back(fn);
+    typeInfo->m_methods.push_back(info);
 
     RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }

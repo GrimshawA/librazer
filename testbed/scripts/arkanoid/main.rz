@@ -19,6 +19,13 @@ class ArkanoidApp
 
 		m_name = new String();
 		m_name.size();
+
+		String s1 = new String();
+		String s2 = new String();
+		s2.set("Hello world");
+		s2.print();
+
+		m_file.close();
 	}
 
 	//function test() {

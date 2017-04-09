@@ -55,17 +55,18 @@ void aeon_lexer::tokenize(std::string src)
 		aeon_token token;
 		char LastChar = ' ';
 
+        // If i is already at the end, we give back the end of file token, which finishes the stream
+        int sourceEnd = program_source.size() - 1;
+        if (i >= sourceEnd)
+        {
+            token.type = AETK_EOF;
+            token.text = "EOF";
+            return token;
+        }
+
 		// we have room to work, skip whitespace
 		while (isspace(LastChar))
 			LastChar = program_source[++i];
-
-		// If i is already at the end, we give back the end of file token, which finishes the stream
-		if (i >= (program_source.size() - 1))
-		{
-			token.type = AETK_EOF;
-			token.text = "EOF";
-			return token;
-		}
 
 		// Check for // comments
 		if (LastChar == '/')
