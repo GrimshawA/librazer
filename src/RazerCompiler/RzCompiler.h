@@ -214,6 +214,11 @@ public:
     RzCompileResult compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info);
     RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*> args);
 
+    /// DEBUG HELPERS
+    /// Stack canaries will ensure the stack looks the same after an operation
+    void emitStackCanaryBegin();
+    void emitStackCanaryEnd();
+
 
     RzBuildReport* m_report;
 

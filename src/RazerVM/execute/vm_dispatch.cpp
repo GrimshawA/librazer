@@ -5,6 +5,7 @@
 #include <RazerVM/execute/vm_calls.cpp>
 #include <RazerVM/execute/vm_dynamic.cpp>
 #include <RazerVM/execute/vm_general.cpp>
+#include <RazerVM/execute/vm_debug.cpp>
 
 #define vm_start(x) case x:{
 #define vm_end break;}
@@ -200,8 +201,8 @@ void dispatch_execute(RzThreadContext& ctx)
 				RZLOG("TEST VALUE %d\n", inst.arg0);
 			vm_end
 
-				vm_start(OP_DEBUG)
-				vm_log("DEBUG", 7, ctx.engine->string_literals[inst.arg1].c_str());
+            vm_start(OP_DEBUG)
+                DoDebugOp(ctx, inst.arg0, inst.arg1);
 			vm_end
 
 				vm_start(OP_PUSHVAR)

@@ -561,16 +561,16 @@ RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
 {
 	push_scope();
 
-    RZLOG("TREE: %s\n", codeblock->str().c_str());
-
 	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{
+        emitStackCanaryBegin();
         auto ret = emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
         if (ret == RzCompileResult::aborted)
         {
             pop_scope();
             return ret;
         }
+        emitStackCanaryEnd();
 	}
 	
 	pop_scope();
