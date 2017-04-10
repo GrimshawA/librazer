@@ -1,3 +1,7 @@
+#include <RazerVM/ThreadContext.h>
+#include <RazerVM/InstructionSet.h>
+#include <Rzr/RzEngine.h>
+#include <Logger.h>
 
 inline static void DoAdd(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {

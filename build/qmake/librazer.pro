@@ -92,7 +92,8 @@ HEADERS += \
     ../../src/RazerCompiler/RzCompiler.h \
     ../../src/RazerVM/Executor/vm_dynamic.h \
     ../../src/RazerVM/Executor/vm_calls.h \
-    ../../src/RazerCore/container/String.h
+    ../../src/RazerCore/container/String.h \
+    ../../src/RazerVM/ExecDispatch.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -153,7 +154,6 @@ SOURCES += \
     ../../src/RazerRuntime/RzModule.cpp \
     ../../src/RazerRuntime/RzType.cpp \
     ../../src/RazerRuntime/RzValue.cpp \
-    ../../src/RazerVM/Executor/ExecDispatch.cpp \
     ../../src/RazerVM/InstructionSet.cpp \
     ../../src/RazerVM/StackFrame.cpp \
     ../../src/RazerVM/StackValue.cpp \
@@ -171,4 +171,12 @@ SOURCES += \
     ../../src/RazerCompiler/Errors.cpp \
     ../../src/RazerCompiler/SymbolTypename.cpp \
     ../../src/RazerCompiler/RzCompiler.cpp \
-    ../../src/RazerCore/container/String.cpp
+    ../../src/RazerCore/container/String.cpp \
+    ../../src/RazerVM/execute/vm_arithmetic.cpp \
+    ../../src/RazerVM/execute/vm_calls.cpp \
+    ../../src/RazerVM/execute/vm_debug.cpp \
+    ../../src/RazerVM/execute/vm_dispatch.cpp \
+    ../../src/RazerVM/execute/vm_dynamic.cpp \
+    ../../src/RazerVM/execute/vm_general.cpp \
+    ../../src/RazerVM/execute/vm_operators.cpp \
+    ../../src/RazerVM/execute/vm_threading.cpp

@@ -1,7 +1,6 @@
-#ifndef AEVmCalls_h__
-#define AEVmCalls_h__
-
 #include <Logger.h>
+#include <RazerVM/ThreadContext.h>
+#include <Rzr/RzEngine.h>
 
 static inline void DoCall(RzThreadContext& ctx, int functionIndex)
 {
@@ -32,5 +31,3 @@ static inline void DoNativeCall(RzThreadContext& ctx, int moduleIndex, int funct
     AEGeneric g; g.m_threadCtx = &ctx;
     ctx.engine->modules[moduleIndex]->m_nativeFunctions[functionIndex].f(g);
 }
-
-#endif // AEVmCalls_h__

@@ -1,5 +1,5 @@
 #include <RazerVM/VirtualMachine.h>
-#include <RazerVM/Executor/ExecDispatch.h>
+#include <RazerVM/ExecDispatch.h>
 #include <RazerVM/InstructionSet.h>
 
 #include <Rzr/RzEngine.h>
@@ -10,45 +10,38 @@
 
 // [API]
 
-RzVirtualMachine::RzVirtualMachine()
-{
+RzVirtualMachine::RzVirtualMachine() {
 	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
 }
 
-RzVirtualMachine::RzVirtualMachine(RzEngine* context)
-{
+RzVirtualMachine::RzVirtualMachine(RzEngine* context) {
 	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
 	m_ctx = context;
 	m_mainContext.engine = m_ctx;
 }
 
-void RzVirtualMachine::execute(int functionId)
-{
+void RzVirtualMachine::execute(int functionId) {
 
 }
 
-void RzVirtualMachine::executeAsync(int functionId)
-{
+void RzVirtualMachine::executeAsync(int functionId) {
 
 }
 
 // End of [API]
 
 
-RzValue RzVirtualMachine::call(RzValue obj, const std::string& functionName, AEValueList args)
-{
+RzValue RzVirtualMachine::call(RzValue obj, const std::string& functionName, AEValueList args) {
 	RzValue returnValue;
 
 	return returnValue;
 }
 
-RzModule* RzVirtualMachine::get_current_mod()
-{
+RzModule* RzVirtualMachine::get_current_mod() {
 	return m_mainContext.frames[m_mainContext.frames.size() - 1].module;
 }
 
-void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype)
-{
+void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype) {
 	m_mainContext.ebp = m_mainContext.esp;
 
 	m_mainContext.pushThisPtr(object->m_obj);
@@ -56,28 +49,23 @@ void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype
 	call(*object->getType()->getModule(), prototype.c_str());
 } 
 
-void RzVirtualMachine::callMethod(AEObject* object, uint32_t methodId)
-{
+void RzVirtualMachine::callMethod(AEObject* object, uint32_t methodId) {
 
 }
 
-void RzVirtualMachine::prepare(aeFunctionId function)
-{
+void RzVirtualMachine::prepare(aeFunctionId function) {
 
 }
 
-void RzVirtualMachine::pushThis(void* obj)
-{
+void RzVirtualMachine::pushThis(void* obj) {
 	m_mainContext.push_addr(obj);
 }
 
-void RzVirtualMachine::setContext(RzEngine* context)
-{
+void RzVirtualMachine::setContext(RzEngine* context) {
 	m_ctx = context;
 } 
 
-void printBits2(size_t const size, void const * const ptr)
-{
+void printBits2(size_t const size, void const * const ptr) {
 		unsigned char *b = (unsigned char*)ptr;
 		unsigned char byte;
 		int i, j;
@@ -94,8 +82,7 @@ void printBits2(size_t const size, void const * const ptr)
 		puts("");
 }
 
-void RzVirtualMachine::call(RzModule& module, const char* func)
-{
+void RzVirtualMachine::call(RzModule& module, const char* func) {
 	aeFunctionId functionId = 0;
 
 	AEFunction* function = m_ctx->getFunctionByName(func);
@@ -111,8 +98,7 @@ void RzVirtualMachine::call(RzModule& module, const char* func)
 	}
 }
 
-int RzVirtualMachine::call(AEFunction* fn)
-{
+int RzVirtualMachine::call(AEFunction* fn) {
 	if (!fn->m_compiled)
 	{
 		return 1;

@@ -2,9 +2,9 @@
 #include <RazerVM/ThreadContext.h>
 #include <RazerVM/ThreadHandler.h>
 
-#include <RazerVM/Executor/vm_calls.h>
-#include <RazerVM/Executor/vm_dynamic.h>
-#include <RazerVM/Executor/VmInstructions.h>
+#include <RazerVM/execute/vm_calls.cpp>
+#include <RazerVM/execute/vm_dynamic.cpp>
+#include <RazerVM/execute/vm_general.cpp>
 
 #define vm_start(x) case x:{
 #define vm_end break;}

@@ -1,6 +1,5 @@
-#ifndef VariantOps_h__
-#define VariantOps_h__
-
+#include <RazerVM/ThreadContext.h>
+#include <Rzr/RzModule.h>
 #include <Logger.h>
 
 #define TRACE_VM
@@ -210,5 +209,3 @@ inline void DoCompareV(RzThreadContext& ctx)
 	ctx.popVariant(a);
 	ctx.pushVariant(a == b);
 }
-
-#endif // VariantOps_h__
