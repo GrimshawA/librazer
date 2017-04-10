@@ -7,6 +7,16 @@
 class RzModule;
 class AEFunction;
 
+/*
+    Anatomy of the stack frame
+
+    ** stack **
+    0. this ptr
+    1. argument 1
+    2. argument 2
+    3. argument ...
+
+*/
 class RzStackFrame
 {
 public:

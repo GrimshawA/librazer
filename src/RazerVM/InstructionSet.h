@@ -127,6 +127,13 @@ enum AeonLiteralTypes
 	AEK_FLOAT
 };
 
+enum DebugEnums{
+    DBG_LOG,
+    DBG_STACKCANARYBEGIN,
+    DBG_STACKCANARYEND,
+    DBG_TRACE
+};
+
 /// Atom VM pointer type. Whenever stack operations that need arbitrary objects happen
 /// they use an objectref object.
 typedef void* atom_objectref;

@@ -147,11 +147,3 @@ RzCompileResult RzCompiler::compileArgsPush(const std::vector<aeNodeExpr*> args)
     }
     return RzCompileResult::ok;
 }
-
-void RzCompiler::emitStackCanaryBegin() {
-    emitInstruction(OP_DEBUG, 1);
-}
-
-void RzCompiler::emitStackCanaryEnd() {
-    emitInstruction(OP_DEBUG, 2);
-}

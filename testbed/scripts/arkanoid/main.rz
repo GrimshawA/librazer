@@ -6,15 +6,13 @@ class ArkanoidApp
 	m_name: String
 
 	function main() {
-		//Block b = new Block();
 
-		//File s = new File();
-		//s.close();
+		String name = new String();
 
-		m_file = new File();
+		//m_file = new File();
 
 		//m_file.close();
-		m_file.close();
+		/*m_file.close();
 		m_file.erase();
 
 		m_name = new String();
@@ -25,7 +23,7 @@ class ArkanoidApp
 		s2.set("Hello world");
 		s2.print();
 
-		m_file.close();
+		m_file.close();*/
 	}
 
 	//function test() {

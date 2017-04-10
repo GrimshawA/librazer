@@ -10,13 +10,20 @@ struct CanarySaveData {
 std::vector<CanarySaveData> s_canaryStack;
 
 static inline void DoDebugOp(RzThreadContext& ctx, int a, int b) {
-    if (a == 1) {
+
+    switch(a) {
+    case DBG_LOG: {
+        RZLOG("DEBUG: %s\n", ctx.engine->string_literals[b].c_str());
+        break;
+    }
+    case DBG_STACKCANARYBEGIN: {
         // canary begin
         CanarySaveData d;
         d.esp = ctx.relativeStackPointer();
         s_canaryStack.push_back(d);
+        break;
     }
-    else if (a == 2) {
+    case DBG_STACKCANARYEND: {
         // canary end
         if (s_canaryStack.empty()) {
             RZLOG("Canary end mismatch. No canaries left.\n");
@@ -30,9 +37,11 @@ static inline void DoDebugOp(RzThreadContext& ctx, int a, int b) {
         }
 
         s_canaryStack.pop_back();
+        break;
     }
-    else {
-        // debug log
-        RZLOG("DEBUG: %s\n", ctx.engine->string_literals[b].c_str());
+    case DBG_TRACE: {
+        RZLOG("VMTRACE: EBP %x ESP %d\n", ctx.ebp, ctx.relativeStackPointer());
+        break;
+    }
     }
 }

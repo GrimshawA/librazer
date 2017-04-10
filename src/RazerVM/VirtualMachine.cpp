@@ -12,12 +12,15 @@
 
 RzVirtualMachine::RzVirtualMachine() {
 	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
+
+    RZLOG("sizeof(RzStackValue) = %d\n", sizeof(RzStackValue));
 }
 
 RzVirtualMachine::RzVirtualMachine(RzEngine* context) {
 	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
 	m_ctx = context;
 	m_mainContext.engine = m_ctx;
+    RZLOG("sizeof(RzStackValue) = %d\n", sizeof(RzStackValue));
 }
 
 void RzVirtualMachine::execute(int functionId) {

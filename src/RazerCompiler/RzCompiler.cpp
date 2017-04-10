@@ -67,11 +67,6 @@ aeQualType RzCompiler::buildQualifiedType(aeNodeExpr* e)
 	return e->getQualifiedType(this);
 }
 
-void RzCompiler::emitDebugPrint(const std::string& message)
-{
-	emitInstruction(OP_DEBUG, 0, m_env->getStringLiteral(message));
-}
-
 uint32_t RzCompiler::emitInstruction(RzInstruction instr)
 {
 	m_module->m_code.push_back(instr);
@@ -559,21 +554,24 @@ void RzCompiler::emitLambdaFunction(aeNodeFunction* function)
 
 RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
 {
+    emitStackCanaryBegin();
 	push_scope();
 
 	for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
 	{
-        emitStackCanaryBegin();
+        emitDebugTrace();
         auto ret = emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
         if (ret == RzCompileResult::aborted)
         {
             pop_scope();
             return ret;
         }
-        emitStackCanaryEnd();
+
+        emitDebugTrace();
 	}
 	
 	pop_scope();
+    emitStackCanaryEnd();
 }
 
 RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt)
@@ -682,4 +680,20 @@ RzType* RzCompiler::evaluateType(const std::string& type_name)
 RzType* RzCompiler::evaluateType(AEStructNode* class_node)
 {
 	return class_node->m_typeInfo;
+}
+
+void RzCompiler::emitStackCanaryBegin() {
+    emitInstruction(OP_DEBUG, DBG_STACKCANARYBEGIN);
+}
+
+void RzCompiler::emitStackCanaryEnd() {
+    emitInstruction(OP_DEBUG, DBG_STACKCANARYEND);
+}
+
+void RzCompiler::emitDebugPrint(const std::string& message) {
+    emitInstruction(OP_DEBUG, DBG_LOG, m_env->getStringLiteral(message));
+}
+
+void RzCompiler::emitDebugTrace() {
+    emitInstruction(OP_DEBUG, DBG_TRACE);
 }

@@ -157,9 +157,6 @@ public:
     /// Evaluate which function fn is trying to call (derived from context)
     AEFunction* selectFunction(aeNodeFunctionCall* fn);
 
-    /// All the dirty tricks
-    void emitDebugPrint(const std::string& message);
-
     /// Regarding scope, tries to deduce if we know how to convert typeB to typeA
     bool canConvertType(RzType* typeA, RzType* typeB);
 
@@ -218,6 +215,8 @@ public:
     /// Stack canaries will ensure the stack looks the same after an operation
     void emitStackCanaryBegin();
     void emitStackCanaryEnd();
+    void emitDebugPrint(const std::string& message);
+    void emitDebugTrace();
 
 
     RzBuildReport* m_report;
