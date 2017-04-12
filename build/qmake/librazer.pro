@@ -93,7 +93,8 @@ HEADERS += \
     ../../src/RazerVM/Executor/vm_dynamic.h \
     ../../src/RazerVM/Executor/vm_calls.h \
     ../../src/RazerCore/container/String.h \
-    ../../src/RazerVM/ExecDispatch.h
+    ../../src/RazerVM/ExecDispatch.h \
+    ../../src/RazerCore/time/Timer.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -179,4 +180,5 @@ SOURCES += \
     ../../src/RazerVM/execute/vm_dynamic.cpp \
     ../../src/RazerVM/execute/vm_general.cpp \
     ../../src/RazerVM/execute/vm_operators.cpp \
-    ../../src/RazerVM/execute/vm_threading.cpp
+    ../../src/RazerVM/execute/vm_threading.cpp \
+    ../../src/RazerCore/time/Timer.cpp

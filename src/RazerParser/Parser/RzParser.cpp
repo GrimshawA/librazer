@@ -145,7 +145,7 @@ aeNodeBranch* RzParser::parseBranch()
     return branchNode;
 }
 
-void RzParser::startParse(aeon_lexer& lexer)
+bool RzParser::startParse(aeon_lexer& lexer)
 {
     root = new RzSourceUnit();
     root->m_name = "main";
@@ -159,6 +159,11 @@ void RzParser::startParse(aeon_lexer& lexer)
     /// Eventually we will arrive at the end of file, when all nested levels consume their tokens properly
     while (Tok.type != AETK_EOF)
     {
+        if (Tok.type == AETK_NEWLINE) {
+            getNextToken();
+            continue;
+        }
+
         if (Tok.type == AETK_FUNCTION)
         {
             aeNodeFunction* funcDecl = parseFunction();
@@ -187,13 +192,11 @@ void RzParser::startParse(aeon_lexer& lexer)
         }
         else if (Tok.type == AETK_IMPORT)
         {
-            getNextToken();
-            std::string name = Tok.text;
-            getNextToken();
-
-            aeNodeImport* node = new aeNodeImport();
-            node->symbol = name;
-            root->add(node);
+            auto impNode = parseImport();
+            if (!impNode) {
+                return false;
+            }
+            root->add(impNode);
         }
         else
         {
@@ -204,6 +207,8 @@ void RzParser::startParse(aeon_lexer& lexer)
             }
         }
     }
+
+    return true;
 }
 
 aeNodeNamespace* RzParser::parseNamespace()
@@ -297,6 +302,7 @@ void RzParser::parseClassBody(AEStructNode* classDeclNode)
     std::string currentDefaultAccessLevel = "public";
 
     getNextToken(); // get first token
+    skipNewlines();
 
     // Parse on element at a time until the end of class shows
     while (Tok.type != AETK_CLOSEBRACKET)
@@ -315,11 +321,17 @@ begin:
                 currentDefaultAccessLevel = visib;
                 printf("CHANGED DEFAULT VISIB\n");
                 getNextToken();
+                skipNewlines();
                 goto begin;
             }
             else
                 useVisib = visib;
         }
+
+        skipNewlines();
+
+        if (Tok.type == AETK_CLOSEBRACKET)
+            continue;
 
         if (Tok.type == AETK_FUNCTION)
         {
@@ -339,14 +351,15 @@ begin:
             field->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
             useVisib.clear();
             classDeclNode->m_fields.push_back(field);
-            printf("%d\n\n", classDeclNode->m_fields.size());
+
+            skipNewlines();
         }
     }
 }
 
 AEFieldNode* RzParser::parseStructField()
 {
-    AEFieldNode* f = new AEFieldNode;
+    std::unique_ptr<AEFieldNode> f(new AEFieldNode);
     f->name = Tok.text;
     getNextToken();
 
@@ -374,6 +387,23 @@ AEFieldNode* RzParser::parseStructField()
             // Parsing a type inferred property, with no init
             f->type.m_typeString = Tok.text;
             getNextToken();
+
+            if (Tok.type == AETK_NEWLINE || Tok.type == AETK_SEMICOLON) {
+                // we're done with the field
+                getNextToken();
+                return f.release();
+            }
+
+            // We can parse the initial value here
+            getNextToken(); //ignoring it now: TODO
+
+            if (Tok.type != AETK_NEWLINE && Tok.type != AETK_SEMICOLON) {
+                RZLOG("Expected ; or newline in declaration statement");
+                return nullptr;
+            }
+
+            getNextToken();
+            return f.release();
         }
         else {
             auto node = parsePropertyValue();
@@ -382,11 +412,7 @@ AEFieldNode* RzParser::parseStructField()
             f->deduceStaticType(ctx);
         }
     }
-
-
-       // f->type = ctx->getTypeInfo("var");
-
-    return f;
+    return f.release();
 }
 
 void RzParser::parseClassMember(AEStructNode* classDeclNode)
@@ -673,6 +699,24 @@ aeNodeNew* RzParser::parseNew()
     return node;
 }
 
+aeNodeImport* RzParser::parseImport() {
+    getNextToken();
+    std::string name = Tok.text;
+    getNextToken();
+
+    std::unique_ptr<aeNodeImport> node(new aeNodeImport());
+    node->symbol = name;
+
+    if (Tok.type != AETK_NEWLINE && Tok.type != AETK_SEMICOLON) {
+        RZLOG("error: expected ; or newline after import statement\n");
+        return nullptr;
+    }
+
+    getNextToken();
+
+    return node.release();
+}
+
 void RzParser::serialize(const std::string& filename)
 {
 
@@ -717,11 +761,11 @@ aeNodeBlock* RzParser::parseBlock()
 {
     aeNodeBlock* block = new aeNodeBlock;
     getNextToken();
+    skipNewlines();
 
     while (Tok.type != AETK_CLOSEBRACKET)
     {
         block->add(parseStatement());
-
 
         if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_IDENTIFIER) // facing a var declaration
         {
@@ -738,6 +782,7 @@ aeNodeBlock* RzParser::parseBlock()
 
         // get next so outer statement while can process
         getNextToken();
+        skipNewlines();
     }
     //	Log("Reached the end of block");
 
@@ -887,6 +932,14 @@ SymbolTypename RzParser::parseTypename()
     RZLOG("ST2 %s\n\n", st2.str().c_str());
 
     return st;
+}
+
+void RzParser::skipNewlines() {
+    if (Tok.type == AETK_NEWLINE) {
+        do {
+            getNextToken();
+        } while(Tok.type == AETK_NEWLINE);
+    }
 }
 
 aeNodeExpr* RzParser::parsePrimaryExpression()

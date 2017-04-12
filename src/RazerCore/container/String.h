@@ -12,6 +12,8 @@ public:
 
     void set(const std::string& content);
 
+    std::string toStdString();
+
     void print();
 
     int size();

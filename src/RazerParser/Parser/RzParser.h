@@ -72,7 +72,7 @@ public:
 		RzParser(const std::string& source);
 
 		void                     startGather(aeon_lexer& lexer);
-		void                     startParse(aeon_lexer& lexer);
+        bool                     startParse(aeon_lexer& lexer);
 
 		bool                     matchesVarDecl();
 
@@ -107,6 +107,7 @@ public:
 		std::vector<aeNodeExpr*> parseArgsList();
 		std::vector<aeNodeVarDecl*> parseParamsList();
 		aeNodeNew*               parseNew();
+        aeNodeImport*            parseImport();
 
 		void                     serialize(const std::string& filename);
 		void                     print();
@@ -118,6 +119,9 @@ public:
 		aeNodeFunctionCall* parseFunctionCall();
 
         SymbolTypename parseTypename();
+
+        // Skip the current token if its a newline and all the subsequent ones
+        void skipNewlines();
 
 		bool checkForFunction();
 

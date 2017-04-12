@@ -1,4 +1,5 @@
 #include <RzrAPI/RzBuilder.h>
+#include <Logger.h>
 
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerParser/Parser/RzParser.h>
@@ -34,7 +35,11 @@ bool RzBuilder::build(const Batch& b)
 		lexer.tokenize(source);
 
 		parser.ctx = &m_engine;
-		parser.startParse(lexer);
+        bool r = parser.startParse(lexer);
+        if (!r) {
+            RZLOG("Compilation finished with errors.\n");
+            return false;
+        }
 
 		parseTrees.push_back(parser.root);	
 	}

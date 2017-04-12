@@ -8,6 +8,7 @@ class ArkanoidApp
 	function main() {
 
 		String name = new String();
+		String name2 = new String();
 
 		//m_file = new File();
 

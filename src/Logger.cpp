@@ -7,12 +7,14 @@ void RzLogger::log(const std::string& msg)
     if (!fp) {
         fp = fopen("logs.txt", "w");
         fprintf(fp, "*** Logs Start ***\n");
+
     }
 
 #if defined LOGGING_ENABLED
 	printf("%s", msg.c_str());
 
     fprintf(fp, "%s", msg.c_str());
+    fflush(fp);
 #endif
 }
 

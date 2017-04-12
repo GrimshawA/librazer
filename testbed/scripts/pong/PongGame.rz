@@ -12,7 +12,7 @@ class PongGame {
 
 	height: int
 	width: int
-	timer: float 5.0f
+	timer: float 5
 	first: boolean true
 	
 	// pad
@@ -35,7 +35,7 @@ class PongGame {
 	scoreBottom: int
 	
 	function main() {
-		Window wnd = new Window();
+		/*Window wnd = new Window();
 		wnd.open();
 
 		Timer t = new Timer();
@@ -44,20 +44,20 @@ class PongGame {
 			update(t.restart());
 			paint(wnd);
 			wnd.display();
-		}
+		}*/
 	}
 
 	function update(float dt) {
-		timer = timer - dt;
+		/*timer = timer - dt;
 		if (timer < 0.f) {
 			timer = 5
 			timerEvent();
-		}
+		}*/
 	}
 
 	function timerEvent() {
 		// side walls
-		if (ballX < 0 || ballX > width - ballSize) {
+		/*if (ballX < 0 || ballX > width - ballSize) {
 			velX = -velX;
 		}
 		// top / down walls
@@ -98,12 +98,12 @@ class PongGame {
 		}
 		else if (delta < 0) {
 			topPadX -= (topPadX > 0) ? speed : 0;
-		}
+		}*/
 	}
 	
 	function paint(Window wnd) {
 		
-		height = wnd.height();
+		/*height = wnd.height();
 		width = wnd.width();
 
 		// initial positioning
@@ -122,12 +122,12 @@ class PongGame {
 		wnd.drawRect(topPadX, inset, padW, padH);
 	
 		// ball
-		wnd.drawEllipse(ballX, ballY, ballSize, ballSize);
+		wnd.drawRect(ballX, ballY, ballSize, ballSize);
 	
 		// scores
 		String scoreB = toString(scoreBottom);
 		String scoreT = toString(scoreTop);
 		wnd.drawString(scoreB, 10, height / 2);
-		wnd.drawString(scoreT, width - 50, height / 2);
+		wnd.drawString(scoreT, width - 50, height / 2);*/
 	}
 }

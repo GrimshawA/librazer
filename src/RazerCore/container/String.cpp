@@ -10,9 +10,9 @@ void registerString(RzModule* mod) {
     });
 
     mod->registerMethod("String", "void set(int32)", [](AEGeneric g){
-        //RzString* obj = (RzString*)g.unpack_ptr();
-       //std::string str = g.unpack_string();
-        //obj->set(str);
+        RzString* obj = (RzString*)g.unpack_ptr();
+        std::string str = g.unpack_string();
+        obj->set(str);
         //RZLOG("STRING SETTED TO %s\n", str.c_str());
     });
 
@@ -33,6 +33,10 @@ RzString::RzString() {
 
 void RzString::set(const std::string& content) {
     m_str = content;
+}
+
+std::string RzString::toStdString() {
+    return m_str;
 }
 
 void RzString::print() {
