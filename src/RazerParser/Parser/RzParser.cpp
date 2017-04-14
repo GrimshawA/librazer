@@ -1,5 +1,5 @@
 #include <RazerParser/Parser/RzParser.h>
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
 #include <Rzr/RzEngine.h>
 #include <RazerParser/AST/Nodes.h>
 #include <RazerParser/AST/aeNodeValue.h>
@@ -50,7 +50,7 @@ std::shared_ptr<RzSourceUnit> RzParser::getParseTree(const std::string& source, 
     if (source.empty())
         return nullptr;
 
-    aeon_lexer lexer;
+    RzTokenParser lexer;
     RzParser parser;
 
     lexer.tokenize(source);
@@ -69,7 +69,7 @@ RzParser::RzParser()
 RzParser::RzParser(const std::string& source)
 {
     pass = Gather;
-    m_customTokenizer.reset(new aeon_lexer());
+    m_customTokenizer.reset(new RzTokenParser());
     m_tokenizer = m_customTokenizer.get();
     m_tokenizer->tokenize(source);
 }
@@ -78,33 +78,33 @@ AEStmtNode* RzParser::parseStatement()
 {
     switch (Tok.type)
     {
-    case AETK_IF:
+    case RZTK_IF:
         return parseBranch();
         break;
 
-    case AETK_FOR:
+    case RZTK_FOR:
         return parseForLoop();
         break;
 
-    case AETK_WHILE:
+    case RZTK_WHILE:
         return parseWhileLoop();
         break;
 
-    case AETK_DO:
+    case RZTK_DO:
         return parseWhileLoop();
         break;
 
-    case AETK_RETURN:
+    case RZTK_RETURN:
         return parseReturn();
         break;
 
-    case AETK_OPENBRACKET:
+    case RZTK_OPENBRACKET:
         return parseBlock();
         break;
 
-    case AETK_IDENTIFIER:
+    case RZTK_IDENTIFIER:
     {
-        if (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE)
+        if (peekAhead(0).type == RZTK_IDENTIFIER || peekAhead(0).type == RZTK_HANDLE)
         {
             return parseVariableDecl();
         }
@@ -145,7 +145,7 @@ aeNodeBranch* RzParser::parseBranch()
     return branchNode;
 }
 
-bool RzParser::startParse(aeon_lexer& lexer)
+bool RzParser::startParse(RzTokenParser& lexer)
 {
     root = new RzSourceUnit();
     root->m_name = "main";
@@ -157,14 +157,14 @@ bool RzParser::startParse(aeon_lexer& lexer)
     Tok = getNextToken();
 
     /// Eventually we will arrive at the end of file, when all nested levels consume their tokens properly
-    while (Tok.type != AETK_EOF)
+    while (Tok.type != RZTK_EOF)
     {
-        if (Tok.type == AETK_NEWLINE) {
+        if (Tok.type == RZTK_NEWLINE) {
             getNextToken();
             continue;
         }
 
-        if (Tok.type == AETK_FUNCTION)
+        if (Tok.type == RZTK_FUNCTION)
         {
             aeNodeFunction* funcDecl = parseFunction();
             root->add(funcDecl);
@@ -172,17 +172,17 @@ bool RzParser::startParse(aeon_lexer& lexer)
             getNextToken(); // get the next thing for the parent while
         }
 
-        else if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
+        else if (Tok.type == RZTK_CLASS || Tok.type == RZTK_STRUCT)
         {
             AEStructNode* classDecl = parseClass();
             root->add(classDecl);
         }
-        else if (Tok.type == AETK_NAMESPACE)
+        else if (Tok.type == RZTK_NAMESPACE)
         {
             aeNodeNamespace* namespace_node = parseNamespace();
             root->add(namespace_node);
         }
-        else if (Tok.type == AETK_USING)
+        else if (Tok.type == RZTK_USING)
         {
             /*aeNodeUsing* using_node = new aeNodeUsing();
                 getNextToken();
@@ -190,7 +190,7 @@ bool RzParser::startParse(aeon_lexer& lexer)
                 getNextToken();
                 root->add(using_node);*/
         }
-        else if (Tok.type == AETK_IMPORT)
+        else if (Tok.type == RZTK_IMPORT)
         {
             auto impNode = parseImport();
             if (!impNode) {
@@ -218,21 +218,21 @@ aeNodeNamespace* RzParser::parseNamespace()
 
     getNextToken(); getNextToken();
 
-    while (Tok.type != AETK_CLOSEBRACKET)
+    while (Tok.type != RZTK_CLOSEBRACKET)
     {
-        if (Tok.type == AETK_FUNCTION)
+        if (Tok.type == RZTK_FUNCTION)
         {
             aeNodeFunction* funcDecl = parseFunction();
             namespace_node->add(funcDecl);
 
             getNextToken(); // get the next thing for the parent while
         }
-        else if (Tok.type == AETK_CLASS)
+        else if (Tok.type == RZTK_CLASS)
         {
             AEStructNode* classDecl = parseClass();
             namespace_node->add(classDecl);
         }
-        else if (Tok.type == AETK_NAMESPACE)
+        else if (Tok.type == RZTK_NAMESPACE)
         {
             aeNodeNamespace* namespace_node = parseNamespace();
             namespace_node->add(namespace_node);
@@ -261,7 +261,7 @@ AEStructNode* RzParser::parseClass()
     getNextToken();
 
     // Get the inheritance fathers
-    if (Tok.type == AETK_COLON)
+    if (Tok.type == RZTK_COLON)
     {
         do
         {
@@ -270,7 +270,7 @@ AEStructNode* RzParser::parseClass()
             // Let's get the first keyword, can be either a access level or the identifier
             getNextToken();
 
-            if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
+            if (Tok.type == RZTK_PUBLIC || Tok.type == RZTK_PROTECTED || Tok.type == RZTK_PRIVATE)
             {
                 cpi.visibility = TokToVisib(Tok.text);
                 cpi.parentClass = getNextToken().text;
@@ -284,7 +284,7 @@ AEStructNode* RzParser::parseClass()
             getNextToken();
 
             classDecl->parents.push_back(cpi);
-        } while (Tok.type == AETK_COMMA);
+        } while (Tok.type == RZTK_COMMA);
     }
 
     parseClassBody(classDecl);
@@ -305,18 +305,18 @@ void RzParser::parseClassBody(AEStructNode* classDeclNode)
     skipNewlines();
 
     // Parse on element at a time until the end of class shows
-    while (Tok.type != AETK_CLOSEBRACKET)
+    while (Tok.type != RZTK_CLOSEBRACKET)
     {
         std::string useVisib;
 
 begin:
 
-        if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PRIVATE || Tok.type == AETK_PROTECTED)
+        if (Tok.type == RZTK_PUBLIC || Tok.type == RZTK_PRIVATE || Tok.type == RZTK_PROTECTED)
         {
             std::string visib = Tok.text;
             getNextToken();
 
-            if (Tok.type == AETK_COLON)
+            if (Tok.type == RZTK_COLON)
             {
                 currentDefaultAccessLevel = visib;
                 printf("CHANGED DEFAULT VISIB\n");
@@ -330,10 +330,10 @@ begin:
 
         skipNewlines();
 
-        if (Tok.type == AETK_CLOSEBRACKET)
+        if (Tok.type == RZTK_CLOSEBRACKET)
             continue;
 
-        if (Tok.type == AETK_FUNCTION)
+        if (Tok.type == RZTK_FUNCTION)
         {
             aeNodeFunction* f = parseFunction();
             f->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
@@ -341,7 +341,7 @@ begin:
             useVisib.clear();
             classDeclNode->m_functions.emplace_back(f);
         }
-        else if (Tok.type == AETK_ENUM)
+        else if (Tok.type == RZTK_ENUM)
         {
             AEEnumNode* e = parseEnum();
             classDeclNode->m_enums.emplace_back(e);
@@ -363,11 +363,11 @@ AEFieldNode* RzParser::parseStructField()
     f->name = Tok.text;
     getNextToken();
 
-    if (Tok.type == AETK_COLON)
+    if (Tok.type == RZTK_COLON)
     {
         getNextToken();
 
-        if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_OPENBRACKET)
+        if (Tok.type == RZTK_IDENTIFIER && peekAhead(0).type == RZTK_OPENBRACKET)
         {
             std::string typeIdentifier = Tok.text;
             getNextToken();
@@ -383,12 +383,12 @@ AEFieldNode* RzParser::parseStructField()
                 printf("Field '%s': unknown type %s\n", f->name.c_str(), typeIdentifier.c_str());
             }
         }
-        else if (Tok.type == AETK_IDENTIFIER) {
+        else if (Tok.type == RZTK_IDENTIFIER) {
             // Parsing a type inferred property, with no init
             f->type.m_typeString = Tok.text;
             getNextToken();
 
-            if (Tok.type == AETK_NEWLINE || Tok.type == AETK_SEMICOLON) {
+            if (Tok.type == RZTK_NEWLINE || Tok.type == RZTK_SEMICOLON) {
                 // we're done with the field
                 getNextToken();
                 return f.release();
@@ -397,7 +397,7 @@ AEFieldNode* RzParser::parseStructField()
             // We can parse the initial value here
             getNextToken(); //ignoring it now: TODO
 
-            if (Tok.type != AETK_NEWLINE && Tok.type != AETK_SEMICOLON) {
+            if (Tok.type != RZTK_NEWLINE && Tok.type != RZTK_SEMICOLON) {
                 RZLOG("Expected ; or newline in declaration statement");
                 return nullptr;
             }
@@ -417,17 +417,17 @@ AEFieldNode* RzParser::parseStructField()
 
 void RzParser::parseClassMember(AEStructNode* classDeclNode)
 {
-    if (Tok.type == AETK_CLASS || Tok.type == AETK_STRUCT)
+    if (Tok.type == RZTK_CLASS || Tok.type == RZTK_STRUCT)
     {
         AEStructNode* classDecl = parseClass();
         classDeclNode->add(classDecl);
     }
-    else if (Tok.type == AETK_ENUM)
+    else if (Tok.type == RZTK_ENUM)
     {
         AEEnumNode* enum_node = parseEnum();
         classDeclNode->add(enum_node);
     }
-    else if (Tok.type == AETK_TYPEDEF)
+    else if (Tok.type == RZTK_TYPEDEF)
     {
         /*getNextToken();
         aeNodeTypedef* typedef_node = new aeNodeTypedef;
@@ -435,7 +435,7 @@ void RzParser::parseClassMember(AEStructNode* classDeclNode)
         typedef_node->typeB = parseQualType();
         classDeclNode->add(typedef_node);*/
     }
-    else if (Tok.type == AETK_IDENTIFIER && Tok.text == classDeclNode->m_name)
+    else if (Tok.type == RZTK_IDENTIFIER && Tok.text == classDeclNode->m_name)
     {
         // Constructor
         aeNodeFunction* constructorDecl = new aeNodeFunction();
@@ -451,7 +451,7 @@ void RzParser::parseClassMember(AEStructNode* classDeclNode)
         //Log("After constructor %s", Tok.text.c_str());
 
     }
-    else if (Tok.type == AETK_TILDE)
+    else if (Tok.type == RZTK_TILDE)
     {
         if (getNextToken().text == classDeclNode->m_name)
         {
@@ -465,7 +465,7 @@ void RzParser::parseClassMember(AEStructNode* classDeclNode)
             getNextToken();
         }
     }
-    else if (Tok.type == AETK_FUNCTION)
+    else if (Tok.type == RZTK_FUNCTION)
     {
         aeNodeFunction* funcDecl = parseFunction();
         funcDecl->is_method = true;
@@ -489,7 +489,7 @@ AEBaseNode* RzParser::parseSymbol()
     bool IsConst = false;
     std::vector<aeNodeVarDecl*> params;
 
-    if (Tok.type == AETK_PUBLIC || Tok.type == AETK_PROTECTED || Tok.type == AETK_PRIVATE)
+    if (Tok.type == RZTK_PUBLIC || Tok.type == RZTK_PROTECTED || Tok.type == RZTK_PRIVATE)
     {
         getNextToken();
     }
@@ -501,7 +501,7 @@ AEBaseNode* RzParser::parseSymbol()
     getNextToken();
 
     // Let's check if we got a function
-    if (Tok.type == AETK_OPENPAREN)
+    if (Tok.type == RZTK_OPENPAREN)
     {
         IsFunctionDecl = true;
         getNextToken();
@@ -509,14 +509,14 @@ AEBaseNode* RzParser::parseSymbol()
         getNextToken();
     }
 
-    if (Tok.type == AETK_CONST)
+    if (Tok.type == RZTK_CONST)
     {
         IsConst = true;
         getNextToken();
     }
 
     // If the brackets are opening, can only be a property or a function body definition
-    if (Tok.type == AETK_OPENBRACKET)
+    if (Tok.type == RZTK_OPENBRACKET)
     {
         if (IsFunctionDecl)
         {
@@ -531,7 +531,7 @@ AEBaseNode* RzParser::parseSymbol()
             getNextToken();
         }
     }
-    else if (Tok.type == AETK_SEMICOLON)
+    else if (Tok.type == RZTK_SEMICOLON)
     {
         // We are done early, this is a function prototype or a variable
         if (IsFunctionDecl)
@@ -559,7 +559,7 @@ AEBaseNode* RzParser::parseSymbol()
 
 bool RzParser::matchesVarDecl()
 {
-    if (Tok.type == AETK_IDENTIFIER && (peekAhead(0).type == AETK_IDENTIFIER || peekAhead(0).type == AETK_HANDLE || peekAhead(0).text == "<"))
+    if (Tok.type == RZTK_IDENTIFIER && (peekAhead(0).type == RZTK_IDENTIFIER || peekAhead(0).type == RZTK_HANDLE || peekAhead(0).text == "<"))
         return true;
 
     return false;
@@ -574,7 +574,7 @@ aeNodeFunction* RzParser::parseLambdaFunction()
     function->is_anon = true;
 
     getNextToken();
-    if(Tok.type == AETK_OPENBRACKET)
+    if(Tok.type == RZTK_OPENBRACKET)
     {
         function->m_block.reset(parseBlock());
     }
@@ -594,15 +594,15 @@ AEEnumNode* RzParser::parseEnum()
     enum_code->name = getNextToken().text;
     getNextToken(); getNextToken();
 
-    while (Tok.type != AETK_CLOSEBRACKET)
+    while (Tok.type != RZTK_CLOSEBRACKET)
     {
         std::string EnumMember = Tok.text;
-        if (getNextToken().type == AETK_COMMA)
+        if (getNextToken().type == RZTK_COMMA)
         {
             enum_code->addField(EnumMember);
             getNextToken();
         }
-        else if (Tok.type == AETK_CLOSEBRACKET)
+        else if (Tok.type == RZTK_CLOSEBRACKET)
         {
             enum_code->addField(EnumMember);
         }
@@ -635,7 +635,7 @@ aeQualType RzParser::parseQualType()
         type.m_templateArgs.push_back(templArg);
     }
 
-    if (Tok.type == AETK_HANDLE)
+    if (Tok.type == RZTK_HANDLE)
     {
         type.m_handle = true;
         getNextToken();
@@ -655,7 +655,7 @@ std::vector<aeNodeExpr*> RzParser::parseArgsList()
     {
         temp.push_back(argExpr);
 
-        if (Tok.type != AETK_COMMA)
+        if (Tok.type != RZTK_COMMA)
         {
             break;
         }
@@ -670,11 +670,11 @@ std::vector<aeNodeExpr*> RzParser::parseArgsList()
 std::vector<aeNodeVarDecl*> RzParser::parseParamsList()
 {
     std::vector<aeNodeVarDecl*> temp;
-    while (Tok.type != AETK_CLOSEPAREN)
+    while (Tok.type != RZTK_CLOSEPAREN)
     {
         aeNodeVarDecl* varexpr = parseVariableDecl();
         temp.push_back(varexpr);
-        if (Tok.type != AETK_COMMA)
+        if (Tok.type != RZTK_COMMA)
             break;
         else
             getNextToken();
@@ -684,7 +684,7 @@ std::vector<aeNodeVarDecl*> RzParser::parseParamsList()
 
 aeNodeNew* RzParser::parseNew()
 {
-    if (Tok.type != AETK_NEW)
+    if (Tok.type != RZTK_NEW)
         return nullptr;
 
     getNextToken();
@@ -707,7 +707,7 @@ aeNodeImport* RzParser::parseImport() {
     std::unique_ptr<aeNodeImport> node(new aeNodeImport());
     node->symbol = name;
 
-    if (Tok.type != AETK_NEWLINE && Tok.type != AETK_SEMICOLON) {
+    if (Tok.type != RZTK_NEWLINE && Tok.type != RZTK_SEMICOLON) {
         RZLOG("error: expected ; or newline after import statement\n");
         return nullptr;
     }
@@ -736,13 +736,13 @@ aeNodeFunction* RzParser::parseFunction()
     getNextToken();
     getNextToken();
 
-    while (Tok.type != AETK_CLOSEPAREN)
+    while (Tok.type != RZTK_CLOSEPAREN)
     {
         funcDecl->m_parameters = parseParamsList();
     }
     getNextToken();
 
-    if (Tok.type == AETK_ARROW)
+    if (Tok.type == RZTK_ARROW)
     {
         getNextToken();
 
@@ -763,11 +763,11 @@ aeNodeBlock* RzParser::parseBlock()
     getNextToken();
     skipNewlines();
 
-    while (Tok.type != AETK_CLOSEBRACKET)
+    while (Tok.type != RZTK_CLOSEBRACKET)
     {
         block->add(parseStatement());
 
-        if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_IDENTIFIER) // facing a var declaration
+        if (Tok.type == RZTK_IDENTIFIER && peekAhead(0).type == RZTK_IDENTIFIER) // facing a var declaration
         {
 
         }
@@ -819,7 +819,7 @@ aeNodeWhile* RzParser::parseWhileLoop()
 {
     aeNodeWhile* whileNode = new aeNodeWhile();
 
-    if (Tok.type == AETK_WHILE)
+    if (Tok.type == RZTK_WHILE)
     {
         whileNode->doWhile = false;
 
@@ -892,7 +892,7 @@ aeNodeFunctionCall* RzParser::parseFunctionCall()
     {
         funccall->add(argExpr);
 
-        if (peekAhead(0).type == AETK_COMMA)
+        if (peekAhead(0).type == RZTK_COMMA)
         {
             getNextToken();
         }
@@ -907,7 +907,7 @@ aeNodeFunctionCall* RzParser::parseFunctionCall()
 
     getNextToken();
 
-    if (Tok.type != AETK_EOF)
+    if (Tok.type != RZTK_EOF)
     {
         //Log("im on %s", Tok.text.c_str());
         //Log("parsed function call '%s'", funccall->funcName.c_str());
@@ -919,13 +919,13 @@ SymbolTypename RzParser::parseTypename()
 {
     SymbolTypename st;
     do {
-        if (Tok.type == AETK_DOT)
+        if (Tok.type == RZTK_DOT)
             getNextToken();
 
         std::string part = Tok.text;
         getNextToken();
         st.addPart(part);
-    } while(Tok.type == AETK_DOT);
+    } while(Tok.type == RZTK_DOT);
 
     SymbolTypename st2;
     st2.parse(st.str());
@@ -935,17 +935,17 @@ SymbolTypename RzParser::parseTypename()
 }
 
 void RzParser::skipNewlines() {
-    if (Tok.type == AETK_NEWLINE) {
+    if (Tok.type == RZTK_NEWLINE) {
         do {
             getNextToken();
-        } while(Tok.type == AETK_NEWLINE);
+        } while(Tok.type == RZTK_NEWLINE);
     }
 }
 
 aeNodeExpr* RzParser::parsePrimaryExpression()
 {
     aeNodeExpr* idnt = parseIdentityExpression();
-    if (Tok.type == AETK_DOT)
+    if (Tok.type == RZTK_DOT)
     {
         return parseMemberAccess(idnt);
     }
@@ -964,7 +964,7 @@ aeNodeAccessOperator* RzParser::parseMemberAccess(aeNodeExpr* left)
     dotOp->m_a->m_parentExpr = dotOp;
     dotOp->m_b->m_parentExpr = dotOp;
 
-    if (Tok.type == AETK_DOT)
+    if (Tok.type == RZTK_DOT)
     {
         return parseMemberAccess(dotOp);
     }
@@ -980,13 +980,13 @@ aeNodeExpr* RzParser::parseIdentityExpression()
 
     //printf("IDENTITY IS %s\n", name.c_str());
 
-    if (Tok.type == AETK_OPENPAREN)
+    if (Tok.type == RZTK_OPENPAREN)
     {
         aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
 
         getNextToken();
 
-        if (Tok.type != AETK_CLOSEPAREN)
+        if (Tok.type != RZTK_CLOSEPAREN)
         {
             fCall->m_args = parseArgsList();
         }
@@ -1009,11 +1009,11 @@ aeNodeExpr* RzParser::parseIdentityExpression()
 aeNodeExpr* RzParser::parseExpression()
 {
     // no way we can get a valid expression here
-    if (Tok.type == AETK_CLOSEPAREN || Tok.type == AETK_SEMICOLON || Tok.type == AETK_COMMA)
+    if (Tok.type == RZTK_CLOSEPAREN || Tok.type == RZTK_SEMICOLON || Tok.type == RZTK_COMMA)
         return nullptr;
 
     // The new X() expression
-    if (Tok.type == AETK_NEW)
+    if (Tok.type == RZTK_NEW)
     {
         aeNodeNew* node = parseNew();
         return node;
@@ -1022,7 +1022,7 @@ aeNodeExpr* RzParser::parseExpression()
     // var_a + var_b + 10 * 10 / 5 + var_c > var_d - var_e++ * (var_c - var_a)
 
     std::vector<aeNodeExpr*> operands;
-    std::vector<aeon_token> operators;
+    std::vector<RzToken> operators;
 
     do
     {
@@ -1037,21 +1037,21 @@ aeNodeExpr* RzParser::parseExpression()
         aeNodeUnaryOperator* unary_wrapper = nullptr;
 
         // Unary operators prefix
-        if (Tok.type == AETK_BINOP && Tok.text == "-")
+        if (Tok.type == RZTK_BINOP && Tok.text == "-")
         {
             unary_wrapper = new aeNodeUnaryOperator();
             unary_wrapper->OperatorString = "-";
             getNextToken();
         }
 
-        if (Tok.type == AETK_DECREMENT) // prefix decrement
+        if (Tok.type == RZTK_DECREMENT) // prefix decrement
         {
             unary_wrapper = new aeNodeUnaryOperator();
             unary_wrapper->OperatorString = "--";
             getNextToken();
         }
 
-        if (Tok.type == AETK_INCREMENT) // prefix increment
+        if (Tok.type == RZTK_INCREMENT) // prefix increment
         {
             unary_wrapper = new aeNodeUnaryOperator();
             unary_wrapper->OperatorString = "++";
@@ -1062,38 +1062,38 @@ aeNodeExpr* RzParser::parseExpression()
 
         // Operands
 
-        if (Tok.type == AETK_OPENPAREN)
+        if (Tok.type == RZTK_OPENPAREN)
         {
             getNextToken();
             leafexpr = parseExpression();
             //	Log("subexpr result: %s", leafexpr->exprstr().c_str());
             getNextToken();
         }
-        else if (Tok.type == AETK_IDENTIFIER)  // var or func call or any combination of them
+        else if (Tok.type == RZTK_IDENTIFIER)  // var or func call or any combination of them
         {
             aeNodeExpr* primaryExpr = parsePrimaryExpression();
             leafexpr = primaryExpr;
         }
-        else if (Tok.type == AETK_NEW)
+        else if (Tok.type == RZTK_NEW)
         {
             aeNodeNew* node = parseNew();
             leafexpr = node;
         }
-        else if (Tok.type == AETK_INTLITERAL)
+        else if (Tok.type == RZTK_INTLITERAL)
         {
             aeNodeInteger* expr = new aeNodeInteger;
             expr->value = atoi(Tok.text.c_str());
             leafexpr = expr;
             getNextToken();
         }
-        else if (Tok.type == AETK_FLOATLITERAL)
+        else if (Tok.type == RZTK_FLOATLITERAL)
         {
             aeNodeFloat* expr = new aeNodeFloat;
             expr->value = atof(Tok.text.c_str());
             leafexpr = expr;
             getNextToken();
         }
-        else if (Tok.type == AETK_STRINGLITERAL)
+        else if (Tok.type == RZTK_STRINGLITERAL)
         {
             aeNodeString* expr = new aeNodeString;
             expr->value = Tok.extract_stringliteral();
@@ -1110,7 +1110,7 @@ aeNodeExpr* RzParser::parseExpression()
 
         operands.push_back(leafexpr);
 
-    } while (Tok.type == AETK_BINOP);
+    } while (Tok.type == RZTK_BINOP);
 
     if (operands.size() == 1)
         return operands[0];
@@ -1149,7 +1149,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
 {
     aeNodeExpr* result_expr = nullptr;
 
-    aeon_token identifier = Tok;
+    RzToken identifier = Tok;
 
     // What's next? . or <
     getNextToken();
@@ -1173,7 +1173,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
         }*/
 
     bool IsFunctionCall = false;
-    if (Tok.type == AETK_OPENPAREN)
+    if (Tok.type == RZTK_OPENPAREN)
     {
         IsFunctionCall = true;
 
@@ -1194,7 +1194,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
         // Go to the first token of the expression
         getNextToken();
 
-        if (Tok.type != AETK_CLOSEPAREN)
+        if (Tok.type != RZTK_CLOSEPAREN)
         {
             funccall->m_args = parseArgsList();
             //getNextToken();
@@ -1226,7 +1226,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
             getNextToken();
         }*/
 
-    if (Tok.type == AETK_DOT)
+    if (Tok.type == RZTK_DOT)
     {
         result_expr = parseMemberAccess(result_expr);
     }
@@ -1237,7 +1237,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
 bool RzParser::checkForFunction()
 {
     // So, the statement is not started, getNextToken() should be returning the return type
-    return peekAhead(2).type == AETK_OPENPAREN;
+    return peekAhead(2).type == RZTK_OPENPAREN;
 }
 
 
@@ -1247,21 +1247,21 @@ void RzParser::parseTopLevel()
 
 }
 
-aeon_token RzParser::getNextToken()
+RzToken RzParser::getNextToken()
 {
-    if (Tok.type == AETK_EOF)
+    if (Tok.type == RZTK_EOF)
         return Tok;
 
     Tok = m_tokenizer->tokens[i++];
 
-    while (Tok.type == AETK_LINECOMMENT || Tok.type == AETK_MULTICOMMENT)
+    while (Tok.type == RZTK_LINECOMMENT || Tok.type == RZTK_MULTICOMMENT)
         Tok = getNextToken();
 
     return Tok;
 }
 
 /// Peeks ahead from 1 to N tokens
-aeon_token RzParser::peekAhead(int count)
+RzToken RzParser::peekAhead(int count)
 {
     return m_tokenizer->tokens[i + count];
 }

@@ -176,10 +176,10 @@ public:
 
     // Statement compilation
     RzCompileResult emitBlock(aeNodeBlock* codeblock);
-    void emitReturnCode(aeNodeReturn* ret);
-    void emitBranchCode(aeNodeBranch* cond);
-    void emitWhileLoop(aeNodeWhile* whileloop);
-    void emitForLoop(aeNodeFor* forloop);
+    RzCompileResult emitReturnCode(aeNodeReturn* ret);
+    RzCompileResult emitBranchCode(aeNodeBranch* cond);
+    RzCompileResult emitWhileLoop(aeNodeWhile* whileloop);
+    RzCompileResult emitForLoop(aeNodeFor* forloop);
     RzCompileResult compileVarDecl(const aeNodeVarDecl& varDecl);
 
     // Expression evaluation

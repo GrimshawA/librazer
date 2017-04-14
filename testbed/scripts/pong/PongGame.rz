@@ -35,16 +35,16 @@ class PongGame {
 	scoreBottom: int
 	
 	function main() {
-		/*Window wnd = new Window();
+		Window wnd = new Window();
 		wnd.open();
 
 		Timer t = new Timer();
 		while(wnd.running()) {
-			wnd.poll();
+			/*wnd.poll();
 			update(t.restart());
 			paint(wnd);
-			wnd.display();
-		}*/
+			wnd.display();*/
+		}
 	}
 
 	function update(float dt) {

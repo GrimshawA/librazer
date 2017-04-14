@@ -3,7 +3,7 @@
 
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerParser/Parser/RzParser.h>
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
 #include <Base/FileUtils.h>
 
 RzBuilder::RzBuilder(RzEngine& engine)
@@ -25,7 +25,7 @@ bool RzBuilder::build(const Batch& b)
 	// Prepass: collect all parse trees
 	for (int i = 0; i < b.files.size(); ++i)
 	{
-		aeon_lexer lexer;
+        RzTokenParser lexer;
 		RzParser parser;		
 		std::string source = getFileSource(b.files[i]);
 

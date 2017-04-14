@@ -1,66 +1,45 @@
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
+#include <Base/StringUtils.h>
 #include <Logger.h>
 
-#include <string>
-#include <locale>
-
-void myReplace(std::string& str,
-               const std::string& oldStr,
-               const std::string& newStr)
-{
-    std::string::size_type pos = 0u;
-    while ((pos = str.find(oldStr, pos)) != std::string::npos){
-        str.replace(pos, oldStr.length(), newStr);
-        pos += newStr.length();
-    }
-}
-
-void EscapeString(std::string& in)
-{
-    myReplace(in, "\\n", "\n");
-}
-
-aeon_lexer::aeon_lexer()
-    : i(-1)
-{
+RzTokenParser::RzTokenParser()
+    : i(-1) {
 
 }
 
-void aeon_lexer::tokenize(std::string src)
-{
+std::vector<RzToken>& RzTokenParser::getTokens() {
+    return tokens;
+}
 
-    //Log("Tokenizing src %s", src.c_str());
+void RzTokenParser::clear() {
+    tokens.clear();
+}
 
+void RzTokenParser::tokenize(const std::string& src) {
     if (src.empty())
-    {
-        //Log("Lexer: Empty string");
         return;
-    }
 
     program_source = src;
     i = -1;
 
-    aeon_token token = getToken();
-    while (token.type != AETK_EOF)
-    {
+    RzToken token = getToken();
+    while (token.type != RZTK_EOF) {
         tokens.push_back(token);
         token = getToken();
     }
     tokens.push_back(token); // push the eof
 }
 
-aeon_token aeon_lexer::getToken()
-{
+RzToken RzTokenParser::getToken() {
     // We are at program_source[i], let's get the next token
 
-    aeon_token token;
+    RzToken token;
     char LastChar = ' ';
 
     // If i is already at the end, we give back the end of file token, which finishes the stream
     int sourceEnd = program_source.size() - 1;
-    if (i >= sourceEnd)
-    {
-        token.type = AETK_EOF;
+    if (i >= sourceEnd) {
+        token.type = RZTK_EOF;
         token.text = "EOF";
         return token;
     }
@@ -68,7 +47,7 @@ aeon_token aeon_lexer::getToken()
     LastChar = program_source[++i];
 
     if (LastChar == EOF) {
-        token.type = AETK_EOF;
+        token.type = RZTK_EOF;
         token.text = "EOF";
         return token;
     }
@@ -85,40 +64,34 @@ aeon_token aeon_lexer::getToken()
     if (LastChar == '\n') {
         // tokenize every line for optional ;
         token.text = "\n";
-        token.type = AETK_NEWLINE;
+        token.type = RZTK_NEWLINE;
         return token;
     }
 
     // Check for // comments
-    if (LastChar == '/')
-    {
-        if (program_source[i + 1] == '/')
-        {
+    if (LastChar == '/') {
+        if (program_source[i + 1] == '/') {
             token.text = "/";
 
             // we have a comment
-            while ((LastChar = program_source[++i]) != '\n')
-            {
+            while ((LastChar = program_source[++i]) != '\n') {
                 token.text += LastChar;
             }
 
-            token.type = AETK_LINECOMMENT;
+            token.type = RZTK_LINECOMMENT;
             return token;
         }
-        else if (program_source[i + 1] == '*')
-        {
+        else if (program_source[i + 1] == '*') {
             i++;
             LastChar = program_source[++i];
 
             //Log("First char %c", LastChar);
 
             bool foundPair = false;
-            while (!foundPair)
-            {
-                if (LastChar == '*' && program_source[i + 1] == '/')
-                {
+            while (!foundPair) {
+                if (LastChar == '*' && program_source[i + 1] == '/') {
                     ++i;
-                    token.type = AETK_MULTICOMMENT;
+                    token.type = RZTK_MULTICOMMENT;
                     return token;
                 }
 
@@ -127,153 +100,130 @@ aeon_token aeon_lexer::getToken()
         }
     }
 
-    if (LastChar == '(')
-    {
+    if (LastChar == '(') {
         token.text = "(";
-        token.type = AETK_OPENPAREN;
+        token.type = RZTK_OPENPAREN;
         return token;
     }
 
-    if (LastChar == ')')
-    {
+    if (LastChar == ')') {
         token.text = ")";
-        token.type = AETK_CLOSEPAREN;
+        token.type = RZTK_CLOSEPAREN;
         return token;
     }
 
-    if (LastChar == ':')
-    {
+    if (LastChar == ':') {
         token.text = ":";
-        token.type = AETK_COLON;
+        token.type = RZTK_COLON;
         return token;
     }
 
-    if (LastChar == '.')
-    {
+    if (LastChar == '.') {
         token.text = ".";
-        token.type = AETK_DOT;
+        token.type = RZTK_DOT;
         return token;
     }
 
-    if (LastChar == '[')
-    {
+    if (LastChar == '[') {
         token.text = "[";
-        token.type = AETK_OPENSQBRACKET;
+        token.type = RZTK_OPENSQBRACKET;
         return token;
     }
 
-    if (LastChar == ']')
-    {
+    if (LastChar == ']') {
         token.text = "]";
-        token.type = AETK_CLOSESQBRACKET;
+        token.type = RZTK_CLOSESQBRACKET;
         return token;
     }
 
-    if (LastChar == ',')
-    {
+    if (LastChar == ',') {
         token.text = ",";
-        token.type = AETK_COMMA;
+        token.type = RZTK_COMMA;
         return token;
     }
 
-    if (LastChar == '~')
-    {
+    if (LastChar == '~') {
         token.text = "~";
-        token.type = AETK_TILDE;
+        token.type = RZTK_TILDE;
         return token;
     }
 
-    if (LastChar == '{')
-    {
+    if (LastChar == '{') {
         token.text = "{";
-        token.type = AETK_OPENBRACKET;
+        token.type = RZTK_OPENBRACKET;
         return token;
     }
 
-    if (LastChar == '}')
-    {
+    if (LastChar == '}') {
         token.text = "}";
-        token.type = AETK_CLOSEBRACKET;
+        token.type = RZTK_CLOSEBRACKET;
         return token;
     }
 
-    if (LastChar == ';')
-    {
-        token.type = AETK_SEMICOLON;
+    if (LastChar == ';') {
+        token.type = RZTK_SEMICOLON;
         token.text = ";";
         return token;
     }
 
-    if (LastChar == '@')
-    {
-        token.type = AETK_HANDLE;
+    if (LastChar == '@') {
+        token.type = RZTK_HANDLE;
         token.text = "@";
         return token;
     }
 
-    if (LastChar == '#')
-    {
-        token.type = AETK_DIRECTIVE;
+    if (LastChar == '#') {
+        token.type = RZTK_DIRECTIVE;
         token.text = "#";
         return token;
     }
 
-    if (LastChar == '-')
-    {
-        if (program_source[i + 1] == '>')
-        {
+    if (LastChar == '-') {
+        if (program_source[i + 1] == '>') {
             i++;
-            token.type = AETK_ARROW;
+            token.type = RZTK_ARROW;
             token.text = "->";
             return token;
         }
     }
 
-    if (LastChar == '+')
-    {
-        if (program_source[i + 1] == '+')
-        {
+    if (LastChar == '+') {
+        if (program_source[i + 1] == '+') {
             i++;
-            token.type = AETK_INCREMENT;
+            token.type = RZTK_INCREMENT;
             token.text = "++";
             return token;
         }
     }
 
-    if (LastChar == '-')
-    {
-        if (program_source[i + 1] == '-')
-        {
+    if (LastChar == '-') {
+        if (program_source[i + 1] == '-') {
             i++;
-            token.type = AETK_DECREMENT;
+            token.type = RZTK_DECREMENT;
             token.text = "--";
             return token;
         }
     }
 
-    if (LastChar == '=' && program_source[i + 1] == '>')
-    {
-        token.type = AETK_LAMBDA;
+    if (LastChar == '=' && program_source[i + 1] == '>') {
+        token.type = RZTK_LAMBDA;
         token.text = "=>";
         return token;
     }
 
     // operators
     if (LastChar == '>' || LastChar == '<' || LastChar == '+' || LastChar == '-' || LastChar == '*' || LastChar == '/' || LastChar == '^' ||
-            LastChar == '=' || LastChar == '%')
-    {
-        token.type = AETK_BINOP;
+            LastChar == '=' || LastChar == '%') {
+        token.type = RZTK_BINOP;
         token.text += LastChar;
         return token;
     }
 
     // We're facing a string literal
-    if (LastChar == '"')
-    {
-        token.type = AETK_STRINGLITERAL;
+    if (LastChar == '"') {
+        token.type = RZTK_STRINGLITERAL;
         token.text += LastChar;
-        while ((LastChar = program_source[++i]) != '"')
-        {
+        while ((LastChar = program_source[++i]) != '"') {
             token.text += LastChar;
         }
         token.text += LastChar;
@@ -282,35 +232,28 @@ aeon_token aeon_lexer::getToken()
     }
 
     // We're looking at a number literal
-    if (isdigit(LastChar))
-    {
+    if (isdigit(LastChar)) {
         token.text += LastChar;
-        while (isdigit((LastChar = program_source[++i])))
-        {
+        while (isdigit((LastChar = program_source[++i]))) {
             token.text += LastChar;
         }
         // digits are over, it can still be a floating point literal
-        if (LastChar == '.')
-        {
+        if (LastChar == '.') {
             token.text += ".";
 
             // read the remaining digits for the floating point number
-            while (isdigit((LastChar = program_source[++i])))
-            {
+            while (isdigit((LastChar = program_source[++i]))) {
                 token.text += LastChar;
             }
-            if (LastChar == 'f') // Float
-            {
-                token.type = AETK_FLOATLITERAL;
+            if (LastChar == 'f') {
+                token.type = RZTK_FLOATLITERAL;
             }
-            else // double
-            {
-                token.type = AETK_FLOATLITERAL;
+            else {
+                token.type = RZTK_FLOATLITERAL;
             }
         }
-        else
-        {
-            token.type = AETK_INTLITERAL;
+        else {
+            token.type = RZTK_INTLITERAL;
         }
 
         --i;
@@ -319,117 +262,114 @@ aeon_token aeon_lexer::getToken()
     }
 
     // let's find identifier
-    if (isalpha(LastChar))
-    {
+    if (isalpha(LastChar)) {
         token.text += LastChar;
 
-        while (isalpha((LastChar = program_source[++i])) || isdigit(LastChar) || LastChar == '_')
-        {
+        while (isalpha((LastChar = program_source[++i])) || isdigit(LastChar) || LastChar == '_') {
             token.text += LastChar;
         }
 
         // backtrack i by 1, so the next character read is the relevant item
         i--;
         if (token.text == "class")
-            token.type = AETK_CLASS;
+            token.type = RZTK_CLASS;
         else if (token.text == "struct")
-            token.type = AETK_STRUCT;
+            token.type = RZTK_STRUCT;
         else if (token.text == "null" || token.text == "nullptr")
-            token.type = AETK_NULL;
+            token.type = RZTK_NULL;
         else if (token.text == "fn")
-            token.type = AETK_FUNCTION;
+            token.type = RZTK_FUNCTION;
         else if (token.text == "function")
-            token.type = AETK_FUNCTION;
+            token.type = RZTK_FUNCTION;
         else if (token.text == "enum")
-            token.type = AETK_ENUM;
+            token.type = RZTK_ENUM;
         else if (token.text == "union")
-            token.type = AETK_UNION;
+            token.type = RZTK_UNION;
         else if (token.text == "cast")
-            token.type = AETK_CAST;
+            token.type = RZTK_CAST;
         else if (token.text == "if")
-            token.type = AETK_IF;
+            token.type = RZTK_IF;
         else if (token.text == "else")
-            token.type = AETK_ELSE;
+            token.type = RZTK_ELSE;
         else if (token.text == "while")
-            token.type = AETK_WHILE;
+            token.type = RZTK_WHILE;
         else if (token.text == "do")
-            token.type = AETK_DO;
+            token.type = RZTK_DO;
         else if (token.text == "const")
-            token.type = AETK_CONST;
+            token.type = RZTK_CONST;
         else if (token.text == "new")
-            token.type = AETK_NEW;
+            token.type = RZTK_NEW;
         else if (token.text == "delete")
-            token.type = AETK_DELETE;
+            token.type = RZTK_DELETE;
         else if (token.text == "sizeof")
-            token.type = AETK_SIZEOF;
+            token.type = RZTK_SIZEOF;
         else if (token.text == "typeof")
-            token.type = AETK_TYPEOF;
+            token.type = RZTK_TYPEOF;
         else if (token.text == "operator")
-            token.type = AETK_OPERATOR;
+            token.type = RZTK_OPERATOR;
         else if (token.text == "for")
-            token.type = AETK_FOR;
+            token.type = RZTK_FOR;
         else if (token.text == "foreach")
-            token.type = AETK_FOREACH;
+            token.type = RZTK_FOREACH;
         else if (token.text == "asm")
-            token.type = AETK_ASM;
+            token.type = RZTK_ASM;
         else if (token.text == "auto")
-            token.type = AETK_AUTO;
+            token.type = RZTK_AUTO;
         else if (token.text == "true")
-            token.type = AETK_TRUE;
+            token.type = RZTK_TRUE;
         else if (token.text == "false")
-            token.type = AETK_FALSE;
+            token.type = RZTK_FALSE;
         else if (token.text == "return")
-            token.type = AETK_RETURN;
+            token.type = RZTK_RETURN;
         else if (token.text == "public")
-            token.type = AETK_PUBLIC;
+            token.type = RZTK_PUBLIC;
         else if (token.text == "protected")
-            token.type = AETK_PROTECTED;
+            token.type = RZTK_PROTECTED;
         else if (token.text == "private")
-            token.type = AETK_PRIVATE;
+            token.type = RZTK_PRIVATE;
         else if (token.text == "namespace")
-            token.type = AETK_NAMESPACE;
+            token.type = RZTK_NAMESPACE;
         else if (token.text == "using")
-            token.type = AETK_USING;
+            token.type = RZTK_USING;
         else if (token.text == "break")
-            token.type = AETK_BREAK;
+            token.type = RZTK_BREAK;
         else if (token.text == "goto")
-            token.type = AETK_GOTO;
+            token.type = RZTK_GOTO;
         else if (token.text == "continue")
-            token.type = AETK_CONTINUE;
+            token.type = RZTK_CONTINUE;
         else if (token.text == "as")
-            token.type = AETK_AS;
+            token.type = RZTK_AS;
         else if (token.text == "in")
-            token.type = AETK_IN;
+            token.type = RZTK_IN;
         else if (token.text == "switch")
-            token.type = AETK_SWITCH;
+            token.type = RZTK_SWITCH;
         else if (token.text == "case")
-            token.type = AETK_CASE;
+            token.type = RZTK_CASE;
         else if (token.text == "default")
-            token.type = AETK_DEFAULT;
+            token.type = RZTK_DEFAULT;
         else if (token.text == "static")
-            token.type = AETK_STATIC;
+            token.type = RZTK_STATIC;
         else if (token.text == "typedef")
-            token.type = AETK_TYPEDEF;
+            token.type = RZTK_TYPEDEF;
         else if (token.text == "and")
-            token.type = AETK_AND;
+            token.type = RZTK_AND;
         else if (token.text == "is")
-            token.type = AETK_IS;
+            token.type = RZTK_IS;
         else if (token.text == "isnt")
-            token.type = AETK_ISNOT;
+            token.type = RZTK_ISNOT;
         else if (token.text == "not")
-            token.type = AETK_NOT;
+            token.type = RZTK_NOT;
         else if (token.text == "import")
-            token.type = AETK_IMPORT;
+            token.type = RZTK_IMPORT;
         else
-            token.type = AETK_IDENTIFIER;
+            token.type = RZTK_IDENTIFIER;
         return token;
     }
     return token;
 }
 
-void aeon_lexer::print() {
-    for (auto& t : tokens)
-    {
-        //Log("Token: %s", t.text.c_str());
+void RzTokenParser::print() {
+    for (auto& t : tokens) {
+        RZLOG("Token: %s\n", t.text.c_str());
     }
 }

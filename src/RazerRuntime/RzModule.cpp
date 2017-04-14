@@ -1,7 +1,7 @@
 #include <Rzr/RzModule.h>
 #include <Rzr/RzEngine.h>
 #include <RazerParser/Parser/RzParser.h>
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
 #include <Logger.h>
 
 RzModule::RzModule()
@@ -152,10 +152,10 @@ void RzModule::registerType(const std::string& name, std::size_t size)
 	if (parser->Tok.text == "<")
 	{
 		parser->getNextToken();
-		while (parser->Tok.type == AETK_IDENTIFIER)
+		while (parser->Tok.type == RZTK_IDENTIFIER)
 		{
 			typeInfo->m_templateParams.push_back(parser->Tok.text);
-			parser->getNextToken(); if (parser->Tok.type == AETK_COMMA) parser->getNextToken();
+			parser->getNextToken(); if (parser->Tok.type == RZTK_COMMA) parser->getNextToken();
 		}
 	}
 
@@ -185,7 +185,7 @@ void RzModule::registerTypeDestructor()
 
 void RzModule::registerMethod(const std::string& name, const std::string& sig, aeBindMethod fnPtr)
 {
-	aeon_lexer lex; lex.tokenize(sig);
+	RzTokenParser lex; lex.tokenize(sig);
 	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
 
 	aeQualType retType = parser.parseQualType();

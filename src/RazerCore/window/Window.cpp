@@ -67,7 +67,7 @@ void Window::drawString(const std::string& str, int x, int y) {
 }
 
 bool Window::running() {
-	return false;
+    return true;
 }
 
 void Window::display() {

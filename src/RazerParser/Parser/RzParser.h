@@ -3,7 +3,7 @@
 
 #include <RazerParser/AST/Nodes.h>
 #include <Rzr/RzValue.h>
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
 #include <RazerCompiler/SymbolTypename.h>
 
 #include <vector>
@@ -54,9 +54,9 @@ public:
 
 		int           pass;
 		int           i = 0;
-		aeon_lexer*   m_tokenizer;
-		std::unique_ptr<aeon_lexer> m_customTokenizer; ///< When we manage our own
-		aeon_token    Tok;              ///< Current token cursor
+        RzTokenParser*   m_tokenizer;
+        std::unique_ptr<RzTokenParser> m_customTokenizer; ///< When we manage our own
+        RzToken    Tok;              ///< Current token cursor
 		RzEngine* ctx;              ///< The context of the application/library
 		RzSourceUnit* root;
 		RzValue*   mDataValue;
@@ -71,12 +71,12 @@ public:
 		/// Create with a custom tokenizer
 		RzParser(const std::string& source);
 
-		void                     startGather(aeon_lexer& lexer);
-        bool                     startParse(aeon_lexer& lexer);
+        void                     startGather(RzTokenParser& lexer);
+        bool                     startParse(RzTokenParser& lexer);
 
 		bool                     matchesVarDecl();
 
-		void                     parseValue(aeon_lexer& lexer, RzValue& rootValue);
+        void                     parseValue(RzTokenParser& lexer, RzValue& rootValue);
 		aeNodeValue*             parsePropertyValue(); ///< Parses any of the language's values in form property: <value>
 		AEStmtNode*         parseStatement();
 		aeNodeBranch*            parseBranch();
@@ -130,8 +130,8 @@ public:
 //private:
 
 	/// Peeks ahead from 1 to N tokens
-	aeon_token peekAhead(int count);
+    RzToken peekAhead(int count);
 
-	aeon_token getNextToken();
+    RzToken getNextToken();
 };
 #endif // aeon_parser_h__

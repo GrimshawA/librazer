@@ -4,6 +4,7 @@
 
 #include <RazerCore/container/Array.h>
 #include <RazerCore/container/String.h>
+#include <RazerCore/time/Timer.h>
 
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
@@ -32,6 +33,8 @@ void RegisterStd(RzEngine* ctx)
 
 	RzModule* stdModule = ctx->createModule("std");
 	registerFile(stdModule, "File");
+
+    RzTimer::registerApi(stdModule);
 
 	VariantArray::registerApi(stdModule);
 	Window::registerApi(stdModule);

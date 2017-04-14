@@ -58,7 +58,6 @@ HEADERS += \
     ../../src/RazerParser/AST/Nodes.h \
     ../../src/RazerParser/AST/RzSourceUnit.h \
     ../../src/RazerParser/Parser/RzParser.h \
-    ../../src/RazerParser/Parser/RzTokens.h \
     ../../src/RazerParser/TypeDesc.h \
     ../../src/RazerRuntime/aeBindingHelper.h \
     ../../src/RazerRuntime/aeClosure.h \
@@ -94,7 +93,10 @@ HEADERS += \
     ../../src/RazerVM/Executor/vm_calls.h \
     ../../src/RazerCore/container/String.h \
     ../../src/RazerVM/ExecDispatch.h \
-    ../../src/RazerCore/time/Timer.h
+    ../../src/RazerCore/time/Timer.h \
+    ../../src/Base/StringUtils.h \
+    ../../src/RazerParser/Parser/Token.h \
+    ../../src/RazerParser/Parser/TokenParser.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -140,7 +142,6 @@ SOURCES += \
     ../../src/RazerParser/Parser/RzDocument.cpp \
     ../../src/RazerParser/Parser/RzParser.cpp \
     ../../src/RazerParser/Parser/RzParserData.cpp \
-    ../../src/RazerParser/Parser/RzTokens.cpp \
     ../../src/RazerParser/TypeDesc.cpp \
     ../../src/RazerRuntime/aeBindingHelper.cpp \
     ../../src/RazerRuntime/aeClosure.cpp \
@@ -181,4 +182,7 @@ SOURCES += \
     ../../src/RazerVM/execute/vm_general.cpp \
     ../../src/RazerVM/execute/vm_operators.cpp \
     ../../src/RazerVM/execute/vm_threading.cpp \
-    ../../src/RazerCore/time/Timer.cpp
+    ../../src/RazerCore/time/Timer.cpp \
+    ../../src/Base/StringUtils.cpp \
+    ../../src/RazerParser/Parser/Token.cpp \
+    ../../src/RazerParser/Parser/TokenParser.cpp

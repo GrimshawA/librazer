@@ -1,8 +1,6 @@
 #ifndef Logger_h__
 #define Logger_h__
 
-#define LOGGING_ENABLED 0
-
 #include <string>
 
 class RzLogger

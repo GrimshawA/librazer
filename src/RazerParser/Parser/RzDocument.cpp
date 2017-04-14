@@ -1,6 +1,6 @@
 #include <Rzr/RzDocument.h>
 #include <Rzr/RzEngine.h>
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <Rzr/RzValue.h>
 
@@ -17,7 +17,7 @@ RzDocument::~RzDocument()
 
 void RzDocument::parse(const std::string& source)
 {
-	aeon_lexer lexer;
+	RzTokenParser lexer;
 	RzParser parser;
 	
 	lexer.tokenize(source);

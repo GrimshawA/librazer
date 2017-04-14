@@ -3,7 +3,7 @@
 #include <RazerRuntime/AEObject.h>
 #include <RazerVM/VirtualMachine.h>
 #include <RazerParser/Parser/RzParser.h>
-#include <RazerParser/Parser/RzTokens.h>
+#include <RazerParser/Parser/TokenParser.h>
 #include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
@@ -99,7 +99,7 @@ void RzEngine::init_all()
 
 void RzEngine::quick_build(const std::string& file)
 {
-	aeon_lexer lexer;
+	RzTokenParser lexer;
 	RzParser parser;
 	RzCompiler compiler;
 	std::string source = getFileSource(file);
@@ -125,7 +125,7 @@ void RzEngine::quick_build(const std::string& file)
 
 RzValue RzEngine::readValue(const std::string& filename)
 {
-	aeon_lexer lexer;
+	RzTokenParser lexer;
 	RzParser parser;
 	std::string src = getFileSource(filename);
 
@@ -255,7 +255,7 @@ RzModule* RzEngine::resolveModule(const std::string& name)
 
 void RzEngine::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
 {
-	aeon_lexer lex; lex.tokenize(decl);
+	RzTokenParser lex; lex.tokenize(decl);
 	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
 	auto typeInfo = getTypeInfo(typeName);
@@ -287,7 +287,7 @@ void RzEngine::registerTypeMethod(const std::string& typeName, const std::string
 
 void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)
 {
-	aeon_lexer lex; lex.tokenize(decl);
+	RzTokenParser lex; lex.tokenize(decl);
 	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
 
 	AEFunction* fn = new AEFunction;

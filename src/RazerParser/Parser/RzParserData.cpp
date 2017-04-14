@@ -14,7 +14,7 @@ RzValue ToValue(aeNodeValue* value)
 	return r;
 }
 
-void RzParser::parseValue(aeon_lexer& lexer, RzValue& rootValue)
+void RzParser::parseValue(RzTokenParser& lexer, RzValue& rootValue)
 {
 	if (lexer.tokens.size() == 0)
 	{
@@ -28,7 +28,7 @@ void RzParser::parseValue(aeon_lexer& lexer, RzValue& rootValue)
 
 	Tok = getNextToken();
 
-	while (Tok.type != AETK_EOF)
+    while (Tok.type != RZTK_EOF)
 	{
 		rootValue = parseDataValue();
 	}
@@ -41,7 +41,7 @@ RzValue RzParser::parseDataValue()
 	// we are on the first token of a data definition
 
 	std::string ObjectType;
-	if (Tok.type == AETK_IDENTIFIER)
+    if (Tok.type == RZTK_IDENTIFIER)
 	{
 		ObjectType = Tok.text;
 		getNextToken();
@@ -50,9 +50,9 @@ RzValue RzParser::parseDataValue()
 
 	// Found a member-of property
 	std::vector<std::string> ObjectSubProperties;
-	if (Tok.type == AETK_DOT)
+    if (Tok.type == RZTK_DOT)
 	{
-		while (Tok.type == AETK_DOT)
+        while (Tok.type == RZTK_DOT)
 		{
 			getNextToken();
 			ObjectSubProperties.push_back(Tok.text);
@@ -61,14 +61,14 @@ RzValue RzParser::parseDataValue()
 	}
 
 	// Property assigned
-	if (Tok.type == AETK_COLON)
+    if (Tok.type == RZTK_COLON)
 	{
 		getNextToken();
 
 		RzValue val = parseProperty();
 		objectValue.setValue(ObjectType, val);
 	}
-	else if (Tok.type == AETK_OPENBRACKET)
+    else if (Tok.type == RZTK_OPENBRACKET)
 	{
 		// Parsing: Object Body
 		printf("BODY BEGIN\n");
@@ -82,7 +82,7 @@ RzValue RzParser::parseDataValue()
 			std::string identifier = Tok.text;
 			getNextToken(); //into :
 
-			if (Tok.type == AETK_COLON)
+            if (Tok.type == RZTK_COLON)
 			{
 				getNextToken();
 
@@ -108,7 +108,7 @@ RzValue RzParser::parseDataValue()
 
 	}
 
-	if (Tok.type == AETK_COMMA || Tok.type == AETK_SEMICOLON)
+    if (Tok.type == RZTK_COMMA || Tok.type == RZTK_SEMICOLON)
 	{
 		getNextToken();
 	}
@@ -122,15 +122,15 @@ RzValue RzParser::parseDataObjectBody()
 	RzValue obj;
 	getNextToken();
 
-	while (Tok.type != AETK_CLOSEBRACKET)
+    while (Tok.type != RZTK_CLOSEBRACKET)
 	{
                // TODO ERROR: EOF Reached before matching brace
-               if(Tok.type == AETK_EOF)
+               if(Tok.type == RZTK_EOF)
                    return obj;
 
 		std::string identifier = Tok.text;
 		getNextToken(); 
-		if (Tok.type == AETK_COLON)
+        if (Tok.type == RZTK_COLON)
 		{
 			getNextToken();
 			RzValue v = parseProperty();
@@ -138,7 +138,7 @@ RzValue RzParser::parseDataObjectBody()
 
 			print2("parsed property for " + identifier);
 		}
-		else if (Tok.type == AETK_OPENBRACKET)
+        else if (Tok.type == RZTK_OPENBRACKET)
 		{
 			RzValue nestedObj = parseDataObjectBody();
 		}
@@ -151,7 +151,7 @@ RzValue RzParser::parseDataObjectBody()
 
 RzValue RzParser::parseProperty()
 {
-	if (Tok.type == AETK_IDENTIFIER && peekAhead(0).type == AETK_OPENBRACKET)
+    if (Tok.type == RZTK_IDENTIFIER && peekAhead(0).type == RZTK_OPENBRACKET)
 	{
 		// Object value, like myproperty: Obj {}
 		std::string identifier = Tok.text;
@@ -160,19 +160,19 @@ RzValue RzParser::parseProperty()
 		obj.setValue("typename", RzValue(identifier));
 		return obj;
 	}
-	if (Tok.type == AETK_STRINGLITERAL || Tok.type == AETK_IDENTIFIER)
+    if (Tok.type == RZTK_STRINGLITERAL || Tok.type == RZTK_IDENTIFIER)
 	{
 		std::string text = Tok.extract_stringliteral();
 		getNextToken();
 		return RzValue(text);
 	}
-	if (Tok.type == AETK_INTLITERAL)
+    if (Tok.type == RZTK_INTLITERAL)
 	{
 		std::string text = Tok.text;
 		getNextToken();
 		return RzValue(atoi(text.c_str()));
 	}
-	if (Tok.type == AETK_OPENSQBRACKET)
+    if (Tok.type == RZTK_OPENSQBRACKET)
 	{
 		return parseArrayValue();
 	}
@@ -184,20 +184,20 @@ aeNodeValue* RzParser::parsePropertyValue()
 {
 	aeNodeValue* returnValue = nullptr;
 
-	if (Tok.type == AETK_OPENSQBRACKET)
+    if (Tok.type == RZTK_OPENSQBRACKET)
 	{
 		getNextToken();
 
 		aeNodeArray* arrayValue = new aeNodeArray;
 
-		if (Tok.type != AETK_CLOSESQBRACKET)
+        if (Tok.type != RZTK_CLOSESQBRACKET)
 		{
 			do
 			{
 				aeNodeValue* element = parsePropertyValue();
 				arrayValue->addElement(element);
 
-				if (Tok.type == AETK_COMMA)
+                if (Tok.type == RZTK_COMMA)
 					getNextToken();
 				else break;
 
@@ -208,7 +208,7 @@ aeNodeValue* RzParser::parsePropertyValue()
 
 		returnValue = arrayValue;
 	}
-	else if (Tok.type == AETK_OPENBRACKET)
+    else if (Tok.type == RZTK_OPENBRACKET)
 	{
 		aeNodeFunction* fn = new aeNodeFunction;
 		fn->m_block.reset(parseBlock());
@@ -232,19 +232,19 @@ aeNodeValue* RzParser::parsePropertyValue()
 
 RzValue RzParser::parseArrayValue()
 {
-	PARSE_EXPECTS(AETK_OPENSQBRACKET, "missing [");
+    PARSE_EXPECTS(RZTK_OPENSQBRACKET, "missing [");
 	
 	RzValue arrayValue = RzValue::makeArray();
 
 	getNextToken();
 
 	int i = 0;
-	while (Tok.type != AETK_CLOSESQBRACKET && Tok.type != AETK_EOF)
+    while (Tok.type != RZTK_CLOSESQBRACKET && Tok.type != RZTK_EOF)
 	{
 		RzValue elem = parseProperty();
 		arrayValue.setValue(i++, elem);
 
-		if (Tok.type != AETK_COMMA)
+        if (Tok.type != RZTK_COMMA)
 			break;
                 else
                     getNextToken();
