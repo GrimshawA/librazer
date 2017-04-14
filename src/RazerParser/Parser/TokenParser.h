@@ -28,10 +28,19 @@ public:
 private:
     RzToken getToken();
 
+    struct SourceCursor
+    {
+        int line;
+        int col;
+    };
+
 public:
     std::string             program_source;
     int                     i;
-    std::vector<RzToken> tokens;
+    std::vector<RzToken>    tokens;
+
+private:
+    SourceCursor            m_cursor;
 };
 
 #endif // RZTOKENS_H__

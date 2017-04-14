@@ -21,6 +21,8 @@ void RzTokenParser::tokenize(const std::string& src) {
 
     program_source = src;
     i = -1;
+    m_cursor.line = 0;
+    m_cursor.col = 0;
 
     RzToken token = getToken();
     while (token.type != RZTK_EOF) {
@@ -63,6 +65,8 @@ RzToken RzTokenParser::getToken() {
 
     if (LastChar == '\n') {
         // tokenize every line for optional ;
+
+        m_cursor.line += 1;
         token.text = "\n";
         token.type = RZTK_NEWLINE;
         return token;
@@ -264,6 +268,7 @@ RzToken RzTokenParser::getToken() {
     // let's find identifier
     if (isalpha(LastChar)) {
         token.text += LastChar;
+        token.pos = i;
 
         while (isalpha((LastChar = program_source[++i])) || isdigit(LastChar) || LastChar == '_') {
             token.text += LastChar;

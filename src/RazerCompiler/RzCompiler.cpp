@@ -397,7 +397,7 @@ void RzCompiler::emitClassDestructors(RzType* classType, AEStructNode* classNode
 
 void RzCompiler::throwError(const std::string& errorCode, const std::string& message)
 {
-    m_reporter.emitLog("error C" + errorCode + ": " + message);
+    //m_reporter.emitLog("error C" + errorCode + ": " + message);
 
     if (m_currentFunction)
     {

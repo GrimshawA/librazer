@@ -77,7 +77,6 @@ HEADERS += \
     ../../src/RazerVM/ThreadContext.h \
     ../../src/RazerVM/ThreadHandler.h \
     ../../src/RazerVM/VirtualMachine.h \
-    ../../src/BuildReport.h \
     ../../src/DebugDefs.h \
     ../../src/Logger.h \
     ../../src/RazerCore/window/SDLWindowImpl.h \
@@ -96,7 +95,8 @@ HEADERS += \
     ../../src/RazerCore/time/Timer.h \
     ../../src/Base/StringUtils.h \
     ../../src/RazerParser/Parser/Token.h \
-    ../../src/RazerParser/Parser/TokenParser.h
+    ../../src/RazerParser/Parser/TokenParser.h \
+    ../../src/RazerCompiler/BuildReport.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -162,7 +162,6 @@ SOURCES += \
     ../../src/RazerVM/ThreadContext.cpp \
     ../../src/RazerVM/ThreadHandler.cpp \
     ../../src/RazerVM/VirtualMachine.cpp \
-    ../../src/BuildReport.cpp \
     ../../src/Logger.cpp \
     ../../src/RazerCore/window/SDLWindowImpl.cpp \
     ../../src/RazerVM/Debugger/Debugger.cpp \
@@ -185,4 +184,5 @@ SOURCES += \
     ../../src/RazerCore/time/Timer.cpp \
     ../../src/Base/StringUtils.cpp \
     ../../src/RazerParser/Parser/Token.cpp \
-    ../../src/RazerParser/Parser/TokenParser.cpp
+    ../../src/RazerParser/Parser/TokenParser.cpp \
+    ../../src/RazerCompiler/BuildReport.cpp

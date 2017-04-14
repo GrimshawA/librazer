@@ -5,7 +5,7 @@
 #include <RazerParser/AST/Nodes.h>
 #include <RazerCompiler/aeCompilerConv.h>
 #include <Rzr/RzModule.h>
-#include <BuildReport.h>
+#include <RazerCompiler/BuildReport.h>
 
 #include <vector>
 #include <stack>

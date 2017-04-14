@@ -1,7 +1,7 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/Errors.h>
+#include <RazerCompiler/BuildReport.h>
 #include <Logger.h>
-#include <BuildReport.h>
 
 RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 {
@@ -87,7 +87,7 @@ RzCompileResult RzCompiler::compileNew(aeNodeNew& newExpr)
 
 	if (newExpr.m_instanceType.getType() == nullptr)
 	{
-		m_report->emitCompilerError(std::string("new: unknown type ") + newExpr.m_instanceType.str().c_str());
+//		m_report->emitCompilerError(std::string("new: unknown type ") + newExpr.m_instanceType.str().c_str());
 		RZLOG("Compiler internal error. Unresolved type\n");
         return RzCompileResult(RzCompileResult::ABORTED);
 	}
