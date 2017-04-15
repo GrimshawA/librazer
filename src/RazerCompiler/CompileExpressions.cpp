@@ -15,7 +15,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext e
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
-        return emitFunctionCall(aeQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
+        return emitFunctionCall(aeNodeExpr(), aeQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{
@@ -235,14 +235,14 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 		exprContext.rx_value = true; // for handles we want to load their value
 	else
 		exprContext.lvalue = true; // for values we want to get them loaded for edit
-	emitExpressionEval(acs->m_a, exprContext);
+    //emitExpressionEval(acs->m_a, exprContext);
 
 	if (acs->m_b->m_nodeType == AEN_FUNCTIONCALL)
 	{
 		CompilerLog("Calling function on %s\n", Ta.str().c_str());
 
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
-        return emitFunctionCall(Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
+        return emitFunctionCall(*acs->m_a, Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
 	}
 	else
 	{

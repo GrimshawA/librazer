@@ -2,7 +2,7 @@
 #define RZTYPE_H__
 
 #include <RazerRuntime/aeQualType.h>
-#include <RazerRuntime/AEGeneric.h>
+#include <RazerRuntime/Generic.h>
 #include <RazerRuntime/aeSymbol.h>
 #include <vector>
 #include <bitset>
@@ -14,7 +14,7 @@ class RzEngine;
 class RzVirtualMachine;
 class AEFunction;
 
-typedef void(*aeBindMethod)(AEGeneric);
+typedef void(*aeBindMethod)(RzGeneric);
 typedef void(*aeDestructorMethod)(void*);
 typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
 

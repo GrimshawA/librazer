@@ -268,7 +268,7 @@ RzToken RzTokenParser::getToken() {
     // let's find identifier
     if (isalpha(LastChar)) {
         token.text += LastChar;
-        token.pos = i;
+        //token.pos = i;
 
         while (isalpha((LastChar = program_source[++i])) || isdigit(LastChar) || LastChar == '_') {
             token.text += LastChar;

@@ -39,6 +39,7 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 
     // Ensure the variable is not already declared
     if (getVariable(varDecl.m_decls[0].m_name).mode == AE_VAR_LOCAL) {
+
         RZLOG("error: Local variable redefinition '%s'\n", varDecl.m_decls[0].m_name.c_str());
         return RzCompileResult::aborted;
     }

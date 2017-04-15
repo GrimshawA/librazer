@@ -6,7 +6,7 @@
 #include <RazerRuntime/RzType.h>
 #include <Rzr/RzValue.h>
 #include <Rzr/RzModule.h>
-#include <RazerRuntime/AEGeneric.h>
+#include <RazerRuntime/Generic.h>
 #include <vector> 
 #include <map>
 #include <stdint.h> 
@@ -22,7 +22,7 @@ struct aeon_config
 	bool allowAutomaticTypeInference; ///< Anonymous variables assume a type from inference, but are immutable (and not aeon_variant), otherwise explicit inference is supported
 };
 
-typedef void(*aeBindMethod)(AEGeneric);
+typedef void(*aeBindMethod)(RzGeneric);
 typedef void(*aeDestructorMethod)(void*);
 typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
 

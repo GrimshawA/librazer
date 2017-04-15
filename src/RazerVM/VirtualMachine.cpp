@@ -4,7 +4,7 @@
 
 #include <Rzr/RzEngine.h>
 #include <RazerRuntime/AEObject.h>
-#include <RazerRuntime/AEGeneric.h>
+#include <RazerRuntime/Generic.h>
 #include <DebugDefs.h>
 #include <Logger.h>
 

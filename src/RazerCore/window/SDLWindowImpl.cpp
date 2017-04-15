@@ -13,6 +13,7 @@ struct SDLUserData
 #endif
 
 SDLWindowImpl::SDLWindowImpl()
+    : Window()
 {
 #ifdef RAZER_SDL
 	RZLOG("WINDOW INSTANCED\n");
@@ -53,40 +54,53 @@ SDLWindowImpl::SDLWindowImpl()
 #endif
 }
 
+void SDLWindowImpl::poll() {
+    SDL_Event e;
+    //e is an SDL_Event variable we've declared before entering the main loop
+    while (SDL_PollEvent(&e)){
+        //If user closes the window
+        if (e.type == SDL_QUIT){
+            m_running = false;
+        }
+        //If user presses any key
+        if (e.type == SDL_KEYDOWN){
+            //quit = true;
+        }
+        //If user clicks the mouse
+        if (e.type == SDL_MOUSEBUTTONDOWN){
+            //quit = true;
+        }
+    }
+}
 
-void Window::open()
-{
+void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
+    RZLOG("RENDERING\n");
+    SDLUserData* sd = (SDLUserData*)data;
+
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = w;
+    rect.h = h;
+    SDL_FillRect(sd->screenSurface, &rect, SDL_MapRGB(sd->screenSurface->format, r, g, b));
+}
+
+void SDLWindowImpl::drawString(const std::string& str, int x, int y) {
+
+}
+
+void SDLWindowImpl::open() {
 	RZLOG("WINDOW OPENING %x\n", this);
 	m_running = true;
 }
 
-bool Window::running()
-{
-	RZLOG("WINDOW RUNNING %x\n", this);
-	return m_running;
+bool SDLWindowImpl::running() {
+    return m_running;
 }
 
-void Window::display()
-{
+void SDLWindowImpl::display() {
 #ifdef RAZER_SDL
 	SDLUserData* sd = (SDLUserData*)data;
-
-	SDL_Event e;
-	//e is an SDL_Event variable we've declared before entering the main loop
-	while (SDL_PollEvent(&e)){
-		//If user closes the window
-		if (e.type == SDL_QUIT){
-			m_running = false;
-		}
-		//If user presses any key
-		if (e.type == SDL_KEYDOWN){
-			//quit = true;
-		}
-		//If user clicks the mouse
-		if (e.type == SDL_MOUSEBUTTONDOWN){
-			//quit = true;
-		}
-	}
 
 	//SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, rand(), 0xFF, 0xFF));
 

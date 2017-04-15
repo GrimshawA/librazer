@@ -9,21 +9,29 @@ void registerString(RzModule* mod) {
         new (memory) RzString();
     });
 
-    mod->registerMethod("String", "void set(int32)", [](AEGeneric g){
-        RzString* obj = (RzString*)g.unpack_ptr();
+    mod->registerMethod("String", "void set(int32)", [](RzGeneric g){
+        RzString* obj = (RzString*)g.popObject();
         std::string str = g.unpack_string();
         obj->set(str);
         //RZLOG("STRING SETTED TO %s\n", str.c_str());
     });
 
-    mod->registerMethod("String", "void print()", [](AEGeneric g){
-        RzString* obj = (RzString*)g.unpack_ptr();
+    mod->registerMethod("String", "void print()", [](RzGeneric g){
+        RzString* obj = (RzString*)g.popObject();
         obj->print();
     });
 
-    mod->registerMethod("String", "int size()", [](AEGeneric g){
-        RzString* obj = (RzString*)g.unpack_ptr();
+    mod->registerMethod("String", "int size()", [](RzGeneric g){
+        RzString* obj = (RzString*)g.popObject();
         obj->size();
+    });
+
+    mod->registerMethod("String", "String operatorAdd(String b)", [](RzGeneric g){
+        RzString* a = (RzString*)g.popObject();
+        RzString* b = (RzString*)g.popObject();
+        RzString* result = new RzString();
+        result->set(a->toStdString() + b->toStdString());
+        g.pushObject(result);
     });
 }
 

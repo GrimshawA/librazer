@@ -22,9 +22,9 @@ void RzTimer::registerApi(RzModule* mod) {
         new (memory) RzTimer();
     });
 
-    mod->registerMethod("Timer", "int restart()", [](AEGeneric g){
-        RzTimer* obj = (RzTimer*)g.unpack_ptr();
+    mod->registerMethod("Timer", "int restart()", [](RzGeneric g){
+        RzTimer* obj = (RzTimer*)g.popObject();
         uint32_t r = obj->restart();
-        g.pack_uint32(r);
+        g.pushInt32((int32_t)r);
     });
 }

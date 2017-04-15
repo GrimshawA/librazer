@@ -212,14 +212,19 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	fn.fn = fnPtr;
 	fn.m_native = true;
     parser.getNextToken();
-    parser.getNextToken();
+
 	while (parser.Tok.text != ")")
 	{
+        parser.getNextToken();
+
+        if (parser.Tok.text == ")")
+            break;
+
 		aeQualType paramType = parser.parseQualType();
 		fn.params.push_back(paramType);
         info.args.push_back(paramType.str());
 		//printf("param %s\n", paramType.str().c_str());
-		if (parser.getNextToken().text != ",")
+        if (parser.Tok.text != ",")
 			break;
 	}
     m_functions.push_back(fn);

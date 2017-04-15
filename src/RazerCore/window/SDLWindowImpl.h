@@ -5,16 +5,21 @@
 
 class SDLWindowImpl : public Window
 {
-	public:
+public:
 
-		SDLWindowImpl();
+    SDLWindowImpl();
 
-		void open();
+    void poll() override;
 
-		bool running();
+    void drawRect(int x, int y, int w, int h) override;
 
-		void display();
+    void drawString(const std::string& str, int x, int y) override;
 
+    void open() override;
+
+    bool running() override;
+
+    void display() override;
 };
 
 #endif

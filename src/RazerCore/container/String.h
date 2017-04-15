@@ -18,6 +18,7 @@ public:
 
     int size();
 
+
 private:
     std::string m_str;
 };

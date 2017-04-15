@@ -11,8 +11,8 @@ void registerFile(RzModule* m, const std::string& name)
         new (memory) Rz::File();
     });
 
-    m->registerMethod(name, "void open(int32, int32)", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "void open(int32, int32)", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         std::string fileName = g.unpack_string();
         std::string openMode = g.unpack_string();
 
@@ -21,32 +21,32 @@ void registerFile(RzModule* m, const std::string& name)
         /*std::string str = g.unpack_string();
         printf("%s\n", str.c_str());*/
     });
-    m->registerMethod(name, "void erase()", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "void erase()", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         delete obj;
     });
-    m->registerMethod(name, "void close()", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "void close()", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         obj->close();
     });
-    m->registerMethod(name, "bool atEnd()", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "bool atEnd()", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         obj->atEnd();
     });
-    m->registerMethod(name, "void write(int32)", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "void write(int32)", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         std::string buff = g.unpack_string();
         obj->write(buff);
     });
-    m->registerMethod(name, "string getline()", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "string getline()", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         std::string str =  obj->getline();
         g.pack_string(str);
 
         RZLOG("getline was called and got %s\n", str.c_str());
     });
-    m->registerMethod(name, "int tell()", [](AEGeneric g){
-        Rz::File* obj = (Rz::File*)g.unpack_ptr();
+    m->registerMethod(name, "int tell()", [](RzGeneric g){
+        Rz::File* obj = (Rz::File*)g.popObject();
         obj->tell();
     });
 }

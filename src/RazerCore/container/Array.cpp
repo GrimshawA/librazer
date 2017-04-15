@@ -9,9 +9,9 @@ void VariantArray::registerApi(RzModule* m)
 		new (memory) VariantArray();
 	});
 
-	m->registerMethod("array", "void push(var)", [](AEGeneric g)
+	m->registerMethod("array", "void push(var)", [](RzGeneric g)
 	{
-		VariantArray* obj = (VariantArray*)g.unpack_ptr();
+		VariantArray* obj = (VariantArray*)g.popObject();
 		RzValue var;
 		obj->push(var);
 	});

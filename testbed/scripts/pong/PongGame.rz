@@ -38,12 +38,16 @@ class PongGame {
 		Window wnd = new Window();
 		wnd.open();
 
+
+		wnd.setFillColor(100, 100, 0);
+
 		Timer t = new Timer();
 		while(wnd.running()) {
-			/*wnd.poll();
-			update(t.restart());
-			paint(wnd);
-			wnd.display();*/
+			wnd.poll();
+			//update(t.restart());
+			//paint(wnd);
+			wnd.drawRect(0, 0, 20, 20);
+			wnd.display();
 		}
 	}
 

@@ -16,6 +16,10 @@ public:
 
     virtual void open();
 
+    virtual void poll();
+
+    void setFillColor(int r, int g, int b);
+
     virtual void drawRect(int x, int y, int w, int h);
     virtual void drawString(const std::string& str, int x, int y);
 
@@ -25,6 +29,8 @@ public:
 
 	void* data;
 	bool m_running;
+
+    int r,g,b;
 };
 
 #endif

@@ -42,7 +42,7 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 			// Must push the native object pointer to call the method on
 			ctx.push_addr(thisVar._object->m_obj);
 
-			AEGeneric g; g.m_threadCtx = &ctx;
+			RzGeneric g; g.m_threadCtx = &ctx;
 			g.m_variantCall = true;
 			aeBindMethod funPtr = thisVar._object->m_type->getNativeFunction(methodName);
 			if (funPtr){

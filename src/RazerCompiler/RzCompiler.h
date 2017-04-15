@@ -204,12 +204,15 @@ public:
     RzCompileResult compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs);
 
     /// Function calls
-    RzCompileResult emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
+    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
     void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
     void emitLateBoundCall(aeNodeFunctionCall* fn);
-    RzCompileResult compileStaticObjectCall(aeQualType obj, aeNodeFunctionCall& call);
+    RzCompileResult compileStaticObjectCall(aeNodeExpr& selfExpr, aeQualType obj, aeNodeFunctionCall& call);
     RzCompileResult compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info);
     RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*> args);
+
+    /// Push the implicit this as a call argument
+    RzCompileResult pushImplicitThis(aeNodeExpr& expr);
 
     /// DEBUG HELPERS
     /// Stack canaries will ensure the stack looks the same after an operation

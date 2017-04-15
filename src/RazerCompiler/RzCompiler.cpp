@@ -420,7 +420,9 @@ RzCompileResult RzCompiler::emitBranchCode(aeNodeBranch* cond)
     int jmptestpc = m_cursor - 1;
 
     // Now let's define the actual block
-    emitBlock(nested_code);
+    RzCompileResult r = emitBlock(nested_code);
+    if (r == RzCompileResult::aborted)
+        return r;
 
     // make sure the if jmp goes to the end of the block if it fails
     setinst_a(m_module->m_code[jmptestpc], (m_cursor - 1) - jmptestpc);
@@ -484,7 +486,9 @@ RzCompileResult RzCompiler::emitWhileLoop(aeNodeWhile* whileloop) {
 
     int jmptestpc = emitInstruction(OP_JZ, 0, 0, 0);
 
-    emitBlock(whileloop->block.get());
+    RzCompileResult r = emitBlock(whileloop->block.get());
+    if (r == RzCompileResult::aborted)
+        return r;
 
     // After the block terminates normally, we always go back up to expression evaluation
     // when the expression fails, it will jump right away to after this
@@ -525,7 +529,7 @@ void RzCompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* func
 
             aeNodeFunctionCall fnCall;
             fnCall.m_name = "array";
-            emitFunctionCall(field.type, &fnCall, aeExprContext());
+            //emitFunctionCall(field.type, &fnCall, aeExprContext());
 
             RZLOG("INJECTED CONSTRUCTION %s\n", field.name.c_str());
         }
@@ -591,7 +595,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
     switch (stmt->m_nodeType) {
 
     case AEN_FUNCTIONCALL:
-        return emitFunctionCall(aeQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
+        return emitFunctionCall(aeNodeExpr(), aeQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
 
     case AEN_BRANCH:
         return emitBranchCode(static_cast<aeNodeBranch*>(stmt));

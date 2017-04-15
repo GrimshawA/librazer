@@ -3,63 +3,102 @@
 #include <Rzr/RzModule.h>
 #include <Logger.h>
 
+#ifdef RAZER_SDL
+#include <RazerCore/window/SDLWindowImpl.h>
+#endif
+
 void Window::registerApi(RzModule* m)
 {
-	m->registerType("Window", sizeof(Window));
+#ifdef RAZER_SDL
+    int typeSize = sizeof(SDLWindowImpl);
+#else
+    int typeSize = sizeof(Window);
+#endif
+
+    m->registerType("Window", typeSize);
 	m->registerTypeConstructor("Window", [](void* memory, RzVirtualMachine* vm)
 	{
-		new (memory) Window();
+#ifdef RAZER_SDL
+        new (memory) SDLWindowImpl();
+#else
+        new (memory) Window();
+#endif
 	});
 
-	m->registerMethod("Window", "void open()", [](AEGeneric g)
+	m->registerMethod("Window", "void open()", [](RzGeneric g)
 	{
-		Window* obj = (Window*)g.unpack_ptr();
+		Window* obj = (Window*)g.popObject();
 		obj->open();
 	});
 
-	m->registerMethod("Window", "bool running()", [](AEGeneric g)
+    m->registerMethod("Window", "void poll()", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
+        obj->poll();
+    });
+
+    m->registerMethod("Window", "void setFillColor(int32,int32,int32)", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
+        int r = g.popInt32();
+        int gg = g.popInt32();
+        int b = g.popInt32();
+        obj->setFillColor(r,gg,b);
+    });
+
+	m->registerMethod("Window", "bool running()", [](RzGeneric g)
 	{
-		Window* obj = (Window*)g.unpack_ptr();
-		g.pack_int32(obj->running());
+		Window* obj = (Window*)g.popObject();
+		g.pushInt32(obj->running());
 	});
 
-    m->registerMethod("Window", "void drawRect(int x, int y, int w, int h)", [](AEGeneric g)
+    m->registerMethod("Window", "void drawRect(int32, int32, int32, int32)", [](RzGeneric g)
     {
-        Window* obj = (Window*)g.unpack_ptr();
-        int x = g.unpack_int32();
-        int y = g.unpack_int32();
-        int w = g.unpack_int32();
-        int h = g.unpack_int32();
+        Window* obj = (Window*)g.popObject();
+        int x = g.popInt32();
+        int y = g.popInt32();
+        int w = g.popInt32();
+        int h = g.popInt32();
 
         obj->drawRect(x,y,w,h);
     });
 
-    m->registerMethod("Window", "void drawString(String s, int x, int y)", [](AEGeneric g)
+    m->registerMethod("Window", "void drawString(String s, int x, int y)", [](RzGeneric g)
     {
-        Window* obj = (Window*)g.unpack_ptr();
-        RzString* s = (RzString*)g.unpack_ptr();
-        int x = g.unpack_int32();
-        int y = g.unpack_int32();
+        Window* obj = (Window*)g.popObject();
+        RzString* s = (RzString*)g.popObject();
+        int x = g.popInt32();
+        int y = g.popInt32();
         obj->drawString(s->toStdString(), x, y);
     });
 
-	m->registerMethod("Window", "void display()", [](AEGeneric g)
+	m->registerMethod("Window", "void display()", [](RzGeneric g)
 	{
-		Window* obj = (Window*)g.unpack_ptr();
+		Window* obj = (Window*)g.popObject();
 		obj->display();
 	});
 }
 
 Window::Window() {
-
+    r = g = b = 100;
 }
 
 void Window::open() {
 
 }
 
-void Window::drawRect(int x, int y, int w, int h) {
+void Window::poll() {
+    RZLOG("POLL\n");
+}
 
+void Window::setFillColor(int r, int g, int b) {
+    this->r = r;
+    this->g = g;
+    this->b = b;
+}
+
+void Window::drawRect(int x, int y, int w, int h) {
+    RZLOG("DRAWING RECT\n");
 }
 
 void Window::drawString(const std::string& str, int x, int y) {

@@ -28,6 +28,6 @@ static inline void DoDynamicCall(RzThreadContext& ctx, int functionIndex)
 }
 
 static inline void DoNativeCall(RzThreadContext& ctx, int moduleIndex, int functionIndex) {
-    AEGeneric g; g.m_threadCtx = &ctx;
+    RzGeneric g; g.m_threadCtx = &ctx;
     ctx.engine->modules[moduleIndex]->m_nativeFunctions[functionIndex].f(g);
 }

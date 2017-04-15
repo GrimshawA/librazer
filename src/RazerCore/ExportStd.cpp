@@ -8,23 +8,23 @@
 
 #include <Rzr/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
-#include <RazerRuntime/AEGeneric.h>
+#include <RazerRuntime/Generic.h>
 
 #include <cmath>
 
 void RegisterStd(RzEngine* ctx)
 {
-	ctx->registerFunction("void print(int32)", [](AEGeneric g){
+	ctx->registerFunction("void print(int32)", [](RzGeneric g){
 		std::string str = g.unpack_string();
 		printf("%s\n", str.c_str());
 	});
 
-	ctx->registerFunction("void printint(int32)", [](AEGeneric g){
-		int32_t v = g.unpack_int32();
+	ctx->registerFunction("void printint(int32)", [](RzGeneric g){
+		int32_t v = g.popInt32();
 		printf("%d\n", v);
 	});
 
-	ctx->registerFunction("void printVar(var)", [](AEGeneric g){
+	ctx->registerFunction("void printVar(var)", [](RzGeneric g){
 		RzValue v; g.m_threadCtx->popVariant(v);
 		printf("VAR: %s\n", v.toString().c_str());
 	});

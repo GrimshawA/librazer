@@ -11,7 +11,7 @@ TEMPLATE = lib
 CONFIG += staticlib
 DESTDIR = $$PWD/../../lib
 
-DEFINES += LOGGING_ENABLED
+DEFINES += LOGGING_ENABLED RAZER_SDL
 
 INCLUDEPATH += ../../src \
                 ../../include
@@ -62,7 +62,6 @@ HEADERS += \
     ../../src/RazerRuntime/aeBindingHelper.h \
     ../../src/RazerRuntime/aeClosure.h \
     ../../src/RazerRuntime/AEFunction.h \
-    ../../src/RazerRuntime/AEGeneric.h \
     ../../src/RazerRuntime/AEObject.h \
     ../../src/RazerRuntime/aeQualType.h \
     ../../src/RazerRuntime/AEString.h \
@@ -96,7 +95,8 @@ HEADERS += \
     ../../src/Base/StringUtils.h \
     ../../src/RazerParser/Parser/Token.h \
     ../../src/RazerParser/Parser/TokenParser.h \
-    ../../src/RazerCompiler/BuildReport.h
+    ../../src/RazerCompiler/BuildReport.h \
+    ../../src/RazerRuntime/Generic.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -146,7 +146,6 @@ SOURCES += \
     ../../src/RazerRuntime/aeBindingHelper.cpp \
     ../../src/RazerRuntime/aeClosure.cpp \
     ../../src/RazerRuntime/AEFunction.cpp \
-    ../../src/RazerRuntime/AEGeneric.cpp \
     ../../src/RazerRuntime/AEObject.cpp \
     ../../src/RazerRuntime/aeQualType.cpp \
     ../../src/RazerRuntime/AEString.cpp \
@@ -185,4 +184,8 @@ SOURCES += \
     ../../src/Base/StringUtils.cpp \
     ../../src/RazerParser/Parser/Token.cpp \
     ../../src/RazerParser/Parser/TokenParser.cpp \
-    ../../src/RazerCompiler/BuildReport.cpp
+    ../../src/RazerCompiler/BuildReport.cpp \
+    ../../src/RazerRuntime/Generic.cpp
+
+# SDL inclusion in the library
+INCLUDEPATH += ../../3rdparty/include

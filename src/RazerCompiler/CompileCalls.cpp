@@ -20,7 +20,7 @@ AEFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
 }
 
 
-RzCompileResult RzCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx) {
+RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx) {
     std::string finalSymbolName = fn->m_name;
 
     if (!beingCalledOn)
@@ -45,7 +45,7 @@ RzCompileResult RzCompiler::emitFunctionCall(aeQualType beingCalledOn, aeNodeFun
     }
 
     if (beingCalledOn) {
-        return compileStaticObjectCall(beingCalledOn, *fn);
+        return compileStaticObjectCall(selfExpr, beingCalledOn, *fn);
     }
     else {
         RZLOG("Don't know how to call global functions yet.");
@@ -76,7 +76,7 @@ void RzCompiler::emitLateBoundCall(aeNodeFunctionCall* fn) {
     // Calls a function on a static object, if it supports it
 }
 
-RzCompileResult RzCompiler::compileStaticObjectCall(aeQualType obj, aeNodeFunctionCall& call) {
+RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, aeQualType obj, aeNodeFunctionCall& call) {
 
     RzType* typeInfo = obj.getType();
     if (!typeInfo) {
@@ -102,11 +102,20 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeQualType obj, aeNodeFuncti
         return RzCompileResult::aborted;
     }
 
-    auto argsResult = compileArgsPush(call.m_args);
-    if (argsResult == RzCompileResult::aborted)
-        return argsResult;
-
     if (method.native) {
+
+        // Native calls convention (with generic)
+        // Push the arguments right to left
+        // Finalize with this pointer as the last push "fn(self, arg0, arg1, ..)"
+
+        auto argsResult = compileArgsPush(call.m_args);
+        if (argsResult == RzCompileResult::aborted)
+            return argsResult;
+
+        aeExprContext arg_ctx;
+        arg_ctx.rx_value = true;
+        emitExpressionEval(&selfExpr, arg_ctx);
+
         return compileNativeObjectCall(typeInfo->getModule()->index(), method);
     }
 
@@ -145,5 +154,11 @@ RzCompileResult RzCompiler::compileArgsPush(const std::vector<aeNodeExpr*> args)
         //arg_ctx.expectedResult = call.getArgType(i);
         emitExpressionEval((*it), arg_ctx);
     }
+    return RzCompileResult::ok;
+}
+
+RzCompileResult RzCompiler::pushImplicitThis(aeNodeExpr& expr) {
+
+
     return RzCompileResult::ok;
 }
