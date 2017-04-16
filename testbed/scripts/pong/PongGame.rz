@@ -37,16 +37,21 @@ class PongGame {
 	function main() {
 		Window wnd = new Window();
 		wnd.open();
+		wnd.setSize(400, 200);
 
-
-		wnd.setFillColor(100, 100, 0);
+		wnd.setFillColor(255, 0, 255);
 
 		Timer t = new Timer();
 		while(wnd.running()) {
 			wnd.poll();
 			//update(t.restart());
-			//paint(wnd);
-			wnd.drawRect(0, 0, 20, 20);
+			paint(wnd);
+			if (wnd.keyPressed(114)) {
+				wnd.setFillColor(255, 0, 0);
+				wnd.drawRect(0, 0, 400, 200);
+			}
+			wnd.setFillColor(255, 0, 255);
+			wnd.drawRect(0, 0, 400, 100);
 			wnd.display();
 		}
 	}
@@ -106,7 +111,14 @@ class PongGame {
 	}
 	
 	function paint(Window wnd) {
-		
+		wnd.setFillColor(0, 0, 255);
+		wnd.drawRect(0, 0, 200, 200);
+
+		if (wnd.keyPressed(115)) {
+			wnd.setFillColor(255, 100, 0);
+			wnd.drawRect(100, 0, 400, 200);
+		}
+
 		/*height = wnd.height();
 		width = wnd.width();
 

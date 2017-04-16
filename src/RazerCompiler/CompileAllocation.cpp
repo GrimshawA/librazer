@@ -51,8 +51,8 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 	// Now the variable is initialized and part of its scope, initialize it
 	if (varDecl.m_decls[0].m_init)
 	{
-		if (m_logAllocs)
-            emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
+//		if (m_logAllocs)
+//            emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
 
         RzCompileResult r = emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
         if (r.m_status == RzCompileResult::ABORTED)

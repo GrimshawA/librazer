@@ -28,7 +28,7 @@ public:
 	std::vector<TemplateTypeArgument> templateTypeArguments;
 	aeNodeFunction* m_function;
 
-	AEFunction* m_fn;
+    RzFunction* m_fn;
 
 public:
 

@@ -2,14 +2,14 @@
 #include <RazerVM/ThreadContext.h>
 #include <Rzr/RzEngine.h>
 
-static inline void DoCall(RzThreadContext& ctx, int functionIndex)
-{
-	AEFunction* functionData = ctx.engine->m_functionTable[functionIndex];
+#include <assert.h>
 
-#if defined TRACE_VM
-	RZLOG("Calling function %s\n", functionData->getName().c_str());
-	functionData->printByteCode();
-#endif
+static inline void DoCall(RzThreadContext& ctx, int moduleIndex, int functionIndex, int other)
+{
+    assert(functionIndex >= 0);
+
+    RzModule* m = ctx.engine->modules[moduleIndex].get();
+    RzFunction* functionData = &m->m_functions[functionIndex];
 
 	RzStackFrame callinfo;
 	callinfo.name = "unknown";

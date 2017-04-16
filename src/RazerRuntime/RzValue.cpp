@@ -58,7 +58,7 @@ RzValue::RzValue(const std::string& v)
 RzValue::RzValue(std::function<void()> fn)
 {
 	m_valueType = VALUE_FUNCTION;
-	_function = new AEFunction();
+	_function = new RzFunction();
 	_function->tmp = fn;
 }
 

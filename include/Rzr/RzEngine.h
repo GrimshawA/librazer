@@ -29,7 +29,7 @@ typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
 typedef int aeLiteralId;
 typedef int aeFunctionId;
 
-class AEFunction;
+class RzFunction;
 
 class aeEnum
 {
@@ -93,8 +93,7 @@ public:
 		std::vector<std::string>                      m_functionIdTable;    ///< Maps each dynamic call identifier to an integer index
 		std::vector<double>                           m_floatTable;         ///< All the loaded double literals
 		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
-		std::vector<AEFunction*>                      m_functionTable;      ///< All the functions available to scripts
-		std::vector<aeTypedef>                        m_typedefs;
+        std::vector<aeTypedef>                        m_typedefs;
 		std::vector<aeEnum*>                          m_enums;
 		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 public:
@@ -103,7 +102,7 @@ public:
 
 	void init_all();
 
-	AEFunction* createFunction(const std::string& name);
+    RzFunction* createFunction(const std::string& name);
 
 	aeLiteralId getIntegerLiteral(int64_t n);
 	aeLiteralId getStringLiteral(const std::string& s);
@@ -125,18 +124,14 @@ public:
 
 
     /// Registers a native type to work with the language
-	void registerTypeMethod(const std::string& typeName, const std::string& name, aeBindMethod method);
-	void registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod dest);
-	void registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest);
-	void registerTypeField(const std::string& typeName, const std::string& decl, int offset);
-	void registerFunction(const std::string& decl, aeBindMethod func);
+    void registerTypeField(const std::string& typeName, const std::string& decl, int offset);
 	void registerEnum(const std::string& enumName);
 	void registerEnumValue(const std::string& enumName, const std::string& valueName, int value);
 	void registerPrimitive(const std::string& name, uint32_t size);
 	void registerTypedef(const std::string& from, const std::string& to);
 
-	AEFunction* getFunctionByIndex(uint32_t index);
-	AEFunction* getFunctionByName(const std::string& name);
+    RzFunction* getFunctionByName(const std::string& fullyQualifiedName) const;
+    RzFunction* getFunctionByIndex(uint32_t index);
 	uint32_t    getFunctionIndexByName(const std::string& name);
 	aeEnum*     getEnumByName(const std::string& name);
 	aeFunctionId getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior);

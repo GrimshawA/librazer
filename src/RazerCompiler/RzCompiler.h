@@ -69,7 +69,7 @@ public:
     std::vector<ScopeLocalData>         m_scopes;                ///< The stack of scopes to help compilation
     std::vector<AEStructNode*>           m_classes;               ///< Class we are compiling right now
     aeNodeFunction*                     m_caller;                ///< Current function node we're compiling
-    AEFunction*                         m_currentFunction;       ///< Current function being compiled to
+    RzFunction*                         m_currentFunction;       ///< Current function being compiled to
     int32_t                             m_OffsetFromBasePtr;     ///< How far are we from the base pointer
     TypeSystemInformation               m_typeSystem;            ///< Table that defines what can be converted to what and how
     RzBuildReport                     m_reporter;
@@ -155,14 +155,14 @@ public:
     RzType* evaluateType(const std::string& type_name);
 
     /// Evaluate which function fn is trying to call (derived from context)
-    AEFunction* selectFunction(aeNodeFunctionCall* fn);
+    RzFunction* selectFunction(aeNodeFunctionCall* fn);
 
     /// Regarding scope, tries to deduce if we know how to convert typeB to typeA
     bool canConvertType(RzType* typeA, RzType* typeB);
 
     // High level constructs compilation
-    RzCompileResult emitClassCode(AEStructNode* clss);
-    AEFunction* compileFunction(aeNodeFunction* func);
+    RzCompileResult compileStruct(AEStructNode* clss);
+    RzFunction* compileFunction(aeNodeFunction* func);
     void emitNamespaceCode(aeNodeNamespace* namespace_node);
     void emitGlobalVarCode(aeNodeIdentifier* global_var);
     RzCompileResult emitStatement(AEStmtNode* stmt);
@@ -170,7 +170,7 @@ public:
     void emitBreakpoint();
     void emitClassConstructors(RzType* classType, AEStructNode* classNode);
     void emitClassDestructors(RzType* classType, AEStructNode* classNode);
-    void emitConstructorInjection(aeNodeFunction* node, AEFunction* function);
+    void emitConstructorInjection(aeNodeFunction* node, RzFunction* function);
     RzCompileResult compileImport(aeNodeImport& node);
 
 

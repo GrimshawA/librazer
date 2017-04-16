@@ -49,7 +49,7 @@ void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype
 
 	m_mainContext.pushThisPtr(object->m_obj);
 	  
-	call(*object->getType()->getModule(), prototype.c_str());
+    //call(*object->getType()->getModule(), prototype.c_str());
 } 
 
 void RzVirtualMachine::callMethod(AEObject* object, uint32_t methodId) {
@@ -85,10 +85,12 @@ void printBits2(size_t const size, void const * const ptr) {
 		puts("");
 }
 
-void RzVirtualMachine::call(RzModule& module, const char* func) {
+void RzVirtualMachine::call(const char* func) {
 	aeFunctionId functionId = 0;
 
-	AEFunction* function = m_ctx->getFunctionByName(func);
+    // Find the function in any module from its fully qualified name
+    // package.namespace.class.method
+    RzFunction* function = m_ctx->getFunctionByName(func);
 	int i = 0;
 
 	if (function)
@@ -98,10 +100,10 @@ void RzVirtualMachine::call(RzModule& module, const char* func) {
 	else
 	{
 		RZLOG("Couldn't find the calling function\n");
-	}
+    }
 }
 
-int RzVirtualMachine::call(AEFunction* fn) {
+int RzVirtualMachine::call(RzFunction* fn) {
 	if (!fn->m_compiled)
 	{
 		return 1;

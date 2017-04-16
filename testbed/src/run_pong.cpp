@@ -45,7 +45,7 @@ void run_pong_game() {
         vm.setContext(&ctx);
 
         vm.m_mainContext.pushObject(myObject);
-        vm.call(*ctx.modules[0].get(), "PongGame.main");
+        vm.call("PongGame.main");
     }
 
     printf("Finished successfully\n");

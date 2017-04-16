@@ -348,11 +348,11 @@ static inline void DoJumpIfZero(RzThreadContext& ctx, int jumpOffset)
 	{
 		cl->pc += jumpOffset;
 		
-		RZLOG("the if condition was false\n");
+        //RZLOG("the if condition was false\n");
 	}
 	else
 	{
-		RZLOG("the if condition was true\n");
+        //RZLOG("the if condition was true\n");
 	}
 }
 
@@ -361,7 +361,7 @@ static inline void DoJump(RzThreadContext& ctx, int address)
 	RzStackFrame* cl = &ctx.frames[ctx.frames.size() - 1];
 	cl->pc += address;
 
-	RZLOG("Jumping to %d %d\n", cl->pc+1, cl->module->m_code[cl->pc+1].opcode);
+    //RZLOG("Jumping to %d %d\n", cl->pc+1, cl->module->m_code[cl->pc+1].opcode);
 }
 
 static inline bool DoReturn(RzThreadContext& ctx)
@@ -373,12 +373,6 @@ static inline bool DoReturn(RzThreadContext& ctx)
 	}
 	else
 	{
-		if (ctx.ebp != ctx.esp){
-			RZLOG("Script function returned without popping all stack memory!\n");
-		}			
-		else
-			RZLOG("All memory is as expected\n");
-
 		// restore underlying function
 		ctx.cl = &ctx.frames[ctx.frames.size() - 1];
 		ctx.ebp = ctx.cl->ebp;

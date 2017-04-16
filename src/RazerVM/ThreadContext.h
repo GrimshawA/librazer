@@ -9,7 +9,7 @@
 #include <vector>
 #include <stdint.h>
 
-class AEFunction;
+class RzFunction;
 class aeVM;
 class RzModule;
 

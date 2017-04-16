@@ -1,5 +1,5 @@
-#ifndef AEFunction_h__
-#define AEFunction_h__
+#ifndef RZFUNCTION_H__
+#define RZFUNCTION_H__
 
 #include <RazerRuntime/aeSymbol.h>
 #include <RazerRuntime/RzType.h>
@@ -9,17 +9,17 @@
 class AEValueList;
 
 /**
-	\class AEFunction
-	\brief Encapsulates one callable compiled function
+    \class RzFunction
+    \brief Information about a compiled function on the module
 
-	All functions are just a contiguous range of instructions within the module.
-	This structure provides utility to locate functions in the module code, as well as
-	additional information about them.
+    When a razer function is compiled into a module, it is just a chunk of bytecode.
+    This structure helps identify where functions begin and end, as well as other
+    important information.
 */
-class AEFunction : public aeSymbol
+class RzFunction : public aeSymbol
 {
 public:
-	AEFunction();
+    RzFunction();
 
 	void call();
 	void call(const AEValueList& argumentList);
@@ -53,4 +53,4 @@ public:
 	std::function<void()> tmp;
 };
 
-#endif // AEFunction_h__
+#endif // RZFUNCTION_H__

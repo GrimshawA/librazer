@@ -9,7 +9,7 @@
 #include <Logger.h>
 
 
-AEFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
+RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 {
 	std::string symbol_prefix;
 	auto topClass = getTopClassNode();
@@ -18,11 +18,7 @@ AEFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 		symbol_prefix = topClass->m_name + ".";
 	}
 
-	AEFunction* function = m_env->createFunction(symbol_prefix + functionNode->m_name);
-	
-#if defined TRACE_STACK
-	RZLOG("::: Frame %s : Method\n", functionNode->m_name.c_str());
-#endif
+    RzFunction* function = m_module->getFunction(symbol_prefix + functionNode->m_name);
 
 	m_OffsetFromBasePtr = 0;
 
@@ -99,14 +95,17 @@ AEFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
     RzCompileResult ret = emitBlock(functionNode->m_block.get());
     if (ret == RzCompileResult::aborted)
         return nullptr;
-	 
+
+    // TODO: Needs to be done by returns
+    releaseParametersContext();
+
 	emitReturnCode(nullptr);
 	m_caller = nullptr;
 	m_currentFunction = nullptr;
 
-	// TODO: Needs to be done by returns
-	releaseParametersContext();
-
 	function->m_numInstructions = cursor() - function->m_offset;
+
+    // The module needs to be aware of what functions compose it
+    m_module->m_functions.push_back(*function);
 	return function;
 }

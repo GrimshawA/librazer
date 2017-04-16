@@ -1,7 +1,7 @@
 #ifndef RZVALUE_H__
 #define RZVALUE_H__
 
-#include <RazerRuntime/AEFunction.h>
+#include <RazerRuntime/Function.h>
 #include <RazerRuntime/AEString.h>
 
 #include <string>
@@ -172,7 +172,7 @@ public:
 		AEObject* _object;
 		AEDynamicObject* _dynObj;
 		AEArray*  _array;
-		AEFunction* _function;
+		RzFunction* _function;
 	};
 };
 

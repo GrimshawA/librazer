@@ -12,7 +12,7 @@
 class RzModule;
 class RzEngine;
 class RzVirtualMachine;
-class AEFunction;
+class RzFunction;
 
 typedef void(*aeBindMethod)(RzGeneric);
 typedef void(*aeDestructorMethod)(void*);
@@ -57,7 +57,7 @@ public:
 		std::vector<std::string> args; ///< The arguments it takes
 		int type;
 		int offset;
-        AEFunction* func = nullptr; // the vm function if applicable
+        RzFunction* func = nullptr; // the vm function if applicable
         bool native = false;
 
 		union
@@ -133,7 +133,7 @@ public:
 	/// Get the id of the function by its name
 	int getFunctionId(const std::string& name);
 
-	AEFunction* getFunction(const std::string& name);
+	RzFunction* getFunction(const std::string& name);
 
 	/// Fetch the direct function pointer used to register the API
 	aeBindMethod getNativeFunction(const std::string& name);

@@ -3,6 +3,8 @@
 
 #include <RazerCore/window/Window.h>
 
+class SDL_Renderer;
+
 class SDLWindowImpl : public Window
 {
 public:
@@ -10,6 +12,8 @@ public:
     SDLWindowImpl();
 
     void poll() override;
+
+    void setSize(int width, int height) override;
 
     void drawRect(int x, int y, int w, int h) override;
 
@@ -20,6 +24,8 @@ public:
     bool running() override;
 
     void display() override;
+
+    SDL_Renderer *renderer;
 };
 
 #endif

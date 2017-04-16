@@ -70,10 +70,10 @@ public:
 	/// Call a method on the given script object by the method id
 	void callMethod(AEObject* object, uint32_t methodId);
 
-	/// Call a script function
-	void call(RzModule& module, const char* func);
+    /// Call a script function by name (slower method)
+    void call(const char* func);
 
-	int call(AEFunction* fn);
+	int call(RzFunction* fn);
 
 	void startThread();
 

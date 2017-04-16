@@ -2,6 +2,7 @@
 #define WINDOW_H__
 
 #include <vector>
+#include <map>
 
 class RzModule;
 
@@ -16,7 +17,11 @@ public:
 
     virtual void open();
 
+    virtual void setSize(int width, int height);
+
     virtual void poll();
+
+    bool keyPressed(int key);
 
     void setFillColor(int r, int g, int b);
 
@@ -31,6 +36,8 @@ public:
 	bool m_running;
 
     int r,g,b;
+
+    std::map<int, bool> m_keys;
 };
 
 #endif

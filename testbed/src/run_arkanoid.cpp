@@ -53,7 +53,7 @@ void run_arkanoid()
         vm.setContext(&ctx);
 
         vm.m_mainContext.pushObject(myObject);
-        vm.call(*ctx.modules[0].get(), "ArkanoidApp.main");
+        vm.call("ArkanoidApp.main");
     }
 
     printf("Finished successfully\n");

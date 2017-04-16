@@ -4,7 +4,7 @@
 #include <RazerVM/InstructionSet.h>
 #include <RazerRuntime/RzType.h>
 #include <RazerRuntime/aeQualType.h>
-#include <RazerRuntime/AEFunction.h>
+#include <RazerRuntime/Function.h>
 #include <vector>
 #include <array>
 #include <stdint.h>
@@ -50,8 +50,11 @@ public:
     /// Index of this module within the engine
     int index();
 
-	AEFunction* getFunction(const std::string& name);
-	AEFunction* getFunction(FnIndex index);
+    /// Create a new function on the module to later point to a initial instruction
+    RzFunction* createFunction(const std::string& name);
+
+    RzFunction* getFunction(const std::string& name);
+    RzFunction* getFunction(FnIndex index);
 
 	FnIndex getFunctionIndex(const std::string& name);
 
@@ -141,7 +144,7 @@ public:
 
 	std::string                          m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
     RzEngine*                            m_context;
-	std::vector<AEFunction>              m_functions;          ///< All script functions
+    std::vector<RzFunction>              m_functions;          ///< All script functions
 	std::vector<AENativeFunctionWrapper> m_nativeFunctions;    ///< All native functions exported
 	std::vector<RzType*>                 m_types;
 	std::vector<std::string>             m_stringPool;

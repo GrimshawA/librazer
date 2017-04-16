@@ -129,7 +129,9 @@ void RzCompiler::declareStackVar(const std::string& name, aeQualType type)
 
 void RzCompiler::releaseParametersContext()
 {
-    pop_scope();
+    //pop_scope();
+
+    emitInstruction(OP_MOV, AEK_ESP, sizeof(RzStackValue) * m_currentFunction->params.size());
 }
 
 VariableStorageInfo RzCompiler::getVariable(std::string name)
@@ -223,7 +225,7 @@ bool RzCompiler::generate(AEBaseNode* root)
         }
         else if (root->m_items[i]->m_nodeType == AEN_CLASS)
         {
-            ret = emitClassCode(static_cast<AEStructNode*>(root->m_items[i]));
+            ret = compileStruct(static_cast<AEStructNode*>(root->m_items[i]));
             if (ret == RzCompileResult::aborted)
                 break;
         }
@@ -270,7 +272,7 @@ void RzCompiler::emitNamespaceCode(aeNodeNamespace* namespace_node)
         }
         else if (namespace_node->m_items[i]->m_nodeType == AEN_CLASS)
         {
-            emitClassCode(static_cast<AEStructNode*>(namespace_node->m_items[i]));
+            compileStruct(static_cast<AEStructNode*>(namespace_node->m_items[i]));
         }
         else if (namespace_node->m_items[i]->m_nodeType == AEN_NAMESPACE)
         {
@@ -288,7 +290,7 @@ void RzCompiler::emitGlobalVarCode(aeNodeIdentifier* global_var)
 
 }
 
-RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
+RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 {
     m_classes.push_back(clss);
 
@@ -334,33 +336,9 @@ RzCompileResult RzCompiler::emitClassCode(AEStructNode* clss)
 
     for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
     {
-        AEFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
+        RzFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
         if (!fn)
             return RzCompileResult::aborted;
-    }
-
-    for (std::size_t i = 0; i < clss->m_items.size(); ++i)
-    {
-        if (clss->m_items[i]->m_nodeType == AEN_CLASS)
-        {
-            emitClassCode(static_cast<AEStructNode*>(clss->m_items[i]));
-        }
-        else if (clss->m_items[i]->m_nodeType == AEN_VARDECL)
-        {
-            aeNodeVarDecl* varDecl = (aeNodeVarDecl*)clss->m_items[i];
-
-            for (auto i : varDecl->m_decls)
-            {
-                aeField fieldInfo;
-                fieldInfo.name = i.m_name;
-                fieldInfo.size = varDecl->m_type.getSize();
-                fieldInfo.type = varDecl->m_type;
-                typeInfo->createField(fieldInfo);
-
-                CompilerLog("REGISTERING TYPE VAR %s\n", i.m_name.c_str());
-            }
-
-        }
     }
 
     // Now the class is compiled, we generate constructor and destructor
@@ -504,7 +482,7 @@ RzCompileResult RzCompiler::emitWhileLoop(aeNodeWhile* whileloop) {
     return RzCompileResult::ok;
 }
 
-void RzCompiler::emitConstructorInjection(aeNodeFunction* node, AEFunction* function)
+void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* function)
 {
     // This is where the initialization is done, before any user constructor instruction is executed
     AEStructNode* cl = getTopClassNode();
@@ -565,7 +543,7 @@ RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
 
     for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
     {
-        emitDebugTrace();
+       // emitDebugTrace();
         auto ret = emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
         if (ret == RzCompileResult::aborted)
         {
@@ -573,7 +551,7 @@ RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
             return ret;
         }
 
-        emitDebugTrace();
+        //emitDebugTrace();
     }
 
     pop_scope();
@@ -611,8 +589,6 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
 
     case AEN_BINARYOP: {
         if (((aeNodeBinaryOperator*)stmt)->oper == "=") {
-            if (m_logExprStmt)
-                emitDebugPrint("Evaluating " + stmt->str());
 
             return emitAssignOp(((aeNodeBinaryOperator*)stmt)->operandA, ((aeNodeBinaryOperator*)stmt)->operandB);
         }
@@ -623,8 +599,6 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
     }
     case AEN_ACCESSOPERATOR: {
         if (((aeNodeAccessOperator*)stmt)->m_b->m_nodeType == AEN_FUNCTIONCALL) {
-            if (m_logExprStmt)
-                emitDebugPrint("Evaluating " + stmt->str());
 
             return emitMemberOp(((aeNodeAccessOperator*)stmt));
         } else {

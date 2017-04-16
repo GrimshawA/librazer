@@ -19,7 +19,13 @@ int RzModule::index() {
     return m_moduleIndex;
 }
 
-AEFunction* RzModule::getFunction(const std::string& name)
+RzFunction* RzModule::createFunction(const std::string& name) {
+    m_functions.push_back(RzFunction());
+    //m_functions.back().name = name;
+    return &m_functions.back();
+}
+
+RzFunction* RzModule::getFunction(const std::string& name)
 {
 	for (int i = 0; i < m_functions.size(); ++i)
 	{
@@ -32,7 +38,7 @@ AEFunction* RzModule::getFunction(const std::string& name)
 	return nullptr;
 }
 
-AEFunction* RzModule::getFunction(FnIndex index)
+RzFunction* RzModule::getFunction(FnIndex index)
 {
 	return &m_functions[index];
 }
@@ -205,7 +211,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 
 
 
-	AEFunction fn;
+    RzFunction fn;
 	fn.returnType = retType;
 	fn.m_absoluteName = name + "." + methodName;
 	fn.decl = name;

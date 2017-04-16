@@ -158,6 +158,13 @@ aeNodeFunction* AEStructNode::getMethod(const std::string& name)
 			return ((aeNodeFunction*)item);
 		}
 	}
+
+    for (auto& fn : m_functions)
+    {
+        if (fn->m_name == name)
+            return fn.get();
+    }
+
 	return nullptr;
 }
 

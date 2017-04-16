@@ -37,13 +37,8 @@ void dispatch_execute(RzThreadContext& ctx)
 				DoNewObject(ctx, inst.arg0, inst.arg1);
 			vm_end
 
-				vm_start(OP_PREPARE)
-				AEFunction* functionData = ctx.engine->m_functionTable[inst.arg0];
-			ctx.esp -= functionData->returnValueSize;
-			vm_end
-
-				vm_start(OP_CALL)
-				DoCall(ctx, inst.arg0);
+            vm_start(OP_CALL)
+                DoCall(ctx, inst.arg0, inst.arg1, inst.arg2);
 			vm_end
 
 				vm_start(OP_DCALL)

@@ -1,10 +1,10 @@
-#include <RazerRuntime/AEFunction.h>
+#include <RazerRuntime/Function.h>
 #include <Rzr/RzModule.h>
 #include <RazerVM/VirtualMachine.h>
 
 #include <Logger.h>
 
-AEFunction::AEFunction()
+RzFunction::RzFunction()
 : aeSymbol()
 , m_struct(nullptr)
 , m_native(false)
@@ -13,42 +13,42 @@ AEFunction::AEFunction()
 
 }
 
-void AEFunction::call()
+void RzFunction::call()
 {
 //	globalVm.call(this);
 }
 
-void AEFunction::call(const AEValueList& argumentList)
+void RzFunction::call(const AEValueList& argumentList)
 {
 	//globalVm.call(this);
 }
 
-std::string AEFunction::getName()
+std::string RzFunction::getName()
 {
 	return getSymbolName();
 }
 
-RzType* AEFunction::getStruct()
+RzType* RzFunction::getStruct()
 {
 	return m_struct;
 }
 
-aeQualType AEFunction::getReturnType()
+aeQualType RzFunction::getReturnType()
 {
 	return returnType;
 }
 
-bool AEFunction::isVirtual()
+bool RzFunction::isVirtual()
 {
 	return m_virtual;
 }
 
-bool AEFunction::isNative()
+bool RzFunction::isNative()
 {
 	return m_native;
 }
 
-void AEFunction::printByteCode()
+void RzFunction::printByteCode()
 {
 	RZLOG("bytecode %s\n", getName().c_str());
 	for (int i = m_offset; i < m_numInstructions; ++i)

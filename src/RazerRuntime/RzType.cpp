@@ -120,12 +120,12 @@ std::string RzType::getName()
 
 int RzType::getFunctionId(const std::string& name)
 {
-    return m_module.m_context->getFunctionIndexByName(name);
+    return m_module.getFunctionIndexByName(m_name + "." + name);
 }
 
-AEFunction* RzType::getFunction(const std::string& name)
+RzFunction* RzType::getFunction(const std::string& name)
 {
-    return m_module.m_context->getFunctionByName(name);
+    return m_module.getFunction(m_name + "." + name);
 }
 
 aeBindMethod RzType::getNativeFunction(const std::string& name)

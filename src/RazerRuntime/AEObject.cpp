@@ -1,5 +1,5 @@
 #include <RazerRuntime/AEObject.h>
-#include <RazerRuntime/AEFunction.h>
+#include <RazerRuntime/Function.h>
 #include <RazerVM/VirtualMachine.h>
 #include <Logger.h>
 
@@ -50,7 +50,7 @@ void AEObject::call(const std::string& name)
 	}
 	else
 	{
-		AEFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
+		RzFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
 		RZLOG("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
 		if (fn)
 		{

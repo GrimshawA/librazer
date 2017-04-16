@@ -1,19 +1,19 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
-AEFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
-    AEFunction* r = nullptr;
+RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
+    RzFunction* r = nullptr;
 
     if (fn->getParentExpression() && fn->getParentExpression()->m_nodeType == AEN_ACCESSOPERATOR)
     {
         // the fn belongs to some construct
         aeQualType leftSideType = ((aeNodeAccessOperator*)fn->getParentExpression())->m_a->getQualifiedType(this);
         std::string symbolName = leftSideType.getTypeName() + "." + fn->m_name;
-        r = m_env->getFunctionByName(fn->m_name);
+       // r = m_env->getFunctionByName(fn->m_name);
     }
     else
     {
-        r = m_env->getFunctionByName(fn->m_name);
+       // r = m_env->getFunctionByName(fn->m_name);
     }
 
     return r;
@@ -34,7 +34,7 @@ RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, aeQualType be
             aeNodeFunction* calledMethod = topClass->getMethod(fn->m_name);
             if (!calledMethod->is_static)
             {
-                //emitPushThis();
+                beingCalledOn = topClass->m_typeInfo;
             }
         }
     }
@@ -92,11 +92,6 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, aeQual
         return RzCompileResult::aborted;
     }
 
-    if (!method.native) {
-        RZLOG("error: unsupported script call on static typed object");
-        return RzCompileResult::aborted;
-    }
-
     if (method.args.size() != call.m_args.size()) {
         RZLOG("error: arguments list differ for '%s'. Expects %d, %d provided\n", call.m_name.c_str(), method.args.size(), call.m_args.size());
         return RzCompileResult::aborted;
@@ -118,24 +113,17 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, aeQual
 
         return compileNativeObjectCall(typeInfo->getModule()->index(), method);
     }
+    else {
+        auto argsResult = compileArgsPush(call.m_args);
+        if (argsResult == RzCompileResult::aborted)
+            return argsResult;
 
-    // First allocate some room for the return value
-    //emitInstruction(OP_MOV, fn->getReturnTypeSize());
+        emitPushThis();
 
-    //int functionIndex = m_env->getFunctionIndexByName(finalSymbolName);
-
-    /*if (functionIndex == -1)
-        CompilerError("0002", "Could not find the function to call! " + finalSymbolName);
-
-    if (func->m_native)
-    {
-        emitDebugPrint("NATIVE FUNCTION CALL " + finalSymbolName);
-
+        int moduleIndex = m_module->index();
+        int functionIndex = typeInfo->getFunctionId(call.m_name);
+        emitInstruction(OP_CALL, moduleIndex, functionIndex);
     }
-    else
-    {
-        emitInstruction(OP_CALL, functionIndex);
-    }*/
 
     return RzCompileResult::ok;
 }

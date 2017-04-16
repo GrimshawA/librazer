@@ -38,14 +38,16 @@ SDLWindowImpl::SDLWindowImpl()
 		}
 		else
 		{
+            renderer = SDL_CreateRenderer(sd->window, -1, SDL_RENDERER_ACCELERATED);
+
 			//Get window surface
-			sd->screenSurface = SDL_GetWindowSurface(sd->window);
+            //sd->screenSurface = SDL_GetWindowSurface(sd->window);
 
 			//Fill the surface white
-			SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, 0xFF, 0xFF, 0xFF));
+            //SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, 0xFF, 0xFF, 0xFF));
 
 			//Update the surface
-			SDL_UpdateWindowSurface(sd->window);
+            //SDL_UpdateWindowSurface(sd->window);
 
 			//Wait two seconds
 			//SDL_Delay(2000);
@@ -64,7 +66,12 @@ void SDLWindowImpl::poll() {
         }
         //If user presses any key
         if (e.type == SDL_KEYDOWN){
-            //quit = true;
+            m_keys[e.key.keysym.sym] = true;
+            RZLOG("key %d\n", e.key.keysym.sym);
+        }
+        if (e.type == SDL_KEYUP){
+            m_keys[e.key.keysym.sym] = false;
+            RZLOG("key up %d\n", e.key.keysym.sym);
         }
         //If user clicks the mouse
         if (e.type == SDL_MOUSEBUTTONDOWN){
@@ -73,8 +80,16 @@ void SDLWindowImpl::poll() {
     }
 }
 
+void SDLWindowImpl::setSize(int width, int height) {
+    SDLUserData* sd = (SDLUserData*)data;
+    SDL_SetWindowSize(sd->window, width, height);
+
+    sd->screenSurface = SDL_GetWindowSurface(sd->window);
+
+    SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, 0xFF, 0xFF, 0xFF));
+}
+
 void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
-    RZLOG("RENDERING\n");
     SDLUserData* sd = (SDLUserData*)data;
 
     SDL_Rect rect;
@@ -82,7 +97,9 @@ void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
     rect.y = y;
     rect.w = w;
     rect.h = h;
-    SDL_FillRect(sd->screenSurface, &rect, SDL_MapRGB(sd->screenSurface->format, r, g, b));
+
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+    SDL_RenderFillRect(renderer, &rect);
 }
 
 void SDLWindowImpl::drawString(const std::string& str, int x, int y) {
@@ -104,8 +121,13 @@ void SDLWindowImpl::display() {
 
 	//SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, rand(), 0xFF, 0xFF));
 
+
+
 	//Update the surface
-	SDL_UpdateWindowSurface(sd->window);
+    //SDL_UpdateWindowSurface(sd->window);
+
+    SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer);
 #endif
 }
 

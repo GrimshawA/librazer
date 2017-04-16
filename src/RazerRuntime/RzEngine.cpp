@@ -183,51 +183,9 @@ void RzEngine::destroyObject(AEObject* object)
 	}
 }
 
-AEFunction* RzEngine::createFunction(const std::string& name)
-{
-	AEFunction* fn = getFunctionByName(name);
-	if (!fn)
-	{
-		fn = new AEFunction();
-		fn->m_absoluteName = name;
-		m_functionTable.push_back(fn);
-	}
-	return fn;
-}
-
-AEFunction* RzEngine::getFunctionByIndex(uint32_t index)
-{
-	return m_functionTable[index];
-}
-
-AEFunction* RzEngine::getFunctionByName(const std::string& name)
-{
-	for (auto fn : m_functionTable)
-	{
-		//printf("comp %s %s\n", name.c_str(), fn->getSymbolName().c_str());
-		if (fn->getSymbolName() == name)
-		{
-			return fn;
-		}
-	}
-	return nullptr;
-}
-
-uint32_t RzEngine::getFunctionIndexByName(const std::string& name)
-{
-	for (uint32_t i = 0; i < m_functionTable.size(); ++i)
-	{
-		if (m_functionTable[i]->m_absoluteName == name)
-			return i;
-	}
-	return -1;
-}
-
-RzModule* RzEngine::createModule(const std::string& name)
-{
+RzModule* RzEngine::createModule(const std::string& name) {
 	if (getModule(name))
 		return getModule(name);
-
 
 	RzModule* mod = new RzModule;
 	mod->m_name = name;
@@ -237,8 +195,7 @@ RzModule* RzEngine::createModule(const std::string& name)
 	return mod;
 }
 
-RzModule* RzEngine::resolveModule(const std::string& name)
-{
+RzModule* RzEngine::resolveModule(const std::string& name) {
 	// name is a symbol identifier in the form x.y.z
 
 	for (auto& m : modules)
@@ -253,87 +210,7 @@ RzModule* RzEngine::resolveModule(const std::string& name)
 	return nullptr;
 }
 
-void RzEngine::registerTypeMethod(const std::string& typeName, const std::string& decl, aeBindMethod method)
-{
-	RzTokenParser lex; lex.tokenize(decl);
-	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
-
-	auto typeInfo = getTypeInfo(typeName);
-
-	RzType::MethodInfo info;
-	info.methodCallback = method;
-	info.name = decl;
-	typeInfo->m_methods.push_back(info);
-
-	AEFunction* fn = new AEFunction;
-	fn->returnType = parser.parseQualType();
-	fn->m_absoluteName = typeName + "." + parser.Tok.text;
-	fn->decl = decl;
-	fn->fn = method;
-	fn->m_native = true;
-	parser.getNextToken(); parser.getNextToken();
-	while (parser.Tok.text != ")")
-	{
-		aeQualType paramType = parser.parseQualType();
-		fn->params.push_back(paramType);
-		//printf("param %s\n", paramType.str().c_str());
-		if (parser.getNextToken().text != ",")
-			break;
-	}
-	m_functionTable.push_back(fn);
-
-    //RZLOG("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
-}
-
-void RzEngine::registerFunction(const std::string& decl, aeBindMethod func)
-{
-	RzTokenParser lex; lex.tokenize(decl);
-	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = this; parser.getNextToken();
-
-	AEFunction* fn = new AEFunction;
-	fn->fn = func;
-	fn->decl = decl;
-	fn->m_native = true;
-	fn->returnType = parser.parseQualType();
-	fn->m_absoluteName = parser.Tok.text;
-	parser.getNextToken(); parser.getNextToken();
-	while (parser.Tok.text != ")")
-	{
-		aeQualType paramType = parser.parseQualType();
-		fn->params.push_back(paramType);
-		//RZLOG("param %s\n", paramType.str().c_str());
-		if (parser.getNextToken().text != ",")
-			break;
-	}
-
-	m_functionTable.push_back(fn);
-
-	//RZLOG("EXPORTED %s: returns %s\n", fn->m_absoluteName.c_str(), fn->returnType.str().c_str());
-}
-
-void RzEngine::registerTypeBehavior(const std::string& typeName, const std::string& behavName, aeBindMethod constructor)
-{
-	auto typeInfo = getTypeInfo(typeName);
-	RzType::MethodInfo info;
-	//info.constructorCallback = constructor;
-	info.name = "constructor";
-	typeInfo->m_methods.push_back(info);
-
-	AEFunction* ncall = new AEFunction;
-	ncall->decl = behavName;
-	ncall->fn = constructor;
-	ncall->m_native = true;
-	m_functionTable.push_back(ncall);
-}
-
-void RzEngine::registerTypeDestructor(const std::string& typeName, aeDestructorMethod dest)
-{
-	auto typeInfo = getTypeInfo(typeName);
-	typeInfo->m_destructor = dest;
-}
-
-void RzEngine::registerTypeField(const std::string& typeName, const std::string& decl, int offset)
-{
+void RzEngine::registerTypeField(const std::string& typeName, const std::string& decl, int offset) {
 	auto typeInfo = getTypeInfo(typeName);
 	aeField info;
 	info.name = decl;
@@ -367,6 +244,15 @@ void RzEngine::registerEnumValue(const std::string& enumName, const std::string&
 	}
 }
 
+RzFunction* RzEngine::getFunctionByName(const std::string& fullyQualifiedName) const {
+    for (std::size_t i = 0; i < modules.size(); ++i) {
+        RzFunction* f = modules[i]->getFunction(fullyQualifiedName);
+        if (f)
+            return f;
+    }
+    return nullptr;
+}
+
 aeEnum* RzEngine::getEnumByName(const std::string& name)
 {
 //	for (auto& e : m_enums)
@@ -375,19 +261,6 @@ aeEnum* RzEngine::getEnumByName(const std::string& name)
 //			return e;
 //	}
 	return nullptr;
-}
-
-aeFunctionId RzEngine::getNativeBehaviorIndex(const std::string& typeName, const std::string& behavior)
-{
-	for (std::size_t i = 0; i < m_functionTable.size(); ++i)
-	{
-		if (m_functionTable[i]->decl == behavior/* && m_functionTable[i]->typeName == typeName*/)
-		{
-			return i;
-		}
-	}
-
-	return -1;
 }
 
 RzType* RzEngine::getTypeInfo(const std::string& name)

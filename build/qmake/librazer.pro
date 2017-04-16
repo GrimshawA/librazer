@@ -61,7 +61,6 @@ HEADERS += \
     ../../src/RazerParser/TypeDesc.h \
     ../../src/RazerRuntime/aeBindingHelper.h \
     ../../src/RazerRuntime/aeClosure.h \
-    ../../src/RazerRuntime/AEFunction.h \
     ../../src/RazerRuntime/AEObject.h \
     ../../src/RazerRuntime/aeQualType.h \
     ../../src/RazerRuntime/AEString.h \
@@ -96,7 +95,8 @@ HEADERS += \
     ../../src/RazerParser/Parser/Token.h \
     ../../src/RazerParser/Parser/TokenParser.h \
     ../../src/RazerCompiler/BuildReport.h \
-    ../../src/RazerRuntime/Generic.h
+    ../../src/RazerRuntime/Generic.h \
+    ../../src/RazerRuntime/Function.h
 
 SOURCES += \
     ../../include/RzrAPI/RzBuilder.cpp \
@@ -145,7 +145,6 @@ SOURCES += \
     ../../src/RazerParser/TypeDesc.cpp \
     ../../src/RazerRuntime/aeBindingHelper.cpp \
     ../../src/RazerRuntime/aeClosure.cpp \
-    ../../src/RazerRuntime/AEFunction.cpp \
     ../../src/RazerRuntime/AEObject.cpp \
     ../../src/RazerRuntime/aeQualType.cpp \
     ../../src/RazerRuntime/AEString.cpp \
@@ -185,7 +184,8 @@ SOURCES += \
     ../../src/RazerParser/Parser/Token.cpp \
     ../../src/RazerParser/Parser/TokenParser.cpp \
     ../../src/RazerCompiler/BuildReport.cpp \
-    ../../src/RazerRuntime/Generic.cpp
+    ../../src/RazerRuntime/Generic.cpp \
+    ../../src/RazerRuntime/Function.cpp
 
 # SDL inclusion in the library
 INCLUDEPATH += ../../3rdparty/include

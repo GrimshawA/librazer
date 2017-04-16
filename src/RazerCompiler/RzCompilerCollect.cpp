@@ -30,10 +30,12 @@ void RzCompiler::collect(AEStructNode& cls)
 		method.name = fn.m_name;
 		method.methodCallback = 0;
 		method.offset = 0;
+        method.args.resize(fn.m_parameters.size()); //TODO
 		typeInfo->m_methods.push_back(method);
 
-        //printf("Collected fn %s\n", fn.m_name.c_str());
-		
+        // Collect the functions to the module now
+        RzFunction* f = m_module->createFunction(fn.m_name);
+        f->m_absoluteName = cls.m_name + "." + fn.m_name;
 	}
 
     //printf("Collected %s\n", typeInfo->m_name.c_str());

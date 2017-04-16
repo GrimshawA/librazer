@@ -37,6 +37,22 @@ void Window::registerApi(RzModule* m)
         obj->poll();
     });
 
+    m->registerMethod("Window", "void setSize(int32, int32)", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
+        int32_t w = g.popInt32();
+        int32_t h = g.popInt32();
+        obj->setSize(w, h);
+    });
+
+    m->registerMethod("Window", "bool keyPressed(int32)", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
+        int32_t k = g.popInt32();
+        bool r = obj->keyPressed(k);
+        g.pushInt32(r);
+    });
+
     m->registerMethod("Window", "void setFillColor(int32,int32,int32)", [](RzGeneric g)
     {
         Window* obj = (Window*)g.popObject();
@@ -87,8 +103,20 @@ void Window::open() {
 
 }
 
+void Window::setSize(int width, int height) {
+
+}
+
 void Window::poll() {
     RZLOG("POLL\n");
+}
+
+bool Window::keyPressed(int key) {
+    RZLOG("TESTING %d\n", key);
+    if (m_keys.find(key) != m_keys.end()) {
+        return m_keys[key];
+    }
+    return false;
 }
 
 void Window::setFillColor(int r, int g, int b) {
