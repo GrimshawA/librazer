@@ -17,11 +17,6 @@ INCLUDEPATH += ../../src \
                 ../../include
 
 HEADERS += \
-    ../../include/Rzr/RzDocument.h \
-    ../../include/Rzr/RzEngine.h \
-    ../../include/Rzr/RzModule.h \
-    ../../include/Rzr/RzValue.h \
-    ../../include/RzrAPI/RzBuilder.h \
     ../../src/RazerCompiler/aeCompilerConv.h \
     ../../src/RazerCompiler/aeCompilerErrorIds.h \
     ../../src/RazerCompiler/aeCompilerWarningIds.h \
@@ -96,10 +91,14 @@ HEADERS += \
     ../../src/RazerParser/Parser/TokenParser.h \
     ../../src/RazerCompiler/BuildReport.h \
     ../../src/RazerRuntime/Generic.h \
-    ../../src/RazerRuntime/Function.h
+    ../../src/RazerRuntime/Function.h \
+    ../../src/RazerBuild/RzBuilder.h \
+    ../../src/RazerRuntime/RzDocument.h \
+    ../../src/RazerRuntime/RzEngine.h \
+    ../../src/RazerRuntime/RzModule.h \
+    ../../src/RazerRuntime/RzValue.h
 
 SOURCES += \
-    ../../include/RzrAPI/RzBuilder.cpp \
     ../../src/RazerCompiler/aeCompilerConv.cpp \
     ../../src/RazerCompiler/AECompilerData.cpp \
     ../../src/RazerCompiler/CompileAllocation.cpp \
@@ -185,7 +184,8 @@ SOURCES += \
     ../../src/RazerParser/Parser/TokenParser.cpp \
     ../../src/RazerCompiler/BuildReport.cpp \
     ../../src/RazerRuntime/Generic.cpp \
-    ../../src/RazerRuntime/Function.cpp
+    ../../src/RazerRuntime/Function.cpp \
+    ../../src/RazerBuild/RzBuilder.cpp
 
 # SDL inclusion in the library
 INCLUDEPATH += ../../3rdparty/include

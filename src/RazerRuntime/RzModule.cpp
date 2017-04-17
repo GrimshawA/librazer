@@ -1,5 +1,5 @@
-#include <Rzr/RzModule.h>
-#include <Rzr/RzEngine.h>
+#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/RzEngine.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/TokenParser.h>
 #include <Logger.h>

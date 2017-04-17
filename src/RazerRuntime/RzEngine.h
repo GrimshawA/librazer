@@ -4,8 +4,8 @@
 #include <RazerVM/ThreadContext.h>
 #include <RazerRuntime/aeQualType.h>
 #include <RazerRuntime/RzType.h>
-#include <Rzr/RzValue.h>
-#include <Rzr/RzModule.h>
+#include <RazerRuntime/RzValue.h>
+#include <RazerRuntime/RzModule.h>
 #include <RazerRuntime/Generic.h>
 #include <vector> 
 #include <map>

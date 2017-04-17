@@ -2,7 +2,7 @@
 #include <RazerVM/ExecDispatch.h>
 #include <RazerVM/InstructionSet.h>
 
-#include <Rzr/RzEngine.h>
+#include <RazerRuntime/RzEngine.h>
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/Generic.h>
 #include <DebugDefs.h>

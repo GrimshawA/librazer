@@ -1,6 +1,6 @@
 #include <RazerCore/window/Window.h>
 #include <RazerCore/container/String.h>
-#include <Rzr/RzModule.h>
+#include <RazerRuntime/RzModule.h>
 #include <Logger.h>
 
 #ifdef RAZER_SDL
@@ -112,7 +112,6 @@ void Window::poll() {
 }
 
 bool Window::keyPressed(int key) {
-    RZLOG("TESTING %d\n", key);
     if (m_keys.find(key) != m_keys.end()) {
         return m_keys[key];
     }

@@ -1,7 +1,7 @@
 #ifndef STSCPPBUILDER_H__
 #define STSCPPBUILDER_H__
 
-#include <RzrAPI/RzBuilder.h>
+#include <RazerBuild/RzBuilder.h>
 #include <RazerParser/AST/RzSourceUnit.h>
 #include <memory>
 

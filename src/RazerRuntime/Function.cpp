@@ -1,5 +1,5 @@
 #include <RazerRuntime/Function.h>
-#include <Rzr/RzModule.h>
+#include <RazerRuntime/RzModule.h>
 #include <RazerVM/VirtualMachine.h>
 
 #include <Logger.h>
