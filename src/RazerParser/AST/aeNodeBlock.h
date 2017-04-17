@@ -9,6 +9,8 @@ public:
 
 	aeNodeBlock();
 
+    std::string str() const override;
+
 	virtual void printSelf(int tabs);
 };
 

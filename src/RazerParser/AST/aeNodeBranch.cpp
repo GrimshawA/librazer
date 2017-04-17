@@ -7,7 +7,9 @@ aeNodeBranch::aeNodeBranch()
 	m_nodeType = AEN_BRANCH;
 }
 
-std::string aeNodeBranch::str()
+std::string aeNodeBranch::str() const
 {
-	return "if " + m_expression->str();
+    std::string s = "if " + m_expression->str() + "\n";
+    s += m_block->str() + "\n";
+    return s;
 }

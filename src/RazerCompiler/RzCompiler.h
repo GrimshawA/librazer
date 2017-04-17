@@ -89,7 +89,7 @@ public:
     int findLocalObject(const std::string& refname);
 
     /// Emit byte code for the passed AST
-    bool generate(AEBaseNode* root);
+    bool generate(RzSourceUnit* root);
 
     /// Get the cursor position, aka the index of the last added instruction
     int32_t cursor();

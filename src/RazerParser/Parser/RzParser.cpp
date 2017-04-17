@@ -175,7 +175,7 @@ bool RzParser::startParse(RzTokenParser& lexer)
         else if (Tok.type == RZTK_CLASS || Tok.type == RZTK_STRUCT)
         {
             AEStructNode* classDecl = parseClass();
-            root->add(classDecl);
+            root->m_types.push_back(std::unique_ptr<AEStructNode>(classDecl));
         }
         else if (Tok.type == RZTK_NAMESPACE)
         {
@@ -292,7 +292,7 @@ AEStructNode* RzParser::parseClass()
     getNextToken();
 
     // debug print
-    printf("Parsed class %s\n%s\n", classDecl->m_name.c_str(), classDecl->str().c_str());
+   // printf("Parsed class %s\n%s\n", classDecl->m_name.c_str(), classDecl->str().c_str());
 
     return classDecl;
 }

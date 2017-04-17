@@ -207,7 +207,7 @@ void RzCompiler::emit_local_construct_object(int32_t size)
 
 }
 
-bool RzCompiler::generate(AEBaseNode* root)
+bool RzCompiler::generate(RzSourceUnit* root)
 {
     m_typeSystem.init(this);
 
@@ -245,6 +245,12 @@ bool RzCompiler::generate(AEBaseNode* root)
         }
 
         if (ret.m_status == RzCompileResult::ABORTED)
+            break;
+    }
+
+    for (std::size_t i = 0; i < root->m_types.size(); ++i) {
+        ret = compileStruct(static_cast<AEStructNode*>(root->m_types[i].get()));
+        if (ret == RzCompileResult::aborted)
             break;
     }
 
@@ -543,7 +549,7 @@ RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
 
     for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
     {
-       // emitDebugTrace();
+        // emitDebugTrace();
         auto ret = emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
         if (ret == RzCompileResult::aborted)
         {

@@ -59,7 +59,7 @@ std::string AEStructNode::str() const
 	
 	for (auto& f : m_functions)
 	{
-		s += "+ " + f->m_name + " (" + f->visibilityText() +") \n";
+        s += "+ " + f->m_name + " (" + f->visibilityText() +") \n" + f->str();
 	}
 
 	for (auto& m : m_fields)

@@ -17,6 +17,15 @@ void RzLogger::log(const std::string& msg)
 #endif
 }
 
+void RzLogger::logToFile(const std::string& file, const std::string& content) {
+    FILE* fp = fopen(file.c_str(), "w");
+    if (!fp)
+        return;
+
+    fprintf(fp, "%s", content.c_str());
+    fclose(fp);
+}
+
 void RzLogger::exception(const std::string& msg)
 {
     printf("RUNTIME EXCEPTION: %s\n", msg.c_str());

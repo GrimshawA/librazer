@@ -17,7 +17,7 @@ public:
 public:
 	aeNodeWhile();
 
-	std::string str();
+    std::string str() const;
 };
 
 #endif // aeNodeWhile_h__

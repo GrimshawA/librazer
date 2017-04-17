@@ -12,7 +12,9 @@ aeNodeWhile::aeNodeWhile()
 	//add(block);
 }
 
-std::string aeNodeWhile::str()
+std::string aeNodeWhile::str() const
 {
-	return std::string("While");
+    std::string s = "while\n";
+    s += block->str() + "\n";
+    return s;
 }

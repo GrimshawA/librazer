@@ -140,7 +140,6 @@ aeBindMethod RzType::getNativeFunction(const std::string& name)
 
 RzType::MethodInfo RzType::selectMethod(const std::string& name, const std::vector<aeQualType>& argsList) {
     for(auto& m : m_methods) {
-        RZLOG("COMPARING %s %s\n", m.name.c_str(), name.c_str());
         if (m.name == name) {
             return m;
         }

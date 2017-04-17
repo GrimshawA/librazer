@@ -35,6 +35,8 @@ public:
 public:
 
 	RzSourceUnit();
+
+    std::string str() const override;
 	virtual void printSelf(int tabs);
 };
 

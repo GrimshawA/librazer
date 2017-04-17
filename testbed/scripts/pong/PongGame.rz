@@ -59,7 +59,7 @@ class PongGame {
 	function update(float dt) {
 		/*timer = timer - dt;
 		if (timer < 0.f) {
-			timer = 5
+			timer = 5;
 			timerEvent();
 		}*/
 	}

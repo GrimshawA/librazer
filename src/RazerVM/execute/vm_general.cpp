@@ -222,7 +222,7 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
             memcpy(&v.ptr, dataPtr, sizeof(void*));
 			ctx.push_value(v);
 
-            RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
+           // RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
 		}
 		else
 		{

@@ -5,13 +5,10 @@
 
 void RzCompiler::collect(RzSourceUnit& parseTree)
 {
-	for (std::size_t i = 0; i < parseTree.m_items.size(); ++i)
+    for (std::size_t i = 0; i < parseTree.m_types.size(); ++i)
 	{	
-		if (parseTree.m_items[i]->m_nodeType == AEN_CLASS)
-		{
-			AEStructNode& st = (AEStructNode&)*parseTree.m_items[i];
-			collect(st);
-		}
+        AEStructNode& st = (AEStructNode&)*parseTree.m_types[i].get();
+        collect(st);
 	}
 }
 

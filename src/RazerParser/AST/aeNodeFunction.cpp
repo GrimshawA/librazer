@@ -41,17 +41,9 @@ bool aeNodeFunction::isAnonymousFunction()
 
 std::string aeNodeFunction::str() const
 {
-	std::string s = std::string("function");
-	/*if (m_parameters.size() > 0)
-	{
-		for (std::size_t i = 0; i < m_parameters.size(); ++i)
-		{
-			s1 += static_cast <aeNodeVarRef*>(m_parameters[i])->TypeString;
-			if (i < m_parameters.size() - 1)
-				s1 += ",";
-		}
-	}
-	s1 += ")";*/
+    std::string s = std::string("  ");
+    s += m_block->str();
+    s += "\n";
 	return s;
 }
 

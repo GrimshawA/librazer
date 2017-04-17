@@ -23,7 +23,7 @@ public:
 
 public:
 	aeNodeBranch();
-	std::string str();
+    std::string str() const override;
 };
 
 #endif // aeNodeBranch_h__
