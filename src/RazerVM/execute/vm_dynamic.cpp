@@ -1,5 +1,5 @@
 #include <RazerVM/ThreadContext.h>
-#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/Module.h>
 #include <Logger.h>
 
 #define TRACE_VM

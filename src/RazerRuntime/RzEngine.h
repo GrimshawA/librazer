@@ -5,7 +5,7 @@
 #include <RazerRuntime/aeQualType.h>
 #include <RazerRuntime/RzType.h>
 #include <RazerRuntime/RzValue.h>
-#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/Module.h>
 #include <RazerRuntime/Generic.h>
 #include <vector> 
 #include <map>
@@ -121,7 +121,6 @@ public:
 	
 	/// Resolve to which module the symbol resolves to, e.g 'std.io.File' would resolve to 'std'
 	RzModule* resolveModule(const std::string& name);
-
 
     /// Registers a native type to work with the language
     void registerTypeField(const std::string& typeName, const std::string& decl, int offset);

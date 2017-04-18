@@ -1,5 +1,5 @@
 #include <RazerCore/container/Array.h>
-#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/Module.h>
 
 void VariantArray::registerApi(RzModule* m)
 {

@@ -1,5 +1,5 @@
 #include <RazerCore/time/Timer.h>
-#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/Module.h>
 #include <Logger.h>
 
 RzTimer::RzTimer() {

@@ -2,7 +2,7 @@
 #define RZVIRTUALMACHINE_H__
 
 #include <RazerVM/ThreadHandler.h>
-#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/Module.h>
 #include <RazerVM/ThreadContext.h>
 #include <RazerRuntime/AEValueList.h>
 #include <RazerRuntime/RzEngine.h>

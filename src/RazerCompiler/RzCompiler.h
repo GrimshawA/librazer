@@ -4,7 +4,7 @@
 #include <RazerCompiler/CompileResult.h>
 #include <RazerParser/AST/Nodes.h>
 #include <RazerCompiler/aeCompilerConv.h>
-#include <RazerRuntime/RzModule.h>
+#include <RazerRuntime/Module.h>
 #include <RazerCompiler/BuildReport.h>
 
 #include <vector>

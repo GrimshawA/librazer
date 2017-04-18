@@ -95,8 +95,8 @@ HEADERS += \
     ../../src/RazerBuild/RzBuilder.h \
     ../../src/RazerRuntime/RzDocument.h \
     ../../src/RazerRuntime/RzEngine.h \
-    ../../src/RazerRuntime/RzModule.h \
-    ../../src/RazerRuntime/RzValue.h
+    ../../src/RazerRuntime/RzValue.h \
+    ../../src/RazerRuntime/Module.h
 
 SOURCES += \
     ../../src/RazerCompiler/aeCompilerConv.cpp \
@@ -150,7 +150,6 @@ SOURCES += \
     ../../src/RazerRuntime/aeSymbol.cpp \
     ../../src/RazerRuntime/AEValueList.cpp \
     ../../src/RazerRuntime/RzEngine.cpp \
-    ../../src/RazerRuntime/RzModule.cpp \
     ../../src/RazerRuntime/RzType.cpp \
     ../../src/RazerRuntime/RzValue.cpp \
     ../../src/RazerVM/InstructionSet.cpp \
@@ -185,7 +184,8 @@ SOURCES += \
     ../../src/RazerCompiler/BuildReport.cpp \
     ../../src/RazerRuntime/Generic.cpp \
     ../../src/RazerRuntime/Function.cpp \
-    ../../src/RazerBuild/RzBuilder.cpp
+    ../../src/RazerBuild/RzBuilder.cpp \
+    ../../src/RazerRuntime/Module.cpp
 
 # SDL inclusion in the library
 INCLUDEPATH += ../../3rdparty/include
