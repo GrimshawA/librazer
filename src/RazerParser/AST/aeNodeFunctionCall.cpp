@@ -19,7 +19,7 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	}
 }
 
-aeQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c)
 {
 	if (!m_fn)
 	{
@@ -33,13 +33,13 @@ aeQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c)
 	}
 }
 
-aeQualType aeNodeFunctionCall::getArgType(uint32_t index)
+RzQualType aeNodeFunctionCall::getArgType(uint32_t index)
 {
 	if (m_function)
 	{
 		return m_function->getParameterType(index);
 	}
-	return aeQualType();
+	return RzQualType();
 }
 
 bool aeNodeFunctionCall::hasLinkedFunction()

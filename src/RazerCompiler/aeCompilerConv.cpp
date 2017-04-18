@@ -25,10 +25,11 @@ void TypeSystemInformation::init(RzCompiler* c)
 {
 //	ImplicitConversion floatToDouble(AE_PFLOAT, AE_PDOUBLE, &ICG_FloatToDouble);
 	//m_table.push_back(floatToDouble);
-	m_table.push_back(ConversionProcedure(true, c->m_env->getTypeInfo("float"), c->m_env->getTypeInfo("int32")));	
+    m_table.push_back(ConversionProcedure(true, c->m_env->getTypeInfo("float"), c->m_env->getTypeInfo("int32")));
+    m_table.push_back(ConversionProcedure(true, c->m_env->getTypeInfo("int32"), c->m_env->getTypeInfo("float")));
 }
 
-bool TypeSystemInformation::canConvert(aeQualType T1, aeQualType T2)
+bool TypeSystemInformation::canConvert(RzQualType T1, RzQualType T2)
 {
 	for (auto& ic : m_table)
 	{
@@ -41,7 +42,7 @@ bool TypeSystemInformation::canConvert(aeQualType T1, aeQualType T2)
 	return false;
 }
 
-void TypeSystemInformation::performConversion(aeQualType T1, aeQualType T2, RzCompiler* compiler)
+void TypeSystemInformation::performConversion(RzQualType T1, RzQualType T2, RzCompiler* compiler)
 {
 	if (T1.getTypeName() == "int32" && T2.getTypeName() == "float")
 	{

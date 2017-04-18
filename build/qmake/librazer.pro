@@ -57,7 +57,6 @@ HEADERS += \
     ../../src/RazerRuntime/aeBindingHelper.h \
     ../../src/RazerRuntime/aeClosure.h \
     ../../src/RazerRuntime/AEObject.h \
-    ../../src/RazerRuntime/aeQualType.h \
     ../../src/RazerRuntime/AEString.h \
     ../../src/RazerRuntime/aeSymbol.h \
     ../../src/RazerRuntime/AEValueList.h \
@@ -96,7 +95,8 @@ HEADERS += \
     ../../src/RazerRuntime/RzDocument.h \
     ../../src/RazerRuntime/RzEngine.h \
     ../../src/RazerRuntime/RzValue.h \
-    ../../src/RazerRuntime/Module.h
+    ../../src/RazerRuntime/Module.h \
+    ../../src/RazerRuntime/QualType.h
 
 SOURCES += \
     ../../src/RazerCompiler/aeCompilerConv.cpp \
@@ -145,7 +145,6 @@ SOURCES += \
     ../../src/RazerRuntime/aeBindingHelper.cpp \
     ../../src/RazerRuntime/aeClosure.cpp \
     ../../src/RazerRuntime/AEObject.cpp \
-    ../../src/RazerRuntime/aeQualType.cpp \
     ../../src/RazerRuntime/AEString.cpp \
     ../../src/RazerRuntime/aeSymbol.cpp \
     ../../src/RazerRuntime/AEValueList.cpp \
@@ -185,7 +184,8 @@ SOURCES += \
     ../../src/RazerRuntime/Generic.cpp \
     ../../src/RazerRuntime/Function.cpp \
     ../../src/RazerBuild/RzBuilder.cpp \
-    ../../src/RazerRuntime/Module.cpp
+    ../../src/RazerRuntime/Module.cpp \
+    ../../src/RazerRuntime/QualType.cpp
 
 # SDL inclusion in the library
 INCLUDEPATH += ../../3rdparty/include

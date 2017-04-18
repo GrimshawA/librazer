@@ -1,17 +1,17 @@
 #include "aeNodeLiterals.h"
 #include <RazerCompiler/RzCompiler.h>
 
-aeQualType aeNodeString::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeString::getQualifiedType(RzCompiler* c)
 {
-	return aeQualType(c->m_env->getTypeInfo("string"));
+	return RzQualType(c->m_env->getTypeInfo("string"));
 }
 
-aeQualType aeNodeFloat::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeFloat::getQualifiedType(RzCompiler* c)
 {
-	return aeQualType(c->m_env->getTypeInfo("float"));
+	return RzQualType(c->m_env->getTypeInfo("float"));
 }
 
-aeQualType aeNodeInteger::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeInteger::getQualifiedType(RzCompiler* c)
 {
-	return aeQualType(c->m_env->getTypeInfo("int32"));
+	return RzQualType(c->m_env->getTypeInfo("int32"));
 }

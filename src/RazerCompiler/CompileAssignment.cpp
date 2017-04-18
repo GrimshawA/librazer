@@ -6,8 +6,8 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 	aeExprContext ectx;
 	ectx.must_be_rvalue = true;
 
-	aeQualType T1 = buildQualifiedType(lhs);
-	aeQualType T2 = buildQualifiedType(rhs);
+    RzQualType T1 = buildQualifiedType(lhs);
+    RzQualType T2 = buildQualifiedType(rhs);
 
     if (!T1.m_typeString.empty() && !T1.m_type) {
         // TODO: Do it right
@@ -21,12 +21,6 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 
 	RZLOG("T1 %s T2 %s\n", T1.str().c_str(), T2.str().c_str());
 
-	if (!T1.isVariant() && (T1.getType() != T2.getType()) && !canImplicitlyConvert(T2, T1))
-	{
-		CompilerError("0002", "Cannot convert from " + T2.str() + " to " + T1.str());
-        return RzCompileResult::aborted;
-	}
-
 	if (T1.isVariant())	{
         return compileVarAssign(lhs, rhs);
 	}
@@ -37,8 +31,8 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 
 RzCompileResult RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {
-	aeQualType varType = m_env->getTypeInfo("var");
-	aeQualType rhsType = buildQualifiedType(rhs);
+    RzQualType varType = m_env->getTypeInfo("var");
+    RzQualType rhsType = buildQualifiedType(rhs);
 
 	loadVarRef(lhs);
 	emitExpressionEval(rhs, aeExprContext());
@@ -85,11 +79,18 @@ RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs
     exprContext.expectedResult = buildQualifiedType(&lhs);
     emitExpressionEval(&rhs, aeExprContext());
 
+    RzQualType T1 = buildQualifiedType(&lhs);
+    RzQualType T2 = buildQualifiedType(&rhs);
+
     // Convert if required
-    /*if ((T1.getType() != T2.getType()) && canImplicitlyConvert(T2, T1))
+    if ((T1.getType() != T2.getType()) && canImplicitlyConvert(T2, T1))
     {
         m_typeSystem.performConversion(T2, T1, this);
-    }*/
+    }
+    else if (T1.getType() != T2.getType()) {
+        RZLOG("error: Cannot convert implicitly\n");
+        return RzCompileResult::aborted;
+    }
 
     // Generate actual assignment
     int assignType = -1;

@@ -12,9 +12,9 @@ aeNodeExpr* aeNodeExpr::getParentExpression()
 	return m_parentExpr;
 }
 
-aeQualType aeNodeExpr::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeExpr::getQualifiedType(RzCompiler* c)
 {
-	return aeQualType();
+	return RzQualType();
 }
 
 float aeNodeExpr::as_float()

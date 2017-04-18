@@ -1,7 +1,7 @@
 #ifndef RZTYPE_H__
 #define RZTYPE_H__
 
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 #include <RazerRuntime/Generic.h>
 #include <RazerRuntime/aeSymbol.h>
 #include <vector>
@@ -139,7 +139,7 @@ public:
 	aeBindMethod getNativeFunction(const std::string& name);
 
     /// Select the appropriate method to call based on name and arg list
-    MethodInfo selectMethod(const std::string& name, const std::vector<aeQualType>& argsList);
+    MethodInfo selectMethod(const std::string& name, const std::vector<RzQualType>& argsList);
 
 	/// Get the field information for a given type
 	aeField* getField(std::string name);

@@ -6,18 +6,18 @@ aeNodeIdentifier::aeNodeIdentifier()
 	m_nodeType = AEN_IDENTIFIER;
 }
 
-aeQualType aeNodeIdentifier::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeIdentifier::getQualifiedType(RzCompiler* c)
 {
 	RzType* typeInfo = c->m_env->getTypeInfo(m_name);
 	if (typeInfo)
 	{
 		// This identifier is actually a type (enum, class)
-		aeQualType qt;
+		RzQualType qt;
 		qt.m_type = typeInfo;
 		return qt;
 	}
 
-	aeQualType qt = c->getVariable(m_name).type;
+	RzQualType qt = c->getVariable(m_name).type;
     if (!qt.m_type) {
         qt.m_type = c->m_env->getTypeInfo(qt.m_typeString);
     }

@@ -15,7 +15,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext e
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
-        return emitFunctionCall(aeNodeExpr(), aeQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
+        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{
@@ -144,7 +144,7 @@ bool RzCompiler::canConvertType(RzType* typeA, RzType* typeB)
 	return false;
 }
 
-void RzCompiler::emitImplicitConversion(aeQualType typeA, aeQualType typeB)
+void RzCompiler::emitImplicitConversion(RzQualType typeA, RzQualType typeB)
 {
 	m_typeSystem.performConversion(typeA, typeB, this);
 }
@@ -214,7 +214,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 
 	//printf("Compiling operator.()\n");
 
-	aeQualType Ta = buildQualifiedType(acs->m_a);
+	RzQualType Ta = buildQualifiedType(acs->m_a);
 	if (!Ta)
 	{
 		CompilerError("0002","Cannot find the type of '" + acs->m_a->str() + "'");

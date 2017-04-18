@@ -15,14 +15,14 @@ class aeNodeIdentifier : public aeNodeExpr
 public:
 	bool explicitDeclaration;
 
-	aeQualType VarType;
+	RzQualType VarType;
 	std::string m_name;
 
 public:
 
 	aeNodeIdentifier();
 
-	virtual aeQualType getQualifiedType(RzCompiler* c);
+	virtual RzQualType getQualifiedType(RzCompiler* c);
 
 	std::string str() const;
 };

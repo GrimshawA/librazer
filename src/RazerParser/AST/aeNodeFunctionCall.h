@@ -35,7 +35,7 @@ public:
 	aeNodeFunctionCall();
 
 	/// Get the qualified type of the argument
-	aeQualType getArgType(uint32_t index);
+	RzQualType getArgType(uint32_t index);
 
 	uint32_t getReturnTypeSize();
 
@@ -43,7 +43,7 @@ public:
 	bool hasLinkedFunction();
 
 
-	aeQualType getQualifiedType(RzCompiler* c);
+	RzQualType getQualifiedType(RzCompiler* c);
 
 	/// Returns a simple string representation
 	std::string str() const;

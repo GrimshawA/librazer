@@ -215,6 +215,20 @@ RzToken RzTokenParser::getToken() {
         return token;
     }
 
+    if (LastChar == '|' && program_source[i + 1] == '|') {
+        token.type = RZTK_BINOP;
+        token.text = "||";
+        ++i;
+        return token;
+    }
+
+    if (LastChar == '&' && program_source[i + 1] == '&') {
+        token.type = RZTK_BINOP;
+        token.text = "&&";
+        ++i;
+        return token;
+    }
+
     // operators
     if (LastChar == '>' || LastChar == '<' || LastChar == '+' || LastChar == '-' || LastChar == '*' || LastChar == '/' || LastChar == '^' ||
             LastChar == '=' || LastChar == '%') {

@@ -47,12 +47,12 @@ std::string aeNodeFunction::str() const
 	return s;
 }
 
-aeQualType aeNodeFunction::getParameterType(uint32_t index)
+RzQualType aeNodeFunction::getParameterType(uint32_t index)
 {
 	return m_paramTypes[index];
 }
 
-aeQualType aeNodeFunction::getReturnType()
+RzQualType aeNodeFunction::getReturnType()
 {
 	return m_returnType;
 }

@@ -1,7 +1,7 @@
 #ifndef aeCompilerConv_h__
 #define aeCompilerConv_h__
 
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 #include <vector>
 
 class RzType;
@@ -71,9 +71,9 @@ struct OperatorOverloadInfo
 	};
 
 	int         m_type;
-	aeQualType  m_returnType;
-	aeQualType  m_t1;
-	aeQualType  m_t2;
+	RzQualType  m_returnType;
+	RzQualType  m_t1;
+	RzQualType  m_t2;
 	ICGenerator m_function;
 };
 
@@ -86,7 +86,7 @@ struct OperatorOverloadTable
 	/// In success, the response carries the return type of the custom overload
 	/// First, it matches compatibility literally, if nothing satisfies these types, it will start trying to find implicit conversions.
 	/// The current context of expression counts, as which overloads can be seen and have precedence is relative to that.
-	OperatorOverloadInfo findAppropriate(aeQualType t1, aeQualType t2, std::string operatr, RzCompiler* c)
+	OperatorOverloadInfo findAppropriate(RzQualType t1, RzQualType t2, std::string operatr, RzCompiler* c)
 	{
 		OperatorOverloadInfo info;
 		return info;
@@ -99,9 +99,9 @@ struct TypeSystemInformation
 
 	void init(RzCompiler* c);
 
-	void performConversion(aeQualType T1, aeQualType T2, RzCompiler* compiler);
+	void performConversion(RzQualType T1, RzQualType T2, RzCompiler* compiler);
 
-	bool canConvert(aeQualType T1, aeQualType T2);
+	bool canConvert(RzQualType T1, RzQualType T2);
 };
 
 #endif // aeCompilerConv_h__

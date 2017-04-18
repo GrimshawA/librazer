@@ -1,6 +1,7 @@
 #include "aeNodeBinaryOperator.h"
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerRuntime/RzEngine.h>
+#include <Logger.h>
 
 aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper)
 {
@@ -22,16 +23,24 @@ bool aeNodeBinaryOperator::isArithmetic()
 	return oper == "+" || oper == "-" || oper == "*" || oper == "/";
 }
 
-aeQualType aeNodeBinaryOperator::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeBinaryOperator::getQualifiedType(RzCompiler* c)
 {
-	aeQualType qt;
+    RzQualType qt;
 	if (isRelational())
 	{
 		qt.m_type = c->m_env->getTypeInfo("bool");
 	}
 	else if (isArithmetic())
 	{
-		qt.m_type = c->m_env->getTypeInfo("int32");
+        RzQualType T1 = operandA->getQualifiedType(c);
+        RzQualType T2 = operandB->getQualifiedType(c);
+
+        if (T1 == T2) {
+            qt = T1;
+        }
+        else {
+            RZLOG("error: implicit primitive promotion not ready\n");
+        }
 	}
 
 	return qt;

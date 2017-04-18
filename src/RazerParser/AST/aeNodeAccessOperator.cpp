@@ -7,10 +7,10 @@ aeNodeAccessOperator::aeNodeAccessOperator()
 	m_nodeType = (AEN_ACCESSOPERATOR);
 }
 
-aeQualType aeNodeAccessOperator::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeAccessOperator::getQualifiedType(RzCompiler* c)
 {
 	// When the left side in a.b is a var, it can only yield another var as result
-	aeQualType leftType = m_a->getQualifiedType(c);
+	RzQualType leftType = m_a->getQualifiedType(c);
 	if (leftType.isVariant())
 	{
 		return leftType;

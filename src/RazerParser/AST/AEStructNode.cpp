@@ -168,7 +168,7 @@ aeNodeFunction* AEStructNode::getMethod(const std::string& name)
 	return nullptr;
 }
 
-aeNodeFunction* AEStructNode::selectOverload(const std::string& name, std::vector<aeQualType> params)
+aeNodeFunction* AEStructNode::selectOverload(const std::string& name, std::vector<RzQualType> params)
 {
 	return nullptr;
 }

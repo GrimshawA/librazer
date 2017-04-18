@@ -14,7 +14,7 @@
 #include <QDebug>
 
 void run_pong_game() {
-	QDir::setCurrent("C:\\Development\\librazer\\testbed\\scripts");
+    QDir::setCurrent("D:\\Development\\librazer\\testbed\\scripts");
     qDebug() << QDir::current().absolutePath();
 
     RzEngine ctx;

@@ -1,7 +1,7 @@
 #ifndef aeSymbol_h__
 #define aeSymbol_h__
 
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 
 class AEType;
 class RzEngine;
@@ -44,7 +44,7 @@ class aeField : public aeSymbol
 public:
 	uint16_t offset;   ///< Offset the field appears in the struct
 	uint16_t size;     ///< Effective shallow size the field takes
-	aeQualType type;   ///< Qualified type of this field
+	RzQualType type;   ///< Qualified type of this field
 	std::string name;  ///< Local name identifier of the field
 };
 

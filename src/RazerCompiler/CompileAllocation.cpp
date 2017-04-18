@@ -15,7 +15,7 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
         return RzCompileResult::aborted;
     }
 
-	aeQualType declType = varDecl.m_type;
+    RzQualType declType = varDecl.m_type;
 
 	if (declType.getName() == "var")
 	{
@@ -26,7 +26,7 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
         return RzCompileResult::ok;
 	}
 
-    declType = aeQualType(m_env->getTypeInfo(varDecl.m_type.m_typeString));
+    declType = RzQualType(m_env->getTypeInfo(varDecl.m_type.m_typeString));
 
 	if (!declType.getType())
 	{
@@ -84,7 +84,7 @@ RzCompileResult RzCompiler::compileNew(aeNodeNew& newExpr)
 
     RZLOG("NEW: %s\n", newExpr.str().c_str());
 
-	newExpr.m_instanceType = aeQualType(m_env->getTypeInfo(newExpr.type));
+    newExpr.m_instanceType = RzQualType(m_env->getTypeInfo(newExpr.type));
 
 	if (newExpr.m_instanceType.getType() == nullptr)
 	{

@@ -28,7 +28,7 @@ RzType* RzFunction::getStruct() {
 	return m_struct;
 }
 
-aeQualType RzFunction::getReturnType() {
+RzQualType RzFunction::getReturnType() {
 	return returnType;
 }
 

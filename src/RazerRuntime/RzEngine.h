@@ -2,7 +2,7 @@
 #define RZENGINE_H__
 
 #include <RazerVM/ThreadContext.h>
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 #include <RazerRuntime/RzType.h>
 #include <RazerRuntime/RzValue.h>
 #include <RazerRuntime/Module.h>

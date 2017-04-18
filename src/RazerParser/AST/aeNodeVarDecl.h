@@ -31,7 +31,7 @@ public:
 		aeNodeExpr*                 m_init = nullptr;
 	};
 
-	aeQualType        m_type;
+	RzQualType        m_type;
 	std::vector<Decl> m_decls;
 
 public:

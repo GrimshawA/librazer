@@ -85,7 +85,7 @@ public:
 		RzValue                  parseDataObjectBody();
 		RzValue                  parseArrayValue();
 		RzValue                  parseProperty();
-		aeQualType               parseQualType();
+		RzQualType               parseQualType();
 		aeNodeExpr*              parseExpression();
 		aeNodeExpr*              parsePrimaryExpression();
 		aeNodeAccessOperator*    parseMemberAccess(aeNodeExpr* left);

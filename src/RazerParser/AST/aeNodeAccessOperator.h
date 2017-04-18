@@ -35,7 +35,7 @@ public:
 
 	aeNodeAccessOperator();
 
-	virtual aeQualType getQualifiedType(RzCompiler* c);
+	virtual RzQualType getQualifiedType(RzCompiler* c);
 
 	std::string str() const;
 };

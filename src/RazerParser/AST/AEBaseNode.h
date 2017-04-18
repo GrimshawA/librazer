@@ -1,7 +1,7 @@
 #ifndef aeNodeBase_h__
 #define aeNodeBase_h__
 
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 
 #include <vector>
 #include <memory>

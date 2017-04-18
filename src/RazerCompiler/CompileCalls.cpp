@@ -7,7 +7,7 @@ RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
     if (fn->getParentExpression() && fn->getParentExpression()->m_nodeType == AEN_ACCESSOPERATOR)
     {
         // the fn belongs to some construct
-        aeQualType leftSideType = ((aeNodeAccessOperator*)fn->getParentExpression())->m_a->getQualifiedType(this);
+        RzQualType leftSideType = ((aeNodeAccessOperator*)fn->getParentExpression())->m_a->getQualifiedType(this);
         std::string symbolName = leftSideType.getTypeName() + "." + fn->m_name;
        // r = m_env->getFunctionByName(fn->m_name);
     }
@@ -20,7 +20,7 @@ RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
 }
 
 
-RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, aeQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx) {
+RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx) {
     std::string finalSymbolName = fn->m_name;
 
     if (!beingCalledOn)
@@ -76,7 +76,7 @@ void RzCompiler::emitLateBoundCall(aeNodeFunctionCall* fn) {
     // Calls a function on a static object, if it supports it
 }
 
-RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, aeQualType obj, aeNodeFunctionCall& call) {
+RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, RzQualType obj, aeNodeFunctionCall& call) {
 
     RzType* typeInfo = obj.getType();
     if (!typeInfo) {
@@ -84,7 +84,7 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, aeQual
         return RzCompileResult::aborted;
     }
 
-    RzType::MethodInfo method = typeInfo->selectMethod(call.m_name, std::vector<aeQualType>());
+    RzType::MethodInfo method = typeInfo->selectMethod(call.m_name, std::vector<RzQualType>());
 
     if (method.name.empty())
     {

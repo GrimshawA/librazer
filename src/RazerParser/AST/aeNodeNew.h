@@ -18,12 +18,12 @@ class aeNodeNew : public aeNodeExpr
 public:
 	aeNodeNew();
 
-	aeQualType m_instanceType;
+	RzQualType m_instanceType;
 	std::string type;
 
 
 public:
-	aeQualType getQualifiedType(RzCompiler* c);
+	RzQualType getQualifiedType(RzCompiler* c);
 
 };
 

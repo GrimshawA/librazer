@@ -23,6 +23,9 @@ std::map<std::string, int> mOperatorTable = {
     { "/", 30 },
     { "%", 30 },
 
+    { "||", 10 },
+    { "&&", 10 },
+
 };
 
 
@@ -494,7 +497,7 @@ AEBaseNode* RzParser::parseSymbol()
         getNextToken();
     }
 
-    aeQualType type_node = parseQualType();
+    RzQualType type_node = parseQualType();
 
     std::string SymbolName = Tok.text;
 
@@ -613,9 +616,9 @@ AEEnumNode* RzParser::parseEnum()
     return enum_code;
 }
 
-aeQualType RzParser::parseQualType()
+RzQualType RzParser::parseQualType()
 {
-    aeQualType type;
+    RzQualType type;
     type.m_type = ctx->getTypeInfo(Tok.text);
     type.m_typeString = Tok.text;
     if (!type.m_type)
@@ -630,7 +633,7 @@ aeQualType RzParser::parseQualType()
     if (Tok.text == "<")
     {
         getNextToken();
-        aeQualType templArg = parseQualType();
+        RzQualType templArg = parseQualType();
         getNextToken();
         type.m_templateArgs.push_back(templArg);
     }

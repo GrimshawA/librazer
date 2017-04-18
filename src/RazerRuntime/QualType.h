@@ -1,5 +1,5 @@
-#ifndef aeQualType_h__
-#define aeQualType_h__
+#ifndef RZQUALTYPE_H__
+#define RZQUALTYPE_H__
 
 class RzType;
 class RzEngine;
@@ -19,7 +19,7 @@ enum AEPrimitive
 };
 
 /**
-	\class aeQualType
+    \class RzQualType
 	\brief A qualified type is the sum of a base declared type with additional qualifiers
 
 	These qualifiers include templating, const, volatile and other useful information.
@@ -27,10 +27,10 @@ enum AEPrimitive
 
 	For example:
 	const int => aeQualType dependent on int
-	const MyClass& => aeQualType dependent on a MyClass type
-	MyArray<int> => aeQualType dependent on a MyArray type, which accepts template arguments
+    const MyClass& => dependent on a MyClass type
+    MyArray<int> => dependent on a MyArray type, which accepts template arguments
 */
-class aeQualType
+class RzQualType
 {
 public:
 
@@ -41,22 +41,22 @@ public:
 	bool                    m_volatile;
 	bool                    m_templated;
 	bool                    m_handle;
-	std::vector<aeQualType> m_templateArgs;
+    std::vector<RzQualType> m_templateArgs;
 	std::string             m_typeString;
 
 
 public:
 
 	/// Generates a fully qualified type from a string describing it
-	static aeQualType fromString(const std::string& str);
+    static RzQualType fromString(const std::string& str);
 
 public:
 
 	/// Initializes to void which means a null type or invalid state
-	aeQualType();
+    RzQualType();
 
 	/// Initialize from a type
-	aeQualType(RzType* type);
+    RzQualType(RzType* type);
 
 	/// Get the static size of this type
 	uint32_t getSize();
@@ -65,7 +65,7 @@ public:
 	uint32_t getNumTemplateArgs() const;
 
 	/// Get the template arguments
-	aeQualType getTemplateArg(uint32_t index) const;
+    RzQualType getTemplateArg(uint32_t index) const;
 
 	/// Returns the type name (or "void")
 	std::string getName() const;
@@ -113,4 +113,4 @@ public:
 	void parse(const std::string& str, RzEngine* ctx);
 };
 
-#endif // aeQualType_h__
+#endif // RZQUALTYPE_H__

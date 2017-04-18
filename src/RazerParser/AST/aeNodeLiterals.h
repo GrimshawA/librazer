@@ -20,7 +20,7 @@ public:
 		m_nodeType = AEN_STRING;
 	}
 
-	aeQualType getQualifiedType(RzCompiler* c);
+	RzQualType getQualifiedType(RzCompiler* c);
 
 
 	std::string str() const
@@ -45,7 +45,7 @@ public:
 		return std::to_string(value);
 	}
 
-	aeQualType getQualifiedType(RzCompiler* c);
+	RzQualType getQualifiedType(RzCompiler* c);
 
 
 	float value;
@@ -59,7 +59,7 @@ public:
 		m_nodeType = AEN_INTEGER;
 	}
 
-	aeQualType getQualifiedType(RzCompiler* c);
+	RzQualType getQualifiedType(RzCompiler* c);
 
 
 	std::string str() const

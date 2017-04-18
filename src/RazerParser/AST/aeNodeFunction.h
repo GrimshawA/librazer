@@ -6,7 +6,7 @@
 
 class aeNodeExpr;
 class aeNodeVarDecl;
-class aeQualType;
+class RzQualType;
 class aeNodeBlock;
 class AEStmtNode;
 
@@ -25,10 +25,10 @@ class aeNodeFunction : public aeNodeValue
 public:
 
 	std::vector<aeNodeVarDecl*>                      m_parameters;
-	std::vector<aeQualType>                       m_paramTypes;
+	std::vector<RzQualType>                       m_paramTypes;
 	std::vector<std::unique_ptr<AEStmtNode>> m_statements;
 	std::string                                   m_name;
-	aeQualType                                    m_returnType;
+	RzQualType                                    m_returnType;
 	std::unique_ptr<aeNodeBlock>                  m_block;
 	bool                                          is_constructor;
 	bool                                          is_method;
@@ -43,10 +43,10 @@ public:
 public:
 	aeNodeFunction();
 
-	aeQualType getReturnType();
+	RzQualType getReturnType();
 
 	/// Get the fully qualified type of the parameter
-	aeQualType getParameterType(uint32_t index);
+	RzQualType getParameterType(uint32_t index);
 
 	/// Is this a global function outside class scope
 	bool isGlobalFunction();

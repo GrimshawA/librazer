@@ -35,7 +35,7 @@ int32_t RzCompiler::cursor()
     return m_cursor;
 }
 
-bool RzCompiler::canImplicitlyConvert(aeQualType origin, aeQualType dest)
+bool RzCompiler::canImplicitlyConvert(RzQualType origin, RzQualType dest)
 {
     for (auto& conv : m_typeSystem.m_table)
     {
@@ -55,14 +55,14 @@ void RzCompiler::emitEnumValue(aeEnum* enumDef, const std::string& valueDef)
     emitInstruction(OP_LOADENUM, enumDef->table[valueDef]);
 }
 
-aeQualType RzCompiler::buildQualifiedType(const std::string& type)
+RzQualType RzCompiler::buildQualifiedType(const std::string& type)
 {
-    aeQualType qtype;
+    RzQualType qtype;
     qtype.m_type = m_env->getTypeInfo(type);
     return qtype;
 }
 
-aeQualType RzCompiler::buildQualifiedType(aeNodeExpr* e)
+RzQualType RzCompiler::buildQualifiedType(aeNodeExpr* e)
 {
     return e->getQualifiedType(this);
 }
@@ -109,7 +109,7 @@ void RzCompiler::pop_scope()
     m_scopes.pop_back();
 }
 
-void RzCompiler::declareStackVar(const std::string& name, aeQualType type)
+void RzCompiler::declareStackVar(const std::string& name, RzQualType type)
 {
     int bpOffset = m_OffsetFromBasePtr;
 
@@ -396,7 +396,7 @@ RzCompileResult RzCompiler::emitBranchCode(aeNodeBranch* cond)
 
     // The expression must evaluate first
     aeExprContext exprContext;
-    exprContext.expectedResult = aeQualType(m_env->getTypeInfo("bool"));
+    exprContext.expectedResult = RzQualType(m_env->getTypeInfo("bool"));
     emitExpressionEval(test_expr, aeExprContext());
 
     // Now that the expression is evaluated and stored in a register, let's set the jmp
@@ -506,7 +506,7 @@ void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* func
                 // Templated types get the type as parameter
                 for (int i = 0; i < field.type.getNumTemplateArgs(); ++i)
                 {
-                    aeQualType targ = field.type.getTemplateArg(i);
+                    RzQualType targ = field.type.getTemplateArg(i);
                     emitInstruction(OP_TYPEINFO, m_env->getTypeInfoIndex(targ.m_type));
                 }
             }
@@ -579,7 +579,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
     switch (stmt->m_nodeType) {
 
     case AEN_FUNCTIONCALL:
-        return emitFunctionCall(aeNodeExpr(), aeQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
+        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
 
     case AEN_BRANCH:
         return emitBranchCode(static_cast<aeNodeBranch*>(stmt));

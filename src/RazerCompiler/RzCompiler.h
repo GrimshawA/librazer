@@ -30,7 +30,7 @@ struct VariableStorageInfo
 {
     int mode = AE_VAR_INVALID; ///< Reference frame, or where the varable belongs to
     int offset = 0;            ///< Offset within reference frame
-    aeQualType type;           ///< Qualified type of this object
+    RzQualType type;           ///< Qualified type of this object
     std::string name;
 };
 
@@ -40,7 +40,7 @@ struct VariableStorageInfo
 */
 struct aeExprContext
 {
-    aeQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
+    RzQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
 
     aeNodeExpr* rootExpr;
     bool is_temporary = false; ///< If the expression is isolated, it should evaluate for side effects and leave nothing on the stack
@@ -99,15 +99,15 @@ public:
     void collect(RzSourceUnit& parseTree);
     void collect(AEStructNode& cls);
 
-    bool canImplicitlyConvert(aeQualType origin, aeQualType dest);
+    bool canImplicitlyConvert(RzQualType origin, RzQualType dest);
 
     AEStructNode* getTopClassNode();
 
     /// Builds a qualified type identifier based on context
-    aeQualType buildQualifiedType(const std::string& type);
+    RzQualType buildQualifiedType(const std::string& type);
 
     /// Find the qualified type of a given expression
-    aeQualType buildQualifiedType(aeNodeExpr* e);
+    RzQualType buildQualifiedType(aeNodeExpr* e);
 
     /// Emit an instruction
     uint32_t emitInstruction(RzInstruction instr);
@@ -123,7 +123,7 @@ public:
 
     /// Declares a function local variable that can be addressed within it
     /// The stack frame of a function is basically a sequence of slots, each being a variable, at discrete offsets from the base pointer
-    void declareStackVar(const std::string& name, aeQualType type);
+    void declareStackVar(const std::string& name, RzQualType type);
 
     /// Pops the function arguments from the stack
     void releaseParametersContext();
@@ -192,7 +192,7 @@ public:
     void emitLoadAddress(aeNodeExpr* expr);
     void emitLoadLiteral(aeNodeLiteral* lt);
     RzCompileResult emitMemberOp(aeNodeAccessOperator* acs);
-    void emitImplicitConversion(aeQualType typeA, aeQualType typeB);
+    void emitImplicitConversion(RzQualType typeA, RzQualType typeB);
     RzCompileResult compileNew(aeNodeNew& newExpr);
     void emitSubscriptOp(aeNodeSubscript* subscript);
     void emitLambdaFunction(aeNodeFunction* function);
@@ -204,10 +204,10 @@ public:
     RzCompileResult compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs);
 
     /// Function calls
-    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, aeQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
+    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
     void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
     void emitLateBoundCall(aeNodeFunctionCall* fn);
-    RzCompileResult compileStaticObjectCall(aeNodeExpr& selfExpr, aeQualType obj, aeNodeFunctionCall& call);
+    RzCompileResult compileStaticObjectCall(aeNodeExpr& selfExpr, RzQualType obj, aeNodeFunctionCall& call);
     RzCompileResult compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info);
     RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*> args);
 

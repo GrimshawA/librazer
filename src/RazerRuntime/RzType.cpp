@@ -138,7 +138,7 @@ aeBindMethod RzType::getNativeFunction(const std::string& name)
 	return nullptr;
 }
 
-RzType::MethodInfo RzType::selectMethod(const std::string& name, const std::vector<aeQualType>& argsList) {
+RzType::MethodInfo RzType::selectMethod(const std::string& name, const std::vector<RzQualType>& argsList) {
     for(auto& m : m_methods) {
         if (m.name == name) {
             return m;

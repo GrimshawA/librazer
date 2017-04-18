@@ -3,7 +3,7 @@
 
 #include <RazerVM/InstructionSet.h>
 #include <RazerRuntime/RzType.h>
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 #include <RazerRuntime/Function.h>
 #include <vector>
 #include <array>
@@ -94,7 +94,7 @@ public:
 public:
 	// Type information
 
-	void resolveType(aeQualType& type);
+	void resolveType(RzQualType& type);
 	bool hasType(const std::string& name);
 
 public:

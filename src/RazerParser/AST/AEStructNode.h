@@ -27,7 +27,7 @@ class AEEventNode : public AEBaseNode
 {
 public:
 	std::string name;
-	std::vector<aeQualType> params;
+	std::vector<RzQualType> params;
 };
 
 class AEMetaNode : public AEBaseNode
@@ -60,7 +60,7 @@ public:
 	void deduceStaticType(RzEngine* ctx);
 
 	std::string name;
-	aeQualType type;
+	RzQualType type;
 	int visibility;
 	AEFieldInitNode* initializer = nullptr;
 };
@@ -153,7 +153,7 @@ public:
 	aeNodeFunction* getMethod(const std::string& name);
 
 	/// Picks the best overload for a given method name, if there is a suitable one
-	aeNodeFunction* selectOverload(const std::string& name, std::vector<aeQualType> params);
+	aeNodeFunction* selectOverload(const std::string& name, std::vector<RzQualType> params);
 
 	/// Create the default constructor for this type
 	aeNodeFunction* createDefaultConstructor();

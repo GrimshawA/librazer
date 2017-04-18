@@ -1,13 +1,13 @@
-#include <RazerRuntime/aeQualType.h>
+#include <RazerRuntime/QualType.h>
 #include <RazerRuntime/RzType.h>
 
-aeQualType aeQualType::fromString(const std::string& str)
+RzQualType RzQualType::fromString(const std::string& str)
 {
-	aeQualType t;
+    RzQualType t;
 	return t;
 }
 
-aeQualType::aeQualType()
+RzQualType::RzQualType()
 : m_type(nullptr)
 , m_templated(false)
 , m_const(false)
@@ -16,7 +16,7 @@ aeQualType::aeQualType()
 
 }
 
-aeQualType::aeQualType(RzType* type)
+RzQualType::RzQualType(RzType* type)
 : m_type(type)
 , m_templated(false)
 , m_const(false)
@@ -25,12 +25,12 @@ aeQualType::aeQualType(RzType* type)
 
 }
 
-void aeQualType::parse(const std::string& str, RzEngine* ctx)
+void RzQualType::parse(const std::string& str, RzEngine* ctx)
 {
 
 }
 
-uint32_t aeQualType::getSize()
+uint32_t RzQualType::getSize()
 {
 	if (m_type)
 	{
@@ -47,7 +47,7 @@ uint32_t aeQualType::getSize()
 		return 0;
 }
 
-std::string aeQualType::getTypeName() const
+std::string RzQualType::getTypeName() const
 {
 	if (m_type)
 		return m_type->getName();
@@ -55,52 +55,52 @@ std::string aeQualType::getTypeName() const
 		return std::string();
 }
 
-uint32_t aeQualType::getNumTemplateArgs() const
+uint32_t RzQualType::getNumTemplateArgs() const
 {
 	return m_templateArgs.size();
 }
 
-aeQualType aeQualType::getTemplateArg(uint32_t index) const
+RzQualType RzQualType::getTemplateArg(uint32_t index) const
 {
 	return m_templateArgs[index];
 }
 
-std::string aeQualType::getName() const
+std::string RzQualType::getName() const
 {
 	return m_type ? m_type->getName() : "void";
 }
 
-RzType* aeQualType::getType() const
+RzType* RzQualType::getType() const
 {
 	return m_type;
 }
 
-bool aeQualType::isBroken() const
+bool RzQualType::isBroken() const
 {
 	return !m_typeString.empty() && !m_type;
 }
 
-bool aeQualType::isConst() const
+bool RzQualType::isConst() const
 {
 	return m_const;
 }
 
-bool aeQualType::isTemplated() const
+bool RzQualType::isTemplated() const
 {
 	return !m_templateArgs.empty();
 }
 
-bool aeQualType::isPrimitive() const
+bool RzQualType::isPrimitive() const
 {
 	return false;
 }
 
-bool aeQualType::isVoid() const
+bool RzQualType::isVoid() const
 {
 	return m_type == nullptr;
 }
 
-bool aeQualType::isPod() const
+bool RzQualType::isPod() const
 {
 	if (m_handle)
 		return true;
@@ -113,7 +113,7 @@ bool aeQualType::isPod() const
 	return false;
 }
 
-bool aeQualType::isVariant() const
+bool RzQualType::isVariant() const
 {
     if (!m_type)
         return false;
@@ -121,12 +121,12 @@ bool aeQualType::isVariant() const
 	return m_type->getSymbolName() == "var";
 }
 
-AEPrimitive aeQualType::getPrimitive() const
+AEPrimitive RzQualType::getPrimitive() const
 {
 	return AE_PFLOAT; //todo
 }
 
-std::string aeQualType::str() const
+std::string RzQualType::str() const
 {
 	std::string str = "nulltype";
 	if (m_type)
@@ -154,12 +154,12 @@ std::string aeQualType::str() const
 	return str;
 }
 
-const char* aeQualType::c_str()
+const char* RzQualType::c_str()
 {
 	return str().c_str();
 }
 
-aeQualType::operator bool() const
+RzQualType::operator bool() const
 {
 	return m_type != nullptr;
 }

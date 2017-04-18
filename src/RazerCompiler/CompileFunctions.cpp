@@ -30,7 +30,7 @@ RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 	paramsScope.offset = 0;
 	m_scopes.push_back(paramsScope);
 
-	aeQualType returnType = functionNode->getReturnType();
+	RzQualType returnType = functionNode->getReturnType();
 	if (!returnType.isVoid())
 	{
 		declareStackVar("__ret", returnType);
@@ -62,7 +62,7 @@ RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 															  : functionNode->m_parameters.size());
 	if (functionNode->isNonStaticMethod())
 	{
-		aeQualType thisHandle(m_currentStruct);
+		RzQualType thisHandle(m_currentStruct);
 		thisHandle.m_handle = true;
 		function->params[0] = thisHandle;
 
@@ -81,7 +81,7 @@ RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 
 	if (functionNode->isNonStaticMethod())
 	{
-		aeQualType thisHandle(m_currentStruct);
+		RzQualType thisHandle(m_currentStruct);
 		thisHandle.m_handle = true;
 		declareStackVar("this", thisHandle);
 	}

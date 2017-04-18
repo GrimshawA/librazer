@@ -26,7 +26,7 @@ public:
 
 	std::string getName();
 	RzType* getStruct();
-	aeQualType getReturnType();
+	RzQualType getReturnType();
 
 	bool isVirtual();
 	bool isNative();
@@ -41,8 +41,8 @@ public:
 	RzType*     m_struct;
 	uint32_t    id;
 	uint32_t    returnValueSize;   ///< Size the function reserves for the return value
-	aeQualType returnType;
-	std::vector<aeQualType> params;
+	RzQualType returnType;
+	std::vector<RzQualType> params;
 	uint32_t    paramsStorageSize; ///< The amount of storage needed to push the params
 	std::string decl;
 	aeBindMethod fn;

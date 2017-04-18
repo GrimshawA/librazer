@@ -163,7 +163,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	RzTokenParser lex; lex.tokenize(sig);
 	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
 
-	aeQualType retType = parser.parseQualType();
+	RzQualType retType = parser.parseQualType();
 	std::string methodName = parser.Tok.text;
 
 	auto typeInfo = getType(name);
@@ -194,7 +194,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 		if (parser.Tok.text == ")")
 			break;
 
-		aeQualType paramType = parser.parseQualType();
+		RzQualType paramType = parser.parseQualType();
 		fn.params.push_back(paramType);
 		info.args.push_back(paramType.str());
 		//printf("param %s\n", paramType.str().c_str());
@@ -244,7 +244,7 @@ int RzModule::resolveTypeModuleIndex(RzType* type) {
 	return -1;
 }
 
-void RzModule::resolveType(aeQualType& type) {
+void RzModule::resolveType(RzQualType& type) {
 	// Fill type information based on the module dependency graph
 
 }
