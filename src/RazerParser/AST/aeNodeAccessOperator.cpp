@@ -7,7 +7,7 @@ aeNodeAccessOperator::aeNodeAccessOperator()
 	m_nodeType = (AEN_ACCESSOPERATOR);
 }
 
-RzQualType aeNodeAccessOperator::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeAccessOperator::getQualifiedType(RzCompiler* c, RzQualType base)
 {
 	// When the left side in a.b is a var, it can only yield another var as result
 	RzQualType leftType = m_a->getQualifiedType(c);
@@ -16,7 +16,10 @@ RzQualType aeNodeAccessOperator::getQualifiedType(RzCompiler* c)
 		return leftType;
 	}
 
-	return m_b->getQualifiedType(c);
+    // Determining the right side is dependent on the left type
+    RzQualType lhsType = m_a->getQualifiedType(c);
+
+    return m_b->getQualifiedType(c, lhsType);
 }
 
 std::string aeNodeAccessOperator::str() const

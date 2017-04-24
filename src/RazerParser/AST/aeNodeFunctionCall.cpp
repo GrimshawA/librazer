@@ -19,8 +19,7 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	}
 }
 
-RzQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c)
-{
+RzQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c, RzQualType base) {
 	if (!m_fn)
 	{
 		// Derives which function this call actually wants to call, to find the return type

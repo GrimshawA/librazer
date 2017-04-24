@@ -1,4 +1,5 @@
 #include <RazerCompiler/RzCompiler.h>
+#include <RazerCompiler/TypeResolver.h>
 #include <Logger.h>
 
 RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
@@ -6,8 +7,8 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 	aeExprContext ectx;
 	ectx.must_be_rvalue = true;
 
-    RzQualType T1 = buildQualifiedType(lhs);
-    RzQualType T2 = buildQualifiedType(rhs);
+    RzQualType T1 = resolveQualifiedType(*this, *lhs);
+    RzQualType T2 = resolveQualifiedType(*this, *rhs);
 
     if (!T1.m_typeString.empty() && !T1.m_type) {
         // TODO: Do it right

@@ -10,20 +10,20 @@ import std
 */
 class PongGame {	
 
-	height: int
-	width: int
+	height: int32
+	width: int32
 	timer: float 5
 	first: boolean true
 
 	window: Window
 	
 	// pad
-	speed: int 1
-	padH: int 10
-	padW: int 40
-	bottomPadX: int
-	topPadX: int
-	inset: int 10
+	speed: int32 1
+	padH: int32 10
+	padW: int32 40
+	bottomPadX: int32
+	topPadX: int32
+	inset: int32 10
 	
 	// ball
 	ballX: float
@@ -33,8 +33,8 @@ class PongGame {
 	ballSize: float 20
 	
 	// score
-	scoreTop: int
-	scoreBottom: int
+	scoreTop: int32
+	scoreBottom: int32
 	
 	function main() {
 		Window wnd = new Window();
@@ -127,11 +127,11 @@ class PongGame {
 			wnd.drawRect(100, 0, 400, 200);
 		}
 
-		/*height = wnd.height();
+		height = wnd.height();
 		width = wnd.width();
 
 		// initial positioning
-		if (first) {
+		/*if (first) {
 			bottomPadX = width / 2 - padW / 2;
 			topPadX = bottomPadX;
 			ballX = width / 2 - ballSize / 2;

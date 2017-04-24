@@ -12,7 +12,7 @@ aeNodeExpr* aeNodeExpr::getParentExpression()
 	return m_parentExpr;
 }
 
-RzQualType aeNodeExpr::getQualifiedType(RzCompiler* c)
+RzQualType aeNodeExpr::getQualifiedType(RzCompiler* c, RzQualType base)
 {
 	return RzQualType();
 }

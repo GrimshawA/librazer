@@ -96,7 +96,9 @@ HEADERS += \
     ../../src/RazerRuntime/RzEngine.h \
     ../../src/RazerRuntime/RzValue.h \
     ../../src/RazerRuntime/Module.h \
-    ../../src/RazerRuntime/QualType.h
+    ../../src/RazerRuntime/QualType.h \
+    ../../src/RazerCompiler/TypeResolver.h \
+    ../../src/RazerCompiler/OverloadResolver.h
 
 SOURCES += \
     ../../src/RazerCompiler/aeCompilerConv.cpp \
@@ -185,7 +187,9 @@ SOURCES += \
     ../../src/RazerRuntime/Function.cpp \
     ../../src/RazerBuild/RzBuilder.cpp \
     ../../src/RazerRuntime/Module.cpp \
-    ../../src/RazerRuntime/QualType.cpp
+    ../../src/RazerRuntime/QualType.cpp \
+    ../../src/RazerCompiler/TypeResolver.cpp \
+    ../../src/RazerCompiler/OverloadResolver.cpp
 
 # SDL inclusion in the library
 INCLUDEPATH += ../../3rdparty/include

@@ -93,6 +93,18 @@ void Window::registerApi(RzModule* m)
 		Window* obj = (Window*)g.popObject();
 		obj->display();
 	});
+
+    m->registerMethod("Window", "int32 height()", [](RzGeneric g) {
+       Window* obj = (Window*)g.popObject();
+       int32_t h = obj->height();
+       g.pushInt32(h);
+    });
+
+    m->registerMethod("Window", "int32 width()", [](RzGeneric g) {
+       Window* obj = (Window*)g.popObject();
+       int32_t w = obj->width();
+       g.pushInt32(w);
+    });
 }
 
 Window::Window() {
@@ -138,4 +150,12 @@ bool Window::running() {
 
 void Window::display() {
 
+}
+
+int32_t Window::width() {
+    return 0;
+}
+
+int32_t Window::height() {
+    return 0;
 }

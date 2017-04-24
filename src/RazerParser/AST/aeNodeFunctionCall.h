@@ -43,7 +43,7 @@ public:
 	bool hasLinkedFunction();
 
 
-	RzQualType getQualifiedType(RzCompiler* c);
+    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
 
 	/// Returns a simple string representation
 	std::string str() const;

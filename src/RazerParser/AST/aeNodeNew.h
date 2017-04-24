@@ -23,7 +23,7 @@ public:
 
 
 public:
-	RzQualType getQualifiedType(RzCompiler* c);
+    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
 
 };
 

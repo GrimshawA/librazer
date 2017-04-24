@@ -188,9 +188,16 @@ public:
     void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
     void emitBinaryOp(aeNodeBinaryOperator* operation);
     void emitConditionalOp(aeNodeBinaryOperator* operation);
-    void emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
+    RzCompileResult emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
     void emitLoadAddress(aeNodeExpr* expr);
     void emitLoadLiteral(aeNodeLiteral* lt);
+
+    /// Loads the value of a member to stack
+    RzCompileResult loadMemberVariable(const std::string& name);
+
+    /// Loads the address of a member variable to stack (for writing)
+    RzCompileResult loadMemberAddress(const std::string& name);
+
     RzCompileResult emitMemberOp(aeNodeAccessOperator* acs);
     void emitImplicitConversion(RzQualType typeA, RzQualType typeB);
     RzCompileResult compileNew(aeNodeNew& newExpr);

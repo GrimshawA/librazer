@@ -131,4 +131,18 @@ void SDLWindowImpl::display() {
 #endif
 }
 
+int32_t SDLWindowImpl::width() {
+    SDLUserData* sd = (SDLUserData*)data;
+    int w, h;
+    SDL_GetWindowSize(sd->window, &w, &h);
+    return w;
+}
+
+int32_t SDLWindowImpl::height() {
+    SDLUserData* sd = (SDLUserData*)data;
+    int w, h;
+    SDL_GetWindowSize(sd->window, &w, &h);
+    return h;
+}
+
 

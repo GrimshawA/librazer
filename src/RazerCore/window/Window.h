@@ -32,6 +32,9 @@ public:
 
 	virtual void display();
 
+    virtual int32_t width();
+    virtual int32_t height();
+
 	void* data;
 	bool m_running;
 

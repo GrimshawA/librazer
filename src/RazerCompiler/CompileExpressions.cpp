@@ -184,25 +184,79 @@ void RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	}
 }
 
-void RzCompiler::emitLoadLiteral(aeNodeLiteral* lt)
-{
+void RzCompiler::emitLoadLiteral(aeNodeLiteral* lt) {
 	// Always leaves temporary rvalues in the stack
 
-	if (lt->m_nodeType == AEN_INTEGER)
-	{
+    if (lt->m_nodeType == AEN_INTEGER) {
 		aeNodeInteger* integer_node = (aeNodeInteger*)lt;
 		emitInstruction(OP_LOADK, AEK_INT, m_env->getIntegerLiteral(integer_node->value), 4);
 	}
-	else if (lt->m_nodeType == AEN_FLOAT)
-	{
+    else if (lt->m_nodeType == AEN_FLOAT) {
 		aeNodeFloat* literal = (aeNodeFloat*)lt;
 		emitInstruction(OP_LOADK, AEK_FLOAT, m_env->getFloatLiteral(literal->value), 4);
 	}
-	else if (lt->m_nodeType == AEN_STRING)
-	{
+    else if (lt->m_nodeType == AEN_STRING) {
 		aeNodeString* literal = (aeNodeString*)lt;
 		emitInstruction(OP_LOADK, AEK_STRING, m_env->getStringLiteral(literal->value), 4);
 	}
+}
+
+RzCompileResult RzCompiler::loadMemberVariable(const std::string& name) {
+    auto var = getVariable(name);
+
+    emitPushThis();
+
+    if (!var.type.m_type) {
+        RZLOG("error: Cannot load member variable with unknown type '%s'\n", var.type.m_typeString.c_str());
+        return RzCompileResult::aborted;
+    }
+
+    // Primitive types are handled directly with value semantics
+    // Otherwise, types are treated as object references
+    // loaded as a plain pointer
+
+    if (var.type.getType()->getName() == "int32") {
+        emitInstruction(OP_LOAD, AEK_THIS, var.offset, AEP_INT32);
+        return RzCompileResult::ok;
+    }
+    else if (var.type.getType()->getName() == "float") {
+        emitInstruction(OP_LOAD, AEK_THIS, var.offset, AEP_FLOAT);
+        return RzCompileResult::ok;
+    }
+    else if (var.type.getType()->getName() == "boolean") {
+        emitInstruction(OP_LOAD, AEK_THIS, var.offset, AEP_INT32);
+        return RzCompileResult::ok;
+    }
+    else {
+        emitInstruction(OP_LOAD, AEK_THIS, var.offset, AEP_PTR);
+        return RzCompileResult::ok;
+    }
+}
+
+RzCompileResult RzCompiler::loadMemberAddress(const std::string& name) {
+    auto var = getVariable(name);
+    emitPushThis();
+
+    // Load the address of a variable for writing to
+    // Primitives are handled as special cases
+    // all object references are loaded as a raw pointer
+
+    if (var.type.getType()->getName() == "int32") {
+         emitInstruction(OP_LOADADDR, AEK_THIS, var.offset);
+         return RzCompileResult::ok;
+    }
+    else if (var.type.getType()->getName() == "float") {
+        emitInstruction(OP_LOADADDR, AEK_THIS, var.offset);
+        return RzCompileResult::ok;
+    }
+    else if (var.type.getType()->getName() == "boolean") {
+        emitInstruction(OP_LOADADDR, AEK_THIS, var.offset);
+        return RzCompileResult::ok;
+    }
+    else {
+         emitInstruction(OP_LOADADDR, AEK_THIS, var.offset);
+         return RzCompileResult::ok;
+    }
 }
 
 RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
@@ -309,27 +363,27 @@ void RzCompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 	}
 }
 
-void RzCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext)
+RzCompileResult RzCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);
 
 	int loadFrom = AEK_EBP;
 	int offsetOnRefFrame = varInfo.offset;
+
+    if (varInfo.mode == AE_VAR_FIELD && parentExprContext.rx_value) {
+        return loadMemberVariable(var->m_name);
+    }
+    else if (varInfo.mode == AE_VAR_FIELD && parentExprContext.lvalue) {
+        return loadMemberAddress(var->m_name);
+    }
 	
-	if (varInfo.mode == AE_VAR_FIELD)
-	{
-		// We're trying to access a member of "this"
-		emitPushThis();
-		loadFrom = AEK_THIS;
-		emitDebugPrint("LOADING THIS." + var->m_name);
-	}
 	else if (varInfo.mode == AE_VAR_LOCAL)
 	{
 		if (varInfo.type.str() == "var"){
 			emitInstruction(OP_PUSHVAR, varInfo.offset);
             RZLOG(" Loading var: %s offset %d\n", varInfo.name.c_str(), varInfo.offset);
-			return;
+            return RzCompileResult::ok;
 		}
 	}
 
@@ -346,6 +400,8 @@ void RzCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentE
 	{
 		emitInstruction(OP_LOADADDR, loadFrom, offsetOnRefFrame);
 	}
+
+    return RzCompileResult::ok;
 }
 
 void RzCompiler::emitSubscriptOp(aeNodeSubscript* subscript)

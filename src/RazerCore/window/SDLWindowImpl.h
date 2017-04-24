@@ -25,6 +25,9 @@ public:
 
     void display() override;
 
+    int32_t width() override;
+    int32_t height() override;
+
     SDL_Renderer *renderer;
 };
 

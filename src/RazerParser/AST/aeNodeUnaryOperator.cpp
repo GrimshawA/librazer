@@ -12,7 +12,7 @@ std::string aeNodeUnaryOperator::exprstr()
 	return std::string(OperatorString + Operand->str());
 }
 
-RzQualType aeNodeUnaryOperator::getQualifiedType(RzCompiler* c) {
+RzQualType aeNodeUnaryOperator::getQualifiedType(RzCompiler* c, RzQualType base) {
     return Operand->getQualifiedType(c);
 }
 

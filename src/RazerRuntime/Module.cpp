@@ -163,7 +163,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	RzTokenParser lex; lex.tokenize(sig);
 	RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
 
-	RzQualType retType = parser.parseQualType();
+    RzQualType retType = parser.parseQualType();
 	std::string methodName = parser.Tok.text;
 
 	auto typeInfo = getType(name);
