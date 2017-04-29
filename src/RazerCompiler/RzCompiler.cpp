@@ -1,4 +1,5 @@
 #include <RazerCompiler/RzCompiler.h>
+#include <RazerCompiler/TypeResolver.h>
 #include <RazerVM/InstructionSet.h>
 #include <RazerVM/VirtualMachine.h>
 #include <RazerRuntime/RzEngine.h>
@@ -64,7 +65,7 @@ RzQualType RzCompiler::buildQualifiedType(const std::string& type)
 
 RzQualType RzCompiler::buildQualifiedType(aeNodeExpr* e)
 {
-    return e->getQualifiedType(this);
+    return resolveQualifiedType(*this, *e, RzQualType());
 }
 
 uint32_t RzCompiler::emitInstruction(RzInstruction instr)

@@ -19,19 +19,6 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	}
 }
 
-RzQualType aeNodeFunctionCall::getQualifiedType(RzCompiler* c, RzQualType base) {
-	if (!m_fn)
-	{
-		// Derives which function this call actually wants to call, to find the return type
-		m_fn = c->selectFunction(this);
-	}
-
-	if (m_fn)
-	{
-		return m_fn->returnType;
-	}
-}
-
 RzQualType aeNodeFunctionCall::getArgType(uint32_t index)
 {
 	if (m_function)

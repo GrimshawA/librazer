@@ -27,8 +27,6 @@ public:
 
 	virtual std::string exprstr();
 
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
 	std::string str();
 };
 

@@ -1,4 +1,5 @@
 #include <RazerCompiler/TypeResolver.h>
+#include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
 #include <RazerParser/AST/aeNodeBinaryOperator.h>
@@ -13,39 +14,101 @@
 #include <cassert>
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeBinaryOperator& binOp, RzQualType base) {
-    return binOp.getQualifiedType(&ctx, base);
+    RzQualType qt;
+    if (binOp.isRelational())
+    {
+        qt.m_type = ctx.m_env->getTypeInfo("bool");
+    }
+    else if (binOp.isArithmetic())
+    {
+        RzQualType T1 = resolveQualifiedType(ctx, *binOp.operandA, base);
+        RzQualType T2 = resolveQualifiedType(ctx, *binOp.operandB, base);
+
+        if (T1 == T2) {
+            qt = T1;
+        }
+        else {
+            RZLOG("error: implicit primitive promotion not ready\n");
+        }
+    }
+
+    return qt;
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeAccessOperator& accessOp, RzQualType base) {
-    return accessOp.getQualifiedType(&ctx, base);
+    // When the left side in a.b is a var, it can only yield another var as result
+    RzQualType leftType = resolveQualifiedType(ctx, *accessOp.m_a, base);
+    if (leftType.isVariant())
+    {
+        return leftType;
+    }
+
+    // Determining the right side is dependent on the left type
+    RzQualType lhsType = resolveQualifiedType(ctx, *accessOp.m_a, base);
+
+    return resolveQualifiedType(ctx, *accessOp.m_b, lhsType);
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeFunctionCall& funcCall, RzQualType base) {
-    return funcCall.getQualifiedType(&ctx, base);
+    if (base) {
+        // This is a call on a specific expression type
+        RzFunction* fn = base.m_type->getFunction(funcCall.m_name);
+        if (fn) {
+            return fn->returnType;
+        }
+    }
+
+    if (!funcCall.m_fn)
+    {
+        // Derives which function this call actually wants to call, to find the return type
+        funcCall.m_fn = ctx.selectFunction(&funcCall);
+    }
+
+    if (funcCall.m_fn)
+    {
+        return funcCall.m_fn->returnType;
+    }
+
+    return RzQualType();
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeString& stringLiteral, RzQualType base) {
-    return stringLiteral.getQualifiedType(&ctx, base);
+    return RzQualType(ctx.m_env->getTypeInfo("string"));
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeInteger& integerLiteral, RzQualType base) {
-    return integerLiteral.getQualifiedType(&ctx, base);
+    return RzQualType(ctx.m_env->getTypeInfo("int32"));
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeFloat& floatLiteral, RzQualType base) {
-    return floatLiteral.getQualifiedType(&ctx, base);
+    return RzQualType(ctx.m_env->getTypeInfo("float"));
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeNew& newExpr, RzQualType base) {
-    return newExpr.getQualifiedType(&ctx, base);
+    newExpr.m_instanceType = RzQualType(ctx.m_env->getTypeInfo(newExpr.type));
+    newExpr.m_instanceType.m_typeString = newExpr.type;
+    return newExpr.m_instanceType;
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeIdentifier& identExpr, RzQualType base) {
-    return identExpr.getQualifiedType(&ctx, base);
+    RzType* typeInfo = ctx.m_env->getTypeInfo(identExpr.m_name);
+    if (typeInfo)
+    {
+        // This identifier is actually a type (enum, class)
+        RzQualType qt;
+        qt.m_type = typeInfo;
+        return qt;
+    }
+
+    RzQualType qt = ctx.getVariable(identExpr.m_name).type;
+    if (!qt.m_type) {
+        qt.m_type = ctx.m_env->getTypeInfo(qt.m_typeString);
+    }
+    return qt;
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeUnaryOperator& unaryOp, RzQualType base) {
-    return unaryOp.getQualifiedType(&ctx, base);
+    return resolveQualifiedType(ctx, *unaryOp.Operand, base);
 }
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeExpr& expr, RzQualType base) {

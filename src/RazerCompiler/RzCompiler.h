@@ -189,7 +189,7 @@ public:
     void emitBinaryOp(aeNodeBinaryOperator* operation);
     void emitConditionalOp(aeNodeBinaryOperator* operation);
     RzCompileResult emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
-    void emitLoadAddress(aeNodeExpr* expr);
+    RzCompileResult emitLoadAddress(aeNodeExpr* expr);
     void emitLoadLiteral(aeNodeLiteral* lt);
 
     /// Loads the value of a member to stack

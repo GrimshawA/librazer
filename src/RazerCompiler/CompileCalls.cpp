@@ -1,4 +1,5 @@
 #include <RazerCompiler/RzCompiler.h>
+#include <RazerCompiler/TypeResolver.h>
 #include <Logger.h>
 
 RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
@@ -7,7 +8,7 @@ RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
     if (fn->getParentExpression() && fn->getParentExpression()->m_nodeType == AEN_ACCESSOPERATOR)
     {
         // the fn belongs to some construct
-        RzQualType leftSideType = ((aeNodeAccessOperator*)fn->getParentExpression())->m_a->getQualifiedType(this);
+        RzQualType leftSideType = resolveQualifiedType(*this, *((aeNodeAccessOperator*)fn->getParentExpression())->m_a);
         std::string symbolName = leftSideType.getTypeName() + "." + fn->m_name;
        // r = m_env->getFunctionByName(fn->m_name);
     }

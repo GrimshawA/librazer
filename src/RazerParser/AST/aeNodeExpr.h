@@ -29,8 +29,6 @@ public:
 	/// Get the parent expression if any
 	aeNodeExpr* getParentExpression();
 
-    virtual RzQualType getQualifiedType(RzCompiler* c, RzQualType base = RzQualType());
-
 	bool isFloat();
 
 	bool isInt();

@@ -35,8 +35,6 @@ public:
 
 	aeNodeAccessOperator();
 
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
 	std::string str() const;
 };
 

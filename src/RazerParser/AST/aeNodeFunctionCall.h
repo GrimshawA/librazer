@@ -42,9 +42,6 @@ public:
 	/// Does this node already know exactly what function is to be called?
 	bool hasLinkedFunction();
 
-
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
 	/// Returns a simple string representation
 	std::string str() const;
 };

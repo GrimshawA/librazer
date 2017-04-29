@@ -23,29 +23,6 @@ bool aeNodeBinaryOperator::isArithmetic()
 	return oper == "+" || oper == "-" || oper == "*" || oper == "/";
 }
 
-RzQualType aeNodeBinaryOperator::getQualifiedType(RzCompiler* c, RzQualType base)
-{
-    RzQualType qt;
-	if (isRelational())
-	{
-		qt.m_type = c->m_env->getTypeInfo("bool");
-	}
-	else if (isArithmetic())
-	{
-        RzQualType T1 = operandA->getQualifiedType(c);
-        RzQualType T2 = operandB->getQualifiedType(c);
-
-        if (T1 == T2) {
-            qt = T1;
-        }
-        else {
-            RZLOG("error: implicit primitive promotion not ready\n");
-        }
-	}
-
-	return qt;
-}
-
 std::string aeNodeBinaryOperator::str() const
 {
 	if (!operandA || !operandB)

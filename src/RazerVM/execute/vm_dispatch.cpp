@@ -135,7 +135,7 @@ void dispatch_execute(RzThreadContext& ctx)
 
 				vm_start(OP_SET)
                 DoAssign(ctx, inst.arg0, inst.arg1, inst.arg2);
-			vm_end
+            vm_end
 
 				vm_start(OP_MUL)
 				DoMul(ctx, (AeonPrimitiveType)inst.arg0);

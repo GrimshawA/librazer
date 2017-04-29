@@ -12,11 +12,6 @@ aeNodeExpr* aeNodeExpr::getParentExpression()
 	return m_parentExpr;
 }
 
-RzQualType aeNodeExpr::getQualifiedType(RzCompiler* c, RzQualType base)
-{
-	return RzQualType();
-}
-
 float aeNodeExpr::as_float()
 {
 	return static_cast<aeNodeFloat*>(this)->value;

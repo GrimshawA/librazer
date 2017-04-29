@@ -41,6 +41,8 @@ class PongGame {
 		wnd.open();
 		wnd.setSize(400, 200);
 
+		/*height = */wnd.height();
+
 		//window = wnd;
 
 		wnd.setFillColor(255, 0, 255);
@@ -48,29 +50,32 @@ class PongGame {
 		Timer t = new Timer();
 		while(wnd.running()) {
 			wnd.poll();
+
+			//height = wnd.height();
+
 			//update(t.restart());
-			paint(wnd);
+			/*paint(wnd);
 			if (wnd.keyPressed(114)) {
 				wnd.setFillColor(255, 0, 0);
 				wnd.drawRect(0, 0, 400, 200);
 			}
 			wnd.setFillColor(255, 0, 255);
-			wnd.drawRect(0, 0, 400, 100);
+			wnd.drawRect(0, 0, 400, 100);*/
 			wnd.display();
 		}
 	}
 
 	function update(float dt) {
-		timer = timer - dt;
+		/*timer = timer - dt;
 		if (timer < 0) {
 			timer = 5;
 			timerEvent();
-		}
+		}*/
 	}
 
 	function timerEvent() {
 		// side walls
-		if (ballX < 0 || ballX > width - ballSize) {
+		/*if (ballX < 0 || ballX > width - ballSize) {
 			velX = -velX;
 		}
 		// top / down walls
@@ -99,7 +104,7 @@ class PongGame {
 
 		ballX = ballX + velX;
 		ballY = ballY + velY;
-		
+		*/
 		// pressed keys
 		/*if (window.isPressed(23)) {
 			//bottomPadX = bottomPadX - (bottomPadX > 0) ? speed : 0;
@@ -127,8 +132,8 @@ class PongGame {
 			wnd.drawRect(100, 0, 400, 200);
 		}
 
-		height = wnd.height();
-		width = wnd.width();
+		//height = wnd.height();
+		/*width = wnd.width();
 
 		// initial positioning
 		/*if (first) {

@@ -20,9 +20,6 @@ public:
 		m_nodeType = AEN_STRING;
 	}
 
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
-
 	std::string str() const
 	{
 		return "\"" + value + "\"";
@@ -45,9 +42,6 @@ public:
 		return std::to_string(value);
 	}
 
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
-
 	float value;
 };
 
@@ -58,9 +52,6 @@ public:
 	{
 		m_nodeType = AEN_INTEGER;
 	}
-
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
 
 	std::string str() const
 	{

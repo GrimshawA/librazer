@@ -4,8 +4,8 @@
 
 RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {
-	aeExprContext ectx;
-	ectx.must_be_rvalue = true;
+    aeExprContext ectx;
+    ectx.must_be_rvalue = true;
 
     RzQualType T1 = resolveQualifiedType(*this, *lhs);
     RzQualType T2 = resolveQualifiedType(*this, *rhs);
@@ -20,11 +20,11 @@ RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
         return RzCompileResult::aborted;
     }
 
-	RZLOG("T1 %s T2 %s\n", T1.str().c_str(), T2.str().c_str());
+    RZLOG("T1 %s T2 %s\n", T1.str().c_str(), T2.str().c_str());
 
-	if (T1.isVariant())	{
+    if (T1.isVariant())	{
         return compileVarAssign(lhs, rhs);
-	}
+    }
     else {
         return compileStaticAssign(*lhs, *rhs);
     }
@@ -35,37 +35,37 @@ RzCompileResult RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
     RzQualType varType = m_env->getTypeInfo("var");
     RzQualType rhsType = buildQualifiedType(rhs);
 
-	loadVarRef(lhs);
-	emitExpressionEval(rhs, aeExprContext());
+    loadVarRef(lhs);
+    emitExpressionEval(rhs, aeExprContext());
 
-	if (rhsType.getTypeName() == "int32")
-	{
-		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_INT);
-	}
-	else if (rhsType.getTypeName() == "var")
-	{
-		// Assigning var to var
-		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_VAR);
-	}
-	else
-	{
-		// Assigning an object to a variant, need to identify its type
-		int moduleIndex = m_module->resolveTypeModuleIndex(rhsType.getType());
-		if (moduleIndex == -1)
-		{
-			RZLOG("Compiler error. Unresolved module\n");
+    if (rhsType.getTypeName() == "int32")
+    {
+        emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_INT);
+    }
+    else if (rhsType.getTypeName() == "var")
+    {
+        // Assigning var to var
+        emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_VAR);
+    }
+    else
+    {
+        // Assigning an object to a variant, need to identify its type
+        int moduleIndex = m_module->resolveTypeModuleIndex(rhsType.getType());
+        if (moduleIndex == -1)
+        {
+            RZLOG("Compiler error. Unresolved module\n");
             return RzCompileResult::aborted;
-		}
+        }
 
-		int typeIndex;
+        int typeIndex;
 
-		if (moduleIndex == 0)
-			typeIndex = m_module->getTypeIndex(rhsType.getType());
-		else
-			typeIndex = m_module->getDependantModule(moduleIndex)->getTypeIndex(rhsType.getType());
+        if (moduleIndex == 0)
+            typeIndex = m_module->getTypeIndex(rhsType.getType());
+        else
+            typeIndex = m_module->getDependantModule(moduleIndex)->getTypeIndex(rhsType.getType());
 
-		emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_OBJECT, moduleIndex, typeIndex);
-	}
+        emitInstruction(OP_VARSTORE, AE_VARIANTTYPE_OBJECT, moduleIndex, typeIndex);
+    }
 
     return RzCompileResult::ok;
 }
@@ -73,12 +73,17 @@ RzCompileResult RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs) {
 
     // Left hand gets loaded (Address of it)
-    emitLoadAddress(&lhs);
+    RzCompileResult r = emitLoadAddress(&lhs);
+    if (r == RzCompileResult::aborted)
+        return r;
 
     // Right hand gets loaded (value)
     aeExprContext exprContext;
+    exprContext.rx_value = true;
     exprContext.expectedResult = buildQualifiedType(&lhs);
-    emitExpressionEval(&rhs, aeExprContext());
+    r = emitExpressionEval(&rhs, aeExprContext());
+    if (r == RzCompileResult::aborted)
+        return r;
 
     RzQualType T1 = buildQualifiedType(&lhs);
     RzQualType T2 = buildQualifiedType(&rhs);
@@ -95,13 +100,13 @@ RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs
 
     // Generate actual assignment
     int assignType = -1;
-    if (1)
+    if (T1.getType()->getName() == "int32")
     {
-        assignType = AEP_PTR;
+        assignType = AEP_INT32;
     }
     else
     {
-        assignType = AEP_INT32;
+        assignType = AEP_PTR;
     }
 
     emitDebugPrint("OP_SET gen " + std::to_string(assignType));

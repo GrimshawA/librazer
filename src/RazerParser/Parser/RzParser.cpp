@@ -391,6 +391,10 @@ AEFieldNode* RzParser::parseStructField()
             f->type.m_typeString = Tok.text;
             getNextToken();
 
+            // Resolve primitives immediately
+            f->type.m_type = ctx->getTypeInfo(f->type.m_typeString);
+
+
             if (Tok.type == RZTK_NEWLINE || Tok.type == RZTK_SEMICOLON) {
                 // we're done with the field
                 getNextToken();

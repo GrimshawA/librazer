@@ -20,11 +20,6 @@ public:
 
 	RzQualType m_instanceType;
 	std::string type;
-
-
-public:
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
 };
 
 /*
@@ -34,13 +29,6 @@ class aeNodeNameOf : public aeNodeExpr
 {
 public:
 	std::string m_name;
-};
-
-class aeNodeThis : public aeNodeExpr
-{
-public:
-	bool        m_is_implicit;   ///< Was 'this' actually written or inferred from context 
-	aeNodeExpr* m_expr;          ///< The expression after the this
 };
 
 #endif // aeNodeNew_h__

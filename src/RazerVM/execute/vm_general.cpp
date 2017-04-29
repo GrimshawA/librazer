@@ -187,11 +187,14 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
     if (type == AEP_PTR)
     {
         RZLOG("Copied ptr %x to %x\n", operand.ptr, dest_addr.ptr);
-        memcpy(dest_addr.ptr, &operand.ptr, 4);
+        memcpy(dest_addr.ptr, &operand.ptr, sizeof(void*));
     }
-    else
+    else if (type == AEP_INT32)
     {
-        memcpy(dest_addr.ptr, &operand.i32, 4);
+        memcpy(dest_addr.ptr, &operand.i32, sizeof(int32_t));
+    }
+    else if (type == AEP_FLOAT) {
+         memcpy(dest_addr.ptr, &operand.fp, sizeof(float));
     }
 }
 

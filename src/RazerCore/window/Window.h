@@ -40,6 +40,8 @@ public:
 
     int r,g,b;
 
+    std::string dbgStr = "MAGICWINDOW";
+
     std::map<int, bool> m_keys;
 };
 

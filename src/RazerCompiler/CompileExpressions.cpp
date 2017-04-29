@@ -149,16 +149,17 @@ void RzCompiler::emitImplicitConversion(RzQualType typeA, RzQualType typeB)
 	m_typeSystem.performConversion(typeA, typeB, this);
 }
 
-void RzCompiler::emitLoadAddress(aeNodeExpr* expr)
+RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 {
 	if (expr->m_nodeType != AEN_IDENTIFIER)
 	{
 		CompilerError("0002","emitLoadAddress: Only know how to load a variable ref");
-		return;
+        return RzCompileResult::aborted;
 	}
 	aeNodeIdentifier* varExpr = (aeNodeIdentifier*)expr;
 
 	auto varStorage = getVariable(varExpr->m_name);
+
 	if (varStorage.mode == AE_VAR_LOCAL)
 	{
 		// Load a local variable address into the stack
@@ -167,10 +168,9 @@ void RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	}
 	else if (varStorage.mode == AE_VAR_FIELD)
 	{
-//		emitInstruction(OP_LOAD, AEK_THIS, varStorage.type->getField(varStorage.name)->offset);
-		//printf("'' beiNOT DONEng loaded from this->\n");
-        emitPushThis();
-        emitInstruction(OP_LOADADDR, AEK_THIS, varStorage.offset, 0);
+        RzCompileResult r = loadMemberAddress(varExpr->m_name);
+        if (r == RzCompileResult::aborted)
+            return r;
 	}
 	else if (varStorage.mode == AE_VAR_GLOBAL)
 	{
@@ -180,7 +180,7 @@ void RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	{
 		// The variable could not be found
 		CompilerError("0002","The referenced variable cannot be found. '" + varExpr->m_name + "'");
-		return;
+        return RzCompileResult::aborted;
 	}
 }
 
@@ -236,6 +236,11 @@ RzCompileResult RzCompiler::loadMemberVariable(const std::string& name) {
 RzCompileResult RzCompiler::loadMemberAddress(const std::string& name) {
     auto var = getVariable(name);
     emitPushThis();
+
+    if (!var.type.m_type) {
+        RZLOG("error: Cannot load member variable with unknown type '%s'\n", var.type.m_typeString.c_str());
+        return RzCompileResult::aborted;
+    }
 
     // Load the address of a variable for writing to
     // Primitives are handled as special cases

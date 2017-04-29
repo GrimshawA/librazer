@@ -25,8 +25,6 @@ public:
 	bool isRelational();
 	bool isArithmetic();
 
-    RzQualType getQualifiedType(RzCompiler* c, RzQualType base) override;
-
 	std::string str() const;
 };
 
