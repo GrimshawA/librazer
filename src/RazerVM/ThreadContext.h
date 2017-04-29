@@ -87,25 +87,6 @@ public:
 		return v;
 	}
 
-	RzStackValue getThisPtr()
-	{
-		RzStackValue thisvm;
-		thisvm.ptr = reinterpret_cast<RzStackValue*>(ebp - int32_t(sizeof(RzStackValue)))->ptr;
-		//thisvm.u64 -= sizeof(vm_value);
-		//thisvm = *(vm_value*)(ebp - sizeof(vm_value));
-		//printf("thisptr is %x from %x - 8\n", thisvm.ptr, ebp);
-		return thisvm;
-	}
-
-	void pushThisPtr(void* ptr)
-	{
-		RzStackValue v;
-		v.ptr = ptr;
-		push_value(v);
-
-		//printf("pushed this %x, read %x\n", ptr, getThisPtr().ptr);
-	}
-
 	void push_addr(void* ptr)
 	{
 		RzStackValue v;

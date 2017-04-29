@@ -1,7 +1,7 @@
 #include <utils/test_framework.h>
 
 void RzUnitTest::setError(ErrorFlag err) {
-    m_errorFlag = err;
+    m_errorFlags = err;
 }
 
 void RzUnitTestSuite::add(RzUnitTest* test) {
@@ -13,7 +13,7 @@ int RzUnitTestSuite::exec() {
 
     for (auto& t : m_tests) {
         t->execute();
-        if (t->m_errorFlag != 0)
+        if (t->errorFlags() != 0)
             passes = false;
     }
     return passes ? 1 : 0;

@@ -91,6 +91,7 @@ void Window::registerApi(RzModule* m)
 	m->registerMethod("Window", "void display()", [](RzGeneric g)
 	{
 		Window* obj = (Window*)g.popObject();
+        RZLOG("WINDOW OBJ %x\n", obj);
 		obj->display();
 	});
 
@@ -109,6 +110,7 @@ void Window::registerApi(RzModule* m)
 
 Window::Window() {
     r = g = b = 100;
+    RZLOG("Window instanced %x\n", this);
 }
 
 void Window::open() {

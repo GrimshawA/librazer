@@ -332,10 +332,15 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         }
     }
 
+    int fldOffset = 0;
     for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
         aeField fld;
         fld.name = clss->m_fields[i]->name;
         fld.type = clss->m_fields[i]->type;
+        fld.offset = fldOffset;
+
+        fldOffset += fld.type.getSize();
+
         typeInfo->m_fields.push_back(fld);
     }
 
@@ -558,7 +563,7 @@ RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
             return ret;
         }
 
-        //emitDebugTrace();
+        emitDebugTrace();
     }
 
     pop_scope();

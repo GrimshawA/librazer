@@ -10,6 +10,10 @@ class RzUnitTest {
 public:
     virtual void execute() = 0;
 
+    int errorFlags() {
+        return m_errorFlags;
+    }
+
 protected:
     enum ErrorFlag {
         ASSERT_FAILED = 1

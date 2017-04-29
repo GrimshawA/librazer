@@ -47,8 +47,6 @@ RzModule* RzVirtualMachine::get_current_mod() {
 void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype) {
 	m_mainContext.ebp = m_mainContext.esp;
 
-	m_mainContext.pushThisPtr(object->m_obj);
-	  
     //call(*object->getType()->getModule(), prototype.c_str());
 } 
 

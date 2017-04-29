@@ -100,6 +100,8 @@ void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     SDL_RenderFillRect(renderer, &rect);
+
+    RZLOG("DRAWRECT: %d %d %d %d\n", x, y, w, h);
 }
 
 void SDLWindowImpl::drawString(const std::string& str, int x, int y) {
@@ -118,13 +120,6 @@ bool SDLWindowImpl::running() {
 void SDLWindowImpl::display() {
 #ifdef RAZER_SDL
 	SDLUserData* sd = (SDLUserData*)data;
-
-	//SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, rand(), 0xFF, 0xFF));
-
-
-
-	//Update the surface
-    //SDL_UpdateWindowSurface(sd->window);
 
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);

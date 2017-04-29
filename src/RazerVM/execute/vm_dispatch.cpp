@@ -162,8 +162,8 @@ void dispatch_execute(RzThreadContext& ctx)
 			vm_end
 
 				vm_start(OP_PUSHTHIS)
-				RzStackValue v = ctx.getThisPtr();
-			ctx.push_value(v);
+                //RzStackValue v = ctx.getThisPtr();
+            //ctx.push_value(v);
 			vm_end
 
 				vm_start(OP_SIZEOF)

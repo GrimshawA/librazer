@@ -11,9 +11,10 @@ void RzLogger::log(const std::string& msg)
     }
 
 #if defined LOGGING_ENABLED
+   return;
     printf("%s", msg.c_str());
-//fprintf(fp, "%s", msg.c_str());
-    //fflush(fp);
+    fprintf(fp, "%s", msg.c_str());
+    fflush(fp);
 #endif
 }
 

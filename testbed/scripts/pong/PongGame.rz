@@ -9,11 +9,11 @@ import std
 	Used as a proof of concept, to build compiler features until the game actually runs well.
 */
 class PongGame {	
-
+	
+	timer: float 5
+	first: bool true
 	height: int32
 	width: int32
-	timer: float 5
-	first: boolean true
 
 	window: Window
 	
@@ -40,27 +40,30 @@ class PongGame {
 		Window wnd = new Window();
 		wnd.open();
 		wnd.setSize(400, 200);
-
-		/*height = */wnd.height();
-
-		//window = wnd;
-
 		wnd.setFillColor(255, 0, 255);
+
+		bottomPadX = 10;
+		topPadX = 10;
+		/*bottomPadX = width / 2 - padW / 2;
+		topPadX = bottomPadX;
+		ballX = width / 2 - ballSize / 2;
+		ballY = height / 2 - ballSize / 2;*/
 
 		Timer t = new Timer();
 		while(wnd.running()) {
 			wnd.poll();
-
-			//height = wnd.height();
-
 			//update(t.restart());
-			/*paint(wnd);
-			if (wnd.keyPressed(114)) {
-				wnd.setFillColor(255, 0, 0);
-				wnd.drawRect(0, 0, 400, 200);
+			paint(wnd);
+
+			if (wnd.keyPressed(113)) {
+				bottomPadX = bottomPadX + 1;
 			}
-			wnd.setFillColor(255, 0, 255);
-			wnd.drawRect(0, 0, 400, 100);*/
+
+			if (wnd.keyPressed(114)) {
+				bottomPadX = bottomPadX - 1;
+			}
+			//wnd.setFillColor(255, 0, 255);
+			//wnd.drawRect(0, 0, 400, 100);
 			wnd.display();
 		}
 	}
@@ -124,37 +127,35 @@ class PongGame {
 	}
 	
 	function paint(Window wnd) {
-		wnd.setFillColor(0, 0, 255);
-		wnd.drawRect(0, 0, 200, 200);
+		wnd.setFillColor(0, 0, 0);
+		wnd.drawRect(0, 0, 400, 400);
 
 		if (wnd.keyPressed(115)) {
 			wnd.setFillColor(255, 100, 0);
 			wnd.drawRect(100, 0, 400, 200);
 		}
 
-		//height = wnd.height();
-		/*width = wnd.width();
+		height = wnd.height();
+		width = wnd.width();
 
-		// initial positioning
-		/*if (first) {
-			bottomPadX = width / 2 - padW / 2;
-			topPadX = bottomPadX;
-			ballX = width / 2 - ballSize / 2;
-			ballY = height / 2 - ballSize / 2;
-			first = false;
-		}
+		wnd.setFillColor(120, 200, 20);
 		
 		// bottom pad
-		wnd.drawRect(bottomPadX, height - padH - inset, padW, padH);
+		//wnd.drawRect(bottomPadX, height - padH - inset, padW, padH);
+		wnd.drawRect(bottomPadX, 0, 80, 10);
 		
 		// top pad
-		wnd.drawRect(topPadX, inset, padW, padH);
+		//wnd.drawRect(topPadX, inset, padW, padH);
+		wnd.drawRect(topPadX, 190, 80, 10);
 	
 		// ball
-		wnd.drawRect(ballX, ballY, ballSize, ballSize);
+		//wnd.drawRect(ballX, ballY, ballSize, ballSize);
+
+		// Back to black
+		wnd.setFillColor(0, 0, 0);
 	
 		// scores
-		String scoreB = toString(scoreBottom);
+		/*String scoreB = toString(scoreBottom);
 		String scoreT = toString(scoreTop);
 		wnd.drawString(scoreB, 10, height / 2);
 		wnd.drawString(scoreT, width - 50, height / 2);*/
