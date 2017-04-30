@@ -54,7 +54,7 @@ class PongGame {
 		ballSize = 6;
 		ballX = 40;
 		ballY = 100;
-		velX = 0;
+		velX = 1;
 		velY = 1;
 		time = 5;
 
@@ -103,6 +103,12 @@ class PongGame {
 		/*if (ballX < 0 || ballX > width - ballSize) {
 			velX = -velX;
 		}*/
+		if (ballX < 0) {
+			velX = -velX;
+			//scoreBottom = scoreBottom + 1;
+		}
+
+
 		// top / down walls
 		if (ballY < 0) {
 			velY = -velY;
@@ -111,6 +117,10 @@ class PongGame {
 
 		if (ballY > wnd.height()) {
 			velY = -velY;
+		}
+
+		if (ballX > wnd.width()) {
+			velX = -velX;
 		}
 		
 		/*if (ballY + ballSize > height) {
@@ -144,13 +154,17 @@ class PongGame {
 		}*/
 		
 		// AI
-		/*float delta = ballX - topPadX;
+		float delta = ballX - topPadX;
 		if (delta > 0) {
-			//topPadX += (topPadX < width - padW) ? speed : 0;
+			if (topPadX < wnd.width() - padW) {
+				topPadX = topPadX + 1;
+			}
 		}
-		else if (delta < 0) {
-			//topPadX -= (topPadX > 0) ? speed : 0;
-		}*/
+		if (delta < 0) {
+			if (topPadX > 0) {
+				topPadX = topPadX - 1;
+			}
+		}
 	}
 	
 	function paint(Window wnd) {
@@ -173,7 +187,7 @@ class PongGame {
 		
 		// top pad
 		//wnd.drawRect(topPadX, inset, padW, padH);
-		wnd.drawRect(topPadX, 190, 80, padH);
+		wnd.drawRect(topPadX, 390, 80, padH);
 	
 		// ball
 		//wnd.drawRect(ballX, ballY, ballSize, ballSize);
