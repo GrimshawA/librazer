@@ -123,6 +123,8 @@ void SDLWindowImpl::display() {
 
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);
+
+   SDL_Delay(5);
 #endif
 }
 

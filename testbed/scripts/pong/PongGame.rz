@@ -14,6 +14,8 @@ class PongGame {
 	first: bool true
 	height: int32
 	width: int32
+	removeMe: float
+
 
 	window: Window
 	
@@ -31,6 +33,10 @@ class PongGame {
 	velX: float 1
 	velY: float 1
 	ballSize: float 20
+	time: int32
+
+	mTimer: Timer
+	
 	
 	// score
 	scoreTop: int32
@@ -48,50 +54,62 @@ class PongGame {
 		ballSize = 6;
 		ballX = 40;
 		ballY = 100;
-		timer = 5;
+		velX = 0;
+		velY = 1;
+		time = 5;
+
 		/*bottomPadX = wdth / 2 - padW / 2;
 		topPadX = bottomPadX;
 		ballX = width / 2 - ballSize / 2;
 		ballY = height / 2 - ballSize / 2;*/
 
 		Timer t = new Timer();
+		mTimer = t;
+
 		while(wnd.running()) {
+
 			wnd.poll();
-			//update(t.restart(), wnd);
+			update(wnd);
 			paint(wnd);
 			wnd.display();
 		}
 	}
 
-	function update(float dt) {
-		/*timer = timer - dt;
-		if (timer < 0) {
-			timer = 5;
+	function update(Window wnd) {
+
+		int32 dt = mTimer.restart();
+
+		time = time - dt;
+
+		if (time < 0) {
+			time = 5;
 			timerEvent(wnd);
-		}*/
+		}
 	}
 
 	function timerEvent(Window wnd) {
 
-		/*if (wnd.keyPressed(113)) {
+		wnd.debug();
+
+		if (wnd.keyPressed(113)) {
 			bottomPadX = bottomPadX + 1;
 		}
 
 		if (wnd.keyPressed(114)) {
 			bottomPadX = bottomPadX - 1;
-		}*/
+		}
 
 		// side walls
 		/*if (ballX < 0 || ballX > width - ballSize) {
 			velX = -velX;
-		}
+		}*/
 		// top / down walls
 		if (ballY < 0) {
 			velY = -velY;
-			scoreBottom = scoreBottom + 1;
+			//scoreBottom = scoreBottom + 1;
 		}
 		
-		if (ballY + ballSize > height) {
+		/*if (ballY + ballSize > height) {
 			velY = -velY;
 			scoreTop = scoreTop + 1;
 		}
@@ -108,10 +126,11 @@ class PongGame {
 				velY = -velY;
 			}
 		}
+		*/
 
 		ballX = ballX + velX;
 		ballY = ballY + velY;
-		*/
+		
 		// pressed keys
 		/*if (window.isPressed(23)) {
 			//bottomPadX = bottomPadX - (bottomPadX > 0) ? speed : 0;

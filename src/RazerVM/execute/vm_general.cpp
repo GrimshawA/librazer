@@ -192,9 +192,11 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
     else if (type == AEP_INT32)
     {
         memcpy(dest_addr.ptr, &operand.i32, sizeof(int32_t));
+        RZLOG("OBJECT %x now contains the int %d\n", dest_addr.ptr, operand.i32);
     }
     else if (type == AEP_FLOAT) {
          memcpy(dest_addr.ptr, &operand.fp, sizeof(float));
+         RZLOG("OBJECT %x now contains the float %f\n", dest_addr.ptr, operand.fp);
     }
 }
 

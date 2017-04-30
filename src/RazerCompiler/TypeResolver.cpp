@@ -15,21 +15,25 @@
 
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeBinaryOperator& binOp, RzQualType base) {
     RzQualType qt;
+
+    RzQualType T1 = resolveQualifiedType(ctx, *binOp.operandA, base);
+    RzQualType T2 = resolveQualifiedType(ctx, *binOp.operandB, base);
+
+    RzQualType finalType;
+    if (T1.sameTypeAs(T2)) {
+        finalType = T1;
+    }
+    else{
+        finalType = resolvePromotedType(T1, T2);
+    }
+
     if (binOp.isRelational())
     {
-        qt.m_type = ctx.m_env->getTypeInfo("bool");
+        return finalType;
     }
     else if (binOp.isArithmetic())
     {
-        RzQualType T1 = resolveQualifiedType(ctx, *binOp.operandA, base);
-        RzQualType T2 = resolveQualifiedType(ctx, *binOp.operandB, base);
-
-        if (T1 == T2) {
-            qt = T1;
-        }
-        else {
-            RZLOG("error: implicit primitive promotion not ready\n");
-        }
+        return finalType;
     }
 
     return qt;

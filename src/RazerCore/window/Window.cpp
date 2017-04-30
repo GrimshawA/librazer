@@ -16,20 +16,20 @@ void Window::registerApi(RzModule* m)
 #endif
 
     m->registerType("Window", typeSize);
-	m->registerTypeConstructor("Window", [](void* memory, RzVirtualMachine* vm)
-	{
+    m->registerTypeConstructor("Window", [](void* memory, RzVirtualMachine* vm)
+    {
 #ifdef RAZER_SDL
         new (memory) SDLWindowImpl();
 #else
         new (memory) Window();
 #endif
-	});
+    });
 
-	m->registerMethod("Window", "void open()", [](RzGeneric g)
-	{
-		Window* obj = (Window*)g.popObject();
-		obj->open();
-	});
+    m->registerMethod("Window", "void open()", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
+        obj->open();
+    });
 
     m->registerMethod("Window", "void poll()", [](RzGeneric g)
     {
@@ -62,11 +62,11 @@ void Window::registerApi(RzModule* m)
         obj->setFillColor(r,gg,b);
     });
 
-	m->registerMethod("Window", "bool running()", [](RzGeneric g)
-	{
-		Window* obj = (Window*)g.popObject();
+    m->registerMethod("Window", "bool running()", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
         g.pushBoolean(obj->running());
-	});
+    });
 
     m->registerMethod("Window", "void drawRect(int32, int32, int32, int32)", [](RzGeneric g)
     {
@@ -88,23 +88,28 @@ void Window::registerApi(RzModule* m)
         obj->drawString(s->toStdString(), x, y);
     });
 
-	m->registerMethod("Window", "void display()", [](RzGeneric g)
-	{
-		Window* obj = (Window*)g.popObject();
+    m->registerMethod("Window", "void display()", [](RzGeneric g)
+    {
+        Window* obj = (Window*)g.popObject();
         RZLOG("WINDOW OBJ %x\n", obj);
-		obj->display();
-	});
+        obj->display();
+    });
 
     m->registerMethod("Window", "int32 height()", [](RzGeneric g) {
-       Window* obj = (Window*)g.popObject();
-       int32_t h = obj->height();
-       g.pushInt32(h);
+        Window* obj = (Window*)g.popObject();
+        int32_t h = obj->height();
+        g.pushInt32(h);
     });
 
     m->registerMethod("Window", "int32 width()", [](RzGeneric g) {
-       Window* obj = (Window*)g.popObject();
-       int32_t w = obj->width();
-       g.pushInt32(w);
+        Window* obj = (Window*)g.popObject();
+        int32_t w = obj->width();
+        g.pushInt32(w);
+    });
+
+    m->registerMethod("Window", "void debug()", [](RzGeneric g) {
+        g.popObject();
+        RZLOG("DBG:: MARKER\n\n");
     });
 }
 

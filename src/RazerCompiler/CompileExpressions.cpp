@@ -378,17 +378,17 @@ RzCompileResult RzCompiler::emitVarExpr(aeNodeIdentifier* var, const RzExprConte
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);
 
-	int loadFrom = AEK_EBP;
-	int offsetOnRefFrame = varInfo.offset;
-
     if (varInfo.mode == AE_VAR_FIELD && parentExprContext.rx_value) {
         return loadMemberVariable(var->m_name);
     }
     else if (varInfo.mode == AE_VAR_FIELD && parentExprContext.lvalue) {
         return loadMemberAddress(var->m_name);
     }
+
+    int loadFrom = AEK_EBP;
+    int offsetOnRefFrame = varInfo.offset;
 	
-	else if (varInfo.mode == AE_VAR_LOCAL)
+    if (varInfo.mode == AE_VAR_LOCAL)
 	{
 		if (varInfo.type.str() == "var"){
 			emitInstruction(OP_PUSHVAR, varInfo.offset);
@@ -397,14 +397,23 @@ RzCompileResult RzCompiler::emitVarExpr(aeNodeIdentifier* var, const RzExprConte
 		}
 	}
 
-	if (parentExprContext.rx_value)
+    if (varInfo.mode == AE_VAR_LOCAL && parentExprContext.rx_value)
 	{
 		int kind = AEP_INT32;
 
-		if (parentExprContext.expectedResult.m_handle)
-			kind = AEP_PTR;
-
-		emitInstruction(OP_LOAD, loadFrom, offsetOnRefFrame, kind);
+        if (varInfo.type.getName() == "int32") {
+            kind = AEP_INT32;
+        }
+        else if (varInfo.type.getName() == "float") {
+            kind = AEP_FLOAT;
+        }
+        else if (varInfo.type.getName() == "bool") {
+            kind = AEP_INT32;
+        }
+        else {
+            kind = AEP_PTR;
+        }
+        emitInstruction(OP_LOAD, loadFrom, offsetOnRefFrame, kind);
 	}
 	else if (parentExprContext.lvalue)
 	{
