@@ -157,6 +157,10 @@ void dispatch_execute(RzThreadContext& ctx)
                 DoSub(ctx, (AeonPrimitiveType)inst.arg0);
         vm_end
 
+                vm_start(OP_UNARYSUB)
+                    DoUnarySub(ctx, (AeonPrimitiveType)inst.arg0);
+                vm_end
+
                 vm_start(OP_CONV)
                 DoConversion(ctx, (AeonPrimitiveType)inst.arg0, (AeonPrimitiveType)inst.arg1);
         vm_end

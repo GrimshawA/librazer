@@ -29,7 +29,8 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeBinaryOperator& binOp, Rz
 
     if (binOp.isRelational())
     {
-        return finalType;
+        // Comparison operators always yield a bool directly
+        return ctx.m_env->getTypeInfo("bool");
     }
     else if (binOp.isArithmetic())
     {

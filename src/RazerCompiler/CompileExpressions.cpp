@@ -28,8 +28,10 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, RzExprContext e
 	{
 		emitLoadLiteral((aeNodeLiteral*)expr);
 	}
-	else if (expr->m_nodeType == AEN_BINARYOP)
-	{
+    else if (expr->m_nodeType == AEN_UNARYOP) {
+        return compileUnaryOperation((aeNodeUnaryOperator&)*expr);
+    }
+    else if (expr->m_nodeType == AEN_BINARYOP) {
 		aeNodeBinaryOperator* binaryop = static_cast<aeNodeBinaryOperator*>(expr);
 		if (binaryop->oper == ">" || binaryop->oper == "<")
 		{
@@ -224,6 +226,34 @@ RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
         RZLOG("The referenced variable cannot be found\n");
         return RzCompileResult::aborted;
 	}
+}
+
+RzCompileResult RzCompiler::compileUnaryOperation(aeNodeUnaryOperator& op) {
+
+    RzCompileResult r = emitExpressionEval(op.Operand, RzExprContext::temporaryRValue());
+    if (r == RzCompileResult::aborted) {
+        RZLOG("error: Failed to evaluate expression for unary op\n");
+        return r;
+    }
+
+    RzQualType t = resolveQualifiedType(*this, *op.Operand);
+    int primitiveId = AEP_INT32;
+
+    if (t.getName() == "float") {
+        primitiveId = AEP_FLOAT;
+    }
+    else if (t.getName() == "int32") {
+        primitiveId = AEP_INT32;
+    }
+    else if (t.getName() == "bool") {
+        primitiveId = AEP_INT32;
+    }
+    else {
+        primitiveId = AEP_PTR;
+    }
+
+    emitInstruction(OP_UNARYSUB, primitiveId);
+    return RzCompileResult::ok;
 }
 
 void RzCompiler::emitLoadLiteral(aeNodeLiteral* lt) {

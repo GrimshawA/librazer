@@ -3,6 +3,7 @@
 
 #include <RazerCompiler/CompileResult.h>
 #include <RazerParser/AST/Nodes.h>
+#include <RazerParser/AST/aeNodeUnaryOperator.h>
 #include <RazerCompiler/aeCompilerConv.h>
 #include <RazerRuntime/Module.h>
 #include <RazerCompiler/BuildReport.h>
@@ -195,6 +196,7 @@ public:
     RzCompileResult emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs);
     void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
     void emitBinaryOp(aeNodeBinaryOperator* operation);
+    RzCompileResult compileUnaryOperation(aeNodeUnaryOperator& op);
     void emitConditionalOp(aeNodeBinaryOperator* operation);
     RzCompileResult emitVarExpr(aeNodeIdentifier* var, const RzExprContext& parentExprContext);
     RzCompileResult emitLoadAddress(aeNodeExpr* expr);

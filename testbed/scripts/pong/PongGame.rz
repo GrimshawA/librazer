@@ -45,7 +45,7 @@ class PongGame {
 	function main() {
 		Window wnd = new Window();
 		wnd.open();
-		wnd.setSize(400, 200);
+		wnd.setSize(400, 400);
 		wnd.setFillColor(255, 0, 255);
 
 		bottomPadX = 10;
@@ -107,6 +107,10 @@ class PongGame {
 		if (ballY < 0) {
 			velY = -velY;
 			//scoreBottom = scoreBottom + 1;
+		}
+
+		if (ballY > wnd.height()) {
+			velY = -velY;
 		}
 		
 		/*if (ballY + ballSize > height) {

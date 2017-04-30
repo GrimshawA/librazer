@@ -47,6 +47,18 @@ inline static void DoSub(RzThreadContext& ctx, AeonPrimitiveType ptype)
     ctx.push_value(a);
 }
 
+inline static void DoUnarySub(RzThreadContext& ctx, AeonPrimitiveType ptype)
+{
+    RzStackValue v = ctx.pop_value();
+
+    switch(ptype) {
+    case AEP_INT32: v.i32 = -v.i32; break;
+    case AEP_FLOAT: v.fp = -v.fp; break;
+    }
+
+    ctx.push_value(v);
+}
+
 inline static void DoMul(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
     RzStackValue a = ctx.pop_value();
@@ -330,13 +342,13 @@ inline static void DoLessThan(RzThreadContext& ctx, AeonPrimitiveType ptype)
 
 inline static void DoGreaterThan(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
-    RzStackValue a = ctx.pop_value();
     RzStackValue b = ctx.pop_value();
+    RzStackValue a = ctx.pop_value();    
 
     switch (ptype)
     {
     case AEP_DOUBLE: a.dp = a.dp > b.dp; break;
-    case AEP_FLOAT: a.fp = a.fp > b.fp; break;
+    case AEP_FLOAT: a.i32 = a.fp > b.fp; break;
     case AEP_UINT8: a.u8 = a.u8 > b.u8; break;
     case AEP_INT8: a.i8 = a.i8 > b.i8; break;
     case AEP_UINT16: a.u16 = a.u16 > b.u16; break;
