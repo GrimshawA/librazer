@@ -15,7 +15,7 @@ aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std
 bool aeNodeBinaryOperator::isRelational()
 {
 	return (oper == ">") || (oper == ">=") || (oper == "<") || (oper == "<=")
-		|| (oper == "==") || (oper == "!=");
+        || (oper == "==") || (oper == "!=") || (oper == "||") || (oper == "&&");
 }
 
 bool aeNodeBinaryOperator::isArithmetic()

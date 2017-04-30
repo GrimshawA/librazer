@@ -76,6 +76,8 @@ std::string inst_opcode_str(RzInstruction inst)
 	case OP_JMP: return "OP_JMP";
 	case OP_JZ: return "OP_JZ";
     case OP_SUB: return "OP_SUB";
+    case OP_AND: return "OP_AND";
+    case OP_OR: return "OP_OR";
     case OP_LOAD: return "OP_LOAD";
     case OP_LOADADDR: return "OP_LOADADDR";
     case OP_CONV: return "OP_CONV";

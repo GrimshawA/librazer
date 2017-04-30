@@ -180,6 +180,14 @@ RzCompileResult RzCompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const RzE
     if (op->oper == "!=") {
         emitInstruction(OP_NEQ, primitiveId);
     }
+
+    if (op->oper == "&&") {
+        emitInstruction(OP_AND, primitiveId);
+    }
+
+    if (op->oper == "||") {
+        emitInstruction(OP_OR, primitiveId);
+    }
 }
 
 bool RzCompiler::canConvertType(RzType* typeA, RzType* typeB)

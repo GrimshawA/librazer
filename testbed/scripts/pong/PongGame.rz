@@ -142,6 +142,12 @@ class PongGame {
 		}
 		*/
 
+		/*if (ballY + ballSize >= height - padH && velY > 0) {
+			if (ballX + ballSize >= bottomPadX && ballX <= bottomPadX + padW) {
+				velY = -velY;
+			}
+		}*/
+
 		ballX = ballX + velX;
 		ballY = ballY + velY;
 		

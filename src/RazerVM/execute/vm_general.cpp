@@ -59,6 +59,32 @@ inline static void DoUnarySub(RzThreadContext& ctx, AeonPrimitiveType ptype)
     ctx.push_value(v);
 }
 
+inline static void DoAnd(RzThreadContext& ctx, AeonPrimitiveType ptype)
+{
+    RzStackValue a = ctx.pop_value();
+    RzStackValue b = ctx.pop_value();
+
+    switch(ptype) {
+    case AEP_INT32: a.i32 = a.i32 && a.i32; break;
+    case AEP_FLOAT: a.fp = a.fp && b.fp; break;
+    }
+
+    ctx.push_value(a);
+}
+
+inline static void DoOr(RzThreadContext& ctx, AeonPrimitiveType ptype)
+{
+    RzStackValue a = ctx.pop_value();
+    RzStackValue b = ctx.pop_value();
+
+    switch(ptype) {
+    case AEP_INT32: a.i32 = a.i32 || a.i32; break;
+    case AEP_FLOAT: a.fp = a.fp || b.fp; break;
+    }
+
+    ctx.push_value(a);
+}
+
 inline static void DoMul(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
     RzStackValue a = ctx.pop_value();

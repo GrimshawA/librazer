@@ -42,6 +42,8 @@ enum EOpCodes
 	OP_ADD,            ///<
 	OP_VADD,
 	OP_SUB,            ///<
+    OP_AND,
+    OP_OR,
     OP_UNARYSUB,
  	OP_CONV,        ///< Built in type conversion
 	OP_PUSHTHIS,        ///< Built in type conversion
