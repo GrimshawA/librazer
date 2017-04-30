@@ -1,5 +1,6 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerRuntime/RzType.h>
+#include <RazerCompiler/TypeResolver.h>
 
 #include <RazerParser/AST/aeNodeFunction.h>
 
@@ -12,22 +13,27 @@ void RzCompiler::collect(RzSourceUnit& parseTree)
 	}
 }
 
-void RzCompiler::collect(AEStructNode& cls)
-{
+void RzCompiler::collect(AEStructNode& cls) {
 	// Collect class data
     RzType* typeInfo = new RzType(*m_module, cls.m_name, 0);
 	typeInfo->m_absoluteName = cls.m_name;
 	m_module->m_types.push_back(typeInfo);
 
-	for (int i = 0; i < cls.m_functions.size(); ++i)
-	{		
+    for (int i = 0; i < cls.m_functions.size(); ++i) {
 		aeNodeFunction& fn = *cls.m_functions[i].get();
 
 		RzType::MethodInfo method;
 		method.name = fn.m_name;
 		method.methodCallback = 0;
 		method.offset = 0;
-        method.args.resize(fn.m_parameters.size()); //TODO
+        method.args.resize(fn.m_parameters.size());
+
+        for (int j = 0; j < method.args.size(); ++j) {
+            RzQualType t = fn.m_parameters[j]->m_type;
+            resolveUnlinkedType(*this, t);
+            method.args[j] = t;
+        }
+
 		typeInfo->m_methods.push_back(method);
 
         // Collect the functions to the module now

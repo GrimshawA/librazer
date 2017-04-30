@@ -65,7 +65,7 @@ void Window::registerApi(RzModule* m)
 	m->registerMethod("Window", "bool running()", [](RzGeneric g)
 	{
 		Window* obj = (Window*)g.popObject();
-		g.pushInt32(obj->running());
+        g.pushBoolean(obj->running());
 	});
 
     m->registerMethod("Window", "void drawRect(int32, int32, int32, int32)", [](RzGeneric g)

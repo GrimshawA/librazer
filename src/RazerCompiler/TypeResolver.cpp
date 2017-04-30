@@ -148,3 +148,41 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeExpr& expr, RzQualType ba
 
     }
 }
+
+RzQualType resolvePromotedType(RzQualType t1, RzQualType t2) {
+    if (!t1 || !t2)
+        return RzQualType();
+
+    if (t1.sameTypeAs(t2))
+        return t1;
+
+    if (t1.getName() == "int32" && t2.getName() == "float") {
+        return t2;
+    }
+
+    if (t1.getName() == "float" && t2.getName() == "int32") {
+        return t1;
+    }
+
+    return RzQualType();
+}
+
+int resolvePrimitiveConstantFromType(const RzQualType& t) {
+    if (t.getName() == "int32")
+        return AEP_INT32;
+    else if (t.getName() == "float")
+        return AEP_FLOAT;
+
+    return AEP_INVALID;
+}
+
+bool resolveUnlinkedType(RzCompiler& ctx, RzQualType& t) {
+    RzType* typeToLink = ctx.m_env->getTypeInfo(t.m_typeString);
+    if (!typeToLink) {
+        RZLOG("Failed to link type '%s'\n", t.m_typeString.c_str());
+        return false;
+    }
+
+    t.m_type = typeToLink;
+    return true;
+}

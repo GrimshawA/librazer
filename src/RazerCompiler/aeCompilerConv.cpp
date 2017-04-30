@@ -64,6 +64,10 @@ void TypeSystemInformation::performConversion(RzQualType T1, RzQualType T2, RzCo
 	{
 		compiler->emitInstruction(OP_CONV, AEP_FLOAT, AEP_INT32);
 	} 
+    else if (T1.getTypeName() == "float" && T2.getTypeName() == "bool")
+    {
+        compiler->emitInstruction(OP_CONV, AEP_FLOAT, AEP_INT32);
+    }
 	else if (T1.getTypeName() == "double" && T2.getTypeName() == "int32")
 	{
 		compiler->emitInstruction(OP_CONV, AEP_DOUBLE, AEP_INT32);

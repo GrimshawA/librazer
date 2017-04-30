@@ -46,6 +46,7 @@ void RzEngine::registerPrimitive(const std::string& name, uint32_t size)
     RzType* type = new RzType(*mod, name, size);
 	type->m_name = name;
 	type->m_absoluteName = name;
+    type->setFlag(RzType::FLAG_PRIMITIVE);
 	typedb.push_back(type);
 }
 

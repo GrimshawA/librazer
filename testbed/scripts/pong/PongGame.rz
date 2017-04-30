@@ -44,7 +44,12 @@ class PongGame {
 
 		bottomPadX = 10;
 		topPadX = 10;
-		/*bottomPadX = width / 2 - padW / 2;
+		padH = 10;
+		ballSize = 6;
+		ballX = 40;
+		ballY = 100;
+		timer = 5;
+		/*bottomPadX = wdth / 2 - padW / 2;
 		topPadX = bottomPadX;
 		ballX = width / 2 - ballSize / 2;
 		ballY = height / 2 - ballSize / 2;*/
@@ -52,18 +57,8 @@ class PongGame {
 		Timer t = new Timer();
 		while(wnd.running()) {
 			wnd.poll();
-			//update(t.restart());
+			//update(t.restart(), wnd);
 			paint(wnd);
-
-			if (wnd.keyPressed(113)) {
-				bottomPadX = bottomPadX + 1;
-			}
-
-			if (wnd.keyPressed(114)) {
-				bottomPadX = bottomPadX - 1;
-			}
-			//wnd.setFillColor(255, 0, 255);
-			//wnd.drawRect(0, 0, 400, 100);
 			wnd.display();
 		}
 	}
@@ -72,11 +67,20 @@ class PongGame {
 		/*timer = timer - dt;
 		if (timer < 0) {
 			timer = 5;
-			timerEvent();
+			timerEvent(wnd);
 		}*/
 	}
 
-	function timerEvent() {
+	function timerEvent(Window wnd) {
+
+		/*if (wnd.keyPressed(113)) {
+			bottomPadX = bottomPadX + 1;
+		}
+
+		if (wnd.keyPressed(114)) {
+			bottomPadX = bottomPadX - 1;
+		}*/
+
 		// side walls
 		/*if (ballX < 0 || ballX > width - ballSize) {
 			velX = -velX;
@@ -142,14 +146,15 @@ class PongGame {
 		
 		// bottom pad
 		//wnd.drawRect(bottomPadX, height - padH - inset, padW, padH);
-		wnd.drawRect(bottomPadX, 0, 80, 10);
+		wnd.drawRect(bottomPadX, 0, 80, padH);
 		
 		// top pad
 		//wnd.drawRect(topPadX, inset, padW, padH);
-		wnd.drawRect(topPadX, 190, 80, 10);
+		wnd.drawRect(topPadX, 190, 80, padH);
 	
 		// ball
 		//wnd.drawRect(ballX, ballY, ballSize, ballSize);
+		wnd.drawRect(ballX, ballY, ballSize, ballSize);
 
 		// Back to black
 		wnd.setFillColor(0, 0, 0);

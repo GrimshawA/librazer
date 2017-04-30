@@ -38,8 +38,16 @@ struct VariableStorageInfo
     \class aeExprContext
     \brief Context for compiling expressions passed from node to node
 */
-struct aeExprContext
+struct RzExprContext
 {
+    static RzExprContext temporaryRValue() {
+        RzExprContext c;
+        c.rx_value = true;
+        return c;
+    }
+
+
+
     RzQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
 
     aeNodeExpr* rootExpr;
@@ -183,12 +191,12 @@ public:
     RzCompileResult compileVarDecl(const aeNodeVarDecl& varDecl);
 
     // Expression evaluation
-    RzCompileResult emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext);
+    RzCompileResult emitExpressionEval(aeNodeExpr* expr, RzExprContext exprContext);
     RzCompileResult emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs);
     void emitPrefixIncrOp(aeNodeUnaryOperator* expr);
     void emitBinaryOp(aeNodeBinaryOperator* operation);
     void emitConditionalOp(aeNodeBinaryOperator* operation);
-    RzCompileResult emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext);
+    RzCompileResult emitVarExpr(aeNodeIdentifier* var, const RzExprContext& parentExprContext);
     RzCompileResult emitLoadAddress(aeNodeExpr* expr);
     void emitLoadLiteral(aeNodeLiteral* lt);
 
@@ -199,11 +207,11 @@ public:
     RzCompileResult loadMemberAddress(const std::string& name);
 
     RzCompileResult emitMemberOp(aeNodeAccessOperator* acs);
-    void emitImplicitConversion(RzQualType typeA, RzQualType typeB);
+    RzCompileResult implicitConvert(RzQualType from, RzQualType to);
     RzCompileResult compileNew(aeNodeNew& newExpr);
     void emitSubscriptOp(aeNodeSubscript* subscript);
     void emitLambdaFunction(aeNodeFunction* function);
-    void emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context);
+    RzCompileResult emitArithmeticOp(aeNodeBinaryOperator* op, const RzExprContext& context);
     void emitPushThis();
     RzCompileResult compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs);
     void loadVarRef(aeNodeExpr* e);
@@ -211,12 +219,12 @@ public:
     RzCompileResult compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs);
 
     /// Function calls
-    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* funccall, aeExprContext ctx);
+    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* funccall, RzExprContext ctx);
     void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
     void emitLateBoundCall(aeNodeFunctionCall* fn);
     RzCompileResult compileStaticObjectCall(aeNodeExpr& selfExpr, RzQualType obj, aeNodeFunctionCall& call);
     RzCompileResult compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info);
-    RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*> args);
+    RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*>& args, const std::vector<RzQualType>& expectedTypes = std::vector<RzQualType>());
 
     /// Push the implicit this as a call argument
     RzCompileResult pushImplicitThis(aeNodeExpr& expr);

@@ -21,7 +21,7 @@ RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
 }
 
 
-RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* fn, aeExprContext exprCtx) {
+RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* fn, RzExprContext exprCtx) {
     std::string finalSymbolName = fn->m_name;
 
     if (!beingCalledOn)
@@ -59,14 +59,14 @@ void RzCompiler::compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn) {
     int i = 0;
     for (auto it = fn->m_args.rbegin(); it != fn->m_args.rend(); ++it)
     {
-        aeExprContext arg_ctx;
+        RzExprContext arg_ctx;
         arg_ctx.rx_value = true;
         arg_ctx.expectedResult = fn->getArgType(i);
         emitExpressionEval((*it), arg_ctx);
     }
 
     /// Push the variant this function was called on
-    emitExpressionEval(lhs, aeExprContext());
+    emitExpressionEval(lhs, RzExprContext());
 
     // Calls a function on a dynamic variable
     int fnNameIndex = m_module->identifierPoolIndex(fn->m_name);
@@ -104,18 +104,19 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, RzQual
         // Push the arguments right to left
         // Finalize with this pointer as the last push "fn(self, arg0, arg1, ..)"
 
-        auto argsResult = compileArgsPush(call.m_args);
+        RZLOG("METHOD %s %d args\n", method.name.c_str(), method.args.size());
+        auto argsResult = compileArgsPush(call.m_args, method.args);
         if (argsResult == RzCompileResult::aborted)
             return argsResult;
 
-        aeExprContext arg_ctx;
+        RzExprContext arg_ctx;
         arg_ctx.rx_value = true;
         emitExpressionEval(&selfExpr, arg_ctx);
 
         return compileNativeObjectCall(typeInfo->getModule()->index(), method);
     }
     else {
-        auto argsResult = compileArgsPush(call.m_args);
+        auto argsResult = compileArgsPush(call.m_args, method.args);
         if (argsResult == RzCompileResult::aborted)
             return argsResult;
 
@@ -134,14 +135,36 @@ RzCompileResult RzCompiler::compileNativeObjectCall(int moduleIndex, RzType::Met
     return RzCompileResult::ok;
 }
 
-RzCompileResult RzCompiler::compileArgsPush(const std::vector<aeNodeExpr*> args) {
+RzCompileResult RzCompiler::compileArgsPush(const std::vector<aeNodeExpr*>& args, const std::vector<RzQualType>& expectedTypes) {
+    if (args.empty())
+        return RzCompileResult::ok;
+
+    if (args.size() != expectedTypes.size()) {
+        RZLOG("error: Argument count differs. %d provided. %d expected\n", args.size(), expectedTypes.size());
+        return RzCompileResult::aborted;
+    }
+
     int i = 0;
     for (auto it = args.rbegin(); it != args.rend(); ++it)
     {
-        aeExprContext arg_ctx;
-        arg_ctx.rx_value = true;
-        //arg_ctx.expectedResult = call.getArgType(i);
-        emitExpressionEval((*it), arg_ctx);
+        RzQualType t = buildQualifiedType(*it);
+        RzQualType expectedT = expectedTypes[i];
+
+        RzCompileResult r = emitExpressionEval((*it), RzExprContext::temporaryRValue());
+        if (r == RzCompileResult::aborted)
+            return r;
+
+        // Might need to convert to fullfill the function requirements
+        if (t != expectedT) {
+            r = implicitConvert(t, expectedT);
+            if (r == RzCompileResult::aborted) {
+                RZLOG("error: Expected argument type doesn't match the provided one.\n"
+                      "expected: %s; passed: %s\n", expectedT.str().c_str(), t.str().c_str());
+                return RzCompileResult::aborted;
+            }
+        }
+
+        ++i;
     }
     return RzCompileResult::ok;
 }

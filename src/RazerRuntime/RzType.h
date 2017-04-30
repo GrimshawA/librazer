@@ -33,11 +33,9 @@ class RzType : public aeSymbol
 public:
 	friend class RzEngine;
 
-	enum ETypeFlags
-	{
-		TYPE_POD,
-		TYPE_NOVTABLE,
-	};
+    enum TypeFlag {
+        FLAG_PRIMITIVE
+    };
 
 	struct EnumEntryInfo
 	{
@@ -54,7 +52,7 @@ public:
 	struct MethodInfo
 	{
 		std::string name; ///< The name by which the language knows it
-		std::vector<std::string> args; ///< The arguments it takes
+        std::vector<RzQualType> args; ///< The arguments it takes
 		int type;
 		int offset;
         RzFunction* func = nullptr; // the vm function if applicable
@@ -90,6 +88,9 @@ public:
 
     // Figure the final size of the struct
     void computeMetrics();
+
+    /// Check if his type is a primitive
+    bool isPrimitive() const;
 
 	/// Is this type an enum
 	bool isEnum();
@@ -149,6 +150,8 @@ public:
 
 	/// Get the module this type is a part of
 	RzModule* getModule();
+
+    void setFlag(TypeFlag flag);
 
 	/// Takes some input parameters and properly prepares the type for the new field
 	void createField(aeField fieldInfo);

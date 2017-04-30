@@ -4,7 +4,7 @@
 
 RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {
-    aeExprContext ectx;
+    RzExprContext ectx;
     ectx.must_be_rvalue = true;
 
     RzQualType T1 = resolveQualifiedType(*this, *lhs);
@@ -36,7 +36,7 @@ RzCompileResult RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
     RzQualType rhsType = buildQualifiedType(rhs);
 
     loadVarRef(lhs);
-    emitExpressionEval(rhs, aeExprContext());
+    emitExpressionEval(rhs, RzExprContext());
 
     if (rhsType.getTypeName() == "int32")
     {
@@ -71,6 +71,8 @@ RzCompileResult RzCompiler::compileVarAssign(aeNodeExpr* lhs, aeNodeExpr* rhs)
 }
 
 RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs) {
+    RzQualType T1 = buildQualifiedType(&lhs);
+    RzQualType T2 = buildQualifiedType(&rhs);
 
     // Left hand gets loaded (Address of it)
     RzCompileResult r = emitLoadAddress(&lhs);
@@ -78,24 +80,16 @@ RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs
         return r;
 
     // Right hand gets loaded (value)
-    aeExprContext exprContext;
-    exprContext.rx_value = true;
-    exprContext.expectedResult = buildQualifiedType(&lhs);
-    r = emitExpressionEval(&rhs, aeExprContext());
+    r = emitExpressionEval(&rhs, RzExprContext::temporaryRValue());
     if (r == RzCompileResult::aborted)
         return r;
 
-    RzQualType T1 = buildQualifiedType(&lhs);
-    RzQualType T2 = buildQualifiedType(&rhs);
-
-    // Convert if required
-    if ((T1.getType() != T2.getType()) && canImplicitlyConvert(T2, T1))
-    {
-        m_typeSystem.performConversion(T2, T1, this);
-    }
-    else if (T1.getType() != T2.getType()) {
-        RZLOG("error: Cannot convert implicitly\n");
-        return RzCompileResult::aborted;
+    if (!T2.sameTypeAs(T1)) {
+        // Need to convert right hand side to the type of left
+        r = implicitConvert(T2, T1);
+        if (r == RzCompileResult::aborted) {
+            return r;
+        }
     }
 
     // Generate actual assignment
@@ -103,6 +97,9 @@ RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs
     if (T1.getType()->getName() == "int32")
     {
         assignType = AEP_INT32;
+    }
+    else if(T1.getName() == "float") {
+        assignType = AEP_FLOAT;
     }
     else
     {

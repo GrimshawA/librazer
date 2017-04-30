@@ -11,8 +11,7 @@ RzQualType::RzQualType()
 : m_type(nullptr)
 , m_templated(false)
 , m_const(false)
-, m_handle(false)
-{
+, m_handle(false) {
 
 }
 
@@ -20,9 +19,15 @@ RzQualType::RzQualType(RzType* type)
 : m_type(type)
 , m_templated(false)
 , m_const(false)
-, m_handle(false)
-{
+, m_handle(false) {
 
+}
+
+bool RzQualType::sameTypeAs(const RzQualType& b) const {
+    if (!m_type || !b.m_type)
+        return false;
+
+    return m_type == b.m_type;
 }
 
 void RzQualType::parse(const std::string& str, RzEngine* ctx)
@@ -92,7 +97,10 @@ bool RzQualType::isTemplated() const
 
 bool RzQualType::isPrimitive() const
 {
-	return false;
+    if (!m_type)
+        return false;
+
+    return m_type->isPrimitive();
 }
 
 bool RzQualType::isVoid() const
@@ -154,12 +162,20 @@ std::string RzQualType::str() const
 	return str;
 }
 
-const char* RzQualType::c_str()
-{
-	return str().c_str();
+RzQualType::operator bool() const {
+	return m_type != nullptr;
 }
 
-RzQualType::operator bool() const
-{
-	return m_type != nullptr;
+bool RzQualType::operator!=(const RzQualType& b) const {
+    if (!m_type || !b.m_type)
+        return false;
+
+    return m_type != b.m_type;
+}
+
+bool RzQualType::operator==(const RzQualType& b) const {
+    if (!m_type || !b.m_type)
+        return false;
+
+    return m_type == b.m_type;
 }

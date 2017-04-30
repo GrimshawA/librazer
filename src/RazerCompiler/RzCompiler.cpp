@@ -349,8 +349,10 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
     {
         RzFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
-        if (!fn)
+        if (!fn) {
+            RZLOG("Failed to compile function\n");
             return RzCompileResult::aborted;
+        }
     }
 
     // Now the class is compiled, we generate constructor and destructor
@@ -400,10 +402,16 @@ RzCompileResult RzCompiler::emitBranchCode(aeNodeBranch* cond)
     aeNodeExpr* test_expr = cond->m_expression.get();
     aeNodeBlock* nested_code = cond->m_block.get();
 
+    RzQualType t = resolveQualifiedType(*this, *test_expr);
+
     // The expression must evaluate first
-    aeExprContext exprContext;
-    exprContext.expectedResult = RzQualType(m_env->getTypeInfo("bool"));
-    emitExpressionEval(test_expr, aeExprContext());
+    emitExpressionEval(test_expr, RzExprContext::temporaryRValue());
+
+    if (t.getName() != "bool") {
+        RzCompileResult r = implicitConvert(t, m_env->getTypeInfo("bool"));
+        if (r == RzCompileResult::aborted)
+            return r;
+    }
 
     // Now that the expression is evaluated and stored in a register, let's set the jmp
     emitInstruction(OP_JZ, 0, 0);
@@ -444,7 +452,7 @@ RzCompileResult RzCompiler::emitForLoop(aeNodeFor* forloop)
 
     int pc_expreval = cursor(); // track the first instruction of this while, to jump back to evaluation each iteration
 
-    aeExprContext ectx;
+    RzExprContext ectx;
     ectx.must_be_rvalue = true;
     emitExpressionEval(forloop->expr.get(), ectx);
 
@@ -470,7 +478,7 @@ RzCompileResult RzCompiler::emitForLoop(aeNodeFor* forloop)
 RzCompileResult RzCompiler::emitWhileLoop(aeNodeWhile* whileloop) {
     int pc_expreval = cursor();
 
-    aeExprContext ectx;
+    RzExprContext ectx;
     ectx.must_be_rvalue = true;
     emitExpressionEval(whileloop->expr.get(), ectx);
 
@@ -556,9 +564,9 @@ RzCompileResult RzCompiler::emitBlock(aeNodeBlock* codeblock)
     for (std::size_t i = 0; i < codeblock->m_items.size(); ++i)
     {
         // emitDebugTrace();
-        auto ret = emitStatement(static_cast<AEStmtNode*>(codeblock->m_items[i]));
-        if (ret == RzCompileResult::aborted)
-        {
+        AEStmtNode& stmt = *static_cast<AEStmtNode*>(codeblock->m_items[i]);
+        auto ret = emitStatement(&stmt);
+        if (ret == RzCompileResult::aborted) {
             pop_scope();
             return ret;
         }
@@ -585,7 +593,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
     switch (stmt->m_nodeType) {
 
     case AEN_FUNCTIONCALL:
-        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(stmt), aeExprContext());
+        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(stmt), RzExprContext());
 
     case AEN_BRANCH:
         return emitBranchCode(static_cast<aeNodeBranch*>(stmt));
@@ -601,7 +609,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
 
     case AEN_BINARYOP: {
         if (((aeNodeBinaryOperator*)stmt)->oper == "=") {
-
+            RZLOG("error: Cannot assign\n");
             return emitAssignOp(((aeNodeBinaryOperator*)stmt)->operandA, ((aeNodeBinaryOperator*)stmt)->operandB);
         }
         else {

@@ -31,6 +31,7 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 	if (!declType.getType())
 	{
         rzcerr_unknown_type(varDecl.m_type.m_typeString);
+        RZLOG("error: decl boom\n");
         return RzCompileResult::aborted;
 	}
 
@@ -54,7 +55,7 @@ RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 //		if (m_logAllocs)
 //            emitDebugPrint("Evaluating " + varDecl.m_decls[0].m_init->str());
 
-        RzCompileResult r = emitExpressionEval(varDecl.m_decls[0].m_init, aeExprContext());
+        RzCompileResult r = emitExpressionEval(varDecl.m_decls[0].m_init, RzExprContext());
         if (r.m_status == RzCompileResult::ABORTED)
             return r;
 	}

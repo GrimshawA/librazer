@@ -86,6 +86,7 @@ enum AeonConstants
 
 enum AeonPrimitiveType
 {
+    AEP_INVALID,
 	AEP_UINT8,
 	AEP_INT8,
 	AEP_UINT16,

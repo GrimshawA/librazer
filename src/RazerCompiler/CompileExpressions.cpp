@@ -2,11 +2,14 @@
 #include <RazerVM/InstructionSet.h>
 #include <RazerVM/VirtualMachine.h>
 #include <RazerRuntime/RzEngine.h>
+#include <RazerCompiler/TypeResolver.h>
+#include <RazerCompiler/OverloadResolver.h>
+
 #include <Logger.h>
 
 #include <cassert>
 
-RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext exprContext)
+RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, RzExprContext exprContext)
 {
 	if (expr->m_nodeType == AEN_IDENTIFIER)
 	{
@@ -15,7 +18,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext e
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
-        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(expr), aeExprContext());
+        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(expr), RzExprContext());
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{
@@ -30,7 +33,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, aeExprContext e
 		aeNodeBinaryOperator* binaryop = static_cast<aeNodeBinaryOperator*>(expr);
 		if (binaryop->oper == ">" || binaryop->oper == "<")
 		{
-			emitConditionalOp(binaryop);
+            emitBinaryOp(binaryop);
 		}
 		else if (binaryop->isArithmetic())
 		{
@@ -92,51 +95,89 @@ void RzCompiler::emitBinaryOp(aeNodeBinaryOperator* operation)
 	}
 	if (operation->oper == "+" || operation->oper == "-" || operation->oper == "*" || operation->oper == "/")
 	{
-		emitArithmeticOp(operation, aeExprContext());
+        emitArithmeticOp(operation, RzExprContext());
 	}
 	if (operation->isRelational())
 	{
-		emitConditionalOp(operation/*, aeExprContext()*/);
+        emitArithmeticOp(operation, RzExprContext());
 	}
 }
 
-void RzCompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const aeExprContext& context)
+RzCompileResult RzCompiler::emitArithmeticOp(aeNodeBinaryOperator* op, const RzExprContext& context)
 {
-	if (op->oper == "+")
-	{
-		aeExprContext ctxA = context;
-		ctxA.rx_value = true;
-		emitExpressionEval(op->operandA, ctxA);
-		emitExpressionEval(op->operandB, ctxA);
-		emitInstruction(OP_ADD, AEP_INT32);
+    if (!op->operandA || !op->operandB) {
+        assert("error: parser issue. binary expression is ill formed\n");
+        return RzCompileResult::aborted;
+    }
+
+    RzQualType lhsType = resolveQualifiedType(*this, *op->operandA);
+    RzQualType rhsType = resolveQualifiedType(*this, *op->operandB);
+    RzQualType effectiveOperationType;
+
+    if (!lhsType.sameTypeAs(rhsType)) {
+        // Conversion could be required
+
+        if (lhsType.isPrimitive() && rhsType.isPrimitive()) {
+            // Different primitive types are a case for promotion
+            // Both sides of the expression need to be converted into promotedType
+
+            effectiveOperationType = resolvePromotedType(lhsType, rhsType);
+
+            emitExpressionEval(op->operandA, RzExprContext::temporaryRValue());
+            implicitConvert(lhsType, effectiveOperationType);
+
+            emitExpressionEval(op->operandB, RzExprContext::temporaryRValue());
+            implicitConvert(rhsType, effectiveOperationType);
+        }
+    }
+    else {
+        effectiveOperationType = lhsType;
+        emitExpressionEval(op->operandA, RzExprContext::temporaryRValue());
+        emitExpressionEval(op->operandB, RzExprContext::temporaryRValue());
+    }
+
+    int primitiveId = resolvePrimitiveConstantFromType(effectiveOperationType);
+
+    if (op->oper == "+") {
+        emitInstruction(OP_ADD, primitiveId);
 	}
 
-	if (op->oper == "-")
-	{
-		aeExprContext ctxA = context;
-		ctxA.rx_value = true;
-		emitExpressionEval(op->operandA, ctxA);
-		emitExpressionEval(op->operandB, ctxA);
-		emitInstruction(OP_SUB, AEP_INT32);
+    if (op->oper == "-") {
+        emitInstruction(OP_SUB, primitiveId);
 	}
 
-	if (op->oper == "*")
-	{
-		aeExprContext ctxA = context;
-		ctxA.rx_value = true;
-		emitExpressionEval(op->operandA, ctxA);
-		emitExpressionEval(op->operandB, ctxA);
-		emitInstruction(OP_MUL, AEP_INT32);
+    if (op->oper == "*") {
+        emitInstruction(OP_MUL, primitiveId);
 	}
 
-	if (op->oper == "/")
-	{
-		aeExprContext ctxA = context;
-		ctxA.rx_value = true;
-		emitExpressionEval(op->operandA, ctxA);
-		emitExpressionEval(op->operandB, ctxA);
-		emitInstruction(OP_DIV, AEP_INT32);
+    if (op->oper == "/") {
+        emitInstruction(OP_DIV, primitiveId);
 	}
+
+    if (op->oper == ">")
+    {
+        emitInstruction(OP_GT, primitiveId);
+    }
+
+    if (op->oper == "<") {
+        emitInstruction(OP_LT, primitiveId);
+    }
+
+    if (op->oper == ">=") {
+        emitInstruction(OP_GTE, primitiveId);
+    }
+
+    if (op->oper == "<=") {
+        emitInstruction(OP_LTE, primitiveId);
+    }
+
+    if (op->oper == "==") {
+        emitInstruction(OP_EQ, primitiveId);
+    }
+
+    if (op->oper == "!=") {
+        emitInstruction(OP_NEQ, primitiveId);
+    }
 }
 
 bool RzCompiler::canConvertType(RzType* typeA, RzType* typeB)
@@ -144,16 +185,17 @@ bool RzCompiler::canConvertType(RzType* typeA, RzType* typeB)
 	return false;
 }
 
-void RzCompiler::emitImplicitConversion(RzQualType typeA, RzQualType typeB)
+RzCompileResult RzCompiler::implicitConvert(RzQualType from, RzQualType to)
 {
-	m_typeSystem.performConversion(typeA, typeB, this);
+    m_typeSystem.performConversion(from, to, this);
+    return RzCompileResult::ok;
 }
 
 RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 {
 	if (expr->m_nodeType != AEN_IDENTIFIER)
 	{
-		CompilerError("0002","emitLoadAddress: Only know how to load a variable ref");
+        RZLOG("error: emitLoadAddress: Only know how to load a variable ref\n");
         return RzCompileResult::aborted;
 	}
 	aeNodeIdentifier* varExpr = (aeNodeIdentifier*)expr;
@@ -179,7 +221,7 @@ RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	else
 	{
 		// The variable could not be found
-		CompilerError("0002","The referenced variable cannot be found. '" + varExpr->m_name + "'");
+        RZLOG("The referenced variable cannot be found\n");
         return RzCompileResult::aborted;
 	}
 }
@@ -276,7 +318,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 	RzQualType Ta = buildQualifiedType(acs->m_a);
 	if (!Ta)
 	{
-		CompilerError("0002","Cannot find the type of '" + acs->m_a->str() + "'");
+        RZLOG("Cannot find the type of \n");
         return RzCompileResult::aborted;
 	}
 
@@ -288,7 +330,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
         return RzCompileResult::ok;
 	}
 
-	aeExprContext exprContext;
+    RzExprContext exprContext;
 	exprContext.expectedResult = Ta;
     if (1) // always loaded as a ptr for now
 		exprContext.rx_value = true; // for handles we want to load their value
@@ -301,7 +343,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 		CompilerLog("Calling function on %s\n", Ta.str().c_str());
 
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
-        return emitFunctionCall(*acs->m_a, Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), aeExprContext());
+        return emitFunctionCall(*acs->m_a, Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), RzExprContext());
 	}
 	else
 	{
@@ -328,47 +370,10 @@ void RzCompiler::emitConditionalOp(aeNodeBinaryOperator* operation)
 		context denies it.
 		The result is either true or false, represented as bool.
 	*/
-	aeExprContext contextA;
-	contextA.rx_value = true;
-	emitExpressionEval(operation->operandA, contextA);
-
-	aeExprContext contextB;
-	contextB.rx_value = true;
-	emitExpressionEval(operation->operandB, contextB);
-
-	if (operation->oper == ">")
-	{
-		emitInstruction(OP_GT, 0);
-	}
-
-	if (operation->oper == "<")
-	{
-		emitDebugPrint("OP_LT " + operation->operandA->str() + " " + operation->operandB->str());
-		emitInstruction(OP_LT, AEP_INT32);
-	}
-
-	if (operation->oper == ">=")
-	{
-		emitInstruction(OP_GTE, 0);
-	}
-
-	if (operation->oper == "<=")
-	{
-		emitInstruction(OP_LTE, 0);
-	}
-
-	if (operation->oper == "==")
-	{
-		emitInstruction(OP_EQ, 0);
-	}
-	
-	if (operation->oper == "!=")
-	{
-		emitInstruction(OP_NEQ, 0);
-	}
+    assert(false);
 }
 
-RzCompileResult RzCompiler::emitVarExpr(aeNodeIdentifier* var, const aeExprContext& parentExprContext)
+RzCompileResult RzCompiler::emitVarExpr(aeNodeIdentifier* var, const RzExprContext& parentExprContext)
 {
 	/// The variable needs to be loaded into the stack, as it will be used to evaluate an expression
 	auto varInfo = getVariable(var->m_name);

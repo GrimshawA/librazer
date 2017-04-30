@@ -196,7 +196,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 
 		RzQualType paramType = parser.parseQualType();
 		fn.params.push_back(paramType);
-		info.args.push_back(paramType.str());
+        info.args.push_back(paramType);
 		//printf("param %s\n", paramType.str().c_str());
 		if (parser.Tok.text != ",")
 			break;
