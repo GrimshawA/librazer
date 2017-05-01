@@ -2,8 +2,8 @@
 #include "run_arkanoid.h"
 #include "run_pong.h"
 
-#include <QDir>
-#include <QDebug>
+//#include <QDir>
+//#include <QDebug>
 
 void testbed::run()
 {

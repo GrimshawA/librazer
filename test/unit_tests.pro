@@ -10,7 +10,8 @@ PRE_TARGETDEPS += $$PWD/../lib
 $${TARGET}.depends += $$PWD/../lib
 
 # SDL
-LIBS += -L$$PWD/../3rdparty/lib/x86 -lSDL2 -lSDL2main
+LIBS += -L$$PWD/../3rdparty/lib/x86 -lSDL2
+
 
 HEADERS += \
     vm_test/type_registration_test.h \

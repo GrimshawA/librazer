@@ -6,8 +6,8 @@
 
 struct SDLUserData
 {
-	SDL_Window* window = NULL;
-	SDL_Surface* screenSurface = NULL;
+    SDL_Window* window = NULL;
+    SDL_Surface* screenSurface = NULL;
 };
 
 #endif
@@ -16,43 +16,43 @@ SDLWindowImpl::SDLWindowImpl()
     : Window()
 {
 #ifdef RAZER_SDL
-	RZLOG("WINDOW INSTANCED\n");
+    RZLOG("WINDOW INSTANCED\n");
 
-	m_running = false;
+    m_running = false;
 
-	SDLUserData* sd = new SDLUserData;
-	data = sd;
+    SDLUserData* sd = new SDLUserData;
+    data = sd;
 
-	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		RZLOG("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-	}
-	else
-	{
-		//Create window
-		sd->window = SDL_CreateWindow("Razer Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 300, 300, SDL_WINDOW_SHOWN);
-		if (sd->window == NULL)
-		{
-			RZLOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-		}
-		else
-		{
+    //Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        RZLOG("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+    }
+    else
+    {
+        //Create window
+        sd->window = SDL_CreateWindow("Razer Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 300, 300, SDL_WINDOW_SHOWN);
+        if (sd->window == NULL)
+        {
+            RZLOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        }
+        else
+        {
             renderer = SDL_CreateRenderer(sd->window, -1, SDL_RENDERER_ACCELERATED);
 
-			//Get window surface
+            //Get window surface
             //sd->screenSurface = SDL_GetWindowSurface(sd->window);
 
-			//Fill the surface white
+            //Fill the surface white
             //SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, 0xFF, 0xFF, 0xFF));
 
-			//Update the surface
+            //Update the surface
             //SDL_UpdateWindowSurface(sd->window);
 
-			//Wait two seconds
-			//SDL_Delay(2000);
-		}
-	}
+            //Wait two seconds
+            //SDL_Delay(2000);
+        }
+    }
 #endif
 }
 
@@ -60,6 +60,17 @@ void SDLWindowImpl::poll() {
     SDL_Event e;
     //e is an SDL_Event variable we've declared before entering the main loop
     while (SDL_PollEvent(&e)){
+
+        if(e.type == SDL_WINDOWEVENT)  {
+            if (/*e.window.windowID == windowID*/  true)  {
+
+                if(e.window.event == SDL_WINDOWEVENT_CLOSE)  {
+                    m_running = false;
+                    RZLOG("KILL SIGNAL \n");
+                }
+            }
+        }
+
         //If user closes the window
         if (e.type == SDL_QUIT){
             m_running = false;
@@ -109,8 +120,8 @@ void SDLWindowImpl::drawString(const std::string& str, int x, int y) {
 }
 
 void SDLWindowImpl::open() {
-	RZLOG("WINDOW OPENING %x\n", this);
-	m_running = true;
+    RZLOG("WINDOW OPENING %x\n", this);
+    m_running = true;
 }
 
 bool SDLWindowImpl::running() {
@@ -119,12 +130,12 @@ bool SDLWindowImpl::running() {
 
 void SDLWindowImpl::display() {
 #ifdef RAZER_SDL
-	SDLUserData* sd = (SDLUserData*)data;
+    SDLUserData* sd = (SDLUserData*)data;
 
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);
 
-   SDL_Delay(5);
+    SDL_Delay(5);
 #endif
 }
 

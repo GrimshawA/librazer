@@ -28,6 +28,7 @@ public:
     int32_t width() override;
     int32_t height() override;
 
+private:
     SDL_Renderer *renderer;
 };
 

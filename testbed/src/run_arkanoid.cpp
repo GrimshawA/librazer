@@ -12,13 +12,13 @@
 #include <RazerCore/io/File.h>
 #include <STS/CPP/Compiler/CppBuilder.h>
 
-#include <QDir>
-#include <QDebug>
+//#include <QDir>
+//#include <QDebug>
 
 void run_arkanoid()
 {
-    QDir::setCurrent("D:\\Development\\librazer\\testbed\\scripts");
-    qDebug() << QDir::current().absolutePath();
+    //QDir::setCurrent("D:\\Development\\librazer\\testbed\\scripts");
+   // qDebug() << QDir::current().absolutePath();
 
     RzEngine ctx;
     ctx.init_all();
@@ -41,7 +41,7 @@ void run_arkanoid()
     AEObject* myObject = ctx.createObject("ArkanoidApp");
     if (!myObject)
     {
-        qDebug() << "Failed to instance";
+        printf("Failed to instance\n");
         return;
     }
 

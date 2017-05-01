@@ -152,7 +152,7 @@ void Window::drawString(const std::string& str, int x, int y) {
 }
 
 bool Window::running() {
-    return true;
+    return m_running;
 }
 
 void Window::display() {

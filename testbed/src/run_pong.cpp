@@ -4,6 +4,7 @@
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/RzDocument.h>
 #include <RazerBuild/RzBuilder.h>
+#include <Logger.h>
 
 #include <iostream>
 
@@ -33,11 +34,11 @@ void run_pong_game() {
     AEObject* myObject = ctx.createObject("PongGame");
     if (!myObject)
     {
-        qDebug() << "Failed to instance";
+        RZLOG("Failed to instance\n");
         return;
     }
 
-    printf("PongGame size: %d obj: %x\n", myObject->m_type->getSize(), myObject->m_obj);
+    RZLOG("PongGame size: %d obj: %x\n", myObject->m_type->getSize(), myObject->m_obj);
 
     if (myObject)
     {
@@ -48,5 +49,5 @@ void run_pong_game() {
         vm.call("PongGame.main");
     }
 
-    printf("Finished successfully\n");
+    RZLOG("Finished successfully\n");
 }

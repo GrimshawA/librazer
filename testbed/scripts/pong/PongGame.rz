@@ -78,7 +78,6 @@ class PongGame {
 		mEnemyPad.setSize(80, 10);
 
 		while(wnd.running()) {
-
 			wnd.poll();
 			update(wnd);
 			paint(wnd);
