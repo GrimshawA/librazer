@@ -35,6 +35,9 @@ class PongGame {
 	ballSize: float 20
 	time: int32
 
+	mPad: Rect
+	mEnemyPad: Rect
+
 	mTimer: Timer
 	
 	
@@ -66,6 +69,14 @@ class PongGame {
 		Timer t = new Timer();
 		mTimer = t;
 
+		mPad = new Rect();
+		mPad.setPosition(0,0);
+		mPad.setSize(80, 10);
+
+		mEnemyPad = new Rect();
+		mEnemyPad.setPosition(20, 390);
+		mEnemyPad.setSize(80, 10);
+
 		while(wnd.running()) {
 
 			wnd.poll();
@@ -91,12 +102,14 @@ class PongGame {
 
 		wnd.debug();
 
-		if (wnd.keyPressed(113)) {
-			bottomPadX = bottomPadX + 1;
+		if (wnd.keyPressed(97)) {
+			bottomPadX = bottomPadX - 1;
+			mPad.setPosition(bottomPadX, 0);
 		}
 
-		if (wnd.keyPressed(114)) {
-			bottomPadX = bottomPadX - 1;
+		if (wnd.keyPressed(100)) {
+			bottomPadX = bottomPadX + 1;
+			mPad.setPosition(bottomPadX, 0);
 		}
 
 		// side walls
@@ -142,11 +155,28 @@ class PongGame {
 		}
 		*/
 
-		/*if (ballY + ballSize >= height - padH && velY > 0) {
-			if (ballX + ballSize >= bottomPadX && ballX <= bottomPadX + padW) {
-				velY = -velY;
+		float a = ballY + ballSize;
+		float b = wnd.height() - padH;
+		/*if (a >= 10) {
+			if (velY < 0) {
+				if (ballX + ballSize >= bottomPadX) {
+					if (ballX <= bottomPadX + padW) {
+						velY = -velY;
+					}	
+				}
 			}
+			
 		}*/
+
+		if (mPad.contains(ballX, ballY)) {
+			velY = -velY;
+			ballY = 10;
+		}
+
+		if (mEnemyPad.contains(ballX, ballY)) {
+			velY = -velY;
+			ballY = 390;
+		}
 
 		ballX = ballX + velX;
 		ballY = ballY + velY;
@@ -164,11 +194,13 @@ class PongGame {
 		if (delta > 0) {
 			if (topPadX < wnd.width() - padW) {
 				topPadX = topPadX + 1;
+				mEnemyPad.setPosition(topPadX, 390);
 			}
 		}
 		if (delta < 0) {
 			if (topPadX > 0) {
 				topPadX = topPadX - 1;
+				mEnemyPad.setPosition(topPadX, 390);
 			}
 		}
 	}

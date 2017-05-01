@@ -33,7 +33,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, RzExprContext e
     }
     else if (expr->m_nodeType == AEN_BINARYOP) {
 		aeNodeBinaryOperator* binaryop = static_cast<aeNodeBinaryOperator*>(expr);
-		if (binaryop->oper == ">" || binaryop->oper == "<")
+        if (binaryop->isRelational())
 		{
             emitBinaryOp(binaryop);
 		}

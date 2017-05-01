@@ -71,7 +71,7 @@ void SDLWindowImpl::poll() {
         }
         if (e.type == SDL_KEYUP){
             m_keys[e.key.keysym.sym] = false;
-            RZLOG("key up %d\n", e.key.keysym.sym);
+            RZLOG("key up %d\n", (int)e.key.keysym.sym);
         }
         //If user clicks the mouse
         if (e.type == SDL_MOUSEBUTTONDOWN){

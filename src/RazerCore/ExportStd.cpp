@@ -4,6 +4,10 @@
 
 #include <RazerCore/container/Array.h>
 #include <RazerCore/container/String.h>
+#include <RazerCore/container/ByteArray.h>
+
+#include <RazerCore/math/Rect.h>
+
 #include <RazerCore/time/Timer.h>
 
 #include <RazerRuntime/RzEngine.h>
@@ -35,6 +39,8 @@ void RegisterStd(RzEngine* ctx)
 	registerFile(stdModule, "File");
 
     RzTimer::registerApi(stdModule);
+    RzByteArray::registerApi(*stdModule);
+    RzRect::registerApi(*stdModule);
 
 	VariantArray::registerApi(stdModule);
 	Window::registerApi(stdModule);
