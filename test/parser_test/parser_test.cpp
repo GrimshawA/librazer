@@ -1,21 +1,24 @@
 #include <parser_test/parser_test.h>
+#include "gtest/gtest.h"
 
 #include <RazerParser/Parser/TokenParser.h>
 #include <RazerParser/Parser/RzParser.h>
 
 const char* fragmentTest01 = "import std;";
 
-void RzTestParser::execute() {
+class ParserTest : public ::testing::Test {
+protected:
 
-    {
-        RzTokenParser tk;
-        tk.tokenize(fragmentTest01);
+};
 
-        RZTASSERT(tk.getTokens().size() == 4);
+TEST_F(ParserTest, TestTokenParser) {
+    RzTokenParser tk;
+    tk.tokenize(fragmentTest01);
 
-        tk.clear();
+    EXPECT_EQ(tk.getTokens().size(), 4);
 
-        RZTASSERT(tk.getTokens().empty());
-    }
+    tk.clear();
 
+    EXPECT_EQ(tk.getTokens().empty(), true);
 }
+

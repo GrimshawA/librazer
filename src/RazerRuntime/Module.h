@@ -78,7 +78,7 @@ public:
 	void registerFunction(const std::string& sig, aeBindMethod fn);
 	void registerGlobal(const std::string& sig, void* memory);
 
-	void registerType(const std::string& name, std::size_t size);
+    RzType* registerType(const std::string& name, std::size_t size);
 	void registerTypeConstructor(const std::string& name, aeConstructorMethod constructor);
 	void registerTypeDestructor();
 	void registerMethod(const std::string& name, const std::string& sig, aeBindMethod fn);

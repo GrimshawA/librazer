@@ -71,7 +71,7 @@ public:
 
 	/// Loads the source file and calls main() on it, blocks until it returns
 	/// Returns 0 on success and another value in case of error
-	static int exec(const std::string& filename);
+    static int exec(const std::string& filename, int argc, char** argv);
 
 public:
 
@@ -86,16 +86,6 @@ public:
 			std::vector<AEObject*> objects;
 		};
 
-		std::vector<RzType*>                          typedb;               ///< All the types on the context
-		std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
-		std::vector<std::unique_ptr<RzModule> >       modules;              ///< All the loaded modules
-		std::vector<std::string>                      string_literals;      ///< All the loaded string literals
-		std::vector<std::string>                      m_functionIdTable;    ///< Maps each dynamic call identifier to an integer index
-		std::vector<double>                           m_floatTable;         ///< All the loaded double literals
-		std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
-        std::vector<aeTypedef>                        m_typedefs;
-		std::vector<aeEnum*>                          m_enums;
-		aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 public:
 
 	RzEngine();
@@ -144,8 +134,18 @@ public:
 	/// Destroys the object and frees its memory
 	void destroyObject(AEObject* object);
 
-private:
+public:
 	RzVirtualMachine* m_vm;
+    std::vector<RzType*>                          typedb;               ///< All the types on the context
+    std::vector<object_heap>                      object_heaps;         ///< An heap of memory for each object type
+    std::vector<std::unique_ptr<RzModule> >       modules;              ///< All the loaded modules
+    std::vector<std::string>                      string_literals;      ///< All the loaded string literals
+    std::vector<std::string>                      m_functionIdTable;    ///< Maps each dynamic call identifier to an integer index
+    std::vector<double>                           m_floatTable;         ///< All the loaded double literals
+    std::vector<int32_t>                          int_literals;         ///< All the script-side int literals loaded
+    std::vector<aeTypedef>                        m_typedefs;
+    std::vector<aeEnum*>                          m_enums;
+    aeon_config                                   m_config;             ///< Language configurations for compilation and execution
 };
 
 #endif // RZENGINE_H__

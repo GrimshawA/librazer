@@ -18,7 +18,8 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, RzExprContext e
 	}
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
-        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(expr), RzExprContext());
+        aeNodeExpr a;
+        return emitFunctionCall(a, RzQualType(), static_cast<aeNodeFunctionCall*>(expr), RzExprContext());
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{

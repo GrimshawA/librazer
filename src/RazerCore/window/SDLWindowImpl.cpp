@@ -57,6 +57,7 @@ SDLWindowImpl::SDLWindowImpl()
 }
 
 void SDLWindowImpl::poll() {
+    #ifdef SDL_WRAPPERS
     SDL_Event e;
     //e is an SDL_Event variable we've declared before entering the main loop
     while (SDL_PollEvent(&e)){
@@ -89,18 +90,22 @@ void SDLWindowImpl::poll() {
             //quit = true;
         }
     }
+#endif
 }
 
 void SDLWindowImpl::setSize(int width, int height) {
+#ifdef SDL_WRAPPERS
     SDLUserData* sd = (SDLUserData*)data;
     SDL_SetWindowSize(sd->window, width, height);
 
     sd->screenSurface = SDL_GetWindowSurface(sd->window);
 
     SDL_FillRect(sd->screenSurface, NULL, SDL_MapRGB(sd->screenSurface->format, 0xFF, 0xFF, 0xFF));
+#endif
 }
 
 void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
+    #ifdef SDL_WRAPPERS
     SDLUserData* sd = (SDLUserData*)data;
 
     SDL_Rect rect;
@@ -113,6 +118,7 @@ void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
     SDL_RenderFillRect(renderer, &rect);
 
     RZLOG("DRAWRECT: %d %d %d %d\n", x, y, w, h);
+#endif
 }
 
 void SDLWindowImpl::drawString(const std::string& str, int x, int y) {
@@ -140,17 +146,23 @@ void SDLWindowImpl::display() {
 }
 
 int32_t SDLWindowImpl::width() {
+    #ifdef SDL_WRAPPERS
     SDLUserData* sd = (SDLUserData*)data;
     int w, h;
     SDL_GetWindowSize(sd->window, &w, &h);
     return w;
+#endif
+    return 0;
 }
 
 int32_t SDLWindowImpl::height() {
+    #ifdef SDL_WRAPPERS
     SDLUserData* sd = (SDLUserData*)data;
     int w, h;
     SDL_GetWindowSize(sd->window, &w, &h);
     return h;
+#endif
+    return 0;
 }
 
 

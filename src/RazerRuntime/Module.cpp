@@ -122,8 +122,11 @@ void RzModule::registerGlobal(const std::string& sig, void* memory) {
 
 }
 
-void RzModule::registerType(const std::string& name, std::size_t size) {
-	RzType* typeInfo = new RzType(*this, name, size);
+RzType* RzModule::registerType(const std::string& name, std::size_t size) {
+    if (getType(name))
+        return nullptr;
+
+    RzType* typeInfo = new RzType(*this, name, size);
 
 	auto parser = RzParser::create(name, this->m_context);
 	std::string canonicalName = parser->Tok.text;
@@ -139,6 +142,8 @@ void RzModule::registerType(const std::string& name, std::size_t size) {
 	typeInfo->is_native = true;
 	typeInfo->m_absoluteName = canonicalName;
 	m_types.push_back(typeInfo);
+
+    return typeInfo;
 }
 
 void RzModule::registerTypeConstructor(const std::string& name, aeConstructorMethod constructor) {

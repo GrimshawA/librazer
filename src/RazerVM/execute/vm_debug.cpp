@@ -7,7 +7,7 @@ struct CanarySaveData {
     int ebp;
 };
 
-std::vector<CanarySaveData> s_canaryStack;
+static std::vector<CanarySaveData> s_canaryStack;
 
 static inline void DoDebugOp(RzThreadContext& ctx, int a, int b) {
 

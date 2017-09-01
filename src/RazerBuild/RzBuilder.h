@@ -2,6 +2,7 @@
 #define RzBuilder_h__
 
 #include <vector>
+#include <string>
 
 class RzEngine;
 

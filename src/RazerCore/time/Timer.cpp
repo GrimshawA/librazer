@@ -2,21 +2,28 @@
 #include <RazerRuntime/Module.h>
 #include <Logger.h>
 
+#ifdef SDL_WRAPPERS
 #include <SDL.h>
+#endif
 
 RzTimer::RzTimer() {
     RZLOG("TIMER INITIATED %x\n", this);
+    #ifdef SDL_WRAPPERS
     m_lastTime = SDL_GetTicks();
+#endif
 }
 
 uint32_t RzTimer::restart() {
-
+#ifdef SDL_WRAPPERS
     uint32_t now = SDL_GetTicks();
+
     uint32_t dt = now - m_lastTime;
     m_lastTime = now;
 
     RZLOG("TIMER restart %x %d\n", this, dt);
     return dt;
+    #endif
+    return 1;
 }
 
 void RzTimer::registerApi(RzModule* mod) {

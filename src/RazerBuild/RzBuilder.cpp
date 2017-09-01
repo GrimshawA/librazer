@@ -1,5 +1,6 @@
 #include <RazerBuild/RzBuilder.h>
 #include <Logger.h>
+#include <string>
 
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerParser/Parser/RzParser.h>

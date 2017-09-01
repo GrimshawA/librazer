@@ -8,8 +8,9 @@
 #include <Logger.h>
 
 #include <RazerCore/ExportStd.h>
+#include <cstring>
 
-int RzEngine::exec(const std::string& filename)
+int RzEngine::exec(const std::string& filename, int argc, char** argv)
 {
 	return 0;
 }

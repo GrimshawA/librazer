@@ -8,6 +8,8 @@
 #include <DebugDefs.h>
 #include <Logger.h>
 
+#include <cstring>
+
 // [API]
 
 RzVirtualMachine::RzVirtualMachine() {

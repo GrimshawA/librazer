@@ -29,7 +29,7 @@ void dispatch_execute(RzThreadContext& ctx)
     {
         RzInstruction& inst = ctx.cl->module->m_code[ctx.cl->pc];
 
-        RZLOGVM(" vm %s\n", inst_opcode_str(inst).c_str());
+        RZLOGVM(" vm %s\n", inst_opcode_str(inst).c_str(), 0, 0);
 
         switch (inst.opcode)
         {
@@ -200,8 +200,8 @@ void dispatch_execute(RzThreadContext& ctx)
                 ctx.esp += inst.arg1;
         vm_end
 
-                vm_start(OP_BREAKPOINT)
-                __asm int 3;
+        vm_start(OP_BREAKPOINT)
+               // __asm int 3;
         vm_end
 
                 vm_start(OP_DTEST)

@@ -592,8 +592,10 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
 
     switch (stmt->m_nodeType) {
 
-    case AEN_FUNCTIONCALL:
-        return emitFunctionCall(aeNodeExpr(), RzQualType(), static_cast<aeNodeFunctionCall*>(stmt), RzExprContext());
+    case AEN_FUNCTIONCALL: {
+        aeNodeExpr a;
+        return emitFunctionCall(a, RzQualType(), static_cast<aeNodeFunctionCall*>(stmt), RzExprContext());
+    }
 
     case AEN_BRANCH:
         return emitBranchCode(static_cast<aeNodeBranch*>(stmt));
