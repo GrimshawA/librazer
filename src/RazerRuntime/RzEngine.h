@@ -90,8 +90,6 @@ public:
 
 	RzEngine();
 
-	void init_all();
-
     RzFunction* createFunction(const std::string& name);
 
 	aeLiteralId getIntegerLiteral(int64_t n);

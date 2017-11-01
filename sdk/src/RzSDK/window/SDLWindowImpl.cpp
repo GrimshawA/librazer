@@ -1,4 +1,4 @@
-#include <RazerCore/window/SDLWindowImpl.h>
+#include <RzSDK/window/SDLWindowImpl.h>
 #include <Logger.h>
 
 #ifdef RAZER_SDL

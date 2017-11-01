@@ -1,14 +1,14 @@
-#include <RazerCore/ExportStd.h>
-#include <RazerCore/window/Window.h>
-#include <RazerCore/io/File.h>
+#include <RzSdk/ExportStd.h>
+#include <RzSDK/window/Window.h>
+#include <RzSDK/io/File.h>
 
-#include <RazerCore/container/Array.h>
-#include <RazerCore/container/String.h>
-#include <RazerCore/container/ByteArray.h>
+#include <RzSDK/container/Array.h>
+#include <RzSDK/container/String.h>
+#include <RzSDK/container/ByteArray.h>
 
-#include <RazerCore/math/Rect.h>
+#include <RzSDK/math/Rect.h>
 
-#include <RazerCore/time/Timer.h>
+#include <RzSDK/time/Timer.h>
 
 #include <RazerRuntime/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>

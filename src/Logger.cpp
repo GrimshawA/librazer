@@ -10,6 +10,7 @@ void RzLogger::log(const std::string& msg)
 
     }
 
+#define LOGGING_ENABLED
 #if defined LOGGING_ENABLED
   // return;
     printf("%s", msg.c_str());

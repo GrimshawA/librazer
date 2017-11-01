@@ -7,7 +7,7 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <Logger.h>
 
-#include <RazerCore/ExportStd.h>
+#include <RzSDK/ExportStd.h>
 #include <cstring>
 
 int RzEngine::exec(const std::string& filename, int argc, char** argv)
@@ -92,11 +92,6 @@ RzValue RzEngine::evaluate(const std::string& expression)
 	RzValue value;
 //	value.mRawValue = "null";
 	return value;
-}
-
-void RzEngine::init_all()
-{
-	RegisterStd(this);
 }
 
 void RzEngine::quick_build(const std::string& file)

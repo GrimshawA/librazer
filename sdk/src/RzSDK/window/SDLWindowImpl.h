@@ -1,7 +1,7 @@
 #ifndef SDLWINDOWIMPL_H__
 #define SDLWINDOWIMPL_H__
 
-#include <RazerCore/window/Window.h>
+#include <RzSDK/window/Window.h>
 
 class SDL_Renderer;
 

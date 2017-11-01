@@ -1,4 +1,4 @@
-#include <RazerCore/container/ByteArray.h>
+#include <RzSDK/container/ByteArray.h>
 #include <RazerRuntime/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
 

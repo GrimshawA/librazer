@@ -41,7 +41,7 @@ bool RzBuilder::build(const Batch& b)
         RzLogger::logToFile("ast.txt", parser.root->str());
 
         if (!r) {
-            RZLOG("Compilation finished with errors.\n");
+            RZLOG("Compilation finished with errors.\n", "Cenas");
             return false;
         }
 
