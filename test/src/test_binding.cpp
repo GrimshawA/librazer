@@ -1,4 +1,4 @@
-#include <parser_test/parser_test.h>
+#include "parser_test.h"
 #include "gtest/gtest.h"
 
 #include <RazerParser/Parser/TokenParser.h>

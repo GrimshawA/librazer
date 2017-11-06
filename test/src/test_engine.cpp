@@ -3,6 +3,7 @@
 #include <RazerParser/Parser/TokenParser.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerRuntime/RzEngine.h>
+#include <RzSDK/ExportStd.h>
 
 class TestEngine : public ::testing::Test {
 protected:
@@ -30,8 +31,7 @@ TEST_F(TestEngine, TestPrimitiveCreation) {
 TEST_F(TestEngine, TestModuleInit) {
 
     RzEngine engine;
-    engine.init_all();
-
+    RegisterStd(&engine);
     EXPECT_EQ(engine.getModule("std") != nullptr, true);
 }
 

@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 2.8.11)
 project (RazerLanguage)
 
+#PYTHON_INCLUDE_DIR=/usr/include/python2.7 
+#PYTHON_LIBRARY=/usr/lib/python2.7/config/libpython2.7.so
+
+################################
+# GTest
+################################
+set (gtest_SOURCE_DIR 3rdparty/googletest)
+ADD_SUBDIRECTORY (3rdparty/googletest)
+enable_testing()
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
@@ -51,6 +62,8 @@ endif()
 # Razer VM
 add_executable(rz ${rz_SRC})
 target_link_libraries(rz librazer)
+
+add_subdirectory(test)
 
 
 
