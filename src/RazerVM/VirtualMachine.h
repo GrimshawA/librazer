@@ -41,25 +41,15 @@ class AEObject;
 class RzVirtualMachine
 {
 public:
-	// [API]
+    RzVirtualMachine(RzEngine& context);
 
-	RzVirtualMachine();
-	RzVirtualMachine(RzEngine* context);
+    RzEngine& getContext() const;
+    RzThreadContext& getMainThread();
 
 	void execute(int functionId);
 	void executeAsync(int functionId);
 
-public:
-
 	RzValue call(RzValue obj, const std::string& functionName, AEValueList args = AEValueList());
-
-	void setContext(RzEngine* context);
-
-
-public:
-
-	RzModule* get_current_mod();
-
 
 	void prepare(aeFunctionId function);
 	void pushThis(void* obj);
@@ -83,7 +73,7 @@ public:
 
 	RzThreadContext                 m_mainContext;       ///< The context for the host thread (for host synchronous execution)
 	std::vector<RzThreadHandlerPtr> m_threads;           ///< Hardware threads spawned by the vm
-	RzEngine*                       m_ctx; ///< The engine that encapsulates all code the vm executes
+    RzEngine&                       m_ctx;     ///< The engine that encapsulates all code the vm executes
 	std::shared_ptr<IDebugger>      m_dbg;
 };
 

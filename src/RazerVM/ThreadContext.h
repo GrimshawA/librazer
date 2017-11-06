@@ -42,6 +42,21 @@ public:
 		ebp = esp;
 	}
 
+    std::size_t getStackSize() const
+    {
+        return stack.size();
+    }
+
+    const char* getStackBegin() const
+    {
+        return reinterpret_cast<const char*>(stack.data());
+    }
+
+    const char* getStackEnd() const
+    {
+        return reinterpret_cast<const char*>(stack.data() + stack.size() - 1);
+    }
+
 	RzModule& getModule();
 
 	void pushVariant(const RzValue& v);

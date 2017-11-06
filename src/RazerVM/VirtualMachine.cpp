@@ -10,19 +10,11 @@
 
 #include <cstring>
 
-// [API]
-
-RzVirtualMachine::RzVirtualMachine() {
+RzVirtualMachine::RzVirtualMachine(RzEngine& context)
+    : m_ctx(context)
+{
 	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
-
-    RZLOG("sizeof(RzStackValue) = %d\n", sizeof(RzStackValue));
-}
-
-RzVirtualMachine::RzVirtualMachine(RzEngine* context) {
-	memset(m_mainContext.stack.data(), 0, m_mainContext.stack.size());
-	m_ctx = context;
-	m_mainContext.engine = m_ctx;
-    RZLOG("sizeof(RzStackValue) = %d\n", sizeof(RzStackValue));
+    m_mainContext.engine = &m_ctx;
 }
 
 void RzVirtualMachine::execute(int functionId) {
@@ -33,17 +25,10 @@ void RzVirtualMachine::executeAsync(int functionId) {
 
 }
 
-// End of [API]
-
-
 RzValue RzVirtualMachine::call(RzValue obj, const std::string& functionName, AEValueList args) {
 	RzValue returnValue;
 
 	return returnValue;
-}
-
-RzModule* RzVirtualMachine::get_current_mod() {
-	return m_mainContext.frames[m_mainContext.frames.size() - 1].module;
 }
 
 void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype) {
@@ -64,9 +49,15 @@ void RzVirtualMachine::pushThis(void* obj) {
 	m_mainContext.push_addr(obj);
 }
 
-void RzVirtualMachine::setContext(RzEngine* context) {
-	m_ctx = context;
-} 
+RzEngine& RzVirtualMachine::getContext() const
+{
+    return m_ctx;
+}
+
+RzThreadContext& RzVirtualMachine::getMainThread()
+{
+    return m_mainContext;
+}
 
 void printBits2(size_t const size, void const * const ptr) {
 		unsigned char *b = (unsigned char*)ptr;
@@ -90,7 +81,7 @@ void RzVirtualMachine::call(const char* func) {
 
     // Find the function in any module from its fully qualified name
     // package.namespace.class.method
-    RzFunction* function = m_ctx->getFunctionByName(func);
+    RzFunction* function = m_ctx.getFunctionByName(func);
 	int i = 0;
 
 	if (function)

@@ -43,8 +43,8 @@ void AEObject::call(const std::string& name) {
 		RzFunction* fn = getType()->getFunction(m_type->getName() + "." + name);
 		RZLOG("%x. %s\n", fn, (m_type->getName() + "." + name).c_str());
 		if (fn) {
-			RzVirtualMachine vm;
-            vm.setContext(getType()->getModule()->m_context);
+            //RzVirtualMachine vm;
+            //vm.setContext(getType()->getModule()->m_context);
 			//		vm.call(fn);
 		}
 	}
