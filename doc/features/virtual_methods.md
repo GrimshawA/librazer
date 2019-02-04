@@ -1,0 +1,1 @@
+Just as in C++.

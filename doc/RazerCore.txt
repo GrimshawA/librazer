@@ -1,7 +1,0 @@
-RazerCore
--------------
-
-This is the framework that goes along with the language to do interesting things. It outputs to a RazerCore.dll module file, which encapsulates
-the precompiled code of the core framework.
-
-From there, the user can then do import statements to use these classes.
