@@ -2,6 +2,7 @@
 #include <RazerRuntime/Function.h>
 #include <RazerVM/VirtualMachine.h>
 #include <Logger.h>
+#include <cstring>
 
 AEObject::AEObject()
 : m_ref(0) {

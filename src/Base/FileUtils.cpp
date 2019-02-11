@@ -43,11 +43,11 @@ std::string getFileSource(const std::string& filename)
 
 void rzCreateDir(const std::string& name)
 {
-#ifdef _WIN32
+/*#ifdef _WIN32
 	CreateDirectoryA(name.c_str(), 0);
 #else
 #error Unimplemented func
-#endif
+#endif*/
 }
 
 std::string rzGetFileName(const std::string& fullPath)

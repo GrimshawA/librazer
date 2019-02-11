@@ -83,8 +83,8 @@ public:
 
 	void print_registers()
 	{
-		printf("[esp] %x : index %d\n", esp, stack.data() + stack.size() - esp);
-		printf("[ebp] %x : index %d\n", ebp, stack.data() + stack.size() - ebp);
+//		printf("[esp] %x : index %d\n", esp, stack.data() + stack.size() - esp);
+//		printf("[ebp] %x : index %d\n", ebp, stack.data() + stack.size() - ebp);
 	}
 
 	void push_value(RzStackValue v)

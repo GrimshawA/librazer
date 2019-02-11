@@ -1,4 +1,4 @@
-#include <RzSdk/ExportStd.h>
+#include <RzSDK/ExportStd.h>
 #include <RzSDK/window/Window.h>
 #include <RzSDK/io/File.h>
 

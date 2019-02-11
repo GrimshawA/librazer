@@ -53,6 +53,8 @@ target_compile_definitions(librazer PRIVATE AVC=1 )
 if(WIN32)
   target_link_libraries(librazer wsock32 ws2_32)
   target_link_libraries(librazer winmm.lib)
+else()
+  target_link_libraries(librazer pthread)
 endif()
 
 # Compiler
