@@ -45,7 +45,7 @@ void* RzType::constructScript()
 }
 
 void RzType::computeMetrics() {
-    m_size = 0;
+    m_size = 1;
     for (std::size_t i = 0; i < m_fields.size(); ++i) {
         m_size += 4; //hardcoded ptr size
     }

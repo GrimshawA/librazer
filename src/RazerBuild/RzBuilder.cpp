@@ -5,6 +5,7 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/TokenParser.h>
+#include <RazerParser/AST/RzModuleNode.h>
 #include <Base/FileUtils.h>
 
 RzBuilder::RzBuilder(RzEngine& engine)
@@ -22,6 +23,8 @@ bool RzBuilder::build(const Batch& b)
     compiler.m_module = mainModule;
 
     std::vector<RzSourceUnit*> parseTrees;
+
+    RzModuleNode moduleNode;
 
     // Prepass: collect all parse trees
     for (int i = 0; i < b.files.size(); ++i)
@@ -47,6 +50,14 @@ bool RzBuilder::build(const Batch& b)
 
         parseTrees.push_back(parser.root);
 
+        //moduleNode.m_items.emplace_back(parser.root);
+        moduleNode.m_modules.emplace_back(parser.root);
+    }
+
+    if (!moduleNode.checkDuplicates())
+    {
+        RZLOG("Compilation finished with errors.\n", "Cenas");
+        return false;
     }
 
     // Collect class information before generating code

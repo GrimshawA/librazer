@@ -94,6 +94,7 @@ public:
 		aeNodeNamespace*         parseNamespace();
 		AEEnumNode*              parseEnum();
 		AEStructNode*            parseClass();
+		AEStructNode*            parseTopLevelIdentifer();
 		aeNodeFor*               parseForLoop();
 		aeNodeWhile*             parseWhileLoop();
 		void                     parseClassBody(AEStructNode* classDeclNode);

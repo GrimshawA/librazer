@@ -204,11 +204,11 @@ bool RzParser::startParse(RzTokenParser& lexer)
         }
         else
         {
-            AEBaseNode* symbol = parseSymbol();
-            if (symbol)
-            {
-                root->add(symbol);
-            }
+            /// This is a top-level identifier that can be anything
+            /// Usually it will be a structure adhering to some set of traits, including class
+            /// For example: myidentifier: class
+            AEStructNode* classDecl = parseTopLevelIdentifer();
+            root->m_types.push_back(std::unique_ptr<AEStructNode>(classDecl));
         }
     }
 
@@ -301,6 +301,55 @@ AEStructNode* RzParser::parseClass()
     return classDecl;
 }
 
+AEStructNode* RzParser::parseTopLevelIdentifer()
+{
+    AEStructNode* classDecl = new AEStructNode();
+    classDecl->m_name = Tok.text;
+
+    getNextToken(); // :
+
+    getNextToken(); // "class or other trait"
+
+    // Will be either a : or a { depending on whether the class inherits stuff
+    getNextToken();
+
+    // Get the inheritance fathers
+    if (Tok.type == RZTK_COLON)
+    {
+        do
+        {
+            AEStructNode::classparentinfo cpi;
+
+            // Let's get the first keyword, can be either a access level or the identifier
+            getNextToken();
+
+            if (Tok.type == RZTK_PUBLIC || Tok.type == RZTK_PROTECTED || Tok.type == RZTK_PRIVATE)
+            {
+                cpi.visibility = TokToVisib(Tok.text);
+                cpi.parentClass = getNextToken().text;
+            }
+            else
+            {
+                cpi.visibility = TokToVisib("public");
+                cpi.parentClass = Tok.text;
+            }
+
+            getNextToken();
+
+            classDecl->parents.push_back(cpi);
+        } while (Tok.type == RZTK_COMMA);
+    }
+
+    parseClassBody(classDecl);
+    getNextToken(); // we need to skip the last ;
+    getNextToken();
+
+    // debug print
+    // printf("Parsed class %s\n%s\n", classDecl->m_name.c_str(), classDecl->str().c_str());
+
+    return classDecl;
+}
+
 void RzParser::parseClassBody(AEStructNode* classDeclNode)
 {
     std::string currentDefaultAccessLevel = "public";
@@ -376,6 +425,15 @@ AEFieldNode* RzParser::parseStructField()
             std::string typeIdentifier = Tok.text;
             getNextToken();
             getNextToken();
+
+            skipNewlines();
+
+            if (Tok.type == RZTK_CLOSEBRACKET)
+			{
+            	getNextToken();
+            	return f.release();
+			}
+
             getNextToken();
 
             f->initializer = new AEFieldInitNode;

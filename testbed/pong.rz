@@ -8,7 +8,7 @@ import std
 
 	Used as a proof of concept, to build compiler features until the game actually runs well.
 */
-class App {	
+App: class {
 	
 	timer: float 5
 	first: bool true
@@ -68,8 +68,7 @@ class App {
 		ballX = width / 2 - ballSize / 2;
 		ballY = height / 2 - ballSize / 2;*/
 
-		Timer t = new Timer();
-		mTimer = t;
+		mTimer = new Timer();
 
 		mPad = new Rect();
 		mPad.setPosition(0,0);
