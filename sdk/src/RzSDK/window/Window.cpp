@@ -4,7 +4,7 @@
 #include <Logger.h>
 
 #ifdef RAZER_SDL
-#include <RazerCore/window/SDLWindowImpl.h>
+#include <RzSDK/window/SDLWindowImpl.h>
 #endif
 
 void Window::registerApi(RzModule* m)

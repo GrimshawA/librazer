@@ -82,6 +82,7 @@ public:
 	void registerTypeConstructor(const std::string& name, aeConstructorMethod constructor);
 	void registerTypeDestructor();
 	void registerMethod(const std::string& name, const std::string& sig, aeBindMethod fn);
+	void registerMethod2(const std::string& classname, const std::string& name, aeBindMethod fn);
 	void registerField();
 	void registerPropertyGet();
 	void registerPropertySet();

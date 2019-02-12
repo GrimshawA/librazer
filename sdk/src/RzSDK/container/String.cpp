@@ -1,5 +1,6 @@
 #include <RzSDK/container/String.h>
 #include <RazerVM/VirtualMachine.h>
+#include <razer/bind_utils.h>
 #include <Logger.h>
 
 void registerString(RzModule* mod) {
@@ -33,6 +34,8 @@ void registerString(RzModule* mod) {
         result->set(a->toStdString() + b->toStdString());
         g.pushObject(result);
     });
+
+    mod->registerMethod2("String", "test", AutoMethodWrapper<decltype(&RzString::test), &RzString::test>::Invoke);
 }
 
 RzString::RzString() {
@@ -49,6 +52,11 @@ std::string RzString::toStdString() {
 
 void RzString::print() {
     RZLOG("STRING PRINT %s\n", m_str.c_str());
+}
+
+void RzString::test()
+{
+	RZLOG("Test worked!");
 }
 
 int RzString::size() {

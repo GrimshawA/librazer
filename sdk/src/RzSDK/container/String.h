@@ -16,7 +16,10 @@ public:
 
     void print();
 
+    void test();
+
     int size();
+
 
 
 private:

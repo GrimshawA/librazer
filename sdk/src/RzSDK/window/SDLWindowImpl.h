@@ -4,6 +4,7 @@
 #include <RzSDK/window/Window.h>
 
 class SDL_Renderer;
+class SDL_Window;
 
 class SDLWindowImpl : public Window
 {
@@ -29,6 +30,7 @@ public:
     int32_t height() override;
 
 private:
+	SDL_Window* wnd;
     SDL_Renderer *renderer;
 };
 

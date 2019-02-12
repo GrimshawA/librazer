@@ -162,4 +162,6 @@ uint32_t getinst_b(const RzInstruction& inst);
 
 std::string inst_opcode_str(RzInstruction inst);
 
+std::string getPrettyInstructionStr(RzInstruction inst);
+
 #endif // RAZERVMINSTRUCTIONSET_H__

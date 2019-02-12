@@ -31,7 +31,8 @@ SDLWindowImpl::SDLWindowImpl()
     else
     {
         //Create window
-        sd->window = SDL_CreateWindow("Razer Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 300, 300, SDL_WINDOW_SHOWN);
+        sd->window = SDL_CreateWindow("Razer Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 400, 400, SDL_WINDOW_SHOWN);
+        wnd = sd->window;
         if (sd->window == NULL)
         {
             RZLOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -57,7 +58,7 @@ SDLWindowImpl::SDLWindowImpl()
 }
 
 void SDLWindowImpl::poll() {
-    #ifdef SDL_WRAPPERS
+    #ifdef RAZER_SDL
     SDL_Event e;
     //e is an SDL_Event variable we've declared before entering the main loop
     while (SDL_PollEvent(&e)){
@@ -94,7 +95,7 @@ void SDLWindowImpl::poll() {
 }
 
 void SDLWindowImpl::setSize(int width, int height) {
-#ifdef SDL_WRAPPERS
+#ifdef RAZER_SDL
     SDLUserData* sd = (SDLUserData*)data;
     SDL_SetWindowSize(sd->window, width, height);
 
@@ -105,7 +106,7 @@ void SDLWindowImpl::setSize(int width, int height) {
 }
 
 void SDLWindowImpl::drawRect(int x, int y, int w, int h) {
-    #ifdef SDL_WRAPPERS
+    #ifdef RAZER_SDL
     SDLUserData* sd = (SDLUserData*)data;
 
     SDL_Rect rect;
@@ -146,20 +147,20 @@ void SDLWindowImpl::display() {
 }
 
 int32_t SDLWindowImpl::width() {
-    #ifdef SDL_WRAPPERS
+    #ifdef RAZER_SDL
     SDLUserData* sd = (SDLUserData*)data;
     int w, h;
-    SDL_GetWindowSize(sd->window, &w, &h);
+    SDL_GetWindowSize(wnd, &w, &h);
     return w;
 #endif
     return 0;
 }
 
 int32_t SDLWindowImpl::height() {
-    #ifdef SDL_WRAPPERS
+    #ifdef RAZER_SDL
     SDLUserData* sd = (SDLUserData*)data;
     int w, h;
-    SDL_GetWindowSize(sd->window, &w, &h);
+    SDL_GetWindowSize(wnd, &w, &h);
     return h;
 #endif
     return 0;

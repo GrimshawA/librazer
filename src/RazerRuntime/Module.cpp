@@ -212,6 +212,34 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }
 
+void RzModule::registerMethod2(const std::string& classname, const std::string& name, aeBindMethod fnPtr) {
+
+	auto typeInfo = getType(classname);
+
+	RzType::MethodInfo info;
+	info.methodCallback = fnPtr;
+	info.name = name;
+	info.native = true;
+
+	AENativeFunctionWrapper wrapper;
+	wrapper.f = fnPtr;
+	m_nativeFunctions.push_back(wrapper);
+	info.offset = m_nativeFunctions.size() - 1;
+
+
+	RzFunction fn;
+	fn.returnType = RzQualType();
+	fn.m_absoluteName = name + "." + name;
+	fn.decl = name;
+	fn.fn = fnPtr;
+	fn.m_native = true;
+
+	m_functions.push_back(fn);
+	typeInfo->m_methods.push_back(info);
+
+	RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
+}
+
 void RzModule::registerField() {
 
 }
@@ -388,25 +416,28 @@ void RzModule::read(const char* filename) {
 }
 
 void RzModule::dumpToFile(const std::string& filename) {
-	/*File outFile(filename, IODevice::TextWrite);
-		if (outFile)
+	FILE* f = fopen(filename.c_str(), "w");
+
+	if (f)
+	{
+		for (int pc = 0; pc < m_code.size(); ++pc)
 		{
-			TextStream strm(outFile);
-
-			for (int pc = 0; pc < instructions.size(); ++pc)
+			for (std::size_t i = 0; i < m_functions.size(); ++i)
 			{
-				for (std::size_t i = 0; i < functions.size(); ++i)
+				if (pc == m_functions[i].m_offset)
 				{
-					if (pc == functions[i].offset)
-					{
-						fprintf(outFile.getHandle(), "\n");
-						fprintf(outFile.getHandle(), "%s:\n", functions[i].prototype.c_str());
-					}
-				}
 
-				fprintf(outFile.getHandle(), "%s\n", getopname(getopcode(instructions[pc])));
+					fprintf(f, "\n");
+					fprintf(f, "%s:\n", m_functions[i].m_absoluteName.c_str());
+				}
 			}
-		}*/
+
+			auto prettyInstruction = getPrettyInstructionStr(m_code[pc]);
+			fprintf(f, "%s\n", prettyInstruction.c_str());
+		}
+	}
+
+	fclose(f);
 }
 
 void RzModule::debugCode() {

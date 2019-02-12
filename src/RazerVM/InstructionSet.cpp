@@ -96,3 +96,33 @@ std::string inst_opcode_str(RzInstruction inst)
 	}
 	return std::to_string(inst.opcode);
 }
+
+std::string getPrettyInstructionStr(RzInstruction inst) {
+	std::string s;
+
+	s += inst_opcode_str(inst);
+
+	if (inst.opcode == OP_LOAD)
+	{
+		if (inst.arg1 == AEP_INT32) {
+			s += "INT32";
+		}
+	}
+
+	if (inst.opcode == OP_SET)
+	{
+		if (inst.arg2 == AEP_INT32) {
+			s += " INT32";
+		}
+	}
+
+	if (inst.opcode == OP_LOADK)
+	{
+		if (inst.arg0 == AEK_INT)
+		{
+			s += " INT32 ";
+		}
+	}
+
+	return s;
+}

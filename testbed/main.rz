@@ -1,0 +1,46 @@
+import std
+
+class App {	
+	
+	timer: float 5
+	first: bool true
+	height: int32
+	width: int32
+	removeMe: float
+
+	window: Window
+	
+	// pad
+	speed: int32 1
+	padH: int32 10
+	padW: int32 40
+	bottomPadX: int32
+	topPadX: int32
+	inset: int32 10
+	
+	// ball
+	ballX: float
+	ballY: float
+	velX: float 1
+	velY: float 1
+	ballSize: float 20
+	time: int32
+
+	mPad: Rect
+	mEnemyPad: Rect
+
+	mTimer: Timer
+	
+	
+	// score
+	scoreTop: int32
+	scoreBottom: int32
+	
+	function main() {
+        String s = new String();
+        s.set("Hello World");
+        s.print();
+        s.test();
+	}
+
+}

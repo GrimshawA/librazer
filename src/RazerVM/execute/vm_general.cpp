@@ -266,7 +266,7 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
             memcpy(&v.ptr, dataPtr, sizeof(void*));
             ctx.push_value(v);
 
-            // RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
+            //RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
         }
         else if (kind == AEP_INT32)
         {
@@ -287,10 +287,12 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
     if (addressMode == AEK_THIS)
     {
         RzStackValue thisPtr = ctx.pop_value();
-        thisPtr.ptr = (unsigned char*)thisPtr.ptr + offset;
-        ctx.push_value(thisPtr);
 
-        RZLOG("OP_LOADADDR THIS = %x (offset %d)\n", thisPtr.ptr, offset);
+        RzStackValue newVal;
+		newVal.ptr = (unsigned char*)thisPtr.ptr + offset;
+        ctx.push_value(newVal);
+
+        //RZLOG("OP_LOADADDR THIS = %x (offset %d)\n", (char*)thisPtr.ptr, offset);
     }
     else if (addressMode == AEK_EBP)
     {

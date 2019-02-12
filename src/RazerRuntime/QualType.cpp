@@ -41,7 +41,7 @@ uint32_t RzQualType::getSize()
 	{
 		if (m_handle)
 		{
-			return 4;
+			return sizeof(void*);
 		}
 		else
 		{

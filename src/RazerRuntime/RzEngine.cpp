@@ -159,6 +159,9 @@ AEObject* RzEngine::createObject(const std::string& typen)
 			object->m_type = heap.type;
             RzVirtualMachine vm(*this);
 			vm.callMethod(object, typen + "." + typen);
+
+			RZLOG("> Allocated object of size %d at address %x\n", heap.type->getSize(), object->m_obj);
+
 			return object;
 		}
 	}

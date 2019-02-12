@@ -19,6 +19,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 # The standard SDK
 add_subdirectory(sdk)
+add_subdirectory("3rdparty/sdl2")
 
 file(GLOB_RECURSE lib_SRC
     "src/Base/*.h"
@@ -47,8 +48,11 @@ file(GLOB files ${lib_SRC} ${sdk_files})
 
 include_directories("src/" "sdk/src/")
 
-add_library(librazer SHARED ${files})
+add_library(librazer SHARED ${files} src/razer/bind_utils.h)
 target_compile_definitions(librazer PRIVATE AVC=1 )
+
+add_definitions("-DRAZER_SDL")
+target_link_libraries(librazer SDL2)
 
 if(WIN32)
   target_link_libraries(librazer wsock32 ws2_32)
