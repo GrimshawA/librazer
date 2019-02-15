@@ -302,3 +302,14 @@ int32_t RzEngine::getTypeInfoIndex(RzType* typeInfo)
 
 	return -1;
 }
+
+uint64_t RzEngine::getTypeModuleIndex(RzType* type)
+{
+	for (int i = 0; i < modules.size(); ++i)
+	{
+		if (modules[i]->hasType(type))
+			return i;
+	}
+
+	return 1295790127591;
+}

@@ -97,6 +97,7 @@ public:
 
 	void resolveType(RzQualType& type);
 	bool hasType(const std::string& name);
+	bool hasType(RzType* type);
 
 public:
 

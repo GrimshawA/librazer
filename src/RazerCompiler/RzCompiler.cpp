@@ -307,8 +307,6 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         return RzCompileResult::aborted;
     }
 
-
-
     RzType* typeInfo = m_module->getType(clss->m_name);
     typeInfo->m_absoluteName = clss->m_name;
     m_env->typedb.push_back(typeInfo);
@@ -346,9 +344,14 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
     typeInfo->computeMetrics();
 
+    bool compiledConstructors = false;
     for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
     {
-        RzFunction* fn = compileFunction(static_cast<aeNodeFunction*>(clss->m_functions[i].get()));
+    	auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
+
+    	compiledConstructors |= funcNode->is_constructor;
+
+        RzFunction* fn = compileFunction(funcNode);
         if (!fn) {
             RZLOG("Failed to compile function\n");
             return RzCompileResult::aborted;
@@ -356,7 +359,11 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     }
 
     // Now the class is compiled, we generate constructor and destructor
-    emitClassConstructors(typeInfo, clss);
+    if (!compiledConstructors)
+	{
+		emitClassConstructors(typeInfo, clss);
+	}
+
     emitClassDestructors(typeInfo, clss);
 
     m_classes.pop_back();
@@ -368,6 +375,19 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
 void RzCompiler::emitClassConstructors(RzType* classType, AEStructNode* classNode)
 {
+	RzFunction f;
+	f.m_offset = m_cursor;
+	f.m_module = m_module;
+	f.m_absoluteName = classType->getName() + "." + classType->getName();
+
+	emitDebugPrint("Constructor is being run!!!");
+	emitReturnCode(nullptr);
+
+	m_module->m_functions.emplace_back(f);
+
+	RZLOG("Emitted default constructor: %s index taken %d\n", f.m_absoluteName.c_str(), m_module->m_functions.size() - 1);
+
+
     /*aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
 
     if (!classType->isPod())
@@ -504,13 +524,15 @@ RzCompileResult RzCompiler::emitWhileLoop(aeNodeWhile* whileloop) {
 
 void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* function)
 {
+	emitDebugPrint("Constructor injected section begin");
     // This is where the initialization is done, before any user constructor instruction is executed
     AEStructNode* cl = getTopClassNode();
 
     for (auto& field : cl->m_typeInfo->m_fields)
     {
+		emitDebugPrint("INIT " + field.name);
         RZLOG("INIT %s\n", field.name.c_str());
-        if (!field.type.isPod())
+        /*if (!field.type.isPod())
         {
             emitPushThis();
             emitInstruction(OP_LOADADDR, AEK_THIS, field.offset);
@@ -530,8 +552,11 @@ void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* func
             //emitFunctionCall(field.type, &fnCall, aeExprContext());
 
             RZLOG("INJECTED CONSTRUCTION %s\n", field.name.c_str());
-        }
+        }*/
     }
+
+	emitDebugPrint("Constructor injected section end");
+	emitPushThis();
 }
 
 RzCompileResult RzCompiler::compileImport(aeNodeImport& node)

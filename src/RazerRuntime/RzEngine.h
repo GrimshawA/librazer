@@ -125,6 +125,7 @@ public:
 
 	RzType* getTypeInfo(const std::string& name);
 	int32_t getTypeInfoIndex(RzType* typeInfo);
+	uint64_t getTypeModuleIndex(RzType* type);
 
 	/// Creates a new object of that type
 	AEObject* createObject(const std::string& typen);

@@ -291,6 +291,16 @@ bool RzModule::hasType(const std::string& name) {
 	return false;
 }
 
+bool RzModule::hasType(RzType* type)
+{
+	for (auto& t : m_types)
+	{
+		if (t == type)
+			return true;
+	}
+	return false;
+}
+
 int RzModule::getDependencyId(const std::string& name) {
 	for (int i = 0; i < m_dependencies.size(); ++i) {
 		if (m_dependencies[i].name == name)

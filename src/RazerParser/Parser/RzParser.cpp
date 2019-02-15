@@ -392,6 +392,12 @@ begin:
             f->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
             f->is_method = true;
             useVisib.clear();
+
+            if (f->m_name == classDeclNode->m_name)
+            {
+				f->is_constructor = true;
+            }
+
             classDeclNode->m_functions.emplace_back(f);
         }
         else if (Tok.type == RZTK_ENUM)

@@ -86,6 +86,8 @@ public:
 	void* constructNative();
 	void* constructScript();
 
+	uint64_t getConstructorIndex();
+
     // Figure the final size of the struct
     void computeMetrics();
 

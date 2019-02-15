@@ -338,13 +338,24 @@ inline static void DoLogicalNot(RzThreadContext& ctx)
 inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
 {
     RzType* typeInfo = ctx.getModule().resolveType(module_id, type);
-    void* obj = typeInfo->construct();
+
+    void* obj = nullptr;
+
+    if (typeInfo->is_native)
+    {
+        obj = typeInfo->construct();
+        RZLOG("Constructed a new native object %s\n", typeInfo->getName().c_str());
+    }
+    else
+    {
+        // We need to malloc memory for the type and then construct it
+        obj = malloc(typeInfo->getSize());
+        RZLOG("Constructed a new %s\n", typeInfo->getName().c_str());
+    }
 
     RzStackValue v;
     v.ptr = obj;
     ctx.push_value(v);
-
-    RZLOG("Constructed a new %s\n", typeInfo->getName().c_str());
 }
 
 inline static void DoLessThan(RzThreadContext& ctx, AeonPrimitiveType ptype)

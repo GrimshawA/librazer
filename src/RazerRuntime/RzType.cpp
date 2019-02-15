@@ -44,6 +44,11 @@ void* RzType::constructScript()
     return memory;
 }
 
+uint64_t RzType::getConstructorIndex()
+{
+	return getModule()->getFunctionIndex(getName() + "." + getName());
+}
+
 void RzType::computeMetrics() {
     m_size = 1;
     for (std::size_t i = 0; i < m_fields.size(); ++i) {

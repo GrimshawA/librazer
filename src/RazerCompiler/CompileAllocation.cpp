@@ -109,6 +109,14 @@ RzCompileResult RzCompiler::compileNew(aeNodeNew& newExpr)
 
 	emitInstruction(OP_NEW, moduleIndex, typeIndex);
 
+	if (!newExpr.m_instanceType.getType()->is_native)
+	{
+		// We just allocated room for the in-language type, we must now invoke its constructor.
+		int constructorIndex = newExpr.m_instanceType.getType()->getConstructorIndex();
+		int moduleIndex = m_module->m_context->getTypeModuleIndex(newExpr.m_instanceType.getType());
+		emitInstruction(OP_CALL, moduleIndex, constructorIndex);
+	}
+
 	RZLOG("Compiled new %d %d\n\n", moduleIndex, typeIndex);
 
     return RzCompileResult(RzCompileResult::OK);
