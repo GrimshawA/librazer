@@ -1,4 +1,5 @@
 #include "AEStructNode.h"
+#include "aeNodeVarDecl.h"
 #include "aeNodeFunction.h"
 #include <RazerParser/AST/aeNodeBlock.h>
 #include <RazerRuntime/RzEngine.h>

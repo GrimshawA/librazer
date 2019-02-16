@@ -22,6 +22,12 @@ void registerString(RzModule* mod) {
         obj->print();
     });
 
+    mod->registerMethod("String", "void dbg(int32)", [](RzGeneric g){
+        RzString* obj = (RzString*)g.popObject();
+        auto val = g.popInt32();
+        RZLOG("VALUE DBG: %d\n", val);
+    });
+
     mod->registerMethod("String", "int size()", [](RzGeneric g){
         RzString* obj = (RzString*)g.popObject();
         obj->size();

@@ -12,12 +12,28 @@ test2: class {
 }
 
 App: class {
-    function App() {
+    a: int32
+    b: int32
+    c: String
+    d: int32
 
-    }
+    let a: b + 10 + d
 
 	function main() {
-        test2 x = new test2();
+        d = 1000;
+
+        c.dbg(a);
+        c.dbg(b);
+
+        b = 50;
+
+        c.dbg(a);
+        c.dbg(b);
+
+        b = 100;
+
+        c.dbg(a);
+        c.dbg(b);
 	}
 }
 

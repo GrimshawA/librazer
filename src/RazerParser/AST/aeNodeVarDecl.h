@@ -41,4 +41,18 @@ public:
 	std::string str() const;
 };
 
+class RzLetNode : public AEStmtNode
+{
+public:
+
+    aeNodeExpr* target;
+    aeNodeExpr* bindingexpr;
+
+public:
+
+//    RzLetNode();
+
+//    std::string str() const;
+};
+
 #endif // aeNodeVarDecl_h__

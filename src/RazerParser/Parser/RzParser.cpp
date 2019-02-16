@@ -400,6 +400,13 @@ begin:
 
             classDeclNode->m_functions.emplace_back(f);
         }
+        else if (Tok.type == RZTK_LET)
+        {
+            auto* letExpr = parseLet();
+            classDeclNode->m_bindings.emplace_back(letExpr);
+
+
+        }
         else if (Tok.type == RZTK_ENUM)
         {
             AEEnumNode* e = parseEnum();
@@ -414,6 +421,20 @@ begin:
             skipNewlines();
         }
     }
+}
+
+RzLetNode* RzParser::parseLet()
+{
+    RzLetNode* node = new RzLetNode;
+    getNextToken();
+
+    node->target = parseExpression();
+    getNextToken();
+
+    auto* expr = parseExpression();
+
+    node->bindingexpr = expr;
+    return node;
 }
 
 AEFieldNode* RzParser::parseStructField()

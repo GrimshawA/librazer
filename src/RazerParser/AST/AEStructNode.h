@@ -7,6 +7,7 @@
 class RzType;
 class aeNodeFunction;
 class aeNodeValue;
+class RzLetNode;
 
 class AEEnumNode : public AEBaseNode
 {
@@ -104,6 +105,7 @@ public:
 	std::vector<AETypeTrait> traits;
 	std::vector<std::string> templateTypes;
 	std::vector<std::unique_ptr<aeNodeFunction>> m_functions;
+    std::vector<std::unique_ptr<RzLetNode>> m_bindings;
 	std::vector<AEFieldNode*> m_fields;
 	std::vector<AEMetaNode> meta;
 	std::vector<AEStructNode> innerClasses;

@@ -382,6 +382,8 @@ RzToken RzTokenParser::getToken() {
             token.type = RZTK_DEFAULT;
         else if (token.text == "static")
             token.type = RZTK_STATIC;
+        else if (token.text == "let")
+            token.type = RZTK_LET;
         else if (token.text == "typedef")
             token.type = RZTK_TYPEDEF;
         else if (token.text == "and")

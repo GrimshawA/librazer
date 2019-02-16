@@ -111,6 +111,25 @@ RzCompileResult RzCompiler::compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs
     // Finalize the assignment
     emitInstruction(OP_SET, 0, 0, assignType);
 
+    // In case this assignment should trigger a binding
+    for (auto& binding : this->getTopClassNode()->m_bindings)
+    {
+        emitDebugPrint("BINDING TRIGGER START");
+
+        // Trigger them all
+        RzCompileResult r = emitLoadAddress(binding->target);
+        if (r == RzCompileResult::aborted)
+            return r;
+
+        // Right hand gets loaded (value)
+        r = emitExpressionEval(binding->bindingexpr, RzExprContext::temporaryRValue());
+        if (r == RzCompileResult::aborted)
+            return r;
+
+         emitInstruction(OP_SET, 0, 0, assignType);
+
+         emitDebugPrint("BINDING TRIGGER END");
+    }
     return RzCompileResult::ok;
 }
 
