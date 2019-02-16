@@ -1,4 +1,4 @@
-#include <RazerVM/StackFrame.h>
+#include <razer/vm/StackFrame.h>
 
 std::string RzStackFrame::getName()
 {

@@ -2,7 +2,7 @@
 #include "program_options_parser.hpp"
 
 #include <RazerRuntime/RzEngine.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/RzDocument.h>
 #include <RazerBuild/RzBuilder.h>

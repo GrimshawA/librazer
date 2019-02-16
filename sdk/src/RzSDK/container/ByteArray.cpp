@@ -1,6 +1,6 @@
 #include <RzSDK/container/ByteArray.h>
 #include <RazerRuntime/RzEngine.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 
 int32_t RzByteArray::size() {
     return m_data.size();

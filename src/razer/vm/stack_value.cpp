@@ -1,4 +1,4 @@
-#include <RazerVM/StackValue.h>
+#include <razer/vm/stack_value.h>
 
 RzStackValue RzStackValue::from_int32(int32_t v)
 {

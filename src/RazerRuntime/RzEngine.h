@@ -1,7 +1,7 @@
 #ifndef RZENGINE_H__
 #define RZENGINE_H__
 
-#include <RazerVM/ThreadContext.h>
+#include <razer/vm/ThreadContext.h>
 #include <RazerRuntime/QualType.h>
 #include <RazerRuntime/RzType.h>
 #include <RazerRuntime/RzValue.h>

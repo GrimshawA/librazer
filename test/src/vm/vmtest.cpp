@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 
 class VirtualMachineTest : public ::testing::Test
 {

@@ -1,6 +1,6 @@
-#include <RazerVM/VirtualMachine.h>
-#include <RazerVM/ExecDispatch.h>
-#include <RazerVM/InstructionSet.h>
+#include <razer/vm/VirtualMachine.h>
+#include <razer/vm/ExecDispatch.h>
+#include <razer/vm/InstructionSet.h>
 
 #include <RazerRuntime/RzEngine.h>
 #include <RazerRuntime/AEObject.h>

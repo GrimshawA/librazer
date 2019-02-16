@@ -1,4 +1,4 @@
-#include <RazerVM/ThreadHandler.h>
+#include <razer/vm/ThreadHandler.h>
 
 void RzThreadHandler::start() {
 	m_thread = std::thread(&RzThreadHandler::threadFunc, this);

@@ -1,4 +1,4 @@
-#include <RazerVM/Debugger/IDebugger.h>
+#include <razer/vm/Debugger/IDebugger.h>
 
 void IDebugger::stepOver()
 {

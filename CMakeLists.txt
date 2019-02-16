@@ -37,6 +37,8 @@ file(GLOB_RECURSE lib_SRC
     "src/RazerVM/*.h"
     "src/RazerVM/*.cpp"
     "src/Logger.cpp"
+    "src/razer/**.cpp"
+    "src/razer/*.h*"
 )
 
 file(GLOB_RECURSE rz_SRC

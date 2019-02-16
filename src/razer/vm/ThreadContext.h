@@ -1,8 +1,8 @@
 #ifndef RZTHREADCONTEXT_H__
 #define RZTHREADCONTEXT_H__
 
-#include <RazerVM/StackFrame.h>
-#include <RazerVM/StackValue.h>
+#include <razer/vm/StackFrame.h>
+#include <razer/vm/stack_value.h>
 
 #include <RazerRuntime/RzValue.h>
 #include <RazerRuntime/AEObject.h>

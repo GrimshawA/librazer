@@ -1,7 +1,7 @@
 #ifndef RAZERLANGUAGE_BIND_UTILS_H
 #define RAZERLANGUAGE_BIND_UTILS_H
 
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 
 namespace Private {
 	template<int...Ints>

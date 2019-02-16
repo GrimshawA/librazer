@@ -1,6 +1,6 @@
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/Function.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 #include <Logger.h>
 #include <cstring>
 

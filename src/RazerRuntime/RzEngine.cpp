@@ -1,7 +1,7 @@
 #include <RazerRuntime/RzEngine.h>
 #include <Base/FileUtils.h>
 #include <RazerRuntime/AEObject.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 #include <RazerParser/Parser/RzParser.h>
 #include <RazerParser/Parser/TokenParser.h>
 #include <RazerCompiler/RzCompiler.h>

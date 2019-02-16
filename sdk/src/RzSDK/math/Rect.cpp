@@ -1,6 +1,6 @@
 #include <RzSDK/math/Rect.h>
 #include <RazerRuntime/RzEngine.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 #include <Logger.h>
 
 RzRect::RzRect() {

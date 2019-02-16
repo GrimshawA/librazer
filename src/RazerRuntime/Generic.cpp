@@ -1,5 +1,5 @@
 #include <RazerRuntime/Generic.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 
 int32_t RzGeneric::popInt32() {
     RzStackValue strIndex = m_threadCtx->pop_value();

@@ -1,4 +1,4 @@
-#include <RazerVM/InstructionIterator.h>
+#include <razer/vm/InstructionIterator.h>
 
 InstructionIterator::InstructionIterator()
 	: pc(0)

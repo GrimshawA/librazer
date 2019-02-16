@@ -1,4 +1,4 @@
-#include <RazerVM/Debugger/Debugger.h>
+#include <razer/vm/Debugger/Debugger.h>
 
 void Debugger::onUncaughtExceptionThrown()
 {

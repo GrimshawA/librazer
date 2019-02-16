@@ -1,7 +1,7 @@
 #ifndef AEVmThread_h__
 #define AEVmThread_h__
 
-#include <RazerVM/ThreadContext.h>
+#include <razer/vm/ThreadContext.h>
 #include <thread>
 
 /**

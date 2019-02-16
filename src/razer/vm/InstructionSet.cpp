@@ -1,4 +1,4 @@
-#include <RazerVM/InstructionSet.h>
+#include <razer/vm/InstructionSet.h>
 #include <Logger.h>
 #include <string>
 

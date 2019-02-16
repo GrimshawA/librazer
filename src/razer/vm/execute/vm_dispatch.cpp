@@ -1,11 +1,11 @@
-#include <RazerVM/VirtualMachine.h>
-#include <RazerVM/ThreadContext.h>
-#include <RazerVM/ThreadHandler.h>
+#include <razer/vm/VirtualMachine.h>
+#include <razer/vm/ThreadContext.h>
+#include <razer/vm/ThreadHandler.h>
 
-#include <RazerVM/execute/vm_calls.cpp>
-#include <RazerVM/execute/vm_dynamic.cpp>
-#include <RazerVM/execute/vm_general.cpp>
-#include <RazerVM/execute/vm_debug.cpp>
+#include <razer/vm/execute/vm_calls.cpp>
+#include <razer/vm/execute/vm_dynamic.cpp>
+#include <razer/vm/execute/vm_general.cpp>
+#include <razer/vm/execute/vm_debug.cpp>
 
 #define vm_start(x) case x:{
 #define vm_end break;}

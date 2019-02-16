@@ -1,5 +1,5 @@
 #include <RzSDK/container/String.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/VirtualMachine.h>
 #include <razer/bind_utils.h>
 #include <Logger.h>
 

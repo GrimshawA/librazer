@@ -1,8 +1,8 @@
 #ifndef aeClosure_h__
 #define aeClosure_h__
 
-#include <RazerVM/InstructionSet.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/InstructionSet.h>
+#include <razer/vm/VirtualMachine.h>
 
 #include <vector>
 

@@ -1,7 +1,7 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/TypeResolver.h>
-#include <RazerVM/InstructionSet.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/InstructionSet.h>
+#include <razer/vm/VirtualMachine.h>
 #include <RazerRuntime/RzEngine.h>
 #include <DebugDefs.h>
 #include <Logger.h>

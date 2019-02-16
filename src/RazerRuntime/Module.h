@@ -1,7 +1,7 @@
 #ifndef RZMODULE_H__
 #define RZMODULE_H__
 
-#include <RazerVM/InstructionSet.h>
+#include <razer/vm/InstructionSet.h>
 #include <RazerRuntime/RzType.h>
 #include <RazerRuntime/QualType.h>
 #include <RazerRuntime/Function.h>

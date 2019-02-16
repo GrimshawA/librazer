@@ -1,8 +1,8 @@
 #ifndef RZBUILDREPORT_H__
 #define RZBUILDREPORT_H__
 
-#include <RazerVM/InstructionSet.h>
-#include <RazerVM/VirtualMachine.h>
+#include <razer/vm/InstructionSet.h>
+#include <razer/vm/VirtualMachine.h>
 
 #include <vector>
 

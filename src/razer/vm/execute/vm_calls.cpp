@@ -1,5 +1,5 @@
 #include <Logger.h>
-#include <RazerVM/ThreadContext.h>
+#include <razer/vm/ThreadContext.h>
 #include <RazerRuntime/RzEngine.h>
 
 #include <assert.h>
