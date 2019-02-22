@@ -201,7 +201,11 @@ void dispatch_execute(RzThreadContext& ctx)
         vm_end
 
         vm_start(OP_BREAKPOINT)
-               // __asm int 3;
+              if (ctx.engine->_dbg )
+              {
+              	  ctx.engine->_dbg->ctx = &ctx;
+                  ctx.engine->_dbg->onBreakpoint();
+              }
         vm_end
 
                 vm_start(OP_DTEST)

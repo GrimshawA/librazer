@@ -13,6 +13,7 @@
 
 class RzVirtualMachine;
 class AEObject;
+class IDebugger;
 
 struct aeon_config
 {
@@ -90,6 +91,8 @@ public:
 
 	RzEngine();
 
+	void setDebugger(IDebugger* dbg);
+
     RzFunction* createFunction(const std::string& name);
 
 	aeLiteralId getIntegerLiteral(int64_t n);
@@ -145,6 +148,7 @@ public:
     std::vector<aeTypedef>                        m_typedefs;
     std::vector<aeEnum*>                          m_enums;
     aeon_config                                   m_config;             ///< Language configurations for compilation and execution
+    IDebugger*                                    _dbg = nullptr;
 };
 
 #endif // RZENGINE_H__

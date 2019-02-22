@@ -41,7 +41,7 @@ bool RzBuilder::build(const Batch& b)
         parser.ctx = &m_engine;
         bool r = parser.startParse(lexer);
 
-        RzLogger::logToFile("ast.txt", parser.root->str());
+        //RzLogger::logToFile("ast.txt", parser.root->str());
 
         if (!r) {
             RZLOG("Compilation finished with errors.\n", "Cenas");

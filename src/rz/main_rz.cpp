@@ -8,6 +8,7 @@
 #include <RazerBuild/RzBuilder.h>
 
 #include <RzSDK/ExportStd.h>
+#include <razer/vm/Debugger/Debugger.h>
 
 rz::program_options getOpts()
 {
@@ -36,8 +37,11 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
         std::cout << "Build only mode." << std::endl;
     }
 
+    auto* debugger = new Debugger();
+
     RzEngine ctx;
     RegisterStd(&ctx);
+    ctx.setDebugger(debugger);
 
     RzBuilder builder(ctx);
     bool result = builder.build(batch);

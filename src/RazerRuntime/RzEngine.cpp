@@ -38,6 +38,11 @@ RzEngine::RzEngine()
 	registerTypedef("int32", "int");
 }
 
+void RzEngine::setDebugger(IDebugger* dbg)
+{
+	_dbg = dbg;
+}
+
 void RzEngine::registerPrimitive(const std::string& name, uint32_t size)
 {
     auto mod = getModule("__");

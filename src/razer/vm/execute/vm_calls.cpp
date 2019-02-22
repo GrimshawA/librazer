@@ -12,7 +12,7 @@ static inline void DoCall(RzThreadContext& ctx, int moduleIndex, int functionInd
     RzFunction* functionData = &m->m_functions[functionIndex];
 
 	RzStackFrame callinfo;
-	callinfo.name = "unknown";
+	callinfo.name = functionData->getName();
 	callinfo.pc = functionData->m_offset - 1;
 	callinfo.module = functionData->m_module;
 	callinfo.ebp = ctx.ebp;

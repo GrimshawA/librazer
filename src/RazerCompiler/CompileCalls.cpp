@@ -24,6 +24,13 @@ RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
 RzCompileResult RzCompiler::emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* fn, RzExprContext exprCtx) {
     std::string finalSymbolName = fn->m_name;
 
+    if (fn->m_name == "break2")
+	{
+    	emitBreakpoint();
+    	// Short circuit for an intrinsic
+    	return RzCompileResult::OK;
+	}
+
     if (!beingCalledOn)
     {
         // This seems to be a "top-level" call, meaning it could have to be called on this, or a global func
@@ -78,6 +85,7 @@ void RzCompiler::emitLateBoundCall(aeNodeFunctionCall* fn) {
 }
 
 RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, RzQualType obj, aeNodeFunctionCall& call) {
+
 
     RzType* typeInfo = obj.getType();
     if (!typeInfo) {
