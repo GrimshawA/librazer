@@ -1,0 +1,56 @@
+// Problem is that all refs to components are done with ptr, but it could transparently be an handle with an accessor on top,
+// allowing for memory moving behind the scenes
+
+#include <iostream>
+
+template<typename T>
+class handle
+{
+public:
+    operator->()
+    {
+        return handlerManager.translate(handle);
+    }
+private:
+    uint32_t handle;
+    SpriteManager* handleManager;
+};
+
+class Sprite
+{
+public:
+
+};
+
+class User
+{
+public:
+    handle<Sprite> s;
+};
+
+User a, b, c;
+
+void tick() {
+
+}
+
+void move() {
+
+}
+
+int main(int argc, char** argv)
+{
+    SpriteManager sm;
+
+    a.s = sm.create();
+    b.s = a.s;
+    c.s = sm.create();
+
+    tick();
+    move();
+    tick();
+
+    std::cout << "All went well!!" << std::endl;
+
+    return 0;
+}

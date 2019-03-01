@@ -1,0 +1,39 @@
+top_view: view {
+
+    view_model: any
+
+    background: image {
+        source: "vault_back.png"
+        anchors.fill: root
+    }
+
+    grand_jackpot: jackpot_display {
+        title: "GRAND"
+        value: view_model.grandJackpot
+    }
+
+    major_jackpot: jackpot_display {
+        title: "MAJOR"
+        value: view_model.majorJackpot
+    }
+
+    minor_jackpot: jackpot_display {
+        title: "MINOR"
+        value: view_model.minorJackpot
+    }
+
+    mini_jackpot: jackpot_display {
+        title: "MINI"
+        value: view_model.miniJackpot
+    }
+
+    prizes_left: prizes_display {
+        model: view_model.prizesModel[0]
+        anchors.left: root.left
+    }
+
+    prizes_right: prizes_display {
+        model: view_model.prizesModel[1]
+        anchors.right: root.right
+    }
+}

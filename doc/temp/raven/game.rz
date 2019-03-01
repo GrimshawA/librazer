@@ -1,0 +1,20 @@
+
+class Asteroid
+{
+    vec2 position;
+}
+
+class Spaceship
+{
+    vec2 position;
+}
+
+/*
+    This class should be the game logic only. Within unit tests, this is the class that gets tested,
+    therefore, it shall be capable of running the entire game simulation without the expression of visual or
+    audio cues, which another layer must do by itself in response to this class.
+*/
+class Game
+{
+    auto_list<Asteroid> asteroids {5}
+}

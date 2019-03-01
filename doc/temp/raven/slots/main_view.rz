@@ -1,0 +1,34 @@
+main_view: view {
+
+    view_model: any
+
+    background: image {
+        source: "vault_back.png"
+        anchors.fill: root
+    }
+
+    reels: reel_display {
+        anchors.horizontalCenter = root.horizontalCenter
+        width: root.width * 0.8
+    }
+
+    debug_button: button {
+        text: "DEBUG"
+        visible: view_model.inDebugMode
+    }
+
+    common_bar: rectangle {
+        anchors.bottom: root.bottom
+        width: root.width
+        height: 50
+
+        settings_button : button {
+
+        }
+
+        play_button : button {
+            text: "PLAY"
+            
+        }
+    }
+}

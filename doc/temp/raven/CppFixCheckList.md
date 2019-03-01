@@ -1,0 +1,7 @@
+- Header guards gone
+- Includes gone and imports minimal
+- Metaclasses as class is just one of the archetypes available
+- Default public in classes with low emphasis on such encapsulation
+- Faster function detection in grammar, function xxx
+- No ; at the end of a class
+- Easier inner structs with access to parent scopes

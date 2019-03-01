@@ -1,0 +1,21 @@
+class Asteroid
+{
+    vec2 position;
+}
+
+class GameView : apex::ui::framebuffer
+{
+    int lives = 0;
+    auto_list<Asteroid> asteroids {5}
+    Game game;
+
+    Text {
+        text: "Lives: " + lives
+        anchors.topRight: root.topRight
+    }
+
+    function draw(apex::renderer r)
+    {
+        r.drawCircle(30, 30);
+    }
+}

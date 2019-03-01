@@ -1,0 +1,23 @@
+
+
+[compile-time]
+function profiler_injector() {
+    // This function runs during compilation and allows for code injection
+
+    auto funcs = std::this_module::get_functions("*Update");
+
+    funcs.apply(f => {
+
+        // This API is compile-time available only;
+        // The lambda passed to prepend is pasted into the target function main scope during compilation
+
+        std::injection::prepend(f, () => {
+            AutoProfile __p;
+            defer __p.stop();
+        });
+    });
+}
+
+function main() {
+    return 0;
+}

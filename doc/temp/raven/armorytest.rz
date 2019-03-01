@@ -1,0 +1,77 @@
+fight_model: class 
+{
+    action_duration: float
+    action_elapsed: float
+    action_name: string {"Nap"}
+    enemy_health: 10
+
+    enemy_action_progress => action_elapsed / action_duration;
+
+    function tick(dt: float) {
+        action_elapsed += dt;
+
+        if (action_elapsed > action_duration) {
+            finalize_action();
+        }
+    }
+
+    function finalize_action() {
+        enemy_health += 1;
+
+        action_duration = 10;
+        action_elapsed = 0;
+    }
+
+    on enemy_health <= 0: {
+        
+    }
+}
+
+fight_view : apex::ui::component
+{
+    property model
+
+    enemy_name: apex::text {
+        text: model.enemy_name
+        anchors.horizontalCenter: root.horizontalCenter
+    }
+
+    enemy_action: apex::progress_bar {
+        width: root.width * 0.8
+        value: model.enemy_action_progress
+        bar_origin: apex::progress_bar::center;
+
+        action_name : apex::text {
+            text: model.enemy_action_name
+            anchors.centerIn: parent
+        }
+    }
+
+    enemy_health: apex::progress_bar {
+        width: root.width * 0.8
+        anchors.horizontalCenter: root.horizontalCenter
+        anchor.top: enemy_name.bottom
+        value: model.normalized_enemy_health
+    }
+
+    enemy_shield: apex::progress_bar {
+        width: root.width * 0.8
+        anchors.horizontalCenter: root.horizontalCenter
+        anchor.top: enemy_health.bottom
+        value: model.normalized_enemy_shield
+    }
+
+    player_health: apex::progress_bar {
+        width: root.width * 0.8
+        anchors.horizontalCenter: root.horizontalCenter
+        anchor.top: enemy_shield.bottom
+        value: model.normalized_health
+    }
+
+    player_shield: apex::progress_bar {
+        width: root.width * 0.8
+        anchors.horizontalCenter: root.horizontalCenter
+        anchor.top: player_health.bottom
+        value: model.normalized_shield
+    }
+}
