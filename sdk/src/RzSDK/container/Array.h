@@ -18,4 +18,30 @@ public:
 	std::vector<RzValue> m_data;
 };
 
+/*
+ * Initial array implementation for the core language,
+ * used as type [] or array<type>
+ *
+ * This is templated from within the lang!
+ */
+class ArrayT
+{
+public:
+
+    static void registerApi(RzModule* mod);
+
+public:
+    explicit ArrayT(int typeSize);
+
+    void clear();
+    void resize(int size);
+    void push(void* obj);
+    void remove(void* obj);
+
+private:
+    using object_t = std::vector<uint8_t>;
+    std::vector<object_t> m_data;
+    std::size_t           m_typeSize;
+};
+
 #endif

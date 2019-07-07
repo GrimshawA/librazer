@@ -1,6 +1,7 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/Errors.h>
 #include <RazerCompiler/BuildReport.h>
+#include <RazerCompiler/TypeResolver.h>
 #include <Logger.h>
 
 RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
@@ -85,7 +86,11 @@ RzCompileResult RzCompiler::compileNew(aeNodeNew& newExpr)
 
     RZLOG("NEW: %s\n", newExpr.str().c_str());
 
-    newExpr.m_instanceType = RzQualType(m_env->getTypeInfo(newExpr.type));
+    auto typeToAllocate = resolveQualifiedType(*this, *newExpr.newExpr);
+
+
+    newExpr.m_instanceType = typeToAllocate;
+    //newExpr.m_instanceType = RzQualType(m_env->getTypeInfo(newExpr.type));
 
 	if (newExpr.m_instanceType.getType() == nullptr)
 	{

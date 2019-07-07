@@ -1,0 +1,15 @@
+import std
+
+snake_block: class {
+	x: int32
+	y: int32
+}
+
+App: class {
+	//snake: 5
+    snake: array<snake_block> // Should instance ArrayT for type snake_block
+
+    function main() {
+    	snake.resize(3);
+    }
+}

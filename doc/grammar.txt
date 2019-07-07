@@ -1,0 +1,18 @@
+
+
+struct:
+	identifier: <identifier, ...> <struct-body>
+
+struct-body:
+	{ <struct-declaration, ...> }
+
+struct-declaration:
+	using-declaration | property-declaration | function-declaration
+
+function-declaration:
+	func <identifier> { <statement, ..> }
+
+new-expression:
+	new <primary-expression> 
+	new <primary-expression> <struct-body>
+	new <struct-body>

@@ -62,6 +62,12 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
     if (myObject)
     {
         RzVirtualMachine vm(ctx);
+
+        if (opts.count("--dbg"))
+        {
+            debugger->run();
+        }
+
         vm.m_mainContext.pushObject(myObject);
         vm.call("App.main");
 

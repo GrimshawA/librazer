@@ -29,6 +29,8 @@ public:
 	/// Get the parent expression if any
 	aeNodeExpr* getParentExpression();
 
+    int eval() { return 3; }
+
 	bool isFloat();
 
 	bool isInt();

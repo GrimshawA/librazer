@@ -26,7 +26,13 @@ void* RzType::constructNative()
         if (method.name == m_name)
         {
             void* mem = malloc(m_size);
-            method.constructorCallback(mem, nullptr);
+            if (is_templated) {
+                method.templatedConstructor(mem, nullptr, m_size);
+            }
+            else {
+                method.constructorCallback(mem, nullptr);
+            }
+
             return mem;
         }
     }

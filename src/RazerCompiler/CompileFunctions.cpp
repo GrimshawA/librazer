@@ -51,13 +51,7 @@ RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 	function->m_absoluteName = symbol_prefix + functionNode->m_name;
 	function->m_module = m_module;
 
-	if (functionNode->is_constructor)
-	{
-		// Constructor specific code
-		emitConstructorInjection(functionNode, function);
-	}
-
-	// Declare function parameters
+    // Declare function parameters
 	function->params.resize(functionNode->isNonStaticMethod() ? functionNode->m_parameters.size() + 1
 															  : functionNode->m_parameters.size());
 	if (functionNode->isNonStaticMethod())
@@ -90,6 +84,12 @@ RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 	{
 		declareStackVar(functionNode->m_parameters[i]->m_decls[0].m_name, functionNode->m_parameters[i]->m_type);
 	}
+
+    if (functionNode->is_constructor)
+    {
+        // Constructor specific code
+        emitConstructorInjection(functionNode, function);
+    }
 
 	// let's just generate code for the executable block
     RzCompileResult ret = emitBlock(functionNode->m_block.get());

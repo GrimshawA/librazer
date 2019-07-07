@@ -33,6 +33,7 @@ enum NodeTypes
 	AEN_FOR,
 	AEN_RETURN,
 	AEN_IDENTIFIER,
+    AEN_CONSTRUCT,
 	AEN_ENUM,
 	AEN_TYPEDEF,
 	AEN_OBJECTINIT,
@@ -43,6 +44,14 @@ class AEBaseNode
 {
 public:
 	
+    void prepend(AEBaseNode* node)
+    {
+        m_items.insert(m_items.begin(), node);
+    }
+
+public:
+
+
 	int                      m_nodeType;
 	std::vector<AEBaseNode*> m_items;
 

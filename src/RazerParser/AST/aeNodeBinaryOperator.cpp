@@ -12,6 +12,16 @@ aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std
 	oper = _oper;
 }
 
+int aeNodeBinaryOperator::eval()
+{
+    if (oper == "+")
+    {
+        return operandA->eval() + operandB->eval();
+    }
+
+    return 0;
+}
+
 bool aeNodeBinaryOperator::isRelational()
 {
 	return (oper == ">") || (oper == ">=") || (oper == "<") || (oper == "<=")

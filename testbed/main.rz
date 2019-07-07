@@ -5,24 +5,6 @@ App: class {
     b: int32
     c: String
     d: int32
-
-	function main() {
-        otherFunc();
-	}
-
-	function otherFunc() {
-	    thirdFunc();
-	}
-
-	function thirdFunc() {
-	    break2();
-
-	    fourth();
-	}
-
-	function fourth() {
-	    break2();
-	}
 }
 
 Button: class {

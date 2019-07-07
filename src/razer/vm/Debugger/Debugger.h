@@ -12,6 +12,10 @@ public:
 	void onInterrupted() override;
 	void onBreakpoint() override;
 
+public:
+
+    void run();
+
 	void handleCommand(const std::string& command);
 };
 

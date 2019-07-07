@@ -26,6 +26,7 @@ struct aeon_config
 typedef void(*aeBindMethod)(RzGeneric);
 typedef void(*aeDestructorMethod)(void*);
 typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
+typedef void(*RzTemplateConstructorMethod)(void*, RzVirtualMachine*, int);
 
 typedef int aeLiteralId;
 typedef int aeFunctionId;

@@ -17,6 +17,9 @@ class aeNodeNew : public aeNodeExpr
 {
 public:
 	aeNodeNew();
+    explicit aeNodeNew(aeNodeExpr* expr);
+
+    aeNodeExpr* newExpr = nullptr;
 
 	RzQualType m_instanceType;
 	std::string type;

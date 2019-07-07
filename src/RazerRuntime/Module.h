@@ -80,7 +80,8 @@ public:
 
     RzType* registerType(const std::string& name, std::size_t size);
 	void registerTypeConstructor(const std::string& name, aeConstructorMethod constructor);
-	void registerTypeDestructor();
+    void registerTypeConstructor(const std::string& name, RzTemplateConstructorMethod constructor);
+    void registerTypeDestructor();
 	void registerMethod(const std::string& name, const std::string& sig, aeBindMethod fn);
 	void registerMethod2(const std::string& classname, const std::string& name, aeBindMethod fn);
 	void registerField();

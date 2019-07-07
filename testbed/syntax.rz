@@ -1,0 +1,96 @@
+import std
+import std.vector as MyVector
+
+/* This file aims to test the parser, by having a bunch of different constructs to assert it doesn't break */
+
+// Like more comments
+
+// Most basic macro which just outputs the constant 1
+def stupid_macro 1
+
+// Defines an interpolated raw literal which allows to contain any DSL within it
+def lucy'$1'
+
+
+
+SomeClass: class {
+	// I am just a nobody's class
+}
+
+// Templated repeater, infers T from the type used in instantiation
+// on delegate. In this example, SomeClass.
+Repeater: class<T> 
+{
+	delegate: T
+	items: MyVector<T> 
+
+	// Constructor is like this because its easier for tooling to spot it
+	// and 
+	constructor() {
+		auto obj = new T();
+		items.push(obj);
+	}
+}
+
+App: class {
+    c: String {"Literal with explicit typing"}
+	rawLiteral: 'Hello World
+	These newlines are all accounted for'
+
+	// Test robustness of parser??
+	;;;
+
+	// 
+	using Vec = MyVector;
+
+
+    // A nullable chat service
+    chat: ChatService? 
+
+    // There is no way this logger can be null!!
+    logger: LoggerService
+
+    IsChatAlive: chat.IsConnected
+
+    Window {
+    	width: 400
+    	height: 400
+
+    	SwipeView {
+
+    		View1 {
+    			Button {
+    				onClicked: {
+    					// Invoke if not null
+    					chat?.Send("Hello World");
+    				}
+    			}
+    		}
+
+    		View2 {
+
+    		}
+    	}
+    }
+
+    Repeater {
+
+    	SomeClass {
+
+    	}
+    }
+
+    function ThisMethod() : int {
+
+    	// In has built semantics for ranges
+    	for (auto& v in someContainer) {}
+
+    	// equivalent to a find in full range, so: someIntArray.full().find(4)
+    	if (4 in someIntArray) {}
+
+    	// same as above but reading an half of the container as a range
+    	if (4 in someIntArray.first_half)
+
+    	// check for 4 in finite range of natural 1..10 numbers
+    	if (4 in [1..10]) {}
+}

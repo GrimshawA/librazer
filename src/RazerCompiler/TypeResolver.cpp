@@ -89,7 +89,16 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeFloat& floatLiteral, RzQu
     return RzQualType(ctx.m_env->getTypeInfo("float"));
 }
 
+RzQualType resolveQualifiedType(RzCompiler& ctx, RzConstructExpr& constructExpr, RzQualType base) {
+    return resolveQualifiedType(ctx, *constructExpr.base, base);
+}
+
 RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeNew& newExpr, RzQualType base) {
+    if (newExpr.newExpr)
+    {
+        return resolveQualifiedType(ctx, *newExpr.newExpr, base);
+    }
+
     newExpr.m_instanceType = RzQualType(ctx.m_env->getTypeInfo(newExpr.type));
     newExpr.m_instanceType.m_typeString = newExpr.type;
     return newExpr.m_instanceType;
@@ -142,6 +151,9 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeExpr& expr, RzQualType ba
     }
     case AEN_IDENTIFIER: {
         return resolveQualifiedType(ctx, (aeNodeIdentifier&)expr, base);
+    }
+    case AEN_CONSTRUCT: {
+        return resolveQualifiedType(ctx, (RzConstructExpr&)expr, base);
     }
     case AEN_UNARYOP: {
         return resolveQualifiedType(ctx, (aeNodeUnaryOperator&)expr, base);

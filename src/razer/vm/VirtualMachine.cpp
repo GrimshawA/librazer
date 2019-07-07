@@ -35,7 +35,7 @@ void RzVirtualMachine::callMethod(AEObject* object, const std::string& prototype
 	m_mainContext.ebp = m_mainContext.esp;
 
     //call(*object->getType()->getModule(), prototype.c_str());
-} 
+}
 
 void RzVirtualMachine::callMethod(AEObject* object, uint32_t methodId) {
 

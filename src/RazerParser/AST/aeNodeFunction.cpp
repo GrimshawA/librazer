@@ -21,7 +21,7 @@ aeNodeFunction::aeNodeFunction()
 
 bool aeNodeFunction::isNonStaticMethod()
 {
-	return is_method && !is_static;
+    return (is_method && !is_static) || is_constructor;
 }
 
 bool aeNodeFunction::isGlobalFunction()

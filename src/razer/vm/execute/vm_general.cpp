@@ -292,7 +292,7 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
 		newVal.ptr = (unsigned char*)thisPtr.ptr + offset;
         ctx.push_value(newVal);
 
-        //RZLOG("OP_LOADADDR THIS = %x (offset %d)\n", (char*)thisPtr.ptr, offset);
+        RZLOG("OP_LOADADDR THIS = %x (offset %d)\n", (char*)thisPtr.ptr, offset);
     }
     else if (addressMode == AEK_EBP)
     {

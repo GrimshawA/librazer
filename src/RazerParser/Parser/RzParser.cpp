@@ -439,6 +439,10 @@ RzLetNode* RzParser::parseLet()
 
 AEFieldNode* RzParser::parseStructField()
 {
+    // <identifier> : <primary-expression>
+    // <identifier> : <primary-expression> {...}
+    // <identifier> : {...}
+
     std::unique_ptr<AEFieldNode> f(new AEFieldNode);
     f->name = Tok.text;
     getNextToken();
@@ -474,7 +478,7 @@ AEFieldNode* RzParser::parseStructField()
         }
         else if (Tok.type == RZTK_IDENTIFIER) {
             // Parsing a type inferred property, with no init
-            f->type.m_typeString = Tok.text;
+            /*f->type.m_typeString = Tok.text;
             getNextToken();
 
             // Resolve primitives immediately
@@ -493,7 +497,14 @@ AEFieldNode* RzParser::parseStructField()
             if (Tok.type != RZTK_NEWLINE && Tok.type != RZTK_SEMICOLON) {
                 RZLOG("Expected ; or newline in declaration statement");
                 return nullptr;
-            }
+            }*/
+
+            // This is in the form x: <expr>, where types are valid expressions, which will be resolved later!
+            auto* expr = parseExpression();
+
+            std::cout << "FIELD: " << expr->str() << std::endl;
+
+            f->declaration = expr;
 
             getNextToken();
             return f.release();
@@ -1038,6 +1049,18 @@ void RzParser::skipNewlines() {
 aeNodeExpr* RzParser::parsePrimaryExpression()
 {
     aeNodeExpr* idnt = parseIdentityExpression();
+
+    if (Tok.type == RZTK_BINOP && Tok.text == "<")
+    {
+        RzConstructExpr* constructExpr = new RzConstructExpr;
+        getNextToken();
+        auto* param = parseIdentityExpression();
+        constructExpr->base = idnt;
+        constructExpr->param = param;
+        getNextToken();
+        return constructExpr;
+    }
+
     if (Tok.type == RZTK_DOT)
     {
         return parseMemberAccess(idnt);

@@ -159,6 +159,22 @@ void RzModule::registerTypeConstructor(const std::string& name, aeConstructorMet
 	typeInfo->m_methods.push_back(info);
 }
 
+void RzModule::registerTypeConstructor(const std::string& name, RzTemplateConstructorMethod constructor)
+{
+    auto typeInfo = getType(name);
+    if (!typeInfo) {
+        RZLOG("No such type %s\n", name.c_str());
+        return;
+    }
+
+    typeInfo->is_templated = true;
+
+    RzType::MethodInfo info;
+    info.templatedConstructor = constructor;
+    info.name = name;
+    typeInfo->m_methods.push_back(info);
+}
+
 void RzModule::registerTypeDestructor()
 {
 

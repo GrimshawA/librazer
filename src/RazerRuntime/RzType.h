@@ -17,6 +17,7 @@ class RzFunction;
 typedef void(*aeBindMethod)(RzGeneric);
 typedef void(*aeDestructorMethod)(void*);
 typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
+typedef void(*RzTemplateConstructorMethod)(void*, RzVirtualMachine*, int);
 
 #define 	aeOFFSET(s, m)   ((size_t)(&reinterpret_cast<s*>(100000)->m)-100000)
 
@@ -61,7 +62,8 @@ public:
 		union
 		{
 			aeBindMethod methodCallback;
-			aeConstructorMethod constructorCallback;				
+            aeConstructorMethod constructorCallback;
+            RzTemplateConstructorMethod templatedConstructor;
 		};
 	};
 
@@ -188,6 +190,7 @@ public:
     std::vector<std::string>    m_templateParams;
 
 	bool is_native = false;
+    bool is_templated = false;
 	void*                       m_userData;            ///< This allows the user to inject additional info on the type
 	aeDestructorMethod          m_destructor;
 	bool m_pod = true;

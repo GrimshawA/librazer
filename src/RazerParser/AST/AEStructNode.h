@@ -8,6 +8,7 @@ class RzType;
 class aeNodeFunction;
 class aeNodeValue;
 class RzLetNode;
+class aeNodeExpr;
 
 class AEEnumNode : public AEBaseNode
 {
@@ -61,6 +62,8 @@ public:
 	void deduceStaticType(RzEngine* ctx);
 
 	std::string name;
+    aeNodeExpr* declaration = nullptr;
+
 	RzQualType type;
 	int visibility;
 	AEFieldInitNode* initializer = nullptr;

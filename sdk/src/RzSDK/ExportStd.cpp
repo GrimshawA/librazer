@@ -42,7 +42,7 @@ void RegisterStd(RzEngine* ctx)
     RzByteArray::registerApi(*stdModule);
     RzRect::registerApi(*stdModule);
 
-	VariantArray::registerApi(stdModule);
+    ArrayT::registerApi(stdModule);
 	Window::registerApi(stdModule);
 
     RegisterIO(stdModule);

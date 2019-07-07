@@ -13,19 +13,20 @@ class aeNodeBinaryOperator : public aeNodeExpr
 {
 public:
 
-	aeNodeExpr* operandA;
-	aeNodeExpr* operandB;
-
-	std::string oper;
-
-public:
-
 	aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper);
+
+    int eval();
 
 	bool isRelational();
 	bool isArithmetic();
 
 	std::string str() const;
+
+public:
+    aeNodeExpr* operandA;
+    aeNodeExpr* operandB;
+
+    std::string oper;
 };
 
 #endif // aeNodeBinaryOperator_h__

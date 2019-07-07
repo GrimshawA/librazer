@@ -156,13 +156,25 @@ VariableStorageInfo RzCompiler::getVariable(std::string name)
         AEStructNode* classNode = getTopClassNode();
         RzType* type = evaluateType(classNode);
 
-        if (type->getField(name))
+        auto field = type->getField(name);
+
+        RzQualType actualType;
+
+        for (auto& f : classNode->m_fields)
+        {
+            if (f->name == name)
+            {
+                actualType = resolveQualifiedType(*this, *f->declaration);
+            }
+        }
+
+        if (field)
         {
             // The variable we are referencing is a member of 'this'
             VariableStorageInfo varStorage;
-            varStorage.type = type->getField(name)->type;
+            varStorage.type = actualType;
             varStorage.mode = AE_VAR_FIELD;
-            varStorage.offset = type->getField(name)->offset;
+            varStorage.offset = field->offset;
             varStorage.name = name;
             return varStorage;
         }
@@ -345,24 +357,26 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     typeInfo->computeMetrics();
 
     bool compiledConstructors = false;
+    for (auto& func : clss->m_functions)
+    {
+        auto* funcNode = static_cast<aeNodeFunction*>(func.get());
+        compiledConstructors |= funcNode->is_constructor;
+    }
+    // Now the class is compiled, we generate constructor and destructor
+    if (!compiledConstructors)
+    {
+        emitClassConstructors(typeInfo, clss);
+    }
+
     for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
     {
-    	auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
-
-    	compiledConstructors |= funcNode->is_constructor;
-
+         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
         RzFunction* fn = compileFunction(funcNode);
         if (!fn) {
             RZLOG("Failed to compile function\n");
             return RzCompileResult::aborted;
         }
     }
-
-    // Now the class is compiled, we generate constructor and destructor
-    if (!compiledConstructors)
-	{
-		emitClassConstructors(typeInfo, clss);
-	}
 
     emitClassDestructors(typeInfo, clss);
 
@@ -385,8 +399,18 @@ void RzCompiler::emitClassConstructors(RzType* classType, AEStructNode* classNod
 
 	m_module->m_functions.emplace_back(f);
 
+    RzType::MethodInfo method;
+    method.offset = m_cursor;
+    method.name = f.m_absoluteName;
+    method.native = false;
+    classType->m_methods.push_back(method);
+
 	RZLOG("Emitted default constructor: %s index taken %d\n", f.m_absoluteName.c_str(), m_module->m_functions.size() - 1);
 
+    aeNodeFunction* funcNode = new aeNodeFunction();
+    funcNode->m_name = classType->getName();
+    funcNode->is_constructor = true;
+    classNode->m_functions.emplace_back(funcNode);
 
     /*aeNodeFunction* defaultConstructor = classNode->getMethod(classNode->m_name);
 
@@ -528,10 +552,23 @@ void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* func
     // This is where the initialization is done, before any user constructor instruction is executed
     AEStructNode* cl = getTopClassNode();
 
-    for (auto& field : cl->m_typeInfo->m_fields)
+    for (auto& field : cl->m_fields)
     {
-		emitDebugPrint("INIT " + field.name);
-        RZLOG("INIT %s\n", field.name.c_str());
+        emitDebugPrint("INIT " + field->name);
+        RZLOG("INIT %s\n", field->name.c_str());
+
+        if (!field->declaration)
+            continue;
+
+        auto fieldType = resolveQualifiedType(*this, *field->declaration);
+
+        if (!fieldType.isPrimitive())
+        {
+            aeNodeExpr* lhs = new aeNodeIdentifier(field->name);
+            aeNodeExpr* rhs = new aeNodeNew(field->declaration);
+            node->m_block->prepend(new aeNodeBinaryOperator(lhs, rhs, "="));
+        }
+
         /*if (!field.type.isPod())
         {
             emitPushThis();
@@ -636,7 +673,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
 
     case AEN_BINARYOP: {
         if (((aeNodeBinaryOperator*)stmt)->oper == "=") {
-            RZLOG("error: Cannot assign\n");
+            //RZLOG("error: Cannot assign\n");
             return emitAssignOp(((aeNodeBinaryOperator*)stmt)->operandA, ((aeNodeBinaryOperator*)stmt)->operandB);
         }
         else {

@@ -33,6 +33,25 @@ void Debugger::onBreakpoint()
 	}
 }
 
+void Debugger::run()
+{
+    std::cout << "Razer debugger started." << std::endl;
+
+    while(true)
+    {
+        std::cout << ">>> ";
+        std::string cmd;
+        std::cin >> cmd;
+
+        if (cmd == "continue")
+        {
+            return;
+        }
+
+        handleCommand(cmd);
+    }
+}
+
 void Debugger::handleCommand(const std::string& command)
 {
 	if (command == "trace")
@@ -44,6 +63,11 @@ void Debugger::handleCommand(const std::string& command)
 		}
 		return;
 	}
+
+    if (command == "mods")
+    {
+        std::cout << "MODULES" << std::endl;
+    }
 
 	std::cout << "Unknown command: " << command << std::endl;
 }
