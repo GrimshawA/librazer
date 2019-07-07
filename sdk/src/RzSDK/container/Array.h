@@ -34,6 +34,7 @@ public:
     explicit ArrayT(int typeSize);
 
     void clear();
+    std::size_t size();
     void resize(int size);
     void push(void* obj);
     void remove(void* obj);

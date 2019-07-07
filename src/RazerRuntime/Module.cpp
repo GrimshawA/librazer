@@ -454,12 +454,12 @@ void RzModule::dumpToFile(const std::string& filename) {
 				{
 
 					fprintf(f, "\n");
-					fprintf(f, "%s:\n", m_functions[i].m_absoluteName.c_str());
+                    fprintf(f, "%s:\n", m_functions[i].m_absoluteName.c_str());
 				}
 			}
 
 			auto prettyInstruction = getPrettyInstructionStr(m_code[pc]);
-			fprintf(f, "%s\n", prettyInstruction.c_str());
+            fprintf(f, "%d %s\n", pc, prettyInstruction.c_str());
 		}
 	}
 

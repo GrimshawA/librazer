@@ -796,7 +796,7 @@ aeNodeNew* RzParser::parseNew()
     aeNodeNew* node = new aeNodeNew;
     //node->m_instanceType = parseQualType();
     SymbolTypename typeName = parseTypename();
-    node->type = typeName.str();
+    node->newExpr = new aeNodeIdentifier(typeName.str());
     getNextToken();
     getNextToken();
 
@@ -864,6 +864,7 @@ aeNodeFunction* RzParser::parseFunction()
 aeNodeBlock* RzParser::parseBlock()
 {
     aeNodeBlock* block = new aeNodeBlock;
+    skipNewlines();
     getNextToken();
     skipNewlines();
 
@@ -915,6 +916,8 @@ aeNodeFor* RzParser::parseForLoop()
     getNextToken();
 
     astfor->block.reset(parseBlock());
+
+    getNextToken();
 
     return astfor;
 }
@@ -1050,7 +1053,9 @@ aeNodeExpr* RzParser::parsePrimaryExpression()
 {
     aeNodeExpr* idnt = parseIdentityExpression();
 
-    if (Tok.type == RZTK_BINOP && Tok.text == "<")
+    bool isType = ctx->getTypeInfo(idnt->str());
+
+    if (Tok.type == RZTK_BINOP && Tok.text == "<" && isType)
     {
         RzConstructExpr* constructExpr = new RzConstructExpr;
         getNextToken();

@@ -17,6 +17,7 @@ void VariantArray::registerApi(RzModule* m)
 		RzValue var;
 		obj->push(var);
 	});
+
 }
 
 void VariantArray::push(const RzValue& value)
@@ -62,6 +63,13 @@ void ArrayT::registerApi(RzModule* m)
         ArrayT* obj = (ArrayT*)g.popObject();
         obj->resize(g.popInt32());
     });
+
+    m->registerMethod("array", "int32 size()", [](RzGeneric g)
+    {
+        ArrayT* obj = (ArrayT*)g.popObject();
+        std::size_t size = obj->size();
+        g.pushInt32(size);
+    });
 }
 
 ArrayT::ArrayT(int typeSize)
@@ -75,10 +83,19 @@ void ArrayT::clear()
     m_data.clear();
 }
 
+std::size_t ArrayT::size()
+{
+    std::cout << "ArrayT.:size() "<<this << std::endl;
+    return m_data.size();
+}
+
 void ArrayT::resize(int size)
 {
+    if (m_data.size() == size)
+        return;
+
     std::cout << "ArrayT::resize() "<<this << "," << size << std::endl;
-    //m_data.resize(size);
+    m_data.resize(size);
 }
 
 void ArrayT::push(void* obj)

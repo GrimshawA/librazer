@@ -344,12 +344,16 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
     int fldOffset = 0;
     for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
+        auto fieldType = resolveQualifiedType(*this, *clss->m_fields[i]->declaration);
+
         aeField fld;
         fld.name = clss->m_fields[i]->name;
         fld.type = clss->m_fields[i]->type;
         fld.offset = fldOffset;
 
-        fldOffset += fld.type.getSize();
+        assert(fieldType.getSize() > 0);
+
+        fldOffset += fieldType.getSize();
 
         typeInfo->m_fields.push_back(fld);
     }
@@ -488,6 +492,8 @@ void RzCompiler::emitPrefixIncrOp(aeNodeUnaryOperator* expr)
 
 RzCompileResult RzCompiler::emitForLoop(aeNodeFor* forloop)
 {
+    emitDebugPrint("FOR STARTED");
+
     push_scope();
 
     // Emit the code that initializes the control vars
@@ -498,24 +504,32 @@ RzCompileResult RzCompiler::emitForLoop(aeNodeFor* forloop)
 
     RzExprContext ectx;
     ectx.must_be_rvalue = true;
-    emitExpressionEval(forloop->expr.get(), ectx);
+    auto e = forloop->expr.get();
+    emitExpressionEval(e, ectx);
 
     // Evaluate the expression
     int jzInstrIndex = emitInstruction(OP_JZ, 0, 0, 0);
 
+    emitDebugPrint("FOR CYCLE START");
     emitBlock(forloop->block.get());
+    emitDebugPrint("FOR CYCLE END");
 
     // After the code executes, apply the update expression
     emitExpressionEval(forloop->incrExpr.get(), ectx);
 
     // After the block terminates normally, we always go back up to expression evaluation
     // when the expression fails, it will jump right away to after this
-    emitInstruction(OP_JMP, pc_expreval - 1);
+    int jumpOffset = cursor() - pc_expreval + 1;
+    jumpOffset = -jumpOffset;
+    emitInstruction(OP_JMP, jumpOffset);
 
     // if the expression evaluates false, jump to after the for
-    setinst_a(m_module->m_code[jzInstrIndex], cursor() - jzInstrIndex - 1);
+    auto& jzInstr = m_module->m_code[jzInstrIndex];
+    assert(jzInstr.opcode == OP_JZ);
+    setinst_a(jzInstr, cursor() - jzInstrIndex - 1);
 
     pop_scope();
+    emitDebugPrint("FOR ENDED");
     return RzCompileResult::ok;
 }
 
