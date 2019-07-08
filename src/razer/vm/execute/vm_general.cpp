@@ -60,6 +60,36 @@ inline static void DoUnarySub(RzThreadContext& ctx, AeonPrimitiveType ptype)
     ctx.push_value(v);
 }
 
+inline static void DoIncrement(RzThreadContext& ctx, AeonPrimitiveType ptype, int rvalue)
+{
+	RzStackValue v = ctx.pop_value();
+
+	if (rvalue) {
+
+		switch(ptype) {
+			case AEP_INT32: v.i32++;
+
+				break;
+			case AEP_FLOAT: v.fp++; break;
+		}
+		ctx.push_value(v);
+	}
+	else {
+
+		switch(ptype) {
+			case AEP_INT32:
+				int32_t* p = reinterpret_cast<int32_t*>(v.ptr);
+				(*p)++;
+
+				RZLOG("P now %d", *p);
+				break;
+		}
+	}
+
+	//RZLOG("++ Value is now %d", v.i32);
+
+}
+
 inline static void DoAnd(RzThreadContext& ctx, AeonPrimitiveType ptype)
 {
     RzStackValue a = ctx.pop_value();

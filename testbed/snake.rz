@@ -1,6 +1,6 @@
 import std
 
-snake_block: class {
+SnakeBlock: class {
 	x: int32
 	y: int32
 }
@@ -10,17 +10,23 @@ App: class {
 	counter: int32
 	i: int32
 	size: int32
-    snake: array<snake_block> // Should instance ArrayT for type snake_block
+    snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
 
     function main() {
     	snake.resize(3);
 
+    	//snake.push(new SnakeBlock());
+    	//snake.push(new SnakeBlock());
+    	//snake.push(new SnakeBlock());
+
 		size = 4;
     	i = 0;
 
-		for (i = 0; i < 5; i = i + 1)
+    	//int32 x = 0;
+
+		for (i = 0; i < snake.size(); ++i)
 		{
-			snake.resize(i);
+			//snake.resize(i);
 		}
     }
 }

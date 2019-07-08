@@ -45,8 +45,9 @@ enum EOpCodes
     OP_AND,
     OP_OR,
     OP_UNARYSUB,
- 	OP_CONV,        ///< Built in type conversion
-	OP_PUSHTHIS,        ///< Built in type conversion
+	OP_INCREMENT,      ///< ++(x)
+ 	OP_CONV,           ///< Built in type conversion
+	OP_PUSHTHIS,       ///< Built in type conversion
 	OP_LT,             ///< compare less than, a < b
 	OP_LTE,            ///< compare less than, a < b
 	OP_GT,             ///<

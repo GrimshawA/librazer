@@ -161,6 +161,10 @@ void dispatch_execute(RzThreadContext& ctx)
                     DoUnarySub(ctx, (AeonPrimitiveType)inst.arg0);
                 vm_end
 
+			vm_start(OP_INCREMENT)
+				DoIncrement(ctx, (AeonPrimitiveType)inst.arg0, inst.arg1);
+			vm_end
+
                 vm_start(OP_AND)
                     DoAnd(ctx, (AeonPrimitiveType)inst.arg0);
                 vm_end

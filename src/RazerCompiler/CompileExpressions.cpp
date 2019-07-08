@@ -239,11 +239,27 @@ RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 
 RzCompileResult RzCompiler::compileUnaryOperation(aeNodeUnaryOperator& op) {
 
-    RzCompileResult r = emitExpressionEval(op.Operand, RzExprContext::temporaryRValue());
-    if (r == RzCompileResult::aborted) {
-        RZLOG("error: Failed to evaluate expression for unary op\n");
-        return r;
-    }
+	if (op.OperatorString == "++")
+	{
+
+		// Load lvalue
+		RzCompileResult r = emitExpressionEval(op.Operand, RzExprContext::writableLValue());
+		if (r == RzCompileResult::aborted) {
+			RZLOG("error: Failed to evaluate expression for unary op\n");
+			return r;
+		}
+
+	}
+	else
+	{
+
+		RzCompileResult r = emitExpressionEval(op.Operand, RzExprContext::temporaryRValue());
+		if (r == RzCompileResult::aborted) {
+			RZLOG("error: Failed to evaluate expression for unary op\n");
+			return r;
+		}
+
+	}
 
     RzQualType t = resolveQualifiedType(*this, *op.Operand);
     int primitiveId = AEP_INT32;
@@ -261,7 +277,14 @@ RzCompileResult RzCompiler::compileUnaryOperation(aeNodeUnaryOperator& op) {
         primitiveId = AEP_PTR;
     }
 
-    emitInstruction(OP_UNARYSUB, primitiveId);
+    if (op.OperatorString == "++")
+	{
+    	emitInstruction(OP_INCREMENT, primitiveId, 0);
+	}
+    else {
+		emitInstruction(OP_UNARYSUB, primitiveId, 1);
+    }
+
     return RzCompileResult::ok;
 }
 

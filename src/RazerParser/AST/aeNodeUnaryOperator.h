@@ -27,7 +27,7 @@ public:
 
 	virtual std::string exprstr();
 
-	std::string str();
+	std::string str() const override;
 };
 
 

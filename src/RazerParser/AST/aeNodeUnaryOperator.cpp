@@ -12,7 +12,7 @@ std::string aeNodeUnaryOperator::exprstr()
 	return std::string(OperatorString + Operand->str());
 }
 
-std::string aeNodeUnaryOperator::str()
+std::string aeNodeUnaryOperator::str() const
 {
-	return exprstr();
+	return OperatorString + Operand->str();
 }

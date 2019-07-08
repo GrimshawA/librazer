@@ -47,6 +47,12 @@ struct RzExprContext
         return c;
     }
 
+    static RzExprContext writableLValue() {
+		RzExprContext c;
+		c.lvalue = true;
+		return c;
+    }
+
 
 
     RzQualType expectedResult; /// The expression handler is responsible for leaving the right type and value on the stack
