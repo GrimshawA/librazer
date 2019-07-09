@@ -29,7 +29,8 @@ App: class {
 		for (i = 0; i < snake.size(); ++i)
 		{
 			// Figure how to make the line below solid
-			//SnakeBlock s = snake.at(i);
+			SnakeBlock s = snake.at(i);
+			//size = 4;
 		}
     }
 }

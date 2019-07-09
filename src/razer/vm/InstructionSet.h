@@ -11,6 +11,8 @@ struct RzInstruction
 	int8_t arg0;
 	int8_t arg1;
 	int8_t arg2;
+
+	std::string metadata;
 };
 
 

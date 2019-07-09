@@ -250,6 +250,10 @@ void dispatch_execute(RzThreadContext& ctx)
                 DoVarLoadRef(ctx, inst.arg0, inst.arg1);
         vm_end
 
+
+        	default:
+        		assert(false);
+
         } // end of switch
     }
 }

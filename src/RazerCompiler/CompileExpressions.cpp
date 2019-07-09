@@ -63,6 +63,8 @@ void RzCompiler::emitPushThis()
     // at offset the this resides in, plus its size (stack grows backwards)
     VariableStorageInfo var = getVariable("this");
     emitInstruction(OP_LOAD, AEK_EBP, var.offset + sizeof(void*), AEP_PTR);
+
+    m_module->m_code.back().metadata = "PUSH THIS";
 }
 
 void RzCompiler::loadVarRef(aeNodeExpr* e)
@@ -321,6 +323,7 @@ RzCompileResult RzCompiler::loadMemberVariable(const std::string& name) {
 
     if (var.type.getType()->getName() == "int32") {
         emitInstruction(OP_LOAD, AEK_THIS, var.offset, AEP_INT32);
+		m_module->m_code.back().metadata = "LOADING " + var.name;
         return RzCompileResult::ok;
     }
     else if (var.type.getType()->getName() == "float") {
@@ -333,6 +336,7 @@ RzCompileResult RzCompiler::loadMemberVariable(const std::string& name) {
     }
     else {
         emitInstruction(OP_LOAD, AEK_THIS, var.offset, AEP_PTR);
+		m_module->m_code.back().metadata = "LOADING " + var.name;
         return RzCompileResult::ok;
     }
 }

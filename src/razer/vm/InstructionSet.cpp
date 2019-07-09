@@ -82,9 +82,12 @@ std::string inst_opcode_str(RzInstruction inst)
     case OP_LOADADDR: return "OP_LOADADDR";
     case OP_CONV: return "OP_CONV";
     case OP_SET: return "OP_SET";
+    case OP_INCREMENT: return "OP_INCREMENT";
 	case OP_CALLNATIVE: return "OP_CALLNATIVE";
-	case OP_NATIVECALL: return "OP_CALLMETHOD_NAT";
+	case OP_NATIVECALL: return "OP_NATIVECALL";
 	case OP_RETURN: return "OP_RETURN";
+	case OP_LT: return "OP_LT";
+	case OP_BREAKPOINT: return "OP_BREAKPOINT";
 	case OP_DEBUG: return "OP_DEBUG";
 	case OP_VARCALL: return "OP_VARCALL";
 	case OP_PUSHVAR: return "OP_PUSHVAR";
@@ -92,7 +95,10 @@ std::string inst_opcode_str(RzInstruction inst)
 	case OP_VARLOADREF: return "OP_VARLOADREF";
 	case OP_VARSTORE: return "OP_VARSTORE";
 	case OP_POPVAR: return "OP_POPVAR";
+	case OP_DTEST: return "OP_DTEST";
 	case OP_LOADK: return "OP_LOADK";
+	case OP_MOV: return "OP_MOV";
+
 	}
 	return std::to_string(inst.opcode);
 }
@@ -123,6 +129,8 @@ std::string getPrettyInstructionStr(RzInstruction inst) {
 			s += " INT32 ";
 		}
 	}
+
+	s += "(" + inst.metadata + ")";
 
 	return s;
 }

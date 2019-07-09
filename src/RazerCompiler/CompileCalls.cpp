@@ -140,6 +140,8 @@ RzCompileResult RzCompiler::compileStaticObjectCall(aeNodeExpr& selfExpr, RzQual
 
 RzCompileResult RzCompiler::compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info) {
     emitInstruction(OP_NATIVECALL, moduleIndex, info.offset);
+	auto& inst = m_module->m_code.back();
+	inst.metadata = info.name;
     return RzCompileResult::ok;
 }
 

@@ -18,6 +18,7 @@ std::string aeNodeFor::str() const
 	s += ";";
 	if (incrExpr)
 		s += incrExpr->str();
-	s += ")";
+	s += ")\n";
+	s += block->str();
 	return s;
 }
