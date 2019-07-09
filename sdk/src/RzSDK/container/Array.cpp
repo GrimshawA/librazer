@@ -53,9 +53,8 @@ void ArrayT::registerApi(RzModule* m)
 
     m->registerMethod("array", "void push(var)", [](RzGeneric g)
     {
-        VariantArray* obj = (VariantArray*)g.popObject();
-        RzValue var;
-        obj->push(var);
+        ArrayT* obj = (ArrayT*)g.popObject();
+        obj->push(g.popObject());
     });
 
     m->registerMethod("array", "void resize(int32)", [](RzGeneric g)
@@ -69,6 +68,14 @@ void ArrayT::registerApi(RzModule* m)
         ArrayT* obj = (ArrayT*)g.popObject();
         std::size_t size = obj->size();
         g.pushInt32(size);
+    });
+
+    m->registerMethod("array", "var at(int32)", [](RzGeneric g)
+    {
+        ArrayT* obj = (ArrayT*)g.popObject();
+        int32_t index = g.popInt32();
+        void* ptr = obj->at(index);
+        g.pushObject(ptr);
     });
 }
 
@@ -100,10 +107,16 @@ void ArrayT::resize(int size)
 
 void ArrayT::push(void* obj)
 {
+    std::cout << "ArrayT::push() "<<this << "," << obj << std::endl;
     m_data.push_back({});
 }
 
 void ArrayT::remove(void* obj)
 {
 
+}
+
+void* ArrayT::at(int index)
+{
+    return m_data.at(index);
 }

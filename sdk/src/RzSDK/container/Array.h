@@ -38,9 +38,10 @@ public:
     void resize(int size);
     void push(void* obj);
     void remove(void* obj);
+    void* at(int index);
 
 private:
-    using object_t = std::vector<uint8_t>;
+    using object_t = void*;
     std::vector<object_t> m_data;
     std::size_t           m_typeSize;
 };

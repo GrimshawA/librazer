@@ -380,7 +380,7 @@ inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
     {
         // We need to malloc memory for the type and then construct it
         obj = malloc(typeInfo->getSize());
-        RZLOG("Constructed a new %s\n", typeInfo->getName().c_str());
+        RZLOG("Constructed a new %s '%x'\n", typeInfo->getName().c_str(), obj);
     }
 
     RzStackValue v;
