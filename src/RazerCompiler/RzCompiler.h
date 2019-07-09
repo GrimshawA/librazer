@@ -214,7 +214,7 @@ public:
     /// Loads the address of a member variable to stack (for writing)
     RzCompileResult loadMemberAddress(const std::string& name);
 
-    RzCompileResult emitMemberOp(aeNodeAccessOperator* acs);
+    RzCompileResult emitMemberOp(aeNodeAccessOperator* acs, RzExprContext exprCtx = {});
     RzCompileResult implicitConvert(RzQualType from, RzQualType to);
     RzCompileResult compileNew(aeNodeNew& newExpr);
     void emitSubscriptOp(aeNodeSubscript* subscript);

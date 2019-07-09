@@ -372,7 +372,7 @@ RzCompileResult RzCompiler::loadMemberAddress(const std::string& name) {
     }
 }
 
-RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
+RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs, RzExprContext exprCtx)
 {
 	/**
 		We are compiling a.b
@@ -422,6 +422,23 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs)
 		{
 			emitInstruction(OP_VARLOAD, m_module->identifierPoolIndex(((aeNodeIdentifier*)acs->m_b)->m_name));
 		}
+        else
+        {
+            // loading any subvalue like x.y
+            emitLoadAddress(acs->m_a);
+
+            aeNodeIdentifier* refNode = (aeNodeIdentifier*)acs->m_b;
+            int member_offset = Ta.getType()->getField(refNode->m_name)->offset;
+
+            if (exprCtx.rx_value)
+            {
+                emitInstruction(OP_LOAD, 2, member_offset, 6);
+            }
+            else if (exprCtx.lvalue)
+            {
+                emitInstruction(OP_LOADADDR, 2, member_offset, 6);
+            }
+        }
 	}
     return RzCompileResult::ok;
 }

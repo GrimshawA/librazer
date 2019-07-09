@@ -10,11 +10,16 @@ App: class {
 	counter: int32
 	i: int32
 	size: int32
+	window: Window
     snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
 
     function main() {
     	//snake.resize(3);
 
+
+
+    	snake.push(new SnakeBlock());
+    	snake.push(new SnakeBlock());
     	snake.push(new SnakeBlock());
     	snake.push(new SnakeBlock());
     	//snake.push(new SnakeBlock());
@@ -30,10 +35,27 @@ App: class {
 		{
 			// Figure how to make the line below solid
 			SnakeBlock s = snake.at(i);
+			s.y = i * 50;
 			//size = 4;
 		}
 
-		snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
+		window.open();
+		window.setFillColor(255, 0, 255);
+
+		while(window.running()) {
+			window.poll();
+
+			window.setFillColor(0, 0, 0);
+			window.drawRect(0, 0, 400, 400);
+
+			for (i = 0; i < snake.size(); ++i)
+			{
+				SnakeBlock blk = snake.at(i);
+				window.setFillColor(255, 255, 255);
+				window.drawRect(i * 50, blk.y, 20, 20);
+			}
+
+			window.display();
+		}
     }
 }
