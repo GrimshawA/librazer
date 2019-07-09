@@ -130,6 +130,10 @@ std::string getPrettyInstructionStr(RzInstruction inst) {
 		}
 	}
 
+    s += " " + std::to_string(inst.arg0);
+    s += " " + std::to_string(inst.arg1);
+    s += " " + std::to_string(inst.arg2);
+
 	s += "(" + inst.metadata + ")";
 
 	return s;

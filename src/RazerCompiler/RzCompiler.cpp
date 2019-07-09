@@ -346,9 +346,11 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
         auto fieldType = resolveQualifiedType(*this, *clss->m_fields[i]->declaration);
 
+        auto& fieldNode = clss->m_fields[i];
+
         aeField fld;
         fld.name = clss->m_fields[i]->name;
-        fld.type = clss->m_fields[i]->type;
+        fld.type = fieldType;
         fld.offset = fldOffset;
 
         assert(fieldType.getSize() > 0);

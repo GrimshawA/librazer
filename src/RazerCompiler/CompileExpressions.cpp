@@ -218,7 +218,7 @@ RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	if (varStorage.mode == AE_VAR_LOCAL)
 	{
 		// Load a local variable address into the stack
-		emitInstruction(OP_LOADADDR, AEK_EBP, varStorage.offset);
+        emitInstruction(OP_LOADADDR, AEK_EBP, varStorage.offset + varStorage.type.getSize());
 		CompilerLog("Loading local\n");
 	}
 	else if (varStorage.mode == AE_VAR_FIELD)

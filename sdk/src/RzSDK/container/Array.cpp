@@ -108,7 +108,7 @@ void ArrayT::resize(int size)
 void ArrayT::push(void* obj)
 {
     std::cout << "ArrayT::push() "<<this << "," << obj << std::endl;
-    m_data.push_back({});
+    m_data.push_back(obj);
 }
 
 void ArrayT::remove(void* obj)
@@ -118,5 +118,7 @@ void ArrayT::remove(void* obj)
 
 void* ArrayT::at(int index)
 {
+    std::cout << "ArrayT::at() "<<this << "," << index << std::endl;
+    std::cout << "at = " << m_data.at(index) << std::endl;
     return m_data.at(index);
 }

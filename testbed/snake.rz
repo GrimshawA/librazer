@@ -13,7 +13,7 @@ App: class {
     snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
 
     function main() {
-    	snake.resize(3);
+    	//snake.resize(3);
 
     	snake.push(new SnakeBlock());
     	snake.push(new SnakeBlock());
@@ -32,5 +32,8 @@ App: class {
 			SnakeBlock s = snake.at(i);
 			//size = 4;
 		}
+
+		snake.push(new SnakeBlock());
+    	snake.push(new SnakeBlock());
     }
 }

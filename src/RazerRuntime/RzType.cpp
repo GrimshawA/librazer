@@ -56,9 +56,15 @@ uint64_t RzType::getConstructorIndex()
 }
 
 void RzType::computeMetrics() {
-    m_size = 1;
+    if (m_fields.empty())
+    {
+        m_size = 1;
+        return;
+    }
+
+    m_size = 0;
     for (std::size_t i = 0; i < m_fields.size(); ++i) {
-        m_size += 4; //hardcoded ptr size
+        m_size += m_fields[i].type.getSize();
     }
 }
 

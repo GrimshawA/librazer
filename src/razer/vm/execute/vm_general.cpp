@@ -260,6 +260,8 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
     }
     else if (type == AEP_INT32)
     {
+        int32_t dest = *reinterpret_cast<int32_t*>(dest_addr.ptr);
+
         memcpy(dest_addr.ptr, &operand.i32, sizeof(int32_t));
         RZLOG("OBJECT %x now contains the int %d\n", dest_addr.ptr, operand.i32);
     }
@@ -322,7 +324,7 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
 		newVal.ptr = (unsigned char*)thisPtr.ptr + offset;
         ctx.push_value(newVal);
 
-        RZLOG("OP_LOADADDR THIS = %x (offset %d)\n", (char*)thisPtr.ptr, offset);
+        RZLOG("OP_LOADADDR THIS = %x (offset %d) (STACK ADDR: %x)\n", (char*)thisPtr.ptr, offset, (char*)&thisPtr.ptr);
     }
     else if (addressMode == AEK_EBP)
     {
