@@ -203,7 +203,7 @@ void dispatch_execute(RzThreadContext& ctx)
                 vm_start(OP_MOV)
                 ctx.esp += inst.arg1;
                 //memset(ctx.esp, 1, abs(inst.arg1));
-                RZLOG("LOCAL AT %x", ctx.esp);
+                RZLOG("ESP AT %x AFTER MOV\n", ctx.esp);
         vm_end
 
         vm_start(OP_BREAKPOINT)

@@ -14,29 +14,20 @@ App: class {
     snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
 
     function main() {
-    	//snake.resize(3);
-
-
-
     	snake.push(new SnakeBlock());
-    	//snake.push(new SnakeBlock());
-    	//snake.push(new SnakeBlock());
+    	snake.push(new SnakeBlock());
+    	snake.push(new SnakeBlock());
+    	snake.push(new SnakeBlock());
     	//snake.push(new SnakeBlock());
     	//snake.push(new SnakeBlock());
 
 		size = 4;
     	i = 0;
-
-    	//int32 x = 0;
-
-    	//s = snake.at(0);
-
+		
 		for (i = 0; i < snake.size(); ++i)
 		{
-			// Figure how to make the line below solid
 			SnakeBlock s = snake.at(i);
-			s.x = 300;
-			//size = 4;
+			s.y = 50 * i;
 		}
 
 		window.open();

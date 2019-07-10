@@ -233,7 +233,6 @@ RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 	{
 		// Load a local variable address into the stack
         emitInstruction(OP_LOADADDR, AEK_EBP, varStorage.offset + varStorage.type.getSize());
-		CompilerLog("Loading local\n");
 	}
 	else if (varStorage.mode == AE_VAR_FIELD)
 	{
@@ -439,7 +438,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs, RzExprContex
         else
         {
             // loading any subvalue like x.y
-            emitLoadAddress(acs->m_a);
+            emitVarExpr((aeNodeIdentifier*)acs->m_a, RzExprContext::temporaryRValue());
 
             aeNodeIdentifier* refNode = (aeNodeIdentifier*)acs->m_b;
             int member_offset = Ta.getType()->getField(refNode->m_name)->offset;
@@ -483,7 +482,7 @@ RzCompileResult RzCompiler::emitVarExpr(aeNodeIdentifier* var, const RzExprConte
     }
 
     int loadFrom = AEK_EBP;
-    int offsetOnRefFrame = varInfo.offset;
+    int offsetOnRefFrame = varInfo.offset + varInfo.type.getSize();
 	
     if (varInfo.mode == AE_VAR_LOCAL)
 	{

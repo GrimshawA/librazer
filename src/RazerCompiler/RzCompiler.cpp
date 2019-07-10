@@ -201,6 +201,7 @@ void RzCompiler::destructLocalVar(VariableStorageInfo& var)
         else
         {
             emitInstruction(OP_MOV, AEK_ESP, var.type.getSize());
+            m_OffsetFromBasePtr -= var.type.getSize();
         }
     }
 }

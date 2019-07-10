@@ -310,7 +310,7 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
             ctx.push_value(v);
 
             if (addressMode == AEK_THIS) {
-				RZLOG("LOADED INT: %d\n", v.i32);
+                RZLOG("LOADED INT: %d from %x\n", v.i32, dataPtr);
 			}
         }
         else if(kind == AEP_FLOAT) {
