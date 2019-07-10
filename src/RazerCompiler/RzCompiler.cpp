@@ -1,5 +1,7 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/TypeResolver.h>
+#include <RazerCompiler/ir.hpp>
+
 #include <razer/vm/InstructionSet.h>
 #include <razer/vm/VirtualMachine.h>
 #include <RazerRuntime/RzEngine.h>
@@ -377,7 +379,12 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
     for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
     {
-         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
+        auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
+
+        IRBuilder builder;
+        funcNode->emitIR(builder);
+        builder.dumpToFile("ir.txt");
+
         RzFunction* fn = compileFunction(funcNode);
         if (!fn) {
             RZLOG("Failed to compile function\n");

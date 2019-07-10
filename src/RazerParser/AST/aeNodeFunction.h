@@ -3,6 +3,7 @@
 
 #include "AEBaseNode.h"
 #include "aeNodeValue.h"
+#include <RazerCompiler/ir.hpp>
 
 class aeNodeExpr;
 class aeNodeVarDecl;
@@ -42,6 +43,8 @@ public:
 
 public:
 	aeNodeFunction();
+
+    void emitIR(IRBuilder& builder);
 
 	RzQualType getReturnType();
 
