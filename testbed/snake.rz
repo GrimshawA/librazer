@@ -19,9 +19,9 @@ App: class {
 
 
     	snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
+    	//snake.push(new SnakeBlock());
+    	//snake.push(new SnakeBlock());
+    	//snake.push(new SnakeBlock());
     	//snake.push(new SnakeBlock());
 
 		size = 4;
@@ -35,7 +35,7 @@ App: class {
 		{
 			// Figure how to make the line below solid
 			SnakeBlock s = snake.at(i);
-			s.y = i * 50;
+			s.x = 300;
 			//size = 4;
 		}
 

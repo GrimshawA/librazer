@@ -114,6 +114,12 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeIdentifier& identExpr, Rz
         return qt;
     }
 
+    if (base.getType())
+	{
+    	RzQualType qt = base.getType()->getField(identExpr.m_name)->type;
+    	return qt;
+	}
+
     RzQualType qt = ctx.getVariable(identExpr.m_name).type;
     if (!qt.m_type) {
         qt.m_type = ctx.m_env->getTypeInfo(qt.m_typeString);

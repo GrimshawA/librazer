@@ -23,7 +23,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, RzExprContext e
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{
-        return emitMemberOp(static_cast<aeNodeAccessOperator*>(expr));
+        return emitMemberOp(static_cast<aeNodeAccessOperator*>(expr), exprContext);
 	}
 	else if (expr->m_nodeType == AEN_INTEGER || expr->m_nodeType == AEN_STRING || expr->m_nodeType == AEN_FLOAT)
 	{
@@ -206,6 +206,20 @@ RzCompileResult RzCompiler::implicitConvert(RzQualType from, RzQualType to)
 
 RzCompileResult RzCompiler::emitLoadAddress(aeNodeExpr* expr)
 {
+	if (expr->m_nodeType == AEN_ACCESSOPERATOR)
+	{
+		aeNodeAccessOperator* acc = (aeNodeAccessOperator*)expr;
+		emitVarExpr((aeNodeIdentifier*)acc->m_a, RzExprContext::temporaryRValue());
+
+		auto type = resolveQualifiedType(*this, *acc->m_a);
+
+		aeNodeIdentifier* varExpr = (aeNodeIdentifier*)acc->m_b;
+
+		emitInstruction(OP_LOADADDR, AEK_THIS, type.getType()->getField(varExpr->m_name)->offset, AEP_INT32);
+
+		return RzCompileResult::OK;
+	}
+
 	if (expr->m_nodeType != AEN_IDENTIFIER)
 	{
         RZLOG("error: emitLoadAddress: Only know how to load a variable ref\n");

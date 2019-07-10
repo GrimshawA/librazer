@@ -263,6 +263,9 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
         int32_t dest = *reinterpret_cast<int32_t*>(dest_addr.ptr);
 
         memcpy(dest_addr.ptr, &operand.i32, sizeof(int32_t));
+
+		dest = *reinterpret_cast<int32_t*>(dest_addr.ptr);
+
         RZLOG("OBJECT %x now contains the int %d\n", dest_addr.ptr, operand.i32);
     }
     else if (type == AEP_FLOAT) {
@@ -305,6 +308,10 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
             RzStackValue v;
             v.i32 = *static_cast<int32_t*>(dataPtr);
             ctx.push_value(v);
+
+            if (addressMode == AEK_THIS) {
+				RZLOG("LOADED INT: %d\n", v.i32);
+			}
         }
         else if(kind == AEP_FLOAT) {
             RzStackValue v;
@@ -382,6 +389,7 @@ inline static void DoNewObject(RzThreadContext& ctx, int module_id, int type)
     {
         // We need to malloc memory for the type and then construct it
         obj = malloc(typeInfo->getSize());
+        memset(obj, 0, typeInfo->getSize());
         RZLOG("Constructed a new %s '%x'\n", typeInfo->getName().c_str(), obj);
     }
 
