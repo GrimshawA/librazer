@@ -11,7 +11,9 @@ App: class {
 	i: int32
 	size: int32
 	window: Window
+	//mTimer: Timer
     snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
+
 
     function main() {
     	snake.push(new SnakeBlock());

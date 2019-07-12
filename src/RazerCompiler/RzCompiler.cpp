@@ -1,6 +1,6 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/TypeResolver.h>
-#include <RazerCompiler/ir.hpp>
+#include <razer/ir/ir.hpp>
 
 #include <razer/vm/InstructionSet.h>
 #include <razer/vm/VirtualMachine.h>
@@ -347,9 +347,9 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
     int fldOffset = 0;
     for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
+        auto& fieldNode = clss->m_fields[i];
         auto fieldType = resolveQualifiedType(*this, *clss->m_fields[i]->declaration);
 
-        auto& fieldNode = clss->m_fields[i];
 
         aeField fld;
         fld.name = clss->m_fields[i]->name;

@@ -1,5 +1,5 @@
 #include "aeNodeBlock.h"
-#include <RazerCompiler/ir.hpp>
+#include <razer/ir/ir.hpp>
 
 aeNodeBlock::aeNodeBlock()
 {
@@ -8,7 +8,19 @@ aeNodeBlock::aeNodeBlock()
 
 void aeNodeBlock::emitIR(IRBuilder& builder)
 {
+    builder.beginBlock();
+
     for (auto& item: m_items) {
+
+        switch(item->m_nodeType) {
+            case AEN_FOR:
+
+                break;
+
+            case AEN_ACCESSOPERATOR:
+
+                break;
+        }
 
         if (item->m_nodeType == AEN_BINARYOP)
         {
@@ -17,6 +29,8 @@ void aeNodeBlock::emitIR(IRBuilder& builder)
         else
             builder.Dummy();
     }
+
+    builder.endBlock();
 }
 
 std::string aeNodeBlock::str() const {

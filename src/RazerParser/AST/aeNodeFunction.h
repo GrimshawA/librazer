@@ -3,7 +3,7 @@
 
 #include "AEBaseNode.h"
 #include "aeNodeValue.h"
-#include <RazerCompiler/ir.hpp>
+#include <razer/ir/ir.hpp>
 
 class aeNodeExpr;
 class aeNodeVarDecl;
