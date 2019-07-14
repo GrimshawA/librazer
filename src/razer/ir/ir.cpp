@@ -24,9 +24,23 @@ IRValue* IRBuilder::binaryOp(std::string op, IRValue* lhs, IRValue* rhs)
     return result;
 }
 
+IRValue* IRBuilder::newObject()
+{
+    auto* tmp = makeTempValue();
+    func.instructions.push_back(new IRInstructionNew());
+    return tmp;
+}
+
 IRValue* IRBuilder::makeValue()
 {
     return new IRValue();
+}
+
+IRValue* IRBuilder::makeTempValue()
+{
+    auto* result = makeValue();
+    result->name = "temp" + std::to_string(tempId++);
+    return result;
 }
 
 IRValue* IRBuilder::getValue(const std::string& name)

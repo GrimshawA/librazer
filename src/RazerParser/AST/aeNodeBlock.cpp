@@ -28,6 +28,9 @@ IRValue* aeNodeBlock::emitIR(IRBuilder& builder)
             case AEN_BINARYOP:
                 item->emitIR(builder);
             break;
+
+            default:
+                item->emitIR(builder);
         }
     }
 

@@ -49,6 +49,14 @@ public:
     }
 };
 
+class IRInstructionNew : public IRInstruction
+{
+public:
+    std::string prettyString() override {
+        return "New";
+    }
+};
+
 class IRInstructionBinaryOp : public IRInstruction
 {
 public:
@@ -87,17 +95,16 @@ public:
     void endBlock();
     void call();
     IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
+    IRValue* newObject();
     void Assign() {}
+
+
     IRValue* makeValue();
+    IRValue* makeTempValue();
 
 public:
 
     IRValue* getValue(const std::string& name);
-
-    void Dummy()
-    {
-        func.instructions.push_back(new IRInstructionDestructure());
-    }
 
     void dumpToFile(const std::string& filename);
 

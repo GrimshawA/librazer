@@ -19,6 +19,8 @@ public:
 	aeNodeNew();
     explicit aeNodeNew(aeNodeExpr* expr);
 
+    IRValue* emitIR(IRBuilder& builder);
+
     aeNodeExpr* newExpr = nullptr;
 
 	RzQualType m_instanceType;

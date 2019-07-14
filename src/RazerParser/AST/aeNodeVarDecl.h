@@ -38,6 +38,8 @@ public:
 
 	aeNodeVarDecl();
 
+    IRValue* emitIR(IRBuilder& builder);
+
 	std::string str() const;
 };
 

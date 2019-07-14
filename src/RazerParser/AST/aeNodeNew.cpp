@@ -12,3 +12,7 @@ aeNodeNew::aeNodeNew(aeNodeExpr* expr)
     newExpr = expr;
 }
 
+IRValue* aeNodeNew::emitIR(IRBuilder& builder)
+{
+    return builder.newObject();
+}

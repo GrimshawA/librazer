@@ -5,6 +5,8 @@ App: class {
 
     function main() {
     	f ();
-    	a = b * (c + d) + e;
+    	a = b * (c + d);
+
+    	Window w = new Window();
     }
 }
