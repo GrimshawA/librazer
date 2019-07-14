@@ -11,7 +11,7 @@ public:
 
 	aeNodeBlock();
 
-    void emitIR(IRBuilder& builder);
+    IRValue* emitIR(IRBuilder& builder);
 
     std::string str() const override;
 

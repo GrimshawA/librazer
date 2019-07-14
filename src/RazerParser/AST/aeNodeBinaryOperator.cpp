@@ -22,6 +22,13 @@ int aeNodeBinaryOperator::eval()
     return 0;
 }
 
+IRValue* aeNodeBinaryOperator::emitIR(IRBuilder& builder)
+{
+    auto* lhs = operandA->emitIR(builder);
+    auto* rhs = operandB->emitIR(builder);
+    return builder.binaryOp(oper, lhs, rhs);
+}
+
 bool aeNodeBinaryOperator::isRelational()
 {
 	return (oper == ">") || (oper == ">=") || (oper == "<") || (oper == "<=")

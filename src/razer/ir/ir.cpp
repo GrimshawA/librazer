@@ -11,6 +11,24 @@ void IRBuilder::endBlock()
 
 }
 
+void IRBuilder::call()
+{
+    func.instructions.push_back(new IRInstructionCall());
+}
+
+IRValue* IRBuilder::binaryOp(std::string op, IRValue* lhs, IRValue* rhs)
+{
+    auto* result = makeValue();
+    result->name = "temp" + std::to_string(tempId++);
+    func.instructions.push_back(new IRInstructionBinaryOp(op, lhs, rhs, result));
+    return result;
+}
+
+IRValue* IRBuilder::makeValue()
+{
+    return new IRValue();
+}
+
 IRValue* IRBuilder::getValue(const std::string& name)
 {
     return nullptr;

@@ -2,6 +2,7 @@
 #define aeNodeBase_h__
 
 #include <RazerRuntime/QualType.h>
+#include <razer/ir/ir.hpp>
 
 #include <vector>
 #include <memory>
@@ -43,6 +44,8 @@ enum NodeTypes
 class AEBaseNode
 {
 public:
+
+    virtual IRValue* emitIR(IRBuilder& builder) {}
 	
     void prepend(AEBaseNode* node)
     {

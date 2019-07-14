@@ -22,6 +22,7 @@ class IRValue
 {
 public:
     int offset;
+    std::string name;
 };
 
 class IRInstruction
@@ -40,15 +41,36 @@ public:
     }
 };
 
-class IRInstructionBinaryOp : public IRInstruction
+class IRInstructionCall : public IRInstruction
 {
 public:
     std::string prettyString() override {
-        return "A = B";
+        return "Call";
+    }
+};
+
+class IRInstructionBinaryOp : public IRInstruction
+{
+public:
+    IRInstructionBinaryOp(std::string op, IRValue* lhs, IRValue* rhs, IRValue* result)
+    {
+        this->lhs = lhs;
+        this->rhs = rhs;
+        this->result = result;
+        this->op = op;
     }
 
+    std::string prettyString() override {
+        std::string res;
+        res += result->name + " <- ";
+        res += op + " " + lhs->name + " " + rhs->name;
+        return res;
+    }
+
+    std::string op;
     IRValue* lhs = nullptr;
     IRValue* rhs = nullptr;
+    IRValue* result = nullptr;
 };
 
 class IRFunction
@@ -63,7 +85,10 @@ public:
 
     void beginBlock();
     void endBlock();
+    void call();
+    IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
     void Assign() {}
+    IRValue* makeValue();
 
 public:
 
@@ -78,6 +103,7 @@ public:
 
 public:
     IRFunction func;
+    int tempId = 1;
 };
 
 #endif // IR_HPP

@@ -44,7 +44,7 @@ public:
 public:
 	aeNodeFunction();
 
-    void emitIR(IRBuilder& builder);
+    IRValue* emitIR(IRBuilder& builder);
 
 	RzQualType getReturnType();
 

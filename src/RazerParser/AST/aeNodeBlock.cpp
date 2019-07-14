@@ -6,7 +6,7 @@ aeNodeBlock::aeNodeBlock()
 	m_nodeType = AEN_BLOCK;
 }
 
-void aeNodeBlock::emitIR(IRBuilder& builder)
+IRValue* aeNodeBlock::emitIR(IRBuilder& builder)
 {
     builder.beginBlock();
 
@@ -20,14 +20,15 @@ void aeNodeBlock::emitIR(IRBuilder& builder)
             case AEN_ACCESSOPERATOR:
 
                 break;
-        }
 
-        if (item->m_nodeType == AEN_BINARYOP)
-        {
-            builder.Assign();
+            case AEN_FUNCTIONCALL:
+                builder.call();
+            break;
+
+            case AEN_BINARYOP:
+                item->emitIR(builder);
+            break;
         }
-        else
-            builder.Dummy();
     }
 
     builder.endBlock();

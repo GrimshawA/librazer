@@ -17,6 +17,8 @@ public:
 
     int eval();
 
+    IRValue* emitIR(IRBuilder& builder) override;
+
 	bool isRelational();
 	bool isArithmetic();
 
