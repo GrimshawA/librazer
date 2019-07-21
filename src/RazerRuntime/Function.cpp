@@ -2,7 +2,7 @@
 #include <RazerRuntime/Module.h>
 #include <razer/vm/VirtualMachine.h>
 
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzFunction::RzFunction()
 : aeSymbol()

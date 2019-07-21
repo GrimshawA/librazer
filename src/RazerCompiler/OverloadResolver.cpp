@@ -1,7 +1,7 @@
 #include <RazerCompiler/OverloadResolver.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
-#include <RazerParser/AST/aeNodeBinaryOperator.h>
+#include <razer/frontend/AST/aeNodeBinaryOperator.h>
 
 OperatorStrategy resolveBinaryOperationStrategy(aeNodeBinaryOperator& binaryOperation) {
     return OperatorStrategy();

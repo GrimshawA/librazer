@@ -5,7 +5,7 @@
 #include <RazerCompiler/TypeResolver.h>
 #include <RazerCompiler/OverloadResolver.h>
 
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 #include <cassert>
 

@@ -2,11 +2,11 @@
 #include <razer/vm/InstructionSet.h>
 #include <razer/vm/VirtualMachine.h>
 #include <RazerRuntime/RzEngine.h>
-#include <DebugDefs.h>
+#include <razer/utilS/DebugDefs.h>
 
 #include <cassert>
 
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 
 RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)

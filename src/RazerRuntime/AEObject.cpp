@@ -1,7 +1,7 @@
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/Function.h>
 #include <razer/vm/VirtualMachine.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 #include <cstring>
 
 AEObject::AEObject()

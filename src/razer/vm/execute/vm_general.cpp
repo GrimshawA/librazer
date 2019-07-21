@@ -1,7 +1,7 @@
 #include <razer/vm/ThreadContext.h>
 #include <razer/vm/InstructionSet.h>
 #include <RazerRuntime/RzEngine.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 #include <cstring>
 
 inline static void DoAdd(RzThreadContext& ctx, AeonPrimitiveType ptype)

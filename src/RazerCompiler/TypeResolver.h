@@ -1,7 +1,7 @@
 #ifndef RZTYPERESOLVER_H__
 #define RZTYPERESOLVER_H__
 
-#include <RazerParser/AST/aeNodeExpr.h>
+#include <razer/frontend/AST/aeNodeExpr.h>
 #include <RazerRuntime/QualType.h>
 
 /// Resolve the qualified type of an arbitrary expression

@@ -1,6 +1,6 @@
 #include <RazerRuntime/RzType.h>
 #include <razer/vm/VirtualMachine.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzType::RzType(RzModule& module, const std::string& _name, uint32_t _size)
     : m_module(module)

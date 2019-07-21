@@ -1,8 +1,8 @@
 #include <RazerRuntime/Module.h>
 #include <RazerRuntime/RzEngine.h>
-#include <RazerParser/Parser/RzParser.h>
-#include <RazerParser/Parser/TokenParser.h>
-#include <Logger.h>
+#include <razer/frontend/Parser/RzParser.h>
+#include <razer/frontend/Parser/TokenParser.h>
+#include <razer/utils/Logger.h>
 
 RzModule::RzModule() {
 	// Starts with one invalid dependency which is reserved for self dependencies

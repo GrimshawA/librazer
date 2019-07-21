@@ -3,7 +3,7 @@
 #include <RazerVM/VirtualMachine.h>
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/RzDocument.h>
-#include <RazerBuild/RzBuilder.h>
+#include <razer/frontend/RzBuilder.h>
 
 #include <iostream>
 

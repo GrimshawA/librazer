@@ -1,7 +1,7 @@
 #include <RzSDK/math/Rect.h>
 #include <RazerRuntime/RzEngine.h>
 #include <razer/vm/VirtualMachine.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzRect::RzRect() {
 

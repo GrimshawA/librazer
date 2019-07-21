@@ -1,11 +1,11 @@
 #include <RazerRuntime/RzEngine.h>
-#include <Base/FileUtils.h>
+#include <razer/utils/FileUtils.h>
 #include <RazerRuntime/AEObject.h>
 #include <razer/vm/VirtualMachine.h>
-#include <RazerParser/Parser/RzParser.h>
-#include <RazerParser/Parser/TokenParser.h>
+#include <razer/frontend/Parser/RzParser.h>
+#include <razer/frontend/Parser/TokenParser.h>
 #include <RazerCompiler/RzCompiler.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 #include <RzSDK/ExportStd.h>
 #include <cstring>

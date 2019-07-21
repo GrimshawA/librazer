@@ -3,8 +3,8 @@
 #include <RazerVM/VirtualMachine.h>
 #include <RazerRuntime/AEObject.h>
 #include <RazerRuntime/RzDocument.h>
-#include <RazerBuild/RzBuilder.h>
-#include <Logger.h>
+#include <razer/frontend/RzBuilder.h>
+#include <razer/utils/Logger.h>
 
 #include <iostream>
 

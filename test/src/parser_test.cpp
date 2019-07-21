@@ -1,8 +1,8 @@
 #include "parser_test.h"
 #include "gtest/gtest.h"
 
-#include <RazerParser/Parser/TokenParser.h>
-#include <RazerParser/Parser/RzParser.h>
+#include <razer/frontend/Parser/TokenParser.h>
+#include <razer/frontend/Parser/RzParser.h>
 
 const char* fragmentTest01 = "import std;";
 

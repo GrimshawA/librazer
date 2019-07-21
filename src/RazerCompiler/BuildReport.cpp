@@ -1,5 +1,5 @@
 #include <RazerCompiler/BuildReport.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzBuildReport::RzBuildReport()
 : m_enableStdOut(true)

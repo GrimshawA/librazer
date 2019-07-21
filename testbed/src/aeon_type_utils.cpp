@@ -1,6 +1,6 @@
 #include "aeon_type_utils.h"
 #include <RazerRuntime/RzType.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 void printTypeDetails(RzType* type)
 {

@@ -1,6 +1,6 @@
 #include <razer/vm/ThreadContext.h>
 #include <razer/vm/VirtualMachine.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 #include <cstring>
 
 RzModule& RzThreadContext::getModule() {

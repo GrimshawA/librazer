@@ -2,8 +2,8 @@
 #define RZCOMPILER_H__
 
 #include <RazerCompiler/CompileResult.h>
-#include <RazerParser/AST/Nodes.h>
-#include <RazerParser/AST/aeNodeUnaryOperator.h>
+#include <razer/frontend/AST/Nodes.h>
+#include <razer/frontend/AST/aeNodeUnaryOperator.h>
 #include <RazerCompiler/aeCompilerConv.h>
 #include <RazerRuntime/Module.h>
 #include <RazerCompiler/BuildReport.h>

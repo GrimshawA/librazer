@@ -9,7 +9,7 @@
 #include <memory>
 #include <functional>
 
-#include <RazerParser/AST/aeNodeValue.h>
+#include <razer/frontend/AST/aeNodeValue.h>
 
 class AEValueList;
 class AEObject;

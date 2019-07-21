@@ -1,15 +1,15 @@
 #include <RazerCompiler/TypeResolver.h>
 #include <RazerCompiler/RzCompiler.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
-#include <RazerParser/AST/aeNodeBinaryOperator.h>
-#include <RazerParser/AST/aeNodeAccessOperator.h>
-#include <RazerParser/AST/aeNodeFunctionCall.h>
-#include <RazerParser/AST/aeNodeIdentifier.h>
-#include <RazerParser/AST/aeNodeLiterals.h>
-#include <RazerParser/AST/aeNodeNew.h>
-#include <RazerParser/AST/aeNodeTernaryOperator.h>
-#include <RazerParser/AST/aeNodeUnaryOperator.h>
+#include <razer/frontend/AST/aeNodeBinaryOperator.h>
+#include <razer/frontend/AST/aeNodeAccessOperator.h>
+#include <razer/frontend/AST/aeNodeFunctionCall.h>
+#include <razer/frontend/AST/aeNodeIdentifier.h>
+#include <razer/frontend/AST/aeNodeLiterals.h>
+#include <razer/frontend/AST/aeNodeNew.h>
+#include <razer/frontend/AST/aeNodeTernaryOperator.h>
+#include <razer/frontend/AST/aeNodeUnaryOperator.h>
 
 #include <cassert>
 

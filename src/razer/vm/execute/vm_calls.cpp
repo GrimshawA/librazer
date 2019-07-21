@@ -1,4 +1,4 @@
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 #include <razer/vm/ThreadContext.h>
 #include <RazerRuntime/RzEngine.h>
 

@@ -2,7 +2,7 @@
 #include <RazerRuntime/RzType.h>
 #include <RazerCompiler/TypeResolver.h>
 
-#include <RazerParser/AST/aeNodeFunction.h>
+#include <razer/frontend/AST/aeNodeFunction.h>
 
 void RzCompiler::collect(RzSourceUnit& parseTree)
 {

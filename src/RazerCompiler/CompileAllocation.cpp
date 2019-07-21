@@ -2,7 +2,7 @@
 #include <RazerCompiler/Errors.h>
 #include <RazerCompiler/BuildReport.h>
 #include <RazerCompiler/TypeResolver.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzCompileResult RzCompiler::compileVarDecl(const aeNodeVarDecl& varDecl)
 {

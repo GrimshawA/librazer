@@ -1,6 +1,6 @@
 #include <razer/vm/ThreadContext.h>
 #include <RazerRuntime/RzEngine.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 struct CanarySaveData {
     int esp;

@@ -5,8 +5,8 @@
 #include <razer/vm/InstructionSet.h>
 #include <razer/vm/VirtualMachine.h>
 #include <RazerRuntime/RzEngine.h>
-#include <DebugDefs.h>
-#include <Logger.h>
+#include <razer/utils/DebugDefs.h>
+#include <razer/utils/Logger.h>
 
 #include <cassert>
 

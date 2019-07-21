@@ -1,6 +1,6 @@
 #include <STS/Cpp/Compiler/CppBuilder.h>
-#include <RazerParser/Parser/RzParser.h>
-#include <Base/FileUtils.h>
+#include <razer/frontend/Parser/RzParser.h>
+#include <razer/utils/FileUtils.h>
 
 RzCppBuilder::RzCppBuilder(RzEngine& ctx)
 	: m_ctx(ctx)

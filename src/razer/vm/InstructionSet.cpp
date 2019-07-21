@@ -1,5 +1,5 @@
 #include <razer/vm/InstructionSet.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 #include <string>
 
 std::array<const char*, static_cast<int32_t>(EOpCodes::Count)> EOpCodeNames = {

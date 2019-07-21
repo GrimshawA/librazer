@@ -1,8 +1,8 @@
 #include "parser_test.h"
 #include "gtest/gtest.h"
 
-#include <RazerParser/Parser/TokenParser.h>
-#include <RazerParser/Parser/RzParser.h>
+#include <razer/frontend/Parser/TokenParser.h>
+#include <razer/frontend/Parser/RzParser.h>
 #include <RazerRuntime/RzEngine.h>
 
 class TestBinding : public ::testing::Test {

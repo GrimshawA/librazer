@@ -1,5 +1,5 @@
 #include <RzSDK/window/SDLWindowImpl.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 #ifdef RAZER_SDL
 #include <SDL.h>

@@ -1,7 +1,7 @@
 #include <RzSDK/container/String.h>
 #include <razer/vm/VirtualMachine.h>
 #include <razer/bind_utils.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 void registerString(RzModule* mod) {
     mod->registerType("String", sizeof(RzString));

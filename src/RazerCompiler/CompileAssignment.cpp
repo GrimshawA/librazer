@@ -1,6 +1,6 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/TypeResolver.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzCompileResult RzCompiler::emitAssignOp(aeNodeExpr* lhs, aeNodeExpr* rhs)
 {

@@ -1,6 +1,6 @@
 #include <RazerCompiler/RzCompiler.h>
 #include <RazerCompiler/TypeResolver.h>
-#include <Logger.h>
+#include <razer/utils/Logger.h>
 
 RzFunction* RzCompiler::selectFunction(aeNodeFunctionCall* fn) {
     RzFunction* r = nullptr;
