@@ -2,19 +2,19 @@
 #include <razer/runtime/Module.h>
 #include <razer/utils/Logger.h>
 
-#ifdef SDL_WRAPPERS
+#ifdef RAZER_SDL
 #include <SDL.h>
 #endif
 
 RzTimer::RzTimer() {
     RZLOG("TIMER INITIATED %x\n", this);
-    #ifdef SDL_WRAPPERS
+    #ifdef RAZER_SDL
     m_lastTime = SDL_GetTicks();
 #endif
 }
 
 uint32_t RzTimer::restart() {
-#ifdef SDL_WRAPPERS
+#ifdef RAZER_SDL
     uint32_t now = SDL_GetTicks();
 
     uint32_t dt = now - m_lastTime;

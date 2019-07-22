@@ -6,14 +6,14 @@ SnakeBlock: class {
 }
 
 App: class {
-	//snake: 5
 	counter: int32
 	i: int32
 	size: int32
 	window: Window
-	//mTimer: Timer
-    snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
+	mTimer: Timer
+	time: int32
 
+    snake: array<SnakeBlock> // Should instance ArrayT for type snake_block
 
     function main() {
     	snake.push(new SnakeBlock());
@@ -25,6 +25,9 @@ App: class {
 
 		size = 4;
     	i = 0;
+    	time = 5;
+
+    	mTimer = new Timer();
 		
 		for (i = 0; i < snake.size(); ++i)
 		{
@@ -37,6 +40,8 @@ App: class {
 
 		while(window.running()) {
 			window.poll();
+
+			update();
 
 			window.setFillColor(0, 0, 0);
 			window.drawRect(0, 0, 400, 400);
@@ -51,4 +56,22 @@ App: class {
 			window.display();
 		}
     }
+
+    function update() {
+
+		/*int32 dt = mTimer.restart();
+
+		time = time - dt;*/
+
+		SnakeBlock s = snake.at(0);
+
+		s.x = 300;
+		
+		/*if (time < 0) {
+			time = 5;
+			//timerEvent(wnd);
+			
+			
+		}*/
+	}
 }

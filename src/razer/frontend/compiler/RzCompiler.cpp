@@ -345,6 +345,11 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         }
     }
 
+    auto isReferenceType = [&](RzQualType t)
+    {
+        return !t.isPrimitive();
+    };
+
     int fldOffset = 0;
     for (std::size_t i = 0; i < clss->m_fields.size(); ++i) {
         auto& fieldNode = clss->m_fields[i];
@@ -358,7 +363,14 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
         assert(fieldType.getSize() > 0);
 
-        fldOffset += fieldType.getSize();
+        if (isReferenceType(fieldType))
+        {
+            fldOffset += sizeof(void*);
+        }
+        else
+        {
+            fldOffset += fieldType.getSize();
+        }
 
         typeInfo->m_fields.push_back(fld);
     }
