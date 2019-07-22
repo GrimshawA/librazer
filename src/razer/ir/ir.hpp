@@ -69,6 +69,9 @@ public:
     }
 
     std::string prettyString() override {
+        //if (!lhs || !rhs)
+            return {};
+
         std::string res;
         res += result->name + " <- ";
         res += op + " " + lhs->name + " " + rhs->name;
@@ -79,6 +82,23 @@ public:
     IRValue* lhs = nullptr;
     IRValue* rhs = nullptr;
     IRValue* result = nullptr;
+};
+
+/* Defining a type */
+class IRInstructionType : public IRInstruction
+{
+public:
+    explicit IRInstructionType(const std::string& name)
+    {
+        this->name = name;
+    }
+
+    std::string prettyString() override {
+        return "x <- type {}";
+    }
+
+private:
+    std::string name; // anonymous is viable
 };
 
 class IRFunction
@@ -96,6 +116,8 @@ public:
     void call();
     IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
     IRValue* newObject();
+    IRValue* newType(const std::string& name);
+
     void Assign() {}
 
 

@@ -1,5 +1,5 @@
 #include <RzSDK/time/Timer.h>
-#include <RazerRuntime/Module.h>
+#include <razer/runtime/Module.h>
 #include <razer/utils/Logger.h>
 
 #ifdef SDL_WRAPPERS

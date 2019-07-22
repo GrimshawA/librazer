@@ -2,7 +2,7 @@
 #define aeNodeReturn_h__
 
 #include <razer/frontend/AST/AEBaseNode.h>
-#include <RazerRuntime/QualType.h>
+#include <razer/runtime/QualType.h>
 
 #include <vector>
 #include <memory>

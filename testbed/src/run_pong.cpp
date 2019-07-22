@@ -1,8 +1,8 @@
 #include <src/run_pong.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <RazerVM/VirtualMachine.h>
-#include <RazerRuntime/AEObject.h>
-#include <RazerRuntime/RzDocument.h>
+#include <razer/runtime/AEObject.h>
+#include <razer/runtime/RzDocument.h>
 #include <razer/frontend/RzBuilder.h>
 #include <razer/utils/Logger.h>
 

@@ -1,10 +1,10 @@
 #include <iostream>
 #include "program_options_parser.hpp"
 
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/vm/VirtualMachine.h>
-#include <RazerRuntime/AEObject.h>
-#include <RazerRuntime/RzDocument.h>
+#include <razer/runtime/AEObject.h>
+#include <razer/runtime/RzDocument.h>
 #include <razer/frontend/RzBuilder.h>
 
 #include <RzSDK/ExportStd.h>

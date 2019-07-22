@@ -1,6 +1,6 @@
 #include <razer/vm/ThreadContext.h>
 #include <razer/vm/InstructionSet.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/utils/Logger.h>
 #include <cstring>
 

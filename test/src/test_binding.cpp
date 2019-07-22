@@ -3,7 +3,7 @@
 
 #include <razer/frontend/Parser/TokenParser.h>
 #include <razer/frontend/Parser/RzParser.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 
 class TestBinding : public ::testing::Test {
 protected:

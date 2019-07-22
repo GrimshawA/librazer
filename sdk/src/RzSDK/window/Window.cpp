@@ -1,6 +1,6 @@
 #include <RzSDK/window/Window.h>
 #include <RzSDK/container/String.h>
-#include <RazerRuntime/Module.h>
+#include <razer/runtime/Module.h>
 #include <razer/utils/Logger.h>
 
 #ifdef RAZER_SDL

@@ -2,9 +2,9 @@
 #include <razer/vm/ExecDispatch.h>
 #include <razer/vm/InstructionSet.h>
 
-#include <RazerRuntime/RzEngine.h>
-#include <RazerRuntime/AEObject.h>
-#include <RazerRuntime/Generic.h>
+#include <razer/runtime/RzEngine.h>
+#include <razer/runtime/AEObject.h>
+#include <razer/runtime/Generic.h>
 #include <razer/utils/DebugDefs.h>
 #include <razer/utils/Logger.h>
 

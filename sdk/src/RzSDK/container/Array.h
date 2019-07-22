@@ -1,7 +1,7 @@
 #ifndef ARRAY_H__
 #define ARRAY_H__
 
-#include <RazerRuntime/RzValue.h>
+#include <razer/runtime/RzValue.h>
 #include <vector>
 
 class VariantArray

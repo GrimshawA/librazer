@@ -1,5 +1,5 @@
 #include <RzSDK/container/ByteArray.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/vm/VirtualMachine.h>
 
 int32_t RzByteArray::size() {

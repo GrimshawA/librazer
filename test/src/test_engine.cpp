@@ -2,7 +2,7 @@
 
 #include <razer/frontend/Parser/TokenParser.h>
 #include <razer/frontend/Parser/RzParser.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <RzSDK/ExportStd.h>
 
 class TestEngine : public ::testing::Test {

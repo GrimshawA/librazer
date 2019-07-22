@@ -4,8 +4,8 @@
 #include <razer/vm/StackFrame.h>
 #include <razer/vm/stack_value.h>
 
-#include <RazerRuntime/RzValue.h>
-#include <RazerRuntime/AEObject.h>
+#include <razer/runtime/RzValue.h>
+#include <razer/runtime/AEObject.h>
 #include <vector>
 #include <stdint.h>
 

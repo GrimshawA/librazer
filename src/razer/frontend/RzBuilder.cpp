@@ -2,7 +2,7 @@
 #include <razer/utils/Logger.h>
 #include <string>
 
-#include <RazerCompiler/RzCompiler.h>
+#include <razer/frontend/compiler/RzCompiler.h>
 #include <razer/frontend/Parser/RzParser.h>
 #include <razer/frontend/Parser/TokenParser.h>
 #include <razer/frontend/AST/RzModuleNode.h>

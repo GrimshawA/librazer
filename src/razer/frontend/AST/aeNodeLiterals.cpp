@@ -1,2 +1,2 @@
 #include "aeNodeLiterals.h"
-#include <RazerCompiler/RzCompiler.h>
+#include <razer/frontend/compiler/RzCompiler.h>

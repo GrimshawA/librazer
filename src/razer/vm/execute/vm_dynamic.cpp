@@ -1,5 +1,5 @@
 #include <razer/vm/ThreadContext.h>
-#include <RazerRuntime/Module.h>
+#include <razer/runtime/Module.h>
 #include <razer/utils/Logger.h>
 #include <cstring>
 

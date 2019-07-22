@@ -1,5 +1,5 @@
 #include <RzSDK/container/Array.h>
-#include <RazerRuntime/Module.h>
+#include <razer/runtime/Module.h>
 
 #include <iostream>
 

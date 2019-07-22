@@ -31,6 +31,13 @@ IRValue* IRBuilder::newObject()
     return tmp;
 }
 
+IRValue* IRBuilder::newType(const std::string& name)
+{
+    auto* tmp = makeTempValue();
+    func.instructions.push_back(new IRInstructionType(name));
+    return tmp;
+}
+
 IRValue* IRBuilder::makeValue()
 {
     return new IRValue();

@@ -2,9 +2,9 @@
 #define aeon_parser_h__
 
 #include <razer/frontend/AST/Nodes.h>
-#include <RazerRuntime/RzValue.h>
+#include <razer/runtime/RzValue.h>
 #include <razer/frontend/Parser/TokenParser.h>
-#include <RazerCompiler/SymbolTypename.h>
+#include <razer/frontend/compiler/SymbolTypename.h>
 
 #include <vector>
 

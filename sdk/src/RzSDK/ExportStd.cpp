@@ -10,9 +10,9 @@
 
 #include <RzSDK/time/Timer.h>
 
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/vm/VirtualMachine.h>
-#include <RazerRuntime/Generic.h>
+#include <razer/runtime/Generic.h>
 
 #include <cmath>
 

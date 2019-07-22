@@ -1,6 +1,6 @@
 #include "aeNodeBinaryOperator.h"
-#include <RazerCompiler/RzCompiler.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/frontend/compiler/RzCompiler.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/utils/Logger.h>
 
 aeNodeBinaryOperator::aeNodeBinaryOperator(aeNodeExpr* opA, aeNodeExpr* opB, std::string _oper)

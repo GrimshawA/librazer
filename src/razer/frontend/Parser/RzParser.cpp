@@ -1,6 +1,6 @@
 #include <razer/frontend/Parser/RzParser.h>
 #include <razer/frontend/Parser/TokenParser.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/frontend/AST/Nodes.h>
 #include <razer/frontend/AST/aeNodeValue.h>
 #include <razer/utils/Logger.h>

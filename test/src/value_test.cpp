@@ -1,7 +1,7 @@
 #include "value_test.h"
 #include <stdio.h>
 #include <string>
-#include <RazerRuntime/RzValue.h>
+#include <razer/runtime/RzValue.h>
 
 #include <gtest/gtest.h>
 

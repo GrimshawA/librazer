@@ -1,8 +1,8 @@
-#include <RazerRuntime/RzDocument.h>
-#include <RazerRuntime/RzEngine.h>
+#include <razer/runtime/RzDocument.h>
+#include <razer/runtime/RzEngine.h>
 #include <razer/frontend/Parser/TokenParser.h>
 #include <razer/frontend/Parser/RzParser.h>
-#include <RazerRuntime/RzValue.h>
+#include <razer/runtime/RzValue.h>
 
 RzDocument::RzDocument()
 : m_parsingFlags(0)

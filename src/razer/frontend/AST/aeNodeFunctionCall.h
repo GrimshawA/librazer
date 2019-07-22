@@ -1,7 +1,7 @@
 #ifndef aeNodeFunctionCall_h__
 #define aeNodeFunctionCall_h__
 
-#include <RazerRuntime/Module.h>
+#include <razer/runtime/Module.h>
 #include "aeNodeExpr.h"
 
 class aeNodeFunction;

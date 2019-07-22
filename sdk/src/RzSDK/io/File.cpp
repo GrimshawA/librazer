@@ -1,7 +1,7 @@
 #include "File.h"
 #include <razer/utils/Logger.h>
 
-#include <RazerRuntime/Module.h>
+#include <razer/runtime/Module.h>
 
 void registerFile(RzModule* m, const std::string& name)
 {
