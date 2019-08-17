@@ -1,5 +1,6 @@
 #include <razer/frontend/compiler/RzCompiler.h>
 #include <razer/frontend/compiler/TypeResolver.h>
+#include <razer/frontend/sema/dependency_analysis.h>
 #include <razer/ir/ir.hpp>
 
 #include <razer/vm/InstructionSet.h>
@@ -9,6 +10,8 @@
 #include <razer/utils/Logger.h>
 
 #include <cassert>
+#include <unordered_map>
+#include <iostream>
 
 void debugCodeRange(RzModule* module, int start, int end)
 {
@@ -405,6 +408,35 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     }
 
     emitClassDestructors(typeInfo, clss);
+
+    // sema
+    sema::bound_element_tracker tracker;
+    std::vector<sema::bound_element*> roots;
+
+    for (auto& binding: clss->m_bindings)
+    {
+        sema::bound_element* root = tracker.get(static_cast<aeNodeIdentifier*>(binding->target)->m_name);
+        roots.push_back(root);
+
+        sema::ast_visit_identities(binding->bindingexpr, [&](aeNodeExpr* identity)
+        {
+            aeNodeIdentifier* ident = static_cast<aeNodeIdentifier*>(identity);
+            sema::bound_element* e = tracker.get(ident->m_name);
+
+            root->dependencies.push_back(e);
+        });
+    }
+
+    for (auto& x : roots)
+    {
+        bool hasCircularDependencies = sema::detect_circular_references(x);
+
+        if (hasCircularDependencies)
+        {
+            RZLOG("Circular binding detected for '%s' in '%s'\n", x->name.c_str(), clss->m_name.c_str());
+            return RzCompileResult::aborted;
+        }
+    }
 
     m_classes.pop_back();
 
