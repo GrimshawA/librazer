@@ -46,4 +46,16 @@ public:
 	std::string str() const;
 };
 
+class RzLambdaExprNode : public aeNodeExpr
+{
+public:
+    RzLambdaExprNode(aeNodeExpr* arg, aeNodeBlock* blk);
+
+public:
+
+    aeNodeExpr* arg;
+    aeNodeBlock* block;
+
+};
+
 #endif // aeNodeFunctionCall_h__

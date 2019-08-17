@@ -22,3 +22,20 @@ std::string aeNodeFor::str() const
 	s += block->str();
 	return s;
 }
+
+
+RzRangeForNode::RzRangeForNode()
+{
+    m_nodeType = AEN_RANGEFOR;
+}
+
+RzRangeForNode::RzRangeForNode(aeNodeExpr* identity, aeNodeExpr* range)
+{
+    this->iterator.reset(identity);
+    this->range.reset(range);
+}
+
+std::string RzRangeForNode::str() const
+{
+    return {};
+}

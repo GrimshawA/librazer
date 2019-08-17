@@ -1,0 +1,13 @@
+import std
+
+App: class {
+	
+	c: Chrono
+
+	function main() {
+
+		f (x => {
+			x > 50
+		});
+	}
+}

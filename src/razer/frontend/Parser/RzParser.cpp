@@ -9,6 +9,9 @@
 #include <cstdlib>
 #include <iostream>
 
+// Utility macros for validating AST
+#define EXPECT(tok) if (Tok.type != tok) throw std::exception(); else getNextToken();
+
 std::map<std::string, int> mOperatorTable = {
     { "=", 0 },
     { ">", 10 },
@@ -28,7 +31,6 @@ std::map<std::string, int> mOperatorTable = {
     { "&&", 10 },
 
 };
-
 
 AEStructNode::Visibility TokToVisib(const std::string& str)
 {
@@ -894,11 +896,21 @@ aeNodeBlock* RzParser::parseBlock()
     return block;
 }
 
-aeNodeFor* RzParser::parseForLoop()
+RzForBaseNode* RzParser::parseForLoop()
 {
     aeNodeFor* astfor = new aeNodeFor();
     getNextToken();
-    getNextToken();
+
+    EXPECT(RZTK_OPENPAREN);
+
+    if (peekAhead(0).type == RZTK_IN)
+    {
+        auto* identity = parseExpression();
+        EXPECT(RZTK_IN);
+        auto* range = parseExpression();
+
+        return new RzRangeForNode(identity, range);
+    }
 
     if (matchesVarDecl())
         astfor->initStatement.reset(parseVariableDecl());
@@ -1100,6 +1112,25 @@ aeNodeExpr* RzParser::parseIdentityExpression()
     getNextToken();
 
     //printf("IDENTITY IS %s\n", name.c_str());
+
+    if (Tok.type == RZTK_ARROW)
+    {
+        getNextToken();
+
+        aeNodeBlock* blk = nullptr;
+        if (Tok.type == RZTK_OPENBRACKET)
+        {
+            blk = parseBlock();
+            getNextToken();
+        }
+        else
+        {
+            blk = new aeNodeBlock();
+            blk->add(parseExpression());
+        }
+
+        return new RzLambdaExprNode(new aeNodeIdentifier(name), blk);
+    }
 
     if (Tok.type == RZTK_OPENPAREN)
     {

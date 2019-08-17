@@ -210,8 +210,9 @@ RzToken RzTokenParser::getToken() {
     }
 
     if (LastChar == '=' && program_source[i + 1] == '>') {
-        token.type = RZTK_LAMBDA;
+        token.type = RZTK_ARROW;
         token.text = "=>";
+        i++;
         return token;
     }
 

@@ -95,7 +95,7 @@ public:
 		AEEnumNode*              parseEnum();
 		AEStructNode*            parseClass();
 		AEStructNode*            parseTopLevelIdentifer();
-		aeNodeFor*               parseForLoop();
+        RzForBaseNode*           parseForLoop();
 		aeNodeWhile*             parseWhileLoop();
 		void                     parseClassBody(AEStructNode* classDeclNode);
 		AEFieldNode*             parseStructField();

@@ -58,3 +58,9 @@ std::string aeNodeFunctionCall::str() const
 
 	return s1;
 }
+
+RzLambdaExprNode::RzLambdaExprNode(aeNodeExpr* arg, aeNodeBlock* blk)
+{
+    this->arg = arg;
+    this->block = blk;
+}

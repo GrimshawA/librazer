@@ -13,8 +13,25 @@
 #include <razer/runtime/RzEngine.h>
 #include <razer/vm/VirtualMachine.h>
 #include <razer/runtime/Generic.h>
+#include <razer/frontend/RzBuilder.h>
 
 #include <cmath>
+#include <iostream>
+
+void LoadFileToModule(RzModule* m, const std::string& filename)
+{
+    RzBuilder::Batch batch;
+    batch << filename;
+
+    RzBuilder builder(*m->m_context);
+    bool result = builder.build(batch);
+    if (!result) {
+        std::cout << "Build failed" << std::endl;
+        return;
+    }
+
+
+}
 
 void RegisterStd(RzEngine* ctx)
 {
@@ -44,6 +61,8 @@ void RegisterStd(RzEngine* ctx)
 
     ArrayT::registerApi(stdModule);
 	Window::registerApi(stdModule);
+
+    LoadFileToModule(stdModule, "Chrono.rz");
 
     RegisterIO(stdModule);
     RegisterNet(stdModule);
