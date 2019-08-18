@@ -100,6 +100,7 @@ public:
 		void                     parseClassBody(AEStructNode* classDeclNode);
 		AEFieldNode*             parseStructField();
         RzLetNode*               parseLet();
+        RzAttributeNode*         parseAttribute();
 		aeNodeFunction*          parseLambdaFunction();
 		void                     parseClassMember(AEStructNode* classDeclNode);
 		aeNodeReturn*            parseReturn();

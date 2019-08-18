@@ -1,0 +1,33 @@
+entity X
+{
+	int a;
+	int b: 5;
+	int c: 5;
+}
+
+{
+	a: b + c
+}
+
+ ==== IR ====
+
+-> MAP X.a a
+-> MAP X.b b
+-> MAP X.c c
+
+-> INIT 
+	b <- 5
+	c <- 5
+	X <- b + c
+	a <- X
+	NOTIFY a
+
+->  REACT b
+	X <- b + c
+	a <- X
+	NOTIFY a
+
+-> REACT c
+	X <- b + c
+	a <- X
+	NOTIFY a

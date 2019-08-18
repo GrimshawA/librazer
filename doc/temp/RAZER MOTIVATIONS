@@ -1,0 +1,86 @@
+RAZER MOTIVATIONS
+=================
+
+What are the problems with SW engineering today and how raven attempts to solve them.
+
+
+PREMISE #1 - OPTIMIZATION POTENTIAL
+--
+
+Runtime efficiency shall NEVER be sacrificed for anything, this language will be the base piece for a very big stack of software and therefore achieving maximum efficiency should not be sacrificed right from the start. Instead, a language and framework should aim towards maximum efficiency by default, to account for eventual losses along the way which happen inevitably and still end up in the ballpark of great runtime performance.
+
+Starting from the premise the purest approach to raw performance is C's, where things
+are in the hands of the programmer and they go as fast as the hardware allows it, I will argue in favor of static polymorphism and generic programming as found in C++ as an "addition in optimization potential for the compiler". With C++ meta programming and idioms for static polymorphism, we can actually achieve type safe code that is predictable as far as the call stack goes. The compiler can look deep into the call stack and reason about code in a whole new way, being potentially able to reduce ignorant inlining and instead do multi-level optimizations. 
+
+In fact, the type system and these compile-time utilities are quintessential to a world of code validation tools, static analysis and whatnot.
+
+We can refer to optimization potential as how much information the compiler has at any given moment; The more information is available, the better optimization decisions can be made.
+
+Though, a compiler like CLANG will optimize aggressively the code it sees, but will not consider data requirements, leaving that responsability to the programmer, to design the code in a way that fits its problem. By the same principle that more information means more optimization potential, in this language we will be adding compile-time constraints that will allow the compiler to see the logic as a way more mutable entity that can go in a lot more directions regarding runtime efficiency.
+
+Knowing the approximate data set some code will work on will enable the compiler to come up with extremely aggressive, ad-hoc optimizations to algorithms.
+
+PREMISE #2 - CODE LONGEVITY
+--
+
+
+In today's world of software algorithms and implementations are too ephemeral, even though our logic is sound and according to a business requirement that didn't change, we still find ourselves needing to do massive rewrites and refactorings that are extremely costly.
+
+Be it because of framework or language change, a new requirement changing on the side that has impact on another part of the code, or just data requirements that changed, we need to revisit the same correct logic over and over.
+
+To solve this problem, the language proposes to detach the logic and its correctness from the technical details. This is achieved by logical and arithmetical operators and abstract data primitives that are mathematically pure and theoretically infinite, so that technical details like integer overflow and many others are not relevant for the business logic.
+
+Only by hinting the compiler our data has changed, it will figure everything for us and ensure that our logic remains valid.
+
+PREMISE #3 - BOILERPLATE AND WIRING
+--
+
+Developers go to extreme lengths writing boilerplate code which is partially a product of their underlying technology limitations but also trying to have a predictable and "clean house" in face of those limitations as much as possible.
+
+Many architectures are designed around solving specific development problems, which might not even make sense in the first place that they exist at all.
+
+Typically, architectures are created around messaging, or how will a given stimulus (discrete event, elapsed time or data change) reach everyone that is affected by that stimulus.
+
+For every stimulus there is ALWAYS an optimal DAG data structure that propagates into all the code pieces that need to be executed, in order, as to ensure integrity. This graph is the source of all problems, there is simply too much to it, regarding designing source code that will be manageable and at the same time be the ideal DAG to solve that problem.
+
+Things like abstraction immediately introduce additional nodes in this DAG, even if straightforward, event wiring systems, deferred message queues, inter process channels and many more things will introduce complexity to the DAG which heavily slows down the program.
+
+However, it is really hard to manage this with typical imperative languages, and all the wiring necessary makes the code fat and bloated, and quickly hard to manage by humans. In order to make the project still workable, we introduce more and more architectural patterns which often add complexity and more wiring, making the DAG even less efficient in exchange for predictability of the code blocks within the codebase.
+
+Opposingly, enthusiasts might try to make this DAG as aggressive as possible and still have another set of problems. If every stimulus is optimized to the maximum regarding message propagation, that usually introduces a lot of code duplication and complexity of its own.
+
+With this said, I believe wiring things imperatively is probably harder than humans can confortably handle. Plus, it introduces rigidity to the code and makes refactoring very hard, especially bad when the wiring things is extremely prone to refactoring.
+
+Instead, the language proposes relational pattern matching, which means that the wiring complexity is completely erased. All logical blocks of one's application are tied to a data set, an abstract data set, and the wiring is done by the language at compile-time instead.
+
+So let's say we have a class X responsible for some logic on a given data set; If X is a leaf node in our DAG, it is implicit there may be potentially a lot of wiring applied before X can do its job. The proposal is to not do any of this wiring and instead have X declare what it works on top of, like let's say, entities of type A with some field with value 0. The language compiler then will create all necessary wiring for this operation to remain valid at all times.
+
+This shifts the problem of optimization on its head as each wiring will be weighted with the others by the compiler in order to make a more informed decision regarding how it will behave in runtime.
+
+At the center of this is the fact the compiler sees all pieces of logic as reactors to some stimulus, and makes them emitters of stimulus themselves if need be. With this kind of structure the compiler knows everything it needs to know to do its job really well.
+
+Premise #4 - ALLOCATION AND DEALLOCATION
+--
+
+Ideal allocation is always a function of how a certain entity is used and when it is needed. The defaults provided to us in both manual memory management languages and GCed ones are inherently not optimized for the problem.
+
+They are mere studies of what is a good average scenario that should fit most usages.
+
+Therefore, the only theoretically correct way to squeeze the maximum amount of efficiency is to do manual memory management with custom everything, in a way that suits our code's runtime behavior at its best.
+
+First and foremost, the data presented to the application at runtime is central to the allocation problem, which makes this a very manual task for the programmer to make all the allocation decisions, which brings us back to optimization potential.
+
+For the language itself to handle optimal allocation, it also needs additional data usage information, constraints, which we already have a central feature of the language!
+
+Current languages with heavy emphasis on manual memory management like C++ currently sin in making the job of custom allocation extremely complex and hard to manage, generating code that is very verbose and shades the actual core logic of a given unit with technical complexity. Plus, this allocation is quite rigid to change as well, changes in requirements may mean a lot of code rewriting.
+
+So, the proposal is that allocations and deallocations are handled by the runtime, taking all things into account:
+- The underlying hardware and OS
+- Usage patterns of each entity
+- What logic depends on the entity, as to serve them optimally
+
+Premise #5 - GRADUALITY OF TECHNOLOGY REPLACEMENT
+
+As with other attempts on innovation, there is simply too much in the software world to do everything from scratch at once. As such, in the first many years, this language will have to work on top of existing frameworks like potentially .NET and C++ Libraries. This is intentional and believed to be great, using this language to tie existing implementations into a clever compiler that handles final application code really well.
+
+Even if the underlying implementation for some task is not ideal, its weak spots are to be hidden from the language by a API translation layer, which unifies and improves the usage of said implementation, in a way that they can be swapped for something better down the line.

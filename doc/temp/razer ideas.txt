@@ -1,0 +1,81 @@
+declarative power with functional idioms inside an imperative language (the compiler should have full knowledge of the intention to optimize better than the human could)
+
+sql based editions built into functional mappings
+
+let where_clause = $.width > 34 && $.height > 50
+a = std::select container where_clause 
+
+b = std::move container where_clause // actually moves the data to the other container (this operation can be overloaded for any given duo of types)
+
+
+transaction: db_transaction
+my_container: std::hash_map<string, string>
+my_table_handle: db_table_handle
+std::insert my_table_handle my_container // Inserts all elements found in my_container into the handle type container
+std::insert my_table_handle filter (my_container $1 ? R"$.a1^") // Inserts all elements found in my_container into the handle type container
+
+This would work because std::insert is just a zero cost proxy into a specific overload like std::insert_algorithm(db_table_handle&, associative_container<>)
+Therefore, the database API would be providing in fact the actual way to insert data in that table, using the map. Internally it can do whatever it wants with the data.
+
+(on the concept of associative_container, all types are automatically associative_container if they have a certain minimum API in their public api.)
+Thoough, they can opt in the concept specifying how to map the concept requirements to its API, or they can opt out explicitly, to make sure this type is not usable this way.
+
+The filter function would return a fake container "view" which is only able to peek into elements that pass the test, maybe built at compile time,maybe at runtime, depending.
+
+$1 would mean the first placeholder value obtainable from the actual type, which for associative maps are thefirst value of the pair.
+
+R"..." is a regex literal, which yield directly a Regex<ECMAScript> type in the type system and can therefore be optimized internally and be made to use operators like ? to test any
+string_concept based literal or value.
+
+
+
+
+
+Any function in the standard library is automatically able to perform its action on a set of values, instead of just one, but the language is able to reduce the call to a single argument.
+This is to promote data oriented practices in the core of the language.
+
+std::file_delete "file1.txt" "file2.txt" "file3.txt" // in the type system, an attempt to call a function with multiple arguments
+ when it receives only one list concept, is valid and the arguments are compacted into a list of read only arguments of that type with high performance access.
+
+It would also be valid to pass on a list or a single value.
+
+Promote, short, line driven code. Never require for insanely large lines of code to describe overly deep types and operations, never promote breaking a line of code in half.
+
+allow for adequate syntax in a functionally driven behavior, encourage working with data sets and iteration of everything together.
+
+manual memory management because its not that hard with proper support for it and its required for full control of performance. The language is a platform for expressiveness,
+but the true platform remains the target hardware, since we never want to write our program twice, the compiler must have every trick in the book to do that well.)
+
+width = std::bind height * 3 // Effectively creates a binding object with an arbitrary expression in it to be evaluated at arbitrary times.
+
+Bindings in any format should yield an internal type system format Binding<Expr>. For any given Binding<Expr>, we have an internal static type of the inner expression Binding<Expr>::type.
+
+This works because there is a special rule in the type system where A = Binding<Expr> is valid if typeof(A) == Binding<Expr>::type or these types are implicitly convertible.
+
+When finding A = Binding<Expr>, this unrolls internally into a creation of a binding object with lifetime tied with the lifetime of A, for safety reasons, which will be triggered
+either manually or by signals emitted by any of the Expr changed notifications. In theory, the process of binding into a variable could be a typical operator overload for the user to customize.
+
+Other things need to be analyzed regarding dynamic bindings like this.
+
+
+
+Variable lifetime
+
+In order for primitives to work fast and have no unnecessary baggage, the enclosing scope concept is made into the type trait system more deeply.
+Namely, Whenever we want to do a dynamic binding with variables that have limited scopes, we must manage this seamlessly and safely.
+The bound variable will have its enclosing scope detected by the compiler and hidden sections will be added to classes and global scopes to handle the destruction of the binding just before the bound variable is gone.
+
+Types by default support this, as its an encouraged practice to express logic, but types that want to be leaner can adhere to a specific trait to choose to opt-out of this support by the compiler.
+Binding information is part of the meta section of a class; This data is handled by the compiler and does not belong to the body of the structure data and is handled by compiler.
+
+The compiler handles this by generating code to handle bindings dynamically in the right places, like constructors and destructors, hidden away from user control.
+
+Generic programming
+
+Highly encouraged concepts driven development, made fast with fast module implementations. The recommendation is to keep type specializations very limited and succint.
+Types shouldn't be overly configurable and over engineered, but focused on the task at hand.
+
+
+
+
+

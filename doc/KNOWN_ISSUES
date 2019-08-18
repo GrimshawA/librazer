@@ -1,2 +1,0 @@
-
-Somehow, declaring members in different order is creating undefined behavior. 

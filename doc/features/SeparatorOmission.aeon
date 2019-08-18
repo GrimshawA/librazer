@@ -1,9 +1,0 @@
-function HelloWorld()
-{
-	if(a==b)
-		doThings() // no need for ;, the newline acts as delimiter
-
-	testThis()
-	testThat()
-	a = b
-}

@@ -4,8 +4,9 @@ App: class {
 	
 	let a: b + 10
 	let b: c + 10
-	let c: a + 100
+	//let c: a + 100
 
+	[AttributeTest]
 	function main() {
 
 

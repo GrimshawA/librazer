@@ -409,6 +409,11 @@ begin:
 
 
         }
+        else if (Tok.type == RZTK_OPENSQBRACKET)
+        {
+            auto* attr = parseAttribute();
+            continue;
+        }
         else if (Tok.type == RZTK_ENUM)
         {
             AEEnumNode* e = parseEnum();
@@ -437,6 +442,16 @@ RzLetNode* RzParser::parseLet()
 
     node->bindingexpr = expr;
     return node;
+}
+
+RzAttributeNode* RzParser::parseAttribute()
+{
+    EXPECT(RZTK_OPENSQBRACKET);
+    auto* attr = new RzAttributeNode(Tok.text);
+    getNextToken();
+    EXPECT(RZTK_CLOSESQBRACKET);
+
+    return attr;
 }
 
 AEFieldNode* RzParser::parseStructField()

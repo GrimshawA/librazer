@@ -3,11 +3,6 @@
 #include <iostream>
 #include <string>
 
-void print2(std::string s)
-{
-	std::cout << s << std::endl;
-}
-
 RzValue ToValue(aeNodeValue* value)
 {
 	RzValue r;
@@ -135,8 +130,6 @@ RzValue RzParser::parseDataObjectBody()
 			getNextToken();
 			RzValue v = parseProperty();
 			obj.setValue(identifier, v);
-
-			print2("parsed property for " + identifier);
 		}
         else if (Tok.type == RZTK_OPENBRACKET)
 		{

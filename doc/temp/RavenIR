@@ -1,0 +1,63 @@
+# Intermediate representation will be a flattened, imperative data structure with high level instructions to achieve consistency of all of the raven language constructs.
+
+All expressions are in SSA form, with the right order and potential optimizations already done on it.
+
+Generators may take the IR as their source, the UG (unified graph) and even map one to the other for additional information extraction.
+
+Each block in the language becomes one IR unit. In theory we could unify many blocks into
+a single IR block but that would effectively have us lose information about structural decisions done by the programmer and we want to retain these as these structural decisions might actually map to architectural decisions in the target framework.
+
+IR UNIT
+=======
+
+- Order independent *IR sequence* list
+- Metadata
+
+IR Sequence
+===========
+
+Sequences are one sequential set of steps which work to maintain integrity
+of some state according to the specified rules.
+
+All sequences have a REACT instruction as their very first descriptor. This instruction 
+explicitly binds to a given event which signals state changes or explicit triggers with no value. The instruction has information about what to listen to, in order to start the
+instructions that come next in sequence.
+
+Next, we have multiple statements that must be done in order to enforce state correctness.
+
+- Branches
+	Branches are just differing paths of executing depending on an expression's truth value
+- Tables
+	Like branches but instead execute different states depending
+- Expression
+	Simplified expressions in SSA form to multiple operations
+- Invocation
+	Sometimes void invocations ocurr for side effects but mostly these are functional style transformations of some input data.
+
+NOTIFY instruction is meant to signal that the value of something has changed in a outer variable, a variable that lives outside the scope of this unit. For example, if our reactive sequence happens to affect an entity's property "position", we always want to have the "NOTIFY position" instruction in there because the generated code might want to account for that change completely outside the realm of our language's systems.
+
+IMPORT instruction is all about linking all local names of properties to their external real entities. For convenience, this mapping is controllable to keep code as expressive as possible. "IMPORT X.a a" reads as import the property a of X with a local name of a.
+
+In that case, the fully custom target framework will have to hook into these notifies with their own solution and just react to it how they see fit.
+
+By convention there will be a textual representation of the IR format to allow for 
+human communication and documentation. Though, it is aimed the IR will be resident in memory only.
+
+======================================
+Naming:
+
+Using the IMPORT instruction above we create local names to do arithmetic with, they might resemble what was on the original source code but not necessarily. For example if we have conflicting names when merging logical units in the end generation process, we will have to alias one of them to something else to keep things coherent.
+
+Temporary variables will also show in here as important parts of intermediate calculations or useful cached values.
+
+=======================================
+Dependency management:
+
+By definition, these units are purely logical and therefore they are not in charge of upkeeping state in any way. The main reason these units do not have any sort of control
+over the entities is that how they are stored and managed varies greatly and to do it optimally, it can only be done by having knowledge of ALL the units that affect it.
+
+Within the realm of a single logical unit, we just don't know about other units also
+reading/writing to the same entities.
+
+Therefore, all logical units are dependency injected by design: they express a set of rules
+and they wait to apply them to real objects on demand.

@@ -1,0 +1,30 @@
+This aims to document one specific requirement for the platform, which is the need
+to support spontaneous triggers coming from the target framework (the runtime).
+
+In essence, the target framework must be allowed to emit by one of its native calls a named trigger. For the example, let's assume a C++ game engine as runtime.
+
+We have a physics engine, which was just updated in the C++ side and we know it changed all RigidBody entities that are alive in our data set;
+
+So in a sort of pseudo-code:
+	void NativeWork()
+	{
+		physics.Step();
+		Raven.NOTIFY("RigidBody[]"); // informs the "engine" that all rigid bodies have changed, which makes all dependent code run!
+	}
+
+
+So naturally our engine will understand that the RigidBody entities are now fully invalidated, which will start a chain reaction for all dependent properties:
+
+// This binding lives somewhere in a logical unit
+sprite.position: rigidBody.position
+
+Because we know that all rigid bodies have changed, we can deliver that event to all logical units that react to it, namely the one above! In IR:
+
+REACT RigidBody[]
+sprite.position <- rigidBody.position
+
+It is of extreme important to notice that the [] in the REACT denote that the logical unit 
+is free to do bulk updates, which in essence might mean the generator COULD generate a
+tight for loop updating all sprites at once instead of handling things separately.
+
+Another meaningful note is that any external code is free to dispatch a NOTIFY to any type, object or any other data set. That could be used as a way to refresh the execution of certain logic.

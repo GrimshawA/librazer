@@ -1,0 +1,19 @@
+AST MACROS
+
+def indirect_property () => (*obj)::property
+	get$() => $1;
+
+
+The above would be a clean way to make a macro for short hand syntax to
+forward one property to another.
+
+===
+
+
+
+
+So that when the parser finds such patterns, they will be "user grammar" and converted into the user defined transformed code and then parse that once its core language.
+
+Many high level expression utilities could just be built on top of the most elementary ones.
+
+Through the customization users can build their own DSL to make things even more powerful1!

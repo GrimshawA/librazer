@@ -1,0 +1,66 @@
+declarative for games cpp -> apex plugin
+
+[APEX]
+apex.entity monster1
+{
+	skin: sprite {MonsterSprite1}
+}
+
+apex.entity crossbow
+{
+	skin: CrossBowSprite
+}
+
+apex.entity spear
+{
+	skin: SpearSprite
+	speed: 80
+}
+
+controller crossbow_controller
+{
+	pawn.angle: angleTo(pawn.position, input.touch.position)
+
+	shooting: input.touch.pressed
+
+	shooter_timer: timer(200ms) => shooting
+
+	spear_factory: factory {
+		bind: shooter_timer
+		entity: spear
+		params: {
+			new.angle: pawn.angle
+			new.position: pawn.position
+		}
+	}
+}
+
+controller spear_controller
+{
+	collided: detect_collision(pawn, monsters[])
+
+	pawn.alive: !collided
+	pawn.position: pawn.position + pawn.direction * dt
+}
+
+[APEX] 
+controller monster_controller
+{
+	take_damage_event: event // just discrete triggers that can be used as inputs for bindings
+
+	frozen: false
+	moving: !frozen
+
+	speed: moving ? 45 : 0
+	pawn.skin.state: takingDamage ? "takeDmg" : moving ? "walk" : "idle"
+	pawn.skin.color: takingDamage ? 
+
+	takingDamage: timer(300ms)
+	{
+		bind: take_damage_event
+	}
+
+	tick: {
+		pawns.move(speed)
+	}
+}

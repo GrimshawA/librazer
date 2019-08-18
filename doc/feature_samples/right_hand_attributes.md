@@ -1,3 +1,8 @@
+As in the RightHandedAttributes.aeon technical preview source, we can observe the language promotes
+right hand sided attributes to function declaration on classes, to promote readability and make it as little
+verbose as possible. It also promotes alignment and code organization, as opposed to showing return type first in the function declaration.
+
+
 class RightHandedAttributes
 {
 public:

@@ -39,7 +39,8 @@ enum NodeTypes
 	AEN_ENUM,
 	AEN_TYPEDEF,
 	AEN_OBJECTINIT,
-	AEN_IMPORT
+    AEN_IMPORT,
+    AEN_ATTRIBUTE
 };
 
 class AEBaseNode
@@ -83,6 +84,23 @@ public:
 	}
 
 	std::string symbol;
+};
+
+class RzAttributeNode : public AEBaseNode
+{
+public:
+    RzAttributeNode()
+    {
+        m_nodeType = AEN_ATTRIBUTE;
+    }
+
+    RzAttributeNode(const std::string& text)
+    {
+        m_nodeType = AEN_ATTRIBUTE;
+        contents = text;
+    }
+
+    std::string contents;
 };
 
 #endif // aeNodeBase_h__
