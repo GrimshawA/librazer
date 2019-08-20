@@ -1,0 +1,5 @@
+- Implement a String class for the standard library
+- Implement pointer support and basic mem operators
+- Specify the static reflection API
+- Experiment with some IR to VM instructions work
+- Template specialization with basic types

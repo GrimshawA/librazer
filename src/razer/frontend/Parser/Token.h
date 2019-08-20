@@ -31,6 +31,7 @@ enum TokenType
     RZTK_DELETE,
     RZTK_SIZEOF,
     RZTK_TYPEOF,
+    RZTK_TEMPLATE,
     RZTK_AND,
     RZTK_IS,
     RZTK_ISNOT,

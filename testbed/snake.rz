@@ -17,31 +17,27 @@ App: class {
 
     function main() {
     	snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
-    	snake.push(new SnakeBlock());
-    	//snake.push(new SnakeBlock());
-    	//snake.push(new SnakeBlock());
 
 		size = 4;
     	i = 0;
     	time = 5;
+    	
+	SnakeBlock s = snake.at(0);
+		s.x = 500;
 
     	mTimer = new Timer();
 		
-		for (i = 0; i < snake.size(); ++i)
-		{
-			SnakeBlock s = snake.at(i);
-			s.y = 50 * i;
-		}
-
 		window.open();
 		window.setFillColor(255, 0, 255);
+
+		//update();
+
+
 
 		while(window.running()) {
 			window.poll();
 
-			update();
+			// update();
 
 			window.setFillColor(0, 0, 0);
 			window.drawRect(0, 0, 400, 400);
@@ -59,19 +55,9 @@ App: class {
 
     function update() {
 
-		/*int32 dt = mTimer.restart();
-
-		time = time - dt;*/
-
 		SnakeBlock s = snake.at(0);
+		s.x = 500;
 
-		s.x = 300;
 		
-		/*if (time < 0) {
-			time = 5;
-			//timerEvent(wnd);
-			
-			
-		}*/
 	}
 }

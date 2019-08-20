@@ -389,6 +389,8 @@ RzToken RzTokenParser::getToken() {
             token.type = RZTK_TYPEDEF;
         else if (token.text == "and")
             token.type = RZTK_AND;
+        else if (token.text == "template")
+            token.type = RZTK_TEMPLATE;
         else if (token.text == "is")
             token.type = RZTK_IS;
         else if (token.text == "isnt")

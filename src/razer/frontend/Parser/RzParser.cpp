@@ -188,6 +188,21 @@ bool RzParser::startParse(RzTokenParser& lexer)
             aeNodeNamespace* namespace_node = parseNamespace();
             root->add(namespace_node);
         }
+        else if (Tok.type == RZTK_TEMPLATE)
+        {
+            getNextToken();
+
+            // <T> for now
+            getNextToken();
+            getNextToken();
+            getNextToken();
+
+            RzTemplateNode* templateNode = new RzTemplateNode();
+            templateNode->params.push_back(nullptr);
+            templateNode->body = parseTopLevelIdentifer();
+
+            root->add(templateNode);
+        }
         else if (Tok.type == RZTK_USING)
         {
             /*aeNodeUsing* using_node = new aeNodeUsing();
@@ -305,6 +320,8 @@ AEStructNode* RzParser::parseClass()
 
 AEStructNode* RzParser::parseTopLevelIdentifer()
 {
+    skipNewlines();
+
     AEStructNode* classDecl = new AEStructNode();
     classDecl->m_name = Tok.text;
 

@@ -167,4 +167,17 @@ public:
 	aeNodeFunction* createDestructor();
 };
 
+class aeNodeIdentifier;
+
+/*
+ * Template wrapper node for other entities,
+ * Used for template specialization into concrete types
+ */
+class RzTemplateNode : public AEBaseNode
+{
+public:
+    std::vector<aeNodeIdentifier*> params;
+    AEStructNode*                  body;
+};
+
 #endif // AESTRUCTNODE_H__
