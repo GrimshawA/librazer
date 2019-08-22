@@ -2,7 +2,7 @@
 #define aeNodeBase_h__
 
 #include <razer/runtime/QualType.h>
-#include <razer/ir/ir.hpp>
+#include <razer/ir/ir_builder.hpp>
 
 #include <vector>
 #include <memory>

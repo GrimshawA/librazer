@@ -62,7 +62,7 @@ void RegisterStd(RzEngine* ctx)
     ArrayT::registerApi(stdModule);
 	Window::registerApi(stdModule);
 
-    LoadFileToModule(stdModule, "Chrono.rz");
+    //LoadFileToModule(stdModule, "Chrono.rz");
 
     RegisterIO(stdModule);
     RegisterNet(stdModule);

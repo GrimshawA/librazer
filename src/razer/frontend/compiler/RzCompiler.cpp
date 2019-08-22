@@ -396,9 +396,9 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     {
         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
 
-        IRBuilder builder;
+        IRBuilder builder (irCtx);
         funcNode->emitIR(builder);
-        builder.dumpToFile("ir.txt");
+        builder.func.path = funcNode->m_name;
 
         RzFunction* fn = compileFunction(funcNode);
         if (!fn) {

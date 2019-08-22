@@ -1,12 +1,16 @@
 import std
 
 App: class {
-	i: int32
-
-    function main() {
+	function main() {
     	f ();
-    	a = b * (c + d);
-
-    	Window w = new Window();
     }
 }
+
+/*
+
+% type App
+
+func App.main
+call f
+
+*/

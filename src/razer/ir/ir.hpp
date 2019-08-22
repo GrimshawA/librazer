@@ -104,35 +104,23 @@ private:
 class IRFunction
 {
 public:
+    std::string name;
+    std::string path;
     std::vector<IRInstruction*> instructions;
 };
 
-class IRBuilder
+/*
+ * An IR context holds a set of functions and additional metadata
+ * I.e One entire module is usually compiled into one IRContext
+ */
+class IRContext
 {
 public:
 
-    void beginBlock();
-    void endBlock();
-    void call();
-    IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
-    IRValue* newObject();
-    IRValue* newType(const std::string& name);
-
-    void Assign() {}
-
-
-    IRValue* makeValue();
-    IRValue* makeTempValue();
+    void writeToFile(const std::string& filename);
 
 public:
-
-    IRValue* getValue(const std::string& name);
-
-    void dumpToFile(const std::string& filename);
-
-public:
-    IRFunction func;
-    int tempId = 1;
+    std::vector<IRFunction> functions;
 };
 
 #endif // IR_HPP

@@ -7,6 +7,7 @@
 #include <razer/frontend/compiler/aeCompilerConv.h>
 #include <razer/runtime/Module.h>
 #include <razer/frontend/compiler/BuildReport.h>
+#include <razer/ir/ir_builder.hpp>
 
 #include <vector>
 #include <stack>
@@ -92,6 +93,7 @@ public:
     bool                                m_logExprStmt;
     bool                                m_logExprOps;
     bool                                m_outputLogs;
+    IRContext                           irCtx;
 
 public:
 

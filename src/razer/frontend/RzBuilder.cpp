@@ -70,9 +70,13 @@ bool RzBuilder::build(const Batch& b)
     for (int i = 0; i < parseTrees.size(); ++i)
     {
         bool r = compiler.generate(parseTrees[i]);
+
+        compiler.irCtx.writeToFile("ir.txt");
+
         if (!r)
             return false;
     }
+
 
     return true;
 }
