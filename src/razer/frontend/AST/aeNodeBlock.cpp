@@ -22,7 +22,7 @@ IRValue* aeNodeBlock::emitIR(IRBuilder& builder)
                 break;
 
             case AEN_FUNCTIONCALL:
-                builder.call();
+            builder.createCall({});
             break;
 
             case AEN_BINARYOP:

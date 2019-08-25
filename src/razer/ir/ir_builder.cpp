@@ -21,9 +21,24 @@ void IRBuilder::endBlock()
 
 }
 
-void IRBuilder::call()
+void IRBuilder::createStore(IRValue* memory, IRValue* value)
 {
-    func.instructions.push_back(new IRInstructionCall());
+    func.instructions.push_back(new IRInstructionStore(memory, value));
+}
+
+IRValue* IRBuilder::createCall(const std::vector<IRValue*>& args)
+{
+    auto* call = new IRInstructionCall();
+    call->args = args;
+    func.instructions.push_back(call);
+    return makeValue();
+}
+
+IRValue* IRBuilder::createLocalAlloc()
+{
+    auto* alloc = new IRInstructionStackAlloc();
+    func.instructions.push_back(alloc);
+    return makeValue();
 }
 
 IRValue* IRBuilder::binaryOp(std::string op, IRValue* lhs, IRValue* rhs)
@@ -34,18 +49,17 @@ IRValue* IRBuilder::binaryOp(std::string op, IRValue* lhs, IRValue* rhs)
     return result;
 }
 
-IRValue* IRBuilder::newObject()
+IRValue* IRBuilder::newObject(IRValue* typeValue)
 {
     auto* tmp = makeTempValue();
     func.instructions.push_back(new IRInstructionNew());
     return tmp;
 }
 
-IRValue* IRBuilder::newType(const std::string& name)
+IRValue* IRBuilder::createReturn()
 {
-    auto* tmp = makeTempValue();
-    func.instructions.push_back(new IRInstructionType(name));
-    return tmp;
+    func.instructions.push_back(new IRInstructionReturn());
+    return nullptr;
 }
 
 IRValue* IRBuilder::makeValue()
@@ -58,6 +72,16 @@ IRValue* IRBuilder::makeTempValue()
     auto* result = makeValue();
     result->name = "temp" + std::to_string(tempId++);
     return result;
+}
+
+IR::Type IRBuilder::getLastStmtType()
+{
+    if (func.instructions.empty())
+    {
+        return IR::Undefined;
+    }
+
+    return func.instructions.back()->type;
 }
 
 IRValue* IRBuilder::getValue(const std::string& name)

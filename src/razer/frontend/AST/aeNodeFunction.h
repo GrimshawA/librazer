@@ -27,7 +27,6 @@ public:
 
 	std::vector<aeNodeVarDecl*>                      m_parameters;
 	std::vector<RzQualType>                       m_paramTypes;
-	std::vector<std::unique_ptr<AEStmtNode>> m_statements;
 	std::string                                   m_name;
 	RzQualType                                    m_returnType;
 	std::unique_ptr<aeNodeBlock>                  m_block;

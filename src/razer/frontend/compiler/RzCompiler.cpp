@@ -8,6 +8,7 @@
 #include <razer/runtime/RzEngine.h>
 #include <razer/utils/DebugDefs.h>
 #include <razer/utils/Logger.h>
+#include <razer/frontend/compiler/emit_function.hpp>
 
 #include <cassert>
 #include <unordered_map>
@@ -396,9 +397,8 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     {
         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
 
-        IRBuilder builder (irCtx);
-        funcNode->emitIR(builder);
-        builder.func.path = funcNode->m_name;
+        EmitFunction emitter (*funcNode, irCtx);
+        emitter.compile();
 
         RzFunction* fn = compileFunction(funcNode);
         if (!fn) {
@@ -437,6 +437,13 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
             return RzCompileResult::aborted;
         }
     }
+
+    std::vector<IRType::Field> irfields;
+    for (auto& f : clss->m_fields)
+    {
+        irfields.push_back({f->name});
+    }
+    irCtx.createType(clss->m_name, irfields);
 
     m_classes.pop_back();
 

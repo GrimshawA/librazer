@@ -11,15 +11,18 @@ public:
 
     void beginBlock();
     void endBlock();
-    void call();
-    IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
-    IRValue* newObject();
-    IRValue* newType(const std::string& name);
 
-    void Assign() {}
+    void     createStore(IRValue* memory, IRValue* value);
+    IRValue* createCall(const std::vector<IRValue*>& args);
+    IRValue* createLocalAlloc();
+    IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
+    IRValue* newObject(IRValue* typeValue);
+    IRValue* createReturn();
 
     IRValue* makeValue();
     IRValue* makeTempValue();
+
+    IR::Type getLastStmtType();
 
 public:
 

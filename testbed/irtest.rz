@@ -1,8 +1,11 @@
 import std
 
 App: class {
+	w2: Window
+
 	function main() {
-    	f ();
+    	Window w = new Window();
+    	w.poll();
     }
 }
 
@@ -11,6 +14,9 @@ App: class {
 % type App
 
 func App.main
-call f
+%this = ref App
+%w = new Window
+%t1 = call 'Window.poll' '%w'
+ret
 
 */

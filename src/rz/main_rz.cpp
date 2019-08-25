@@ -51,6 +51,7 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
     }
 
     ctx.getModule("main")->dumpToFile("code.dmp");
+    ctx.getModule("test")->dumpToFile("codeir.dmp");
 
     AEObject* myObject = ctx.createObject("App");
     if (!myObject)

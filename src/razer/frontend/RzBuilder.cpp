@@ -8,6 +8,8 @@
 #include <razer/frontend/AST/RzModuleNode.h>
 #include <razer/utils/FileUtils.h>
 
+#include <razer/codegen/cg_vm.hpp>
+
 RzBuilder::RzBuilder(RzEngine& engine)
     : m_engine(engine)
 {
@@ -77,6 +79,8 @@ bool RzBuilder::build(const Batch& b)
             return false;
     }
 
+    CodeGenVM vm (&m_engine);
+    vm.build(compiler.irCtx);
 
     return true;
 }

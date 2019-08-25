@@ -8,15 +8,14 @@ namespace IR
 {
     enum Type {
         ASSIGN,
-        ALLOCATE
+        StackAlloc,
+        CALL,
+        New,
+        Return,
+        Store,
+        Undefined
     };
 }
-
-class IRModule
-{
-
-};
-
 
 class IRValue
 {
@@ -41,17 +40,78 @@ public:
     }
 };
 
+class IRInstructionReturn : public IRInstruction
+{
+public:
+    explicit IRInstructionReturn()
+    {
+        type = IR::Return;
+    }
+
+    std::string prettyString() override {
+        return "ret";
+    }
+};
+
 class IRInstructionCall : public IRInstruction
 {
 public:
-    std::string prettyString() override {
-        return "Call";
+    explicit IRInstructionCall()
+    {
+        type = IR::CALL;
     }
+
+    std::string prettyString() override {
+        std::string str = "x <- call ";
+        for (auto& a : args)
+        {
+            str += a->name + ", ";
+        }
+        return str;
+    }
+
+    std::vector<IRValue*> args;
+};
+
+class IRInstructionStackAlloc : public IRInstruction
+{
+public:
+    explicit IRInstructionStackAlloc()
+    {
+        type = IR::StackAlloc;
+    }
+
+    std::string prettyString() override {
+        return "x <- alloc";
+    }
+};
+
+class IRInstructionStore : public IRInstruction
+{
+public:
+    explicit IRInstructionStore(IRValue* memory, IRValue* value)
+        : memory(memory)
+        , value(value)
+    {
+        type = IR::Store;
+    }
+
+    std::string prettyString() override {
+        return "store x y";
+    }
+
+    IRValue* memory = nullptr;
+    IRValue* value = nullptr;
 };
 
 class IRInstructionNew : public IRInstruction
 {
 public:
+    explicit IRInstructionNew()
+    {
+        type = IR::New;
+    }
+
     std::string prettyString() override {
         return "New";
     }
@@ -69,7 +129,7 @@ public:
     }
 
     std::string prettyString() override {
-        //if (!lhs || !rhs)
+        if (!lhs || !rhs)
             return {};
 
         std::string res;
@@ -85,19 +145,34 @@ public:
 };
 
 /* Defining a type */
-class IRInstructionType : public IRInstruction
+class IRType
 {
 public:
-    explicit IRInstructionType(const std::string& name)
+
+    struct Field
+    {
+        std::string name;
+    };
+
+    explicit IRType(const std::string& name)
     {
         this->name = name;
     }
 
-    std::string prettyString() override {
-        return "x <- type {}";
+    std::string prettyString() {
+        std::string str = "type " + name + " {\n";
+
+        for (auto& f : fields)
+        {
+            str += "\t" + f.name + "\n";
+        }
+
+        return str += "}\n\n";
     }
 
-private:
+
+//private:
+    std::vector<Field> fields;
     std::string name; // anonymous is viable
 };
 
@@ -117,9 +192,12 @@ class IRContext
 {
 public:
 
+    void createType(const std::string& name, const std::vector<IRType::Field>& fields);
+
     void writeToFile(const std::string& filename);
 
 public:
+    std::vector<IRType> types;
     std::vector<IRFunction> functions;
 };
 
