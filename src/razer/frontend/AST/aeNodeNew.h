@@ -7,6 +7,8 @@
 #include <vector>
 #include <stdint.h>
 
+class RzInitBlock;
+
 /**
 	\class aeNodeNew
 	\brief Represents a new MyClass expression
@@ -20,6 +22,7 @@ public:
     explicit aeNodeNew(aeNodeExpr* expr);
 
     aeNodeExpr* newExpr = nullptr;
+    RzInitBlock* initBlock = nullptr;
 
 	RzQualType m_instanceType;
 	std::string type;

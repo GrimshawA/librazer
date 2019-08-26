@@ -173,7 +173,7 @@ public:
 
         std::string res;
         res += result->name + " <- ";
-        res += op + " " + lhs->name + " " + rhs->name;
+        res += lhs->name + " " + op + " " + rhs->name;
         return res;
     }
 

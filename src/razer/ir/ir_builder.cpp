@@ -47,7 +47,14 @@ IRValue* IRBuilder::createLocalAlloc()
     return makeValue();
 }
 
-IRValue* IRBuilder::binaryOp(std::string op, IRValue* lhs, IRValue* rhs)
+IRValue* IRBuilder::createHeapAlloc()
+{
+    auto* alloc = new IRInstructionStackAlloc();
+    func.instructions.push_back(alloc);
+    return makeValue();
+}
+
+IRValue* IRBuilder::createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs)
 {
     auto* result = makeValue();
     result->name = "temp" + std::to_string(tempId++);

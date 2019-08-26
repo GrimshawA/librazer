@@ -76,7 +76,12 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
     switch(expr->m_nodeType)
     {
     case AEN_BINARYOP: {
-        return nullptr;
+        aeNodeBinaryOperator& op = static_cast<aeNodeBinaryOperator&>(*expr);
+
+        auto* lhs = compileExpression(op.operandA);
+        auto* rhs = compileExpression(op.operandB);
+
+        return builder.createBinaryOp(op.oper, lhs, rhs);
     }
 
     case AEN_ACCESSOPERATOR: {
@@ -104,13 +109,24 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
 
     case AEN_NEW: {
         auto& ident = static_cast<aeNodeNew&>(*expr);
-        return builder.newObject(nullptr);
+        return compileNewExpression(ident);
     }
 
 
     }
 
     return nullptr;
+}
+
+IRValue* EmitFunction::compileNewExpression(aeNodeNew& newNode)
+{
+    // Create the object in the heap and get a ptr to it
+    auto* mem = builder.createHeapAlloc();
+
+    // Call the constructor
+    builder.createCall({});
+
+    return mem;
 }
 
 void EmitFunction::compileFor(aeNodeFor& forNode)

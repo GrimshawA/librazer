@@ -40,7 +40,8 @@ enum NodeTypes
 	AEN_TYPEDEF,
 	AEN_OBJECTINIT,
     AEN_IMPORT,
-    AEN_ATTRIBUTE
+    AEN_ATTRIBUTE,
+    AEN_INITBLOCK
 };
 
 class AEBaseNode

@@ -26,7 +26,7 @@ IRValue* aeNodeBinaryOperator::emitIR(IRBuilder& builder)
 {
     auto* lhs = operandA->emitIR(builder);
     auto* rhs = operandB->emitIR(builder);
-    return builder.binaryOp(oper, lhs, rhs);
+    return builder.createBinaryOp(oper, lhs, rhs);
 }
 
 bool aeNodeBinaryOperator::isRelational()

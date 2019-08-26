@@ -55,7 +55,10 @@ public:
 
     void compile();
 	void compileBlock(aeNodeBlock& blk);
-	IRValue* compileExpression(aeNodeExpr* expr);
+
+    IRValue* compileExpression(aeNodeExpr* expr);
+    IRValue* compileNewExpression(aeNodeNew& newNode);
+
 	void compileFor(aeNodeFor& forNode);
 
     IRValue* locateIdentifier(aeNodeIdentifier& identifier);

@@ -16,3 +16,6 @@ new-expression:
 	new <primary-expression> 
 	new <primary-expression> <struct-body>
 	new <struct-body>
+
+react-statement:
+	on <expression>: <block>

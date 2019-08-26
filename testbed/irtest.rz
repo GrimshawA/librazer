@@ -16,7 +16,14 @@ App: class {
 	on v: log("test");
 
 	function main() {
-    	Window w = new Window();
+    	Window w = new Window()
+    	{
+
+    	};
+
     	w.poll();
+
+    	int32 x = 50;
+    	x = x + 50;
     }
 }

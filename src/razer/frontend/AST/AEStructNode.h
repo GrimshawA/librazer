@@ -182,4 +182,13 @@ public:
     AEStructNode*                  body;
 };
 
+class RzInitBlock : public AEBaseNode
+{
+public:
+    explicit RzInitBlock()
+    {
+        m_nodeType = AEN_INITBLOCK;
+    }
+};
+
 #endif // AESTRUCTNODE_H__

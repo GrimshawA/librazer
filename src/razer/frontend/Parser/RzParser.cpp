@@ -850,6 +850,17 @@ std::vector<aeNodeVarDecl*> RzParser::parseParamsList()
     return temp;
 }
 
+RzInitBlock* RzParser::parseInitBlock()
+{
+    auto* blk = new RzInitBlock;
+
+    getNextToken();
+    skipNewlines();
+    getNextToken();
+
+    return blk;
+}
+
 aeNodeNew* RzParser::parseNew()
 {
     if (Tok.type != RZTK_NEW)
@@ -863,6 +874,13 @@ aeNodeNew* RzParser::parseNew()
     node->newExpr = new aeNodeIdentifier(typeName.str());
     getNextToken();
     getNextToken();
+
+    skipNewlines();
+
+    if (Tok.type == RZTK_OPENBRACKET)
+    {
+        node->initBlock = parseInitBlock();
+    }
 
     return node;
 }

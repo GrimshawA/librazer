@@ -111,6 +111,7 @@ public:
 		std::vector<aeNodeExpr*> parseArgsList();
 		std::vector<aeNodeVarDecl*> parseParamsList();
 		aeNodeNew*               parseNew();
+        RzInitBlock*             parseInitBlock();
         aeNodeImport*            parseImport();
 
 		void                     serialize(const std::string& filename);

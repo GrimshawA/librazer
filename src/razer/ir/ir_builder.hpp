@@ -16,7 +16,8 @@ public:
     void     createJumpStmt(IRValue* target);
     IRValue* createCall(const std::vector<IRValue*>& args);
     IRValue* createLocalAlloc();
-    IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
+    IRValue* createHeapAlloc();
+    IRValue* createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs);
     IRValue* newObject(IRValue* typeValue);
     IRValue* createReturn();
     IRValue* createLabelStmt();
