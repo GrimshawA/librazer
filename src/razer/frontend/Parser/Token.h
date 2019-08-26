@@ -68,6 +68,7 @@ enum TokenType
     RZTK_USING,
     RZTK_TILDE,
     RZTK_ENUM,
+	RZTK_ON,
     RZTK_UNION,
     RZTK_CAST,
     RZTK_HANDLE,

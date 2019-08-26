@@ -93,4 +93,5 @@ App: class {
 
     	// check for 4 in finite range of natural 1..10 numbers
     	if (4 in [1..10]) {}
+    }
 }

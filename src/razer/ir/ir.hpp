@@ -12,7 +12,9 @@ namespace IR
         CALL,
         New,
         Return,
+        Jump,
         Store,
+        Label,
         Undefined
     };
 }
@@ -51,6 +53,23 @@ public:
     std::string prettyString() override {
         return "ret";
     }
+
+    IRValue* value = nullptr;
+};
+
+class IRInstructionLabel : public IRInstruction
+{
+public:
+	explicit IRInstructionLabel()
+	{
+		type = IR::Label;
+	}
+
+	std::string prettyString() override {
+		return "label";
+	}
+
+	IRValue* value = nullptr;
 };
 
 class IRInstructionCall : public IRInstruction
@@ -81,9 +100,13 @@ public:
         type = IR::StackAlloc;
     }
 
-    std::string prettyString() override {
+    std::string prettyString() override
+    {
         return "x <- alloc";
     }
+
+    IRValue* lhs = nullptr;
+    IRValue* ty = nullptr;
 };
 
 class IRInstructionStore : public IRInstruction
@@ -102,6 +125,22 @@ public:
 
     IRValue* memory = nullptr;
     IRValue* value = nullptr;
+};
+
+class IRInstructionJump : public IRInstruction
+{
+public:
+	explicit IRInstructionJump(IRValue* target)
+			: target(target)
+	{
+		type = IR::Jump;
+	}
+
+	std::string prettyString() override {
+		return "jmp";
+	}
+
+	IRValue* target = nullptr;
 };
 
 class IRInstructionNew : public IRInstruction

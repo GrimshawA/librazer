@@ -426,6 +426,11 @@ begin:
 
 
         }
+		else if (Tok.type == RZTK_ON)
+		{
+			auto* onStmt = parseOnStmt();
+			classDeclNode->m_onStmts.emplace_back(onStmt);
+		}
         else if (Tok.type == RZTK_OPENSQBRACKET)
         {
             auto* attr = parseAttribute();
@@ -459,6 +464,31 @@ RzLetNode* RzParser::parseLet()
 
     node->bindingexpr = expr;
     return node;
+}
+
+RzOnNode* RzParser::parseOnStmt()
+{
+	RzOnNode* node = new RzOnNode();
+
+	getNextToken();
+
+	node->expr = parseExpression();
+
+	EXPECT(RZTK_COLON);
+
+	if (Tok.type == RZTK_OPENBRACKET)
+	{
+		node->blk = parseBlock();
+	}
+	else
+	{
+		node->blk = new aeNodeBlock();
+		node->blk->m_items.emplace_back(parseExpression());
+	}
+
+	getNextToken();
+
+	return node;
 }
 
 RzAttributeNode* RzParser::parseAttribute()

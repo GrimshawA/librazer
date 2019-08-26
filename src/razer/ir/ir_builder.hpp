@@ -13,11 +13,13 @@ public:
     void endBlock();
 
     void     createStore(IRValue* memory, IRValue* value);
+    void     createJumpStmt(IRValue* target);
     IRValue* createCall(const std::vector<IRValue*>& args);
     IRValue* createLocalAlloc();
     IRValue* binaryOp(std::string op, IRValue* lhs, IRValue* rhs);
     IRValue* newObject(IRValue* typeValue);
     IRValue* createReturn();
+    IRValue* createLabelStmt();
 
     IRValue* makeValue();
     IRValue* makeTempValue();

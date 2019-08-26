@@ -337,6 +337,8 @@ RzToken RzTokenParser::getToken() {
             token.type = RZTK_DELETE;
         else if (token.text == "sizeof")
             token.type = RZTK_SIZEOF;
+		else if (token.text == "on")
+			token.type = RZTK_ON;
         else if (token.text == "typeof")
             token.type = RZTK_TYPEOF;
         else if (token.text == "operator")

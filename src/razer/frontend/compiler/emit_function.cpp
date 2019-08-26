@@ -51,6 +51,12 @@ void EmitFunction::compileBlock(aeNodeBlock& blk)
             break;
         }
 
+
+        case AEN_FOR: {
+			compileFor((aeNodeFor&)*stmt);
+			break;
+		}
+
         default:
             break;
 
@@ -105,6 +111,21 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
     }
 
     return nullptr;
+}
+
+void EmitFunction::compileFor(aeNodeFor& forNode)
+{
+	// init expression
+
+	// for label
+	IRValue* label = builder.createLabelStmt();
+
+	compileBlock(*forNode.block.get());
+
+	IRValue* updateExprValue = compileExpression(forNode.incrExpr.get());
+
+	// Finally
+	builder.createJumpStmt(label);
 }
 
 IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier)

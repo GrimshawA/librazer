@@ -26,6 +26,12 @@ void IRBuilder::createStore(IRValue* memory, IRValue* value)
     func.instructions.push_back(new IRInstructionStore(memory, value));
 }
 
+void IRBuilder::createJumpStmt(IRValue* target)
+{
+	auto* jump = new IRInstructionJump(target);
+	func.instructions.push_back(jump);
+}
+
 IRValue* IRBuilder::createCall(const std::vector<IRValue*>& args)
 {
     auto* call = new IRInstructionCall();
@@ -60,6 +66,13 @@ IRValue* IRBuilder::createReturn()
 {
     func.instructions.push_back(new IRInstructionReturn());
     return nullptr;
+}
+
+IRValue* IRBuilder::createLabelStmt()
+{
+	auto* label = new IRInstructionLabel();
+	func.instructions.push_back(label);
+	return makeValue();
 }
 
 IRValue* IRBuilder::makeValue()

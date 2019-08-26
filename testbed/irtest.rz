@@ -1,22 +1,22 @@
 import std
 
+Another: class {
+    a: int32
+    b: int32
+}
+
 App: class {
 	w2: Window
+	v: Another
+
+	on v: {
+	    log("Hello world");
+	}
+
+	on v: log("test");
 
 	function main() {
     	Window w = new Window();
     	w.poll();
     }
 }
-
-/*
-
-% type App
-
-func App.main
-%this = ref App
-%w = new Window
-%t1 = call 'Window.poll' '%w'
-ret
-
-*/

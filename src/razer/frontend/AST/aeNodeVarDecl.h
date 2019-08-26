@@ -2,6 +2,7 @@
 #define aeNodeVarDecl_h__
 
 #include <razer/frontend/AST/AEBaseNode.h>
+#include "aeNodeBlock.h"
 
 class aeNodeExpr;
 
@@ -52,7 +53,21 @@ public:
 
 public:
 
-//    RzLetNode();
+
+//    std::string str() const;
+};
+
+
+class RzOnNode : public AEStmtNode
+{
+public:
+
+	aeNodeExpr* expr;
+	aeNodeBlock* blk;
+
+public:
+
+//    RzOnNode();
 
 //    std::string str() const;
 };

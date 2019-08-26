@@ -2,7 +2,7 @@
 #include <razer/vm/InstructionSet.h>
 #include <razer/vm/VirtualMachine.h>
 #include <razer/runtime/RzEngine.h>
-#include <razer/utilS/DebugDefs.h>
+#include <razer/utils/DebugDefs.h>
 
 #include <cassert>
 

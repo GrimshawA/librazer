@@ -54,8 +54,9 @@ public:
     explicit EmitFunction(aeNodeFunction& node, IRContext& ctx);
 
     void compile();
-    void compileBlock(aeNodeBlock& blk);
-    IRValue* compileExpression(aeNodeExpr* expr);
+	void compileBlock(aeNodeBlock& blk);
+	IRValue* compileExpression(aeNodeExpr* expr);
+	void compileFor(aeNodeFor& forNode);
 
     IRValue* locateIdentifier(aeNodeIdentifier& identifier);
 
