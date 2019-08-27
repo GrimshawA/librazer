@@ -23,6 +23,9 @@ void CodeGenVM::build(IRFunction& func)
 {
     using namespace IR;
 
+    auto* vmFun = m_module->createFunction("App." + func.name);
+    vmFun->m_offset = m_cursor;
+
     for (auto& inst : func.instructions)
     {
         switch(inst->type)
@@ -80,7 +83,10 @@ void CodeGenVM::buildLabel(IRInstructionLabel& inst)
 void CodeGenVM::buildJump(IRInstructionJump& inst)
 {
     int pos = m_labels[inst.target];
-    emitInstruction(OP_JMP, pos, 0, 0);
+    int diff = m_cursor - pos;
+    diff -= 1;
+
+    emitInstruction(OP_JMP, -diff, 0, 0);
 }
 
 void CodeGenVM::buildDestructure(IRInstructionDestructure& inst)

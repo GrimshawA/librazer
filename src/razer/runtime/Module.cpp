@@ -20,7 +20,10 @@ int RzModule::index() {
 RzFunction* RzModule::createFunction(const std::string& name) {
 	m_functions.push_back(RzFunction());
 	//m_functions.back().name = name;
-	return &m_functions.back();
+    auto* func = &m_functions.back();
+
+    func->m_absoluteName = name;
+    return func;
 }
 
 RzFunction* RzModule::getFunction(const std::string& name) {

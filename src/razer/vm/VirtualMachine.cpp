@@ -82,7 +82,8 @@ void RzVirtualMachine::call(const char* func) {
     // Find the function in any module from its fully qualified name
     // package.namespace.class.method
     //RzFunction* function = m_ctx.getFunctionByName(func);
-    RzFunction* function = m_ctx.getModule("test")->getFunction(func); // hack to run IR code
+    auto* mod = m_ctx.getModule("test");
+    RzFunction* function = mod->getFunction(std::string(func)); // hack to run IR code
 	int i = 0;
 
 	if (function)
@@ -91,7 +92,7 @@ void RzVirtualMachine::call(const char* func) {
 	}
 	else
 	{
-		RZLOG("Couldn't find the calling function\n");
+        RZLOG("Couldn't find the calling function %s\n", func);
     }
 }
 
