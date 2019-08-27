@@ -1,8 +1,56 @@
 #ifndef IR_HPP
 #define IR_HPP
 
+#include <razer/runtime/RzType.h>
+#include <razer/ir/ir_value.hpp>
+
 #include <vector>
 #include <string>
+#include <unordered_map>
+
+class RzType;
+class IRValue;
+
+struct LexicalScope
+{
+    std::unordered_map<std::string, IRValue*> variables;
+};
+
+struct ScopeStack
+{
+    void pop()
+    {
+        scopes.pop_back();
+    }
+
+    void push()
+    {
+        scopes.push_back({});
+    }
+
+    void set(const std::string& name, IRValue* val)
+    {
+        scopes.back().variables[name] = val;
+    }
+
+    IRValue* locate(const std::string& name)
+    {
+        for (int i = scopes.size() - 1; i >= 0; --i)
+        {
+            auto& s = scopes[i];
+
+            if (s.variables.find(name) != s.variables.end())
+            {
+                return s.variables[name];
+            }
+        }
+
+        return nullptr;
+    }
+
+    std::vector<LexicalScope> scopes;
+};
+
 
 namespace IR
 {
@@ -14,17 +62,11 @@ namespace IR
         Return,
         Jump,
         Store,
+        Destructure,
         Label,
         Undefined
     };
 }
-
-class IRValue
-{
-public:
-    int offset;
-    std::string name;
-};
 
 class IRInstruction
 {
@@ -37,9 +79,17 @@ public:
 class IRInstructionDestructure : public IRInstruction
 {
 public:
-    std::string prettyString() override {
-        return "GetElementPtr";
+    explicit IRInstructionDestructure()
+    {
+        type = IR::Destructure;
     }
+
+    std::string prettyString() override {
+        return "getelementptr " + std::to_string(fieldIndex);
+    }
+
+    int fieldIndex;
+    IRValue* ty = nullptr;
 };
 
 class IRInstructionReturn : public IRInstruction
@@ -198,8 +248,18 @@ public:
         this->name = name;
     }
 
+    explicit IRType(RzType* ty)
+    {
+        this->ty = ty;
+    }
+
     std::string prettyString() {
-        std::string str = "type " + name + " {\n";
+        if (ty && ty->isNative())
+        {
+            return "%var = extern type " + ty->getName();
+        }
+
+        std::string str = "\%" + name + " = type  {\n";
 
         for (auto& f : fields)
         {
@@ -213,6 +273,7 @@ public:
 //private:
     std::vector<Field> fields;
     std::string name; // anonymous is viable
+    RzType* ty = nullptr;
 };
 
 class IRFunction
@@ -223,6 +284,8 @@ public:
     std::vector<IRInstruction*> instructions;
 };
 
+class RzType;
+
 /*
  * An IR context holds a set of functions and additional metadata
  * I.e One entire module is usually compiled into one IRContext
@@ -231,6 +294,7 @@ class IRContext
 {
 public:
 
+    void createExternalType(RzType* ty);
     void createType(const std::string& name, const std::vector<IRType::Field>& fields);
 
     void writeToFile(const std::string& filename);
@@ -238,6 +302,8 @@ public:
 public:
     std::vector<IRType> types;
     std::vector<IRFunction> functions;
+
+    ScopeStack stk;
 };
 
 #endif // IR_HPP

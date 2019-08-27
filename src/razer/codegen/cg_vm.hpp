@@ -14,6 +14,10 @@ public:
     void build(IRContext& module);
     void build(IRFunction& func);
 
+    void buildLabel(IRInstructionLabel& inst);
+    void buildJump(IRInstructionJump& inst);
+    void buildDestructure(IRInstructionDestructure& inst);
+
     void load(IRValue* value);
 
 public: // Bytecode emission
@@ -23,6 +27,8 @@ private:
     RzEngine& engine;
     RzModule* m_module = nullptr;
     int m_cursor = 0;
+
+    std::unordered_map<IRValue*, int> m_labels;
 };
 
 #endif // CODEGEN_VM_HPP_

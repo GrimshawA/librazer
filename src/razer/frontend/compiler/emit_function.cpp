@@ -3,8 +3,9 @@
 #include <razer/frontend/AST/aeNodeBlock.h>
 #include <razer/frontend/AST/Nodes.h>
 
-EmitFunction::EmitFunction(aeNodeFunction& node, IRContext& ctx)
+EmitFunction::EmitFunction(aeNodeFunction& node, IRContext& ctx, AEStructNode* structNode)
 : node(node)
+, structNode(structNode)
 , ctx(ctx)
 , builder(ctx)
 {
@@ -15,6 +16,11 @@ EmitFunction::EmitFunction(aeNodeFunction& node, IRContext& ctx)
 void EmitFunction::compile()
 {
     compileBlock(*node.m_block.get());
+
+    if (builder.getLastStmtType() != IR::Return)
+    {
+        builder.createReturn();
+    }
 }
 
 void EmitFunction::compileBlock(aeNodeBlock& blk)
@@ -57,15 +63,15 @@ void EmitFunction::compileBlock(aeNodeBlock& blk)
 			break;
 		}
 
+        case AEN_WHILE: {
+            compileWhile((aeNodeWhile&)*stmt);
+            break;
+        }
+
         default:
             break;
 
         }
-    }
-
-    if (builder.getLastStmtType() != IR::Return)
-    {
-        builder.createReturn();
     }
 
     scopeResolver.pop();
@@ -144,7 +150,29 @@ void EmitFunction::compileFor(aeNodeFor& forNode)
 	builder.createJumpStmt(label);
 }
 
+void EmitFunction::compileWhile(aeNodeWhile& whileNode)
+{
+    IRValue* label = builder.createLabelStmt();
+
+    compileBlock(*whileNode.block.get());
+
+    builder.createJumpStmt(label);
+}
+
 IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier)
 {
-    return scopeResolver.locate(identifier.m_name);
+    auto* local = scopeResolver.locate(identifier.m_name);
+
+    if (local)
+        return local;
+
+    // At class scope?
+    if (structNode && structNode->hasField(identifier.m_name))
+    {
+        int fieldIndex = structNode->getFieldIndex(identifier.m_name);
+        auto* fieldType = structNode->getFieldType(identifier.m_name);
+        return builder.createDestructure(fieldType, fieldIndex);
+    }
+
+    return nullptr;
 }

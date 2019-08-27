@@ -62,6 +62,18 @@ IRValue* IRBuilder::createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs)
     return result;
 }
 
+IRValue* IRBuilder::createDestructure(RzType* ty, int fieldIndex)
+{
+    auto* typeValue = new IRValueType();
+    typeValue->type = ty;
+
+    auto* destructure = new IRInstructionDestructure();
+    destructure->fieldIndex = fieldIndex;
+    destructure->ty = typeValue;
+    func.instructions.push_back(destructure);
+    return makeValue();
+}
+
 IRValue* IRBuilder::newObject(IRValue* typeValue)
 {
     auto* tmp = makeTempValue();
@@ -77,9 +89,13 @@ IRValue* IRBuilder::createReturn()
 
 IRValue* IRBuilder::createLabelStmt()
 {
+    auto* labelValue = new IRValueLabel;
+
 	auto* label = new IRInstructionLabel();
+    label->value = labelValue;
 	func.instructions.push_back(label);
-	return makeValue();
+
+    return labelValue;
 }
 
 IRValue* IRBuilder::makeValue()

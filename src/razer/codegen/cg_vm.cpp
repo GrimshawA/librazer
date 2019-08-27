@@ -1,6 +1,8 @@
 #include "cg_vm.hpp"
 #include <razer/runtime/RzEngine.h>
 
+#include <cassert>
+
 CodeGenVM::CodeGenVM(RzEngine* e)
     : engine(*e)
 {
@@ -29,12 +31,24 @@ void CodeGenVM::build(IRFunction& func)
         case ASSIGN:
             break;
 
+        case Destructure:
+            buildDestructure(static_cast<IRInstructionDestructure&>(*inst));
+            break;
+
         case StackAlloc:
             emitInstruction(OP_MOV, 0, 0, 0);
             break;
 
         case New:
             emitInstruction(OP_NEW, 0, 0 , 0);
+            break;
+
+        case Label:
+            buildLabel(static_cast<IRInstructionLabel&>(*inst));
+            break;
+
+        case Jump:
+            buildJump(static_cast<IRInstructionJump&>(*inst));
             break;
 
         case Return:
@@ -55,6 +69,29 @@ void CodeGenVM::build(IRFunction& func)
             }
         }
     }
+}
+
+void CodeGenVM::buildLabel(IRInstructionLabel& inst)
+{
+    auto pos = m_cursor;
+    m_labels[inst.value] = pos;
+}
+
+void CodeGenVM::buildJump(IRInstructionJump& inst)
+{
+    int pos = m_labels[inst.target];
+    emitInstruction(OP_JMP, pos, 0, 0);
+}
+
+void CodeGenVM::buildDestructure(IRInstructionDestructure& inst)
+{
+    assert (inst.ty);
+    assert (inst.ty->isType());
+
+    IRValueType* ty = static_cast<IRValueType*>(inst.ty);
+
+    int offset = ty->offset;
+    emitInstruction(OP_LOADADDR, AEK_THIS, offset, 0);
 }
 
 void CodeGenVM::load(IRValue* value)

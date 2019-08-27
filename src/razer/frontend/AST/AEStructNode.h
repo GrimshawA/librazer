@@ -33,12 +33,6 @@ public:
 	std::vector<RzQualType> params;
 };
 
-class AEMetaNode : public AEBaseNode
-{
-public:
-	std::map<std::string, std::string> metaMap;
-};
-
 class AEFieldInitNode : public AEBaseNode
 {
 public:
@@ -112,7 +106,6 @@ public:
     std::vector<std::unique_ptr<RzLetNode>> m_bindings;
     std::vector<std::unique_ptr<RzOnNode>> m_onStmts;
 	std::vector<AEFieldNode*> m_fields;
-	std::vector<AEMetaNode> meta;
 	std::vector<AEStructNode> innerClasses;
 	std::vector<std::unique_ptr<AEEnumNode>> m_enums;
 	bool m_interface = false;
@@ -129,6 +122,12 @@ public:
 
 	/// Returns the user defined destructor
 	aeNodeFunction* getDestructor();
+
+    bool hasField(const std::string& name);
+
+    int getFieldIndex(const std::string& name);
+
+    RzType* getFieldType(const std::string& name);
 
 	/// Check if this is a template class
 	bool isTemplated();

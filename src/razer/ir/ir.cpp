@@ -8,6 +8,12 @@ void IRContext::createType(const std::string& name, const std::vector<IRType::Fi
     types.push_back(t);
 }
 
+void IRContext::createExternalType(RzType* ty)
+{
+    IRType t (ty);
+    types.push_back(t);
+}
+
 void IRContext::writeToFile(const std::string& filename)
 {
     FILE* fp = fopen(filename.c_str(), "w");

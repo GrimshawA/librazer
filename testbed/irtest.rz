@@ -6,24 +6,15 @@ Another: class {
 }
 
 App: class {
-	w2: Window
-	v: Another
-
-	on v: {
-	    log("Hello world");
-	}
-
-	on v: log("test");
+	window: Window
 
 	function main() {
-    	Window w = new Window()
+    	window.open();
+
+    	while (w.running())
     	{
-
-    	};
-
-    	w.poll();
-
-    	int32 x = 50;
-    	x = x + 50;
+    		window.poll();
+    		window.display();
+    	}
     }
 }

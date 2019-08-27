@@ -359,6 +359,8 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         auto& fieldNode = clss->m_fields[i];
         auto fieldType = resolveQualifiedType(*this, *clss->m_fields[i]->declaration);
 
+        clss->m_fields[i]->type = fieldType;
+
 
         aeField fld;
         fld.name = clss->m_fields[i]->name;
@@ -377,6 +379,12 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         }
 
         typeInfo->m_fields.push_back(fld);
+
+        if (typeInfo->isNative())
+        {
+            // The type must be linked with the IR module
+            irCtx.createExternalType(typeInfo);
+        }
     }
 
     typeInfo->computeMetrics();
@@ -393,18 +401,25 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         emitClassConstructors(typeInfo, clss);
     }
 
+    ScopeStack stack;
+    stack.push();
+    for (auto& f : clss->m_fields)
+    {
+        stack.set(f->name, nullptr);
+    }
+
     for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
     {
         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
-
-        EmitFunction emitter (*funcNode, irCtx);
-        emitter.compile();
 
         RzFunction* fn = compileFunction(funcNode);
         if (!fn) {
             RZLOG("Failed to compile function\n");
             return RzCompileResult::aborted;
         }
+
+        EmitFunction emitter (*funcNode, irCtx, clss);
+        emitter.compile();
     }
 
     emitClassDestructors(typeInfo, clss);

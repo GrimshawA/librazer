@@ -18,6 +18,7 @@ public:
     IRValue* createLocalAlloc();
     IRValue* createHeapAlloc();
     IRValue* createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs);
+    IRValue* createDestructure(RzType* ty, int fieldIndex);
     IRValue* newObject(IRValue* typeValue);
     IRValue* createReturn();
     IRValue* createLabelStmt();

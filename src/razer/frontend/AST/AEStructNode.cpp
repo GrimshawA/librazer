@@ -86,6 +86,39 @@ aeNodeFunction* AEStructNode::getDestructor()
 	return nullptr;
 }
 
+bool AEStructNode::hasField(const std::string& name)
+{
+    for (auto& f : m_fields)
+    {
+        if (f->name == name)
+            return true;
+    }
+
+    return false;
+}
+
+int AEStructNode::getFieldIndex(const std::string& name)
+{
+    for (int i = 0; i < m_fields.size(); ++i)
+    {
+        if (m_fields[i]->name == name)
+            return i;
+    }
+
+    return -1;
+}
+
+RzType* AEStructNode::getFieldType(const std::string& name)
+{
+    for (auto& f : m_fields)
+    {
+        if (f->name == name)
+            return f->type.getType();
+    }
+
+    return nullptr;
+}
+
 bool AEStructNode::isTemplated()
 {
 	return m_templated && !templateTypes.empty();

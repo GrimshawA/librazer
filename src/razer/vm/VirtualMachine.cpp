@@ -81,7 +81,8 @@ void RzVirtualMachine::call(const char* func) {
 
     // Find the function in any module from its fully qualified name
     // package.namespace.class.method
-    RzFunction* function = m_ctx.getFunctionByName(func);
+    //RzFunction* function = m_ctx.getFunctionByName(func);
+    RzFunction* function = m_ctx.getModule("test")->getFunction(func); // hack to run IR code
 	int i = 0;
 
 	if (function)
