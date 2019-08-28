@@ -32,9 +32,9 @@ void IRBuilder::createJumpStmt(IRValue* target)
 	func.instructions.push_back(jump);
 }
 
-IRValue* IRBuilder::createCall(const std::vector<IRValue*>& args)
+IRValue* IRBuilder::createCall(IRValue* funcVal, const std::vector<IRValue*>& args)
 {
-    auto* call = new IRInstructionCall();
+    auto* call = new IRInstructionCall(funcVal);
     call->args = args;
     func.instructions.push_back(call);
     return makeValue();
@@ -47,11 +47,17 @@ IRValue* IRBuilder::createLocalAlloc()
     return makeValue();
 }
 
-IRValue* IRBuilder::createHeapAlloc()
+IRValue* IRBuilder::createHeapAlloc(std::size_t bytes)
 {
+    auto* ptrValue = makeValue();
+
     auto* alloc = new IRInstructionStackAlloc();
+    alloc->kind = IRInstructionStackAlloc::Heap;
+    alloc->size = bytes;
+    alloc->value = ptrValue;
     func.instructions.push_back(alloc);
-    return makeValue();
+
+    return ptrValue;
 }
 
 IRValue* IRBuilder::createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs)
@@ -62,16 +68,35 @@ IRValue* IRBuilder::createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs)
     return result;
 }
 
-IRValue* IRBuilder::createDestructure(RzType* ty, int fieldIndex)
+IRValue* IRBuilder::createDestructure(RzType* type, int fieldIndex)
 {
-    auto* typeValue = new IRValueType();
-    typeValue->type = ty;
+    IRValue* ty = nullptr;
+
+    // If this module already contains the type declaration, reuse the IRValue
+    for (auto& t : ctx.types)
+    {
+        if (t.is(type))
+        {
+            ty = t.ty;
+            break;
+        }
+    }
+
+    if (!ty)
+    {
+        // Create a new type declaration, of sorts
+        auto* typeValue = new IRValueType();
+        typeValue->type = type;
+        ty = typeValue;
+    }
+
 
     auto* destructure = new IRInstructionDestructure();
     destructure->fieldIndex = fieldIndex;
-    destructure->ty = typeValue;
+    destructure->ty = ty;
     func.instructions.push_back(destructure);
-    return makeValue();
+
+    return ty;
 }
 
 IRValue* IRBuilder::newObject(IRValue* typeValue)

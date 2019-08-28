@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <sstream>
 
 class RzType;
 class IRValue;
@@ -85,7 +86,13 @@ public:
     }
 
     std::string prettyString() override {
-        return "getelementptr " + std::to_string(fieldIndex);
+        std::stringstream str;
+        str << "'" << ty << "' <- "
+            << "getelementptr "
+            << "'" << ty << "'"
+            << " " << std::to_string(fieldIndex);
+
+        return str.str();
     }
 
     int fieldIndex;
@@ -101,7 +108,15 @@ public:
     }
 
     std::string prettyString() override {
-        return "ret";
+        std::stringstream ss;
+        ss << "ret ";
+
+        if (value == nullptr)
+            ss << "void";
+        else
+            ss << "'" << value << "'";
+
+        return ss.str();
     }
 
     IRValue* value = nullptr;
@@ -116,7 +131,10 @@ public:
 	}
 
 	std::string prettyString() override {
-		return "label";
+        std::stringstream ss;
+        ss << "'" << value << "'";
+        ss << " <- label";
+        return ss.str();
 	}
 
 	IRValue* value = nullptr;
@@ -125,21 +143,30 @@ public:
 class IRInstructionCall : public IRInstruction
 {
 public:
-    explicit IRInstructionCall()
+    explicit IRInstructionCall(IRValue* func)
     {
         type = IR::CALL;
+        funcValue = func;
     }
 
     std::string prettyString() override {
-        std::string str = "x <- call ";
+        std::stringstream ss;
+        ss << "'" << retValue << "'";
+        ss << " <- call '" << funcValue << "' ";
+        ss << "args '";
+
         for (auto& a : args)
         {
-            str += a->name + ", ";
+            ss << a << ", ";
         }
-        return str;
+        ss << "'";
+
+        return ss.str();
     }
 
     std::vector<IRValue*> args;
+    IRValue* funcValue = nullptr;
+    IRValue* retValue = nullptr;
 };
 
 class IRInstructionStackAlloc : public IRInstruction
@@ -152,8 +179,20 @@ public:
 
     std::string prettyString() override
     {
-        return "x <- alloc";
+        std::stringstream ss;
+        ss << "'" << value << "' <- ";
+        ss << "malloc " << size;
+
+        return ss.str();
     }
+
+    enum KindType {
+        Stack,
+        Heap
+    } kind;
+
+    std::size_t size = 0;
+    IRValue* value = nullptr;
 
     IRValue* lhs = nullptr;
     IRValue* ty = nullptr;
@@ -170,7 +209,11 @@ public:
     }
 
     std::string prettyString() override {
-        return "store x y";
+        std::stringstream ss;
+        ss << "store ";
+        ss << "'" << memory << "' ";
+        ss << "'" << value << "'";
+        return ss.str();
     }
 
     IRValue* memory = nullptr;
@@ -187,7 +230,9 @@ public:
 	}
 
 	std::string prettyString() override {
-		return "jmp";
+        std::stringstream ss;
+        ss << "jmp '" << target << "'";
+        return ss.str();
 	}
 
 	IRValue* target = nullptr;
@@ -250,30 +295,39 @@ public:
 
     explicit IRType(RzType* ty)
     {
-        this->ty = ty;
+        //this->ty = ty;
+    }
+
+    bool is(RzType* type) const
+    {
+        if (!ty)
+            return false;
+
+        if (!ty->isType())
+            return false;
+
+        return static_cast<IRValueType*>(ty)->type == type;
     }
 
     std::string prettyString() {
-        if (ty && ty->isNative())
-        {
-            return "%var = extern type " + ty->getName();
-        }
+        std::stringstream ss;
 
-        std::string str = "\%" + name + " = type  {\n";
+        ss << "'" << ty << "' = type  {\n";
 
         for (auto& f : fields)
         {
-            str += "\t" + f.name + "\n";
+            ss << "\t" + f.name + "\n";
         }
 
-        return str += "}\n\n";
+        ss << "}\n\n";
+        return ss.str();
     }
 
 
 //private:
     std::vector<Field> fields;
     std::string name; // anonymous is viable
-    RzType* ty = nullptr;
+    IRValue* ty = nullptr;
 };
 
 class IRFunction
@@ -295,7 +349,7 @@ class IRContext
 public:
 
     void createExternalType(RzType* ty);
-    void createType(const std::string& name, const std::vector<IRType::Field>& fields);
+    IRValue* createType(RzType* ty, const std::string& name, const std::vector<IRType::Field>& fields);
 
     void writeToFile(const std::string& filename);
 

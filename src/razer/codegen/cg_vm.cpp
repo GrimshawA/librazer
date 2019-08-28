@@ -25,6 +25,8 @@ void CodeGenVM::build(IRFunction& func)
 
     auto* vmFun = m_module->createFunction("App." + func.name);
     vmFun->m_offset = m_cursor;
+    vmFun->m_compiled = true;
+    vmFun->m_module = m_module;
 
     for (auto& inst : func.instructions)
     {
@@ -60,14 +62,14 @@ void CodeGenVM::build(IRFunction& func)
 
         case CALL:
             {
-                IRInstructionCall& call = static_cast<IRInstructionCall&>(*inst);
+                /*IRInstructionCall& call = static_cast<IRInstructionCall&>(*inst);
 
                 for (auto& a : call.args)
                 {
                     load(a);
                 }
 
-                emitInstruction(OP_CALL, 0, 0, 0);
+                emitInstruction(OP_CALL, 0, 0, 0);*/
                 break;
             }
         }
@@ -84,8 +86,7 @@ void CodeGenVM::buildJump(IRInstructionJump& inst)
 {
     int pos = m_labels[inst.target];
     int diff = m_cursor - pos;
-    diff -= 1;
-
+    diff += 1;
     emitInstruction(OP_JMP, -diff, 0, 0);
 }
 
@@ -97,7 +98,7 @@ void CodeGenVM::buildDestructure(IRInstructionDestructure& inst)
     IRValueType* ty = static_cast<IRValueType*>(inst.ty);
 
     int offset = ty->offset;
-    emitInstruction(OP_LOADADDR, AEK_THIS, offset, 0);
+    //emitInstruction(OP_LOADADDR, AEK_THIS, offset, 0);
 }
 
 void CodeGenVM::load(IRValue* value)

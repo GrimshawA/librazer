@@ -87,6 +87,13 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
         auto* lhs = compileExpression(op.operandA);
         auto* rhs = compileExpression(op.operandB);
 
+        if (op.oper == "=")
+        {
+            // Store operations don't have an output
+            builder.createStore(lhs, rhs);
+            return nullptr;
+        }
+
         return builder.createBinaryOp(op.oper, lhs, rhs);
     }
 
@@ -97,7 +104,7 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
         {
             std::vector<IRValue*> args;
             args.push_back(compileExpression(dot.m_a));
-            return builder.createCall(args);
+            return builder.createCall(nullptr, args);
         }
         else
         {
@@ -127,10 +134,17 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
 IRValue* EmitFunction::compileNewExpression(aeNodeNew& newNode)
 {
     // Create the object in the heap and get a ptr to it
-    auto* mem = builder.createHeapAlloc();
+    auto memSize = newNode.m_instanceType.m_type->getSize();
+
+    auto* mem = builder.createHeapAlloc(memSize);
+
+    auto makeFuncValue = [&]()
+    {
+        return new IRValue();
+    };
 
     // Call the constructor
-    builder.createCall({});
+    builder.createCall(makeFuncValue(), {mem});
 
     return mem;
 }
@@ -170,8 +184,8 @@ IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier)
     if (structNode && structNode->hasField(identifier.m_name))
     {
         int fieldIndex = structNode->getFieldIndex(identifier.m_name);
-        auto* fieldType = structNode->getFieldType(identifier.m_name);
-        return builder.createDestructure(fieldType, fieldIndex);
+        //auto* fieldType = structNode->getFieldType(identifier.m_name);
+        return builder.createDestructure(structNode->m_typeInfo, fieldIndex);
     }
 
     return nullptr;

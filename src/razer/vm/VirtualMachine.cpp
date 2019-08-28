@@ -128,7 +128,7 @@ int RzVirtualMachine::call(RzFunction* fn) {
 
 	m_mainContext.ebp = m_mainContext.esp;
 
-	m_mainContext.alloc(fn->returnValueSize);
+    m_mainContext.alloc(fn->returnValueSize);
 
 	for (int i = argsMem.size() - 1; i >= 0; --i)
 	{

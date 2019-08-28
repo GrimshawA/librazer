@@ -1,11 +1,17 @@
 #include "ir.hpp"
 #include <iostream>
 
-void IRContext::createType(const std::string& name, const std::vector<IRType::Field>& fields)
+IRValue* IRContext::createType(RzType* ty, const std::string& name, const std::vector<IRType::Field>& fields)
 {
+    IRValueType* typeValue = new IRValueType();
+    typeValue->type = ty;
+
     IRType t (name);
     t.fields = fields;
+    t.ty = typeValue;
     types.push_back(t);
+
+    return typeValue;
 }
 
 void IRContext::createExternalType(RzType* ty)

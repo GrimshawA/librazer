@@ -14,9 +14,11 @@ public:
 
     void     createStore(IRValue* memory, IRValue* value);
     void     createJumpStmt(IRValue* target);
-    IRValue* createCall(const std::vector<IRValue*>& args);
+    IRValue* createCall(IRValue* func, const std::vector<IRValue*>& args);
     IRValue* createLocalAlloc();
-    IRValue* createHeapAlloc();
+
+    // Allocate N bytes in heap, returning value is a pointer to it
+    IRValue* createHeapAlloc(std::size_t bytes);
     IRValue* createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs);
     IRValue* createDestructure(RzType* ty, int fieldIndex);
     IRValue* newObject(IRValue* typeValue);

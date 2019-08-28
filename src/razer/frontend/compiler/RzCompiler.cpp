@@ -417,9 +417,6 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
             RZLOG("Failed to compile function\n");
             return RzCompileResult::aborted;
         }
-
-        EmitFunction emitter (*funcNode, irCtx, clss);
-        emitter.compile();
     }
 
     emitClassDestructors(typeInfo, clss);
@@ -453,12 +450,23 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
         }
     }
 
+    // IR RELATED MOVE ME
     std::vector<IRType::Field> irfields;
     for (auto& f : clss->m_fields)
     {
         irfields.push_back({f->name});
     }
-    irCtx.createType(clss->m_name, irfields);
+    auto* ty = irCtx.createType(clss->m_typeInfo, clss->m_name, irfields);
+
+
+    for (std::size_t i = 0; i < clss->m_functions.size(); ++i)
+    {
+        auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
+
+
+        EmitFunction emitter (*funcNode, irCtx, clss);
+        emitter.compile();
+    }
 
     m_classes.pop_back();
 
