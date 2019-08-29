@@ -367,6 +367,23 @@ inline static void DoLoadConstant(RzThreadContext& ctx, int primType, int index,
     ctx.push_value(kVal);
 }
 
+inline static void DoAlloc(RzThreadContext& cx, int size)
+{
+    auto* mem = malloc(size);
+
+    RzStackValue val;
+    val.ptr = mem;
+    cx.push_value(val);
+}
+
+inline static void DoDup(RzThreadContext& cx)
+{
+    auto value = cx.pop_value();
+
+    cx.push_value(value);
+    cx.push_value(value);
+}
+
 inline static void DoLogicalNot(RzThreadContext& ctx)
 {
     RzStackValue a = ctx.pop_value();

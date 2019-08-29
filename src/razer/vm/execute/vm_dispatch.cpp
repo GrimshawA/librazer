@@ -99,6 +99,15 @@ void dispatch_execute(RzThreadContext& ctx)
                 DoLoadConstant(ctx, inst.arg0, inst.arg1, inst.arg2);
         vm_end
 
+        vm_start(OP_ALLOC)
+                DoAlloc(ctx, inst.arg0);
+        vm_end
+
+        vm_start(OP_DUP)
+                DoDup(ctx);
+        vm_end
+
+
                 vm_start(OP_LOADENUM)
                 RzStackValue v;
         v.i32 = inst.arg0;

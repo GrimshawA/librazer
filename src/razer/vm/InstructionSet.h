@@ -23,6 +23,8 @@ struct RzInstruction
 */
 enum EOpCodes
 {
+    OP_ALLOC,          ///< Allocate N heap bytes
+    OP_DUP,            ///< Duplicate the top of the stack
 	OP_NEW,            ///< R(new object ptr) <- module id and type id
 	OP_PREPARE,        ///< Prepares the vm for a subsequent call
 	OP_VARCALL,        ///< Call a method on a variant value

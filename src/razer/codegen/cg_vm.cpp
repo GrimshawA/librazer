@@ -23,6 +23,8 @@ void CodeGenVM::build(IRFunction& func)
 {
     using namespace IR;
 
+    currentFunc = &func;
+
     auto* vmFun = m_module->createFunction("App." + func.name);
     vmFun->m_offset = m_cursor;
     vmFun->m_compiled = true;
@@ -41,7 +43,7 @@ void CodeGenVM::build(IRFunction& func)
             break;
 
         case StackAlloc:
-            emitInstruction(OP_MOV, 0, 0, 0);
+            buildAlloc(static_cast<IRInstructionStackAlloc&>(*inst));
             break;
 
         case New:
@@ -61,19 +63,29 @@ void CodeGenVM::build(IRFunction& func)
             break;
 
         case CALL:
-            {
-                /*IRInstructionCall& call = static_cast<IRInstructionCall&>(*inst);
-
-                for (auto& a : call.args)
-                {
-                    load(a);
-                }
-
-                emitInstruction(OP_CALL, 0, 0, 0);*/
-                break;
-            }
+            buildCall(static_cast<IRInstructionCall&>(*inst));
+            break;
         }
     }
+
+    currentFunc = nullptr;
+}
+
+void CodeGenVM::buildCall(IRInstructionCall& inst)
+{
+    int moduleIndex = 0;
+    int functionIndex = 0;
+    bool isNative = false;
+
+    auto* func = static_cast<IRValueFunc*>(inst.funcValue);
+
+    if (!func)
+        return;
+
+    if (isNative)
+        emitInstruction(OP_NATIVECALL, moduleIndex, functionIndex);
+    else
+        emitInstruction(OP_CALL, moduleIndex, functionIndex);
 }
 
 void CodeGenVM::buildLabel(IRInstructionLabel& inst)
@@ -97,13 +109,55 @@ void CodeGenVM::buildDestructure(IRInstructionDestructure& inst)
 
     IRValueType* ty = static_cast<IRValueType*>(inst.ty);
 
-    int offset = ty->offset;
-    //emitInstruction(OP_LOADADDR, AEK_THIS, offset, 0);
+    int offset = 0;
+
+    if (isArgument(inst.basePtr))
+    {
+        offset = getArgumentOffsetFromEbp(inst.basePtr);
+    }
+
+    int memberOffset = ty->type->m_fields[inst.fieldIndex].offset;
+    emitInstruction(OP_LOADADDR, AEK_EBP, offset, memberOffset);
+}
+
+void CodeGenVM::buildAlloc(IRInstructionStackAlloc& inst)
+{
+    emitInstruction(OP_ALLOC, inst.size);
+
+    int numAccesses = countReads(inst.value);
+
+    if (numAccesses > 1)
+        emitInstruction(OP_DUP);
 }
 
 void CodeGenVM::load(IRValue* value)
 {
     emitInstruction(OP_LOAD, 0, 0, 0);
+}
+
+bool CodeGenVM::isArgument(IRValue* val)
+{
+    for (auto& a : currentFunc->args)
+    {
+        if (a == val)
+            return true;
+    }
+    return false;
+}
+
+int CodeGenVM::getArgumentOffsetFromEbp(IRValue* val)
+{
+    return 8;
+}
+
+int CodeGenVM::countReads(IRValue* val)
+{
+    int c = 0;
+    for (auto& inst : currentFunc->instructions)
+    {
+        c += inst->doesReadValue(val) ? 1 : 0;
+    }
+    return c;
 }
 
 uint32_t CodeGenVM::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)

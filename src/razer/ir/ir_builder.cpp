@@ -68,7 +68,7 @@ IRValue* IRBuilder::createBinaryOp(std::string op, IRValue* lhs, IRValue* rhs)
     return result;
 }
 
-IRValue* IRBuilder::createDestructure(RzType* type, int fieldIndex)
+IRValue* IRBuilder::createDestructure(RzType* type, int fieldIndex, IRValue* base)
 {
     IRValue* ty = nullptr;
 
@@ -94,6 +94,7 @@ IRValue* IRBuilder::createDestructure(RzType* type, int fieldIndex)
     auto* destructure = new IRInstructionDestructure();
     destructure->fieldIndex = fieldIndex;
     destructure->ty = ty;
+    destructure->basePtr = base;
     func.instructions.push_back(destructure);
 
     return ty;
@@ -133,6 +134,27 @@ IRValue* IRBuilder::makeTempValue()
     auto* result = makeValue();
     result->name = "temp" + std::to_string(tempId++);
     return result;
+}
+
+IRValue* IRBuilder::makeFuncValue(RzFunction* func)
+{
+    auto* val = new IRValueFunc();
+    val->func = func;
+    return val;
+}
+
+IRValue* IRBuilder::makeFuncValue(const std::string& fullName)
+{
+    auto* val = new IRValueFunc();
+    val->fullName = fullName;
+    return val;
+}
+
+IRValue* IRBuilder::makeNativeFuncValue(RzType::MethodInfo* method)
+{
+    auto* val = new IRValueFunc();
+    val->method = method;
+    return val;
 }
 
 IR::Type IRBuilder::getLastStmtType()

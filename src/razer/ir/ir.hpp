@@ -72,7 +72,17 @@ namespace IR
 class IRInstruction
 {
 public:
+    virtual ~IRInstruction() = default;
+
+    virtual bool doesReadValue(IRValue* val) {
+        return false;
+    }
+
+
+public:
     IR::Type type;
+
+public:
 
     virtual std::string prettyString() = 0;
 };
@@ -90,13 +100,15 @@ public:
         str << "'" << ty << "' <- "
             << "getelementptr "
             << "'" << ty << "'"
-            << " " << std::to_string(fieldIndex);
+            << " " << std::to_string(fieldIndex)
+            << " '" << basePtr << "'";
 
         return str.str();
     }
 
     int fieldIndex;
     IRValue* ty = nullptr;
+    IRValue* basePtr = nullptr;
 };
 
 class IRInstructionReturn : public IRInstruction
@@ -147,6 +159,16 @@ public:
     {
         type = IR::CALL;
         funcValue = func;
+    }
+
+    bool doesReadValue(IRValue* val) override
+    {
+        for (auto& a : args)
+        {
+            if (a == val)
+                return true;
+        }
+        return false;
     }
 
     std::string prettyString() override {
@@ -206,6 +228,17 @@ public:
         , value(value)
     {
         type = IR::Store;
+    }
+
+    bool doesReadValue(IRValue* val) override
+    {
+        if (memory == val)
+            return true;
+
+        if (value == val)
+            return true;
+
+        return false;
     }
 
     std::string prettyString() override {
@@ -333,8 +366,22 @@ public:
 class IRFunction
 {
 public:
+    std::string prettyString() {
+        std::stringstream ss;
+        ss << "def " << path << " '";
+
+        for (auto& a : args)
+        {
+            ss << a << ", ";
+        }
+        ss << "'";
+
+        return ss.str();
+    }
+
     std::string name;
     std::string path;
+    std::vector<IRValue*> args;
     std::vector<IRInstruction*> instructions;
 };
 

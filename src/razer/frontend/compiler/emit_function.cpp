@@ -9,6 +9,9 @@ EmitFunction::EmitFunction(aeNodeFunction& node, IRContext& ctx, AEStructNode* s
 , ctx(ctx)
 , builder(ctx)
 {
+    builder.func.args.resize(1);
+    builder.func.args[0] = builder.makeValue();
+
     builder.func.name = node.m_name;
     builder.func.path = node.m_name;
 }
@@ -138,13 +141,15 @@ IRValue* EmitFunction::compileNewExpression(aeNodeNew& newNode)
 
     auto* mem = builder.createHeapAlloc(memSize);
 
-    auto makeFuncValue = [&]()
-    {
-        return new IRValue();
-    };
+    auto* newTypeModule = newNode.m_instanceType.m_type->getModule();
+    auto* newType = newNode.m_instanceType.m_type;
+
+    std::string constructorName = newType->getName() + "." + newType->getName();
+    IRValue* constructor = builder.makeFuncValue(constructorName);
 
     // Call the constructor
-    builder.createCall(makeFuncValue(), {mem});
+    auto* thisValue = builder.func.args[0];
+    builder.createCall(constructor, {mem});
 
     return mem;
 }
@@ -185,7 +190,7 @@ IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier)
     {
         int fieldIndex = structNode->getFieldIndex(identifier.m_name);
         //auto* fieldType = structNode->getFieldType(identifier.m_name);
-        return builder.createDestructure(structNode->m_typeInfo, fieldIndex);
+        return builder.createDestructure(structNode->m_typeInfo, fieldIndex, builder.func.args[0]);
     }
 
     return nullptr;

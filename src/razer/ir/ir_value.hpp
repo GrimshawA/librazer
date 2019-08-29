@@ -28,6 +28,17 @@ public:
     RzType* type = nullptr;
 };
 
+class IRValueFunc : public IRValue
+{
+public:
+
+    std::string fullName;
+
+    // Remove us
+    RzType::MethodInfo* method = nullptr;
+    RzFunction* func = nullptr;
+};
+
 class IRValueLabel : public IRValue
 {
 public:

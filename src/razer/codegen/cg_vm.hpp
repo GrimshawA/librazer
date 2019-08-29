@@ -14,11 +14,20 @@ public:
     void build(IRContext& module);
     void build(IRFunction& func);
 
+    void buildCall(IRInstructionCall& inst);
     void buildLabel(IRInstructionLabel& inst);
     void buildJump(IRInstructionJump& inst);
     void buildDestructure(IRInstructionDestructure& inst);
+    void buildAlloc(IRInstructionStackAlloc& inst);
 
     void load(IRValue* value);
+
+public: // Args related
+    bool isArgument(IRValue* val);
+    int getArgumentOffsetFromEbp(IRValue* val);
+
+public: // Value usage inspection
+    int countReads(IRValue* val);
 
 public: // Bytecode emission
     uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
@@ -27,6 +36,7 @@ private:
     RzEngine& engine;
     RzModule* m_module = nullptr;
     int m_cursor = 0;
+    IRFunction* currentFunc = nullptr;
 
     std::unordered_map<IRValue*, int> m_labels;
 };
