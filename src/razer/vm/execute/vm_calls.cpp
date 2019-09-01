@@ -35,12 +35,13 @@ static inline void DoNativeCall(RzThreadContext& cx, int moduleIndex, int functi
     assert(functionIndex <= 255);
 
     auto* mod = cx.engine->modules[moduleIndex].get();
+    auto* func = &mod->m_functions[functionIndex];
 
-    if (type == 0)
+    if (func->m_isconstructor)
     {
         // constructor
         auto* mem = cx.pop_value().ptr;
-        mod->m_functions[functionIndex].constructorCallback(nullptr, nullptr);
+        mod->m_functions[functionIndex].constructorCallback(mem, nullptr);
     }
     else
     {

@@ -173,6 +173,7 @@ void RzModule::registerTypeConstructor(const std::string& name, aeConstructorMet
     func->m_compiled = true;
     func->m_name = name;
     func->m_module = this;
+    func->m_isconstructor = true;
     func->m_absoluteName = name + "." + name;
     typeInfo->m_methods.push_back(func);
 
@@ -190,6 +191,7 @@ void RzModule::registerTypeConstructor(const std::string& name, RzTemplateConstr
     typeInfo->is_templated = true;
 
     RzFunction* func = new RzFunction();
+    func->m_isconstructor = true;
     func->templatedConstructor = constructor;
     func->m_native = true;
     func->m_offset = -1;
@@ -228,6 +230,7 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 	fn.m_absoluteName = name + "." + methodName;
 	fn.decl = name;
 	fn.fn = fnPtr;
+    fn.methodCallback = fnPtr;
 	fn.m_native = true;
     fn.m_module = this;
 	parser.getNextToken();

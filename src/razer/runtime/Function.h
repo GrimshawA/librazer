@@ -42,6 +42,7 @@ public:
 	uint32_t    m_offset;            ///< First instruction for this function in the owner module
 	uint32_t    m_numInstructions;
 
+    bool m_isconstructor = false;
 	RzType*     m_struct;
 	uint32_t    id;
 	uint32_t    returnValueSize;   ///< Size the function reserves for the return value
