@@ -8,6 +8,10 @@
 
 class AEValueList;
 
+typedef void(*aeBindMethod)(RzGeneric);
+typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
+typedef void(*RzTemplateConstructorMethod)(void*, RzVirtualMachine*, int);
+
 /**
     \class RzFunction
     \brief Information about a compiled function on the module
@@ -51,6 +55,14 @@ public:
 	bool m_compiled;               ///< Whether or not this function is compiled successfully, with a valid body
 	bool m_virtual;
 	std::function<void()> tmp;
+
+    // Native methods
+    union
+    {
+        aeBindMethod methodCallback;
+        aeConstructorMethod constructorCallback;
+        RzTemplateConstructorMethod templatedConstructor;
+    };
 };
 
 #endif // RZFUNCTION_H__

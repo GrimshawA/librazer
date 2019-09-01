@@ -49,6 +49,16 @@ FnIndex RzModule::getFunctionIndex(const std::string& name) {
 	return -1;
 }
 
+FnIndex RzModule::getFunctionIndex(RzFunction* func)
+{
+    for (int i = 0; i < m_functions.size(); ++i)
+    {
+        if (&m_functions[i] == func)
+            return i;
+    }
+    return -1;
+}
+
 uint64_t RzModule::getFunctionOffset(const std::string& name) {
 	return getFunctionOffset(getFunctionIndex(name));
 }
@@ -156,10 +166,17 @@ void RzModule::registerTypeConstructor(const std::string& name, aeConstructorMet
 		return;
 	}
 
-	RzType::MethodInfo info;
-	info.constructorCallback = constructor;
-	info.name = name;
-	typeInfo->m_methods.push_back(info);
+    RzFunction* func = new RzFunction();
+    func->constructorCallback = constructor;
+    func->m_native = true;
+    func->m_offset = -1;
+    func->m_compiled = true;
+    func->m_name = name;
+    func->m_module = this;
+    func->m_absoluteName = name + "." + name;
+    typeInfo->m_methods.push_back(func);
+
+    m_functions.push_back(*func);
 }
 
 void RzModule::registerTypeConstructor(const std::string& name, RzTemplateConstructorMethod constructor)
@@ -172,10 +189,18 @@ void RzModule::registerTypeConstructor(const std::string& name, RzTemplateConstr
 
     typeInfo->is_templated = true;
 
-    RzType::MethodInfo info;
-    info.templatedConstructor = constructor;
-    info.name = name;
-    typeInfo->m_methods.push_back(info);
+    RzFunction* func = new RzFunction();
+    func->templatedConstructor = constructor;
+    func->m_native = true;
+    func->m_offset = -1;
+    func->m_compiled = true;
+    func->m_module = this;
+    func->m_absoluteName = name + "." + name;
+    func->m_name = name;
+    func->m_module = this;
+    typeInfo->m_methods.push_back(func);
+
+    m_functions.push_back(*func);
 }
 
 void RzModule::registerTypeDestructor()
@@ -192,24 +217,19 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 
 	auto typeInfo = getType(name);
 
-	RzType::MethodInfo info;
-	info.methodCallback = fnPtr;
-	info.name = methodName;
-	info.native = true;
-
 	AENativeFunctionWrapper wrapper;
 	wrapper.f = fnPtr;
 	m_nativeFunctions.push_back(wrapper);
-	info.offset = m_nativeFunctions.size() - 1;
-
 
 
 	RzFunction fn;
 	fn.returnType = retType;
+    fn.m_name = methodName;
 	fn.m_absoluteName = name + "." + methodName;
 	fn.decl = name;
 	fn.fn = fnPtr;
 	fn.m_native = true;
+    fn.m_module = this;
 	parser.getNextToken();
 
 	while (parser.Tok.text != ")") {
@@ -220,41 +240,13 @@ void RzModule::registerMethod(const std::string& name, const std::string& sig, a
 
 		RzQualType paramType = parser.parseQualType();
 		fn.params.push_back(paramType);
-        info.args.push_back(paramType);
 		//printf("param %s\n", paramType.str().c_str());
 		if (parser.Tok.text != ",")
 			break;
 	}
 	m_functions.push_back(fn);
-	typeInfo->m_methods.push_back(info);
 
-	RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
-}
-
-void RzModule::registerMethod2(const std::string& classname, const std::string& name, aeBindMethod fnPtr) {
-
-	auto typeInfo = getType(classname);
-
-	RzType::MethodInfo info;
-	info.methodCallback = fnPtr;
-	info.name = name;
-	info.native = true;
-
-	AENativeFunctionWrapper wrapper;
-	wrapper.f = fnPtr;
-	m_nativeFunctions.push_back(wrapper);
-	info.offset = m_nativeFunctions.size() - 1;
-
-
-	RzFunction fn;
-	fn.returnType = RzQualType();
-	fn.m_absoluteName = name + "." + name;
-	fn.decl = name;
-	fn.fn = fnPtr;
-	fn.m_native = true;
-
-	m_functions.push_back(fn);
-	typeInfo->m_methods.push_back(info);
+    typeInfo->m_methods.push_back(&m_functions.back());
 
 	RZLOG("EXPORTED %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }

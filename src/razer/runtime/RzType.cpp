@@ -23,18 +23,18 @@ void* RzType::constructNative()
 {
     for (auto& method : m_methods)
     {
-        if (method.name == m_name)
-        {
-            void* mem = malloc(m_size);
-            if (is_templated) {
-                method.templatedConstructor(mem, nullptr, m_size);
-            }
-            else {
-                method.constructorCallback(mem, nullptr);
-            }
+//        if (method.name == m_name)
+//        {
+//            void* mem = malloc(m_size);
+//            if (is_templated) {
+//                method.templatedConstructor(mem, nullptr, m_size);
+//            }
+//            else {
+//                method.constructorCallback(mem, nullptr);
+//            }
 
-            return mem;
-        }
+//            return mem;
+//        }
     }
 
     printf("constructNative() should never fail! Missing factory method\n");
@@ -123,12 +123,12 @@ uint32_t RzType::getNumProtocols()
     return 0;
 }
 
-RzType::MethodInfo* RzType::getMethod(const std::string& methodName) const
+RzFunction* RzType::getMethod(const std::string& methodName) const
 {
     for (int i = 0; i < m_methods.size(); ++i)
     {
-        if (m_methods[i].name == methodName)
-            return (MethodInfo*)&m_methods[i];
+        if (m_methods[i]->m_absoluteName == methodName)
+            return m_methods[i];
     }
 
     return nullptr;
@@ -153,20 +153,20 @@ aeBindMethod RzType::getNativeFunction(const std::string& name)
 {
     for (auto& m : m_methods)
     {
-        if (m.name == name)
-            return m.methodCallback;
+        if (m->m_absoluteName == name)
+            return m->methodCallback;
     }
     return nullptr;
 }
 
-RzType::MethodInfo RzType::selectMethod(const std::string& name, const std::vector<RzQualType>& argsList) {
+RzFunction* RzType::selectMethod(const std::string& name, const std::vector<RzQualType>& argsList) {
     for(auto& m : m_methods) {
-        if (m.name == name) {
+        if (m->m_name == name) {
             return m;
         }
     }
 
-    return MethodInfo();
+    return nullptr;
 }
 
 RzModule* RzType::getModule() {
@@ -214,14 +214,6 @@ void RzType::createField(aeField fieldInfo)
     m_fields.push_back(fieldInfo);
 
     m_size += fieldInfo.size;
-}
-
-void RzType::registerMethod(const std::string& name, void* funptr)
-{
-    MethodInfo methodInfo;
-    methodInfo.type = 0;
-    methodInfo.name = name;
-    m_methods.push_back(methodInfo);
 }
 
 void RzType::registerField(const std::string& name, int offset)

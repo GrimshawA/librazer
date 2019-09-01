@@ -49,28 +49,30 @@ void setinst_a(RzInstruction& inst, int val_a)
 {
 	//inst = inst | (static_cast<uint64_t>(val_a) << 24);
 	//printBits(sizeof(inst), &inst);
-	inst.arg0 = val_a;
+    inst.a.arg0 = val_a;
 }
 
 uint32_t getinst_a(const RzInstruction& inst)
 {
-	return inst.arg0;
+    return inst.a.arg0;
 }
 
 void setinst_b(RzInstruction& inst, int val_b)
 {
-	inst.arg1 = val_b;
+    inst.a.arg1 = val_b;
 }
 
 uint32_t getinst_b(const RzInstruction& inst)
 {
-	return inst.arg1;
+    return inst.a.arg1;
 }
 
 std::string inst_opcode_str(RzInstruction inst)
 {
 	switch (inst.opcode)
 	{
+    case OP_ALLOC: return "OP_ALLOC";
+    case OP_DUP: return "OP_DUP";
 	case OP_NEW: return "OP_NEW";
 	case OP_CALL: return "OP_CALL";
 	case OP_JMP: return "OP_JMP";
@@ -110,29 +112,29 @@ std::string getPrettyInstructionStr(RzInstruction inst) {
 
 	if (inst.opcode == OP_LOAD)
 	{
-		if (inst.arg1 == AEP_INT32) {
+        if (inst.a.arg1 == AEP_INT32) {
 			s += "INT32";
 		}
 	}
 
 	if (inst.opcode == OP_SET)
 	{
-		if (inst.arg2 == AEP_INT32) {
+        if (inst.a.arg2 == AEP_INT32) {
 			s += " INT32";
 		}
 	}
 
 	if (inst.opcode == OP_LOADK)
 	{
-		if (inst.arg0 == AEK_INT)
+        if (inst.a.arg0 == AEK_INT)
 		{
 			s += " INT32 ";
 		}
 	}
 
-    s += " " + std::to_string(inst.arg0);
-    s += " " + std::to_string(inst.arg1);
-    s += " " + std::to_string(inst.arg2);
+    s += " " + std::to_string(inst.a.arg0);
+    s += " " + std::to_string(inst.a.arg1);
+    s += " " + std::to_string(inst.a.arg2);
 
 	s += "(" + inst.metadata + ")";
 

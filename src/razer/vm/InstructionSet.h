@@ -8,9 +8,23 @@
 struct RzInstruction
 {
 	uint8_t opcode;
-	int8_t arg0;
-	int8_t arg1;
-	int8_t arg2;
+
+    struct a_ops
+    {
+        int8_t arg0;
+        int8_t arg1;
+        int8_t arg2;
+    };
+
+    struct b_ops {
+        uint16_t arg0;
+        uint8_t arg1;
+    };
+
+    union {
+        a_ops a;
+        b_ops b;
+    };
 
 	std::string metadata;
 };

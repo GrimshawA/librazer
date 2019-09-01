@@ -31,6 +31,7 @@ class aeSymbol
 {
 public:
 
+    std::string m_name;
 	std::string m_absoluteName;    ///< Full name of this symbol (myModule.myNamespace.myClass.myFunction)
 
 public:

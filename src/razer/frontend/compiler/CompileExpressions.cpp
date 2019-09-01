@@ -19,7 +19,7 @@ RzCompileResult RzCompiler::emitExpressionEval(aeNodeExpr* expr, RzExprContext e
 	else if (expr->m_nodeType == AEN_FUNCTIONCALL)
 	{
         aeNodeExpr a;
-        return emitFunctionCall(a, RzQualType(), static_cast<aeNodeFunctionCall*>(expr), RzExprContext());
+        return emitFunctionCall(a, RzQualType(), static_cast<RzCallNode*>(expr), RzExprContext());
 	}
 	else if (expr->m_nodeType == AEN_ACCESSOPERATOR)
 	{
@@ -405,7 +405,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs, RzExprContex
 	// we handle it in a special way
 	if (acs->m_b->m_nodeType == AEN_FUNCTIONCALL && Ta.getName() == "var")
 	{
-		compileVariantCall(acs->m_a, static_cast<aeNodeFunctionCall*>(acs->m_b));
+		compileVariantCall(acs->m_a, static_cast<RzCallNode*>(acs->m_b));
         return RzCompileResult::ok;
 	}
 
@@ -422,7 +422,7 @@ RzCompileResult RzCompiler::emitMemberOp(aeNodeAccessOperator* acs, RzExprContex
 		CompilerLog("Calling function on %s\n", Ta.str().c_str());
 
 		// Emit the appropriate calling code, which assumes the arguments and obj to call on are pushed already
-        return emitFunctionCall(*acs->m_a, Ta, static_cast<aeNodeFunctionCall*>(acs->m_b), RzExprContext());
+        return emitFunctionCall(*acs->m_a, Ta, static_cast<RzCallNode*>(acs->m_b), RzExprContext());
 	}
 	else
 	{

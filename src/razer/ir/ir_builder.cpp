@@ -150,13 +150,6 @@ IRValue* IRBuilder::makeFuncValue(const std::string& fullName)
     return val;
 }
 
-IRValue* IRBuilder::makeNativeFuncValue(RzType::MethodInfo* method)
-{
-    auto* val = new IRValueFunc();
-    val->method = method;
-    return val;
-}
-
 IR::Type IRBuilder::getLastStmtType()
 {
     if (func.instructions.empty())

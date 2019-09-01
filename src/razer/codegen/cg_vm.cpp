@@ -50,6 +50,10 @@ void CodeGenVM::build(IRFunction& func)
             emitInstruction(OP_NEW, 0, 0 , 0);
             break;
 
+        case Store:
+            buildStore(static_cast<IRInstructionStore&>(*inst));
+            break;
+
         case Label:
             buildLabel(static_cast<IRInstructionLabel&>(*inst));
             break;
@@ -71,19 +75,29 @@ void CodeGenVM::build(IRFunction& func)
     currentFunc = nullptr;
 }
 
+void CodeGenVM::buildStore(IRInstructionStore& inst)
+{
+
+
+    emitInstruction(OP_SET, 0, 0, AEP_PTR);
+}
+
 void CodeGenVM::buildCall(IRInstructionCall& inst)
 {
     int moduleIndex = 0;
     int functionIndex = 0;
-    bool isNative = false;
 
     auto* func = static_cast<IRValueFunc*>(inst.funcValue);
 
     if (!func)
         return;
 
-    if (isNative)
-        emitInstruction(OP_NATIVECALL, moduleIndex, functionIndex);
+    RzFunction* vmFun = engine.getFunctionByName(func->fullName);
+    moduleIndex = engine.getModuleIndex(vmFun->m_module);
+    functionIndex = vmFun->m_module->getFunctionIndex(vmFun);
+
+    if (vmFun->isNative())
+        emitInstruction(OP_NATIVECALL, moduleIndex, functionIndex, 0);
     else
         emitInstruction(OP_CALL, moduleIndex, functionIndex);
 }
@@ -117,12 +131,17 @@ void CodeGenVM::buildDestructure(IRInstructionDestructure& inst)
     }
 
     int memberOffset = ty->type->m_fields[inst.fieldIndex].offset;
-    emitInstruction(OP_LOADADDR, AEK_EBP, offset, memberOffset);
+    //emitInstruction(OP_LOADADDR, AEK_EBP, offset, memberOffset);
+
+    // Actually do basePtr + offset
+    //emitInstruction(OP_LOADADDR, AEK_THIS, 0, 0);
+
+    emitInstruction(OP_LOAD, AEK_EBP, offset, AEP_PTR);
 }
 
 void CodeGenVM::buildAlloc(IRInstructionStackAlloc& inst)
 {
-    emitInstruction(OP_ALLOC, inst.size);
+    emitInstructionB(OP_ALLOC, inst.size, 0);
 
     int numAccesses = countReads(inst.value);
 
@@ -147,7 +166,7 @@ bool CodeGenVM::isArgument(IRValue* val)
 
 int CodeGenVM::getArgumentOffsetFromEbp(IRValue* val)
 {
-    return 8;
+    return 0;
 }
 
 int CodeGenVM::countReads(IRValue* val)
@@ -164,9 +183,19 @@ uint32_t CodeGenVM::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, in
 {
     RzInstruction instr;
     instr.opcode = opcode;
-    instr.arg0 = arg0;
-    instr.arg1 = arg1;
-    instr.arg2 = arg2;
+    instr.a.arg0 = arg0;
+    instr.a.arg1 = arg1;
+    instr.a.arg2 = arg2;
+    m_module->m_code.push_back(instr);
+    return m_cursor++;
+}
+
+uint32_t CodeGenVM::emitInstructionB(uint8_t opcode, uint16_t arg0, uint8_t arg1)
+{
+    RzInstruction instr;
+    instr.opcode = opcode;
+    instr.b.arg0 = arg0;
+    instr.b.arg1 = arg1;
     m_module->m_code.push_back(instr);
     return m_cursor++;
 }

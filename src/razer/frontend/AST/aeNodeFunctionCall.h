@@ -10,7 +10,7 @@ class aeNodeFunction;
 	\class aeNodeFunctionCall
 	\brief Represents a call to some function in code
 */
-class aeNodeFunctionCall : public aeNodeExpr
+class RzCallNode : public aeNodeExpr
 {
 public:
 
@@ -28,11 +28,14 @@ public:
 	std::vector<TemplateTypeArgument> templateTypeArguments;
 	aeNodeFunction* m_function;
 
-    RzFunction* m_fn;
+    RzFunction* m_fn = nullptr;
 
 public:
 
-	aeNodeFunctionCall();
+    RzCallNode();
+
+    // The function we are trying to call in this node
+    RzFunction* getFunction();
 
 	/// Get the qualified type of the argument
 	RzQualType getArgType(uint32_t index);

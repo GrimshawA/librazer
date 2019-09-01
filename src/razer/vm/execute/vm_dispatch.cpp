@@ -34,42 +34,23 @@ void dispatch_execute(RzThreadContext& ctx)
         switch (inst.opcode)
         {
         vm_start(OP_NEW)
-                DoNewObject(ctx, inst.arg0, inst.arg1);
+                DoNewObject(ctx, inst.a.arg0, inst.a.arg1);
         vm_end
 
                 vm_start(OP_CALL)
-                DoCall(ctx, inst.arg0, inst.arg1, inst.arg2);
+                DoCall(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
                 vm_start(OP_DCALL)
-                DoDynamicCall(ctx, inst.arg0);
+                DoDynamicCall(ctx, inst.a.arg0);
         vm_end
 
                 vm_start(OP_CALLVIRTUAL)
                 // todo
                 vm_end
 
-                vm_start(OP_NATIVECALL)
-                /*uint32_t funcid = getinst_a(inst);
-                        uint32_t params = getinst_b(inst);
-
-                        atom_generic* gen = new atom_generic();
-                        gen->vm = this;
-                        // forward to generic
-                        gen->args.resize(params);
-                        for (int k = 0; k < params; ++k)
-                        gen->args[k]._u64 = pop();
-                        //Log("Stored %d in the generic before calling", params);
-
-                        // C Call
-                        ctx->native_functions[funcid].f(gen);
-
-                        // always push the return type
-                        if (gen->hasRet)
-                        push(gen->retarg._u64);
-
-                        delete gen;*/
-                DoNativeCall(ctx, inst.arg0, inst.arg1);
+        vm_start(OP_NATIVECALL)
+            DoNativeCall(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
 
@@ -80,27 +61,27 @@ void dispatch_execute(RzThreadContext& ctx)
         vm_end
 
                 vm_start(OP_JZ)
-                DoJumpIfZero(ctx, inst.arg0);
+                DoJumpIfZero(ctx, inst.a.arg0);
         vm_end
 
                 vm_start(OP_JMP)
-                DoJump(ctx, inst.arg0);
+                DoJump(ctx, inst.a.arg0);
         vm_end
 
                 vm_start(OP_LOAD)
-                DoLoad(ctx, inst.arg0, inst.arg1, inst.arg2);
+                DoLoad(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
                 vm_start(OP_LOADADDR)
-                DoLoadAddr(ctx, inst.arg0, inst.arg1, inst.arg2);
+                DoLoadAddr(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
                 vm_start(OP_LOADK)
-                DoLoadConstant(ctx, inst.arg0, inst.arg1, inst.arg2);
+                DoLoadConstant(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
         vm_start(OP_ALLOC)
-                DoAlloc(ctx, inst.arg0);
+                DoAlloc(ctx, inst.b.arg0);
         vm_end
 
         vm_start(OP_DUP)
@@ -110,12 +91,12 @@ void dispatch_execute(RzThreadContext& ctx)
 
                 vm_start(OP_LOADENUM)
                 RzStackValue v;
-        v.i32 = inst.arg0;
+        v.i32 = inst.a.arg0;
         ctx.push_value(v);
         vm_end
 
                 vm_start(OP_LT)
-                DoLessThan(ctx, (AeonPrimitiveType)inst.arg0);
+                DoLessThan(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_LTE)
@@ -123,7 +104,7 @@ void dispatch_execute(RzThreadContext& ctx)
                 vm_end
 
                 vm_start(OP_GT)
-                DoGreaterThan(ctx, (AeonPrimitiveType)inst.arg0);
+                DoGreaterThan(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_GTE)
@@ -131,59 +112,59 @@ void dispatch_execute(RzThreadContext& ctx)
                 vm_end
 
                 vm_start(OP_EQ)
-                DoEquals(ctx, (AeonPrimitiveType)inst.arg0);
+                DoEquals(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_NEQ)
-                DoNotEquals(ctx, (AeonPrimitiveType)inst.arg0);
+                DoNotEquals(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_NOT)
                 DoLogicalNot(ctx);
         vm_end
 
-                vm_start(OP_SET)
-                DoAssign(ctx, inst.arg0, inst.arg1, inst.arg2);
+        vm_start(OP_SET)
+            DoAssign(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
                 vm_start(OP_MUL)
-                DoMul(ctx, (AeonPrimitiveType)inst.arg0);
+                DoMul(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_DIV)
-                DoDiv(ctx, (AeonPrimitiveType)inst.arg0);
+                DoDiv(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_MOD)
-                DoMod(ctx, (AeonPrimitiveType)inst.arg0);
+                DoMod(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_ADD)
-                DoAdd(ctx, (AeonPrimitiveType)inst.arg0);
+                DoAdd(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_SUB)
-                DoSub(ctx, (AeonPrimitiveType)inst.arg0);
+                DoSub(ctx, (AeonPrimitiveType)inst.a.arg0);
         vm_end
 
                 vm_start(OP_UNARYSUB)
-                    DoUnarySub(ctx, (AeonPrimitiveType)inst.arg0);
+                    DoUnarySub(ctx, (AeonPrimitiveType)inst.a.arg0);
                 vm_end
 
 			vm_start(OP_INCREMENT)
-				DoIncrement(ctx, (AeonPrimitiveType)inst.arg0, inst.arg1);
+                DoIncrement(ctx, (AeonPrimitiveType)inst.a.arg0, inst.a.arg1);
 			vm_end
 
                 vm_start(OP_AND)
-                    DoAnd(ctx, (AeonPrimitiveType)inst.arg0);
+                    DoAnd(ctx, (AeonPrimitiveType)inst.a.arg0);
                 vm_end
 
                         vm_start(OP_OR)
-                            DoOr(ctx, (AeonPrimitiveType)inst.arg0);
+                            DoOr(ctx, (AeonPrimitiveType)inst.a.arg0);
                         vm_end
 
                 vm_start(OP_CONV)
-                DoConversion(ctx, (AeonPrimitiveType)inst.arg0, (AeonPrimitiveType)inst.arg1);
+                DoConversion(ctx, (AeonPrimitiveType)inst.a.arg0, (AeonPrimitiveType)inst.a.arg1);
         vm_end
 
                 vm_start(OP_PUSHTHIS)
@@ -196,7 +177,7 @@ void dispatch_execute(RzThreadContext& ctx)
                 vm_end
 
                 vm_start(OP_TYPEINFO)
-                int index = inst.arg0;
+                int index = inst.a.arg0;
         ctx.push_value(RzStackValue::make_ptr(ctx.engine->typedb[index]));
         RZLOG("LOADED TYPE INFO %s\n", ctx.engine->typedb[index]->getName().c_str());
         vm_end
@@ -210,8 +191,8 @@ void dispatch_execute(RzThreadContext& ctx)
                 vm_end
 
                 vm_start(OP_MOV)
-                ctx.esp += inst.arg1;
-                //memset(ctx.esp, 1, abs(inst.arg1));
+                ctx.esp += inst.a.arg1;
+                //memset(ctx.esp, 1, abs(inst.a.arg1));
                 RZLOG("ESP AT %x AFTER MOV\n", ctx.esp);
         vm_end
 
@@ -224,18 +205,18 @@ void dispatch_execute(RzThreadContext& ctx)
         vm_end
 
                 vm_start(OP_DTEST)
-                RZLOG("TEST VALUE %d\n", inst.arg0);
+                RZLOG("TEST VALUE %d\n", inst.a.arg0);
         vm_end
 
                 vm_start(OP_DEBUG)
-                DoDebugOp(ctx, inst.arg0, inst.arg1);
+                DoDebugOp(ctx, inst.a.arg0, inst.a.arg1);
         vm_end
 
                 vm_start(OP_PUSHVAR)
         #if defined TRACE_VM
-                RZLOG("Pushed var to stack from offset %d\n", inst.arg0);
+                RZLOG("Pushed var to stack from offset %d\n", inst.a.arg0);
 #endif
-        RzValue* referredValue = reinterpret_cast<RzValue*>(ctx.ebp - inst.arg0 - sizeof(RzValue));
+        RzValue* referredValue = reinterpret_cast<RzValue*>(ctx.ebp - inst.a.arg0 - sizeof(RzValue));
         ctx.pushVariant(*referredValue);
 
         vm_end
@@ -246,19 +227,19 @@ void dispatch_execute(RzThreadContext& ctx)
         vm_end
 
                 vm_start(OP_VARCALL)
-                ExecVariantCall(ctx, inst.arg0);
+                ExecVariantCall(ctx, inst.a.arg0);
         vm_end
 
                 vm_start(OP_VARSTORE)
-                DoVarStore(ctx, inst.arg0, inst.arg1, inst.arg2);
+                DoVarStore(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
                 vm_start(OP_VARLOAD)
-                DoVarLoad(ctx, inst.arg0);
+                DoVarLoad(ctx, inst.a.arg0);
         vm_end
 
                 vm_start(OP_VARLOADREF)
-                DoVarLoadRef(ctx, inst.arg0, inst.arg1);
+                DoVarLoadRef(ctx, inst.a.arg0, inst.a.arg1);
         vm_end
 
 

@@ -22,19 +22,19 @@ void RzCompiler::collect(AEStructNode& cls) {
     for (int i = 0; i < cls.m_functions.size(); ++i) {
 		aeNodeFunction& fn = *cls.m_functions[i].get();
 
-		RzType::MethodInfo method;
-		method.name = fn.m_name;
-		method.methodCallback = 0;
-		method.offset = 0;
-        method.args.resize(fn.m_parameters.size());
+//		RzType::MethodInfo method;
+//		method.name = fn.m_name;
+//		method.methodCallback = 0;
+//		method.offset = 0;
+//        method.args.resize(fn.m_parameters.size());
 
-        for (int j = 0; j < method.args.size(); ++j) {
-            RzQualType t = fn.m_parameters[j]->m_type;
-            resolveUnlinkedType(*this, t);
-            method.args[j] = t;
-        }
+//        for (int j = 0; j < method.args.size(); ++j) {
+//            RzQualType t = fn.m_parameters[j]->m_type;
+//            resolveUnlinkedType(*this, t);
+//            method.args[j] = t;
+//        }
 
-		typeInfo->m_methods.push_back(method);
+//		typeInfo->m_methods.push_back(method);
 
         // Collect the functions to the module now
         RzFunction* f = m_module->createFunction(fn.m_name);

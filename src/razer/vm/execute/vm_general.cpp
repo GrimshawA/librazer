@@ -274,19 +274,18 @@ inline static void DoAssign(RzThreadContext& ctx, int mode, int offset, int type
     }
 }
 
-inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int kind)
+inline static void DoLoad(RzThreadContext& cx, int addressMode, int offset, int kind)
 {
     void* dataPtr = nullptr;
 
     if (addressMode == AEK_THIS)
     {
-        RzStackValue thisPtr = ctx.pop_value();
+        RzStackValue thisPtr = cx.pop_value();
         dataPtr = static_cast<unsigned char*>(thisPtr.ptr) + offset;
     }
     else if (addressMode == AEK_EBP)
     {
-        dataPtr = ctx.ebp - offset;
-
+        dataPtr = cx.ebp + offset;
     }
     else if (addressMode == AEK_ESP)
     {
@@ -299,7 +298,7 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
         {
             RzStackValue v;
             memcpy(&v.ptr, dataPtr, sizeof(void*));
-            ctx.push_value(v);
+            cx.push_value(v);
 
             //RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
         }
@@ -307,7 +306,7 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
         {
             RzStackValue v;
             v.i32 = *static_cast<int32_t*>(dataPtr);
-            ctx.push_value(v);
+            cx.push_value(v);
 
             if (addressMode == AEK_THIS) {
                 RZLOG("LOADED INT: %d from %x\n", v.i32, dataPtr);
@@ -316,7 +315,7 @@ inline static void DoLoad(RzThreadContext& ctx, int addressMode, int offset, int
         else if(kind == AEP_FLOAT) {
             RzStackValue v;
             v.fp = *static_cast<float*>(dataPtr);
-            ctx.push_value(v);
+            cx.push_value(v);
         }
     }
 }
@@ -339,7 +338,7 @@ inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset,
         val.ptr = ctx.ebp - offset;
         ctx.push_value(val);
 
-        RZLOG("Loaded ebp relative address (local) %x\n", val.ptr);
+        RZLOG("Loaded ebp(%x) relative address (local) %x. deref %x\n", ctx.ebp, val.ptr, *((char**)val.ptr));
     }
     else if (addressMode == AEK_ESP)
     {
@@ -374,6 +373,8 @@ inline static void DoAlloc(RzThreadContext& cx, int size)
     RzStackValue val;
     val.ptr = mem;
     cx.push_value(val);
+
+    RZLOG("DoAlloc prepared %d bytes at %x\n", size, mem);
 }
 
 inline static void DoDup(RzThreadContext& cx)

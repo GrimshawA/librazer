@@ -54,7 +54,7 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeAccessOperator& accessOp,
     return resolveQualifiedType(ctx, *accessOp.m_b, lhsType);
 }
 
-RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeFunctionCall& funcCall, RzQualType base) {
+RzQualType resolveQualifiedType(RzCompiler& ctx, RzCallNode& funcCall, RzQualType base) {
     if (base) {
         // This is a call on a specific expression type
         RzFunction* fn = base.m_type->getFunction(funcCall.m_name);
@@ -141,7 +141,7 @@ RzQualType resolveQualifiedType(RzCompiler& ctx, aeNodeExpr& expr, RzQualType ba
         return resolveQualifiedType(ctx, (aeNodeAccessOperator&)expr, base);
     }
     case AEN_FUNCTIONCALL: {
-        return resolveQualifiedType(ctx, (aeNodeFunctionCall&)expr, base);
+        return resolveQualifiedType(ctx, (RzCallNode&)expr, base);
     }
     case AEN_STRING: {
         return resolveQualifiedType(ctx, (aeNodeString&)expr, base);

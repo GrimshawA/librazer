@@ -27,7 +27,24 @@ static inline void DoDynamicCall(RzThreadContext& ctx, int functionIndex)
 	
 }
 
-static inline void DoNativeCall(RzThreadContext& ctx, int moduleIndex, int functionIndex) {
-    RzGeneric g; g.m_threadCtx = &ctx;
-    ctx.engine->modules[moduleIndex]->m_nativeFunctions[functionIndex].f(g);
+static inline void DoNativeCall(RzThreadContext& cx, int moduleIndex, int functionIndex, int type) {
+    RzGeneric g;
+    g.m_threadCtx = &cx;
+
+    // Fucked up on uint8 instruction operand..
+    assert(functionIndex <= 255);
+
+    auto* mod = cx.engine->modules[moduleIndex].get();
+
+    if (type == 0)
+    {
+        // constructor
+        auto* mem = cx.pop_value().ptr;
+        mod->m_functions[functionIndex].constructorCallback(nullptr, nullptr);
+    }
+    else
+    {
+        // method
+        mod->m_functions[functionIndex].methodCallback(g);
+    }
 }

@@ -172,7 +172,7 @@ public:
     RzType* evaluateType(const std::string& type_name);
 
     /// Evaluate which function fn is trying to call (derived from context)
-    RzFunction* selectFunction(aeNodeFunctionCall* fn);
+    RzFunction* selectFunction(RzCallNode* fn);
 
     /// Regarding scope, tries to deduce if we know how to convert typeB to typeA
     bool canConvertType(RzType* typeA, RzType* typeB);
@@ -229,11 +229,10 @@ public:
     RzCompileResult compileStaticAssign(aeNodeExpr& lhs, aeNodeExpr& rhs);
 
     /// Function calls
-    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, aeNodeFunctionCall* funccall, RzExprContext ctx);
-    void compileVariantCall(aeNodeExpr* lhs, aeNodeFunctionCall* fn);
-    void emitLateBoundCall(aeNodeFunctionCall* fn);
-    RzCompileResult compileStaticObjectCall(aeNodeExpr& selfExpr, RzQualType obj, aeNodeFunctionCall& call);
-    RzCompileResult compileNativeObjectCall(int moduleIndex, RzType::MethodInfo info);
+    RzCompileResult emitFunctionCall(aeNodeExpr& selfExpr, RzQualType beingCalledOn, RzCallNode* funccall, RzExprContext ctx);
+    void compileVariantCall(aeNodeExpr* lhs, RzCallNode* fn);
+    void emitLateBoundCall(RzCallNode* fn);
+    RzCompileResult compileStaticObjectCall(aeNodeExpr& selfExpr, RzQualType obj, RzCallNode& call);
     RzCompileResult compileArgsPush(const std::vector<aeNodeExpr*>& args, const std::vector<RzQualType>& expectedTypes = std::vector<RzQualType>());
 
     /// Push the implicit this as a call argument

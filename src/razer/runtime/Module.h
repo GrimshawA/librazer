@@ -7,6 +7,7 @@
 #include <razer/runtime/Function.h>
 #include <vector>
 #include <array>
+#include <deque>
 #include <stdint.h>
 
 class AENativeFunctionWrapper {
@@ -56,6 +57,7 @@ public:
     RzFunction* getFunction(const std::string& name);
     RzFunction* getFunction(FnIndex index);
 
+    FnIndex getFunctionIndex(RzFunction* func);
 	FnIndex getFunctionIndex(const std::string& name);
 
 	uint64_t getFunctionOffset(const std::string& name);
@@ -83,7 +85,6 @@ public:
     void registerTypeConstructor(const std::string& name, RzTemplateConstructorMethod constructor);
     void registerTypeDestructor();
 	void registerMethod(const std::string& name, const std::string& sig, aeBindMethod fn);
-	void registerMethod2(const std::string& classname, const std::string& name, aeBindMethod fn);
 	void registerField();
 	void registerPropertyGet();
 	void registerPropertySet();
@@ -147,7 +148,7 @@ public:
 
 	std::string                          m_name;               ///< Every module must have a name like stdlib.io or nephilim.core.graphics
     RzEngine*                            m_context;
-    std::vector<RzFunction>              m_functions;          ///< All script functions
+    std::deque<RzFunction>               m_functions;          ///< All script functions
 	std::vector<AENativeFunctionWrapper> m_nativeFunctions;    ///< All native functions exported
 	std::vector<RzType*>                 m_types;
 	std::vector<std::string>             m_stringPool;

@@ -29,7 +29,6 @@ public:
     IRValue* makeTempValue();
     IRValue* makeFuncValue(RzFunction* func);
     IRValue* makeFuncValue(const std::string& fullName);
-    IRValue* makeNativeFuncValue(RzType::MethodInfo* method);
 
     IR::Type getLastStmtType();
 

@@ -6,7 +6,7 @@
 #include <razer/runtime/AEObject.h>
 #include <razer/runtime/RzDocument.h>
 #include <razer/frontend/RzBuilder.h>
-
+#include <razer/vm/vm_api.h>
 #include <RzSDK/ExportStd.h>
 #include <razer/vm/Debugger/Debugger.h>
 
@@ -62,6 +62,8 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
 
     if (myObject)
     {
+        printf("myObject = %x\n", myObject);
+
         RzVirtualMachine vm(ctx);
 
         if (opts.count("--dbg"))
@@ -70,7 +72,11 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
         }
 
         vm.m_mainContext.pushObject(myObject);
-        vm.call("App.main");
+
+        auto* cx = &vm.m_mainContext;
+        auto* fun = ctx.getModule("test")->getFunction("App.main");
+
+        RzCall(cx, fun);
 
         std::cout << "main() was executed" << std::endl;
     }

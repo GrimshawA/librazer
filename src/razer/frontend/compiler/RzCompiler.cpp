@@ -20,7 +20,7 @@ void debugCodeRange(RzModule* module, int start, int end)
     for (int i = start; i < end; ++i)
     {
         auto& in = module->m_code[i];
-        RZLOG("%s %d %d %d\n", inst_opcode_str(in).c_str(), in.arg0, in.arg1, in.arg2);
+        RZLOG("%s %d %d %d\n", inst_opcode_str(in).c_str(), in.a.arg0, in.a.arg1, in.a.arg2);
     }
 }
 
@@ -84,9 +84,9 @@ uint32_t RzCompiler::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, i
 {
     RzInstruction instr;
     instr.opcode = opcode;
-    instr.arg0 = arg0;
-    instr.arg1 = arg1;
-    instr.arg2 = arg2;
+    instr.a.arg0 = arg0;
+    instr.a.arg1 = arg1;
+    instr.a.arg2 = arg2;
     m_module->m_code.push_back(instr);
     return m_cursor++;
 }
@@ -477,23 +477,23 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
 
 void RzCompiler::emitClassConstructors(RzType* classType, AEStructNode* classNode)
 {
-	RzFunction f;
-	f.m_offset = m_cursor;
-	f.m_module = m_module;
-	f.m_absoluteName = classType->getName() + "." + classType->getName();
+    RzFunction f;
+    f.m_offset = m_cursor;
+    f.m_module = m_module;
+    f.m_absoluteName = classType->getName() + "." + classType->getName();
 
 	emitDebugPrint("Constructor is being run!!!");
 	emitReturnCode(nullptr);
 
 	m_module->m_functions.emplace_back(f);
 
-    RzType::MethodInfo method;
-    method.offset = m_cursor;
-    method.name = f.m_absoluteName;
-    method.native = false;
-    classType->m_methods.push_back(method);
+//    RzType::MethodInfo method;
+//    method.offset = m_cursor;
+//    method.name = f.m_absoluteName;
+//    method.native = false;
+//    classType->m_methods.push_back(method);
 
-	RZLOG("Emitted default constructor: %s index taken %d\n", f.m_absoluteName.c_str(), m_module->m_functions.size() - 1);
+    RZLOG("Emitted default constructor: %s index taken %d\n", f.m_absoluteName.c_str(), m_module->m_functions.size() - 1);
 
     aeNodeFunction* funcNode = new aeNodeFunction();
     funcNode->m_name = classType->getName();
@@ -754,7 +754,7 @@ RzCompileResult RzCompiler::emitStatement(AEStmtNode* stmt) {
 
     case AEN_FUNCTIONCALL: {
         aeNodeExpr a;
-        return emitFunctionCall(a, RzQualType(), static_cast<aeNodeFunctionCall*>(stmt), RzExprContext());
+        return emitFunctionCall(a, RzQualType(), static_cast<RzCallNode*>(stmt), RzExprContext());
     }
 
     case AEN_BRANCH:

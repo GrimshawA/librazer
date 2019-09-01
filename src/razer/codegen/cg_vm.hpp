@@ -14,6 +14,7 @@ public:
     void build(IRContext& module);
     void build(IRFunction& func);
 
+    void buildStore(IRInstructionStore& inst);
     void buildCall(IRInstructionCall& inst);
     void buildLabel(IRInstructionLabel& inst);
     void buildJump(IRInstructionJump& inst);
@@ -31,6 +32,7 @@ public: // Value usage inspection
 
 public: // Bytecode emission
     uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
+    uint32_t emitInstructionB(uint8_t opcode, uint16_t arg0, uint8_t arg1);
 
 private:
     RzEngine& engine;

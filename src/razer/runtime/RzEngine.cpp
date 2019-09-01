@@ -6,6 +6,7 @@
 #include <razer/frontend/Parser/TokenParser.h>
 #include <razer/frontend/compiler/RzCompiler.h>
 #include <razer/utils/Logger.h>
+#include <razer/vm/vm_api.h>
 
 #include <RzSDK/ExportStd.h>
 #include <cstring>
@@ -163,13 +164,20 @@ AEObject* RzEngine::createObject(const std::string& typen)
             memset(object->m_obj, 0, heap.type->getSize());
 			object->m_type = heap.type;
 
+            RZLOG("> createObject Allocated object %s of size %d at address %x\n", typen.c_str(), heap.type->getSize(), object->m_obj);
+
             RzVirtualMachine vm(*this);
-
             std::string constructorName = std::string(typen + "." + typen);
-            vm.m_mainContext.pushObject(object);
-            vm.call(constructorName.c_str());
 
-			RZLOG("> Allocated object of size %d at address %x\n", heap.type->getSize(), object->m_obj);
+
+            auto* cx = &vm.m_mainContext;
+            auto* func = getModule("test")->getFunction(constructorName); // to test IR
+
+            RzStackValue thisVal;
+            thisVal.ptr = object->m_obj;
+            cx->push_value(thisVal);
+
+            RzCall(cx, func);
 
 			return object;
 		}
@@ -192,7 +200,8 @@ void RzEngine::destroyObject(AEObject* object)
 	}
 }
 
-RzModule* RzEngine::createModule(const std::string& name) {
+RzModule* RzEngine::createModule(const std::string& name)
+{
 	if (getModule(name))
 		return getModule(name);
 
@@ -204,7 +213,8 @@ RzModule* RzEngine::createModule(const std::string& name) {
 	return mod;
 }
 
-RzModule* RzEngine::resolveModule(const std::string& name) {
+RzModule* RzEngine::resolveModule(const std::string& name)
+{
 	// name is a symbol identifier in the form x.y.z
 
 	for (auto& m : modules)
@@ -217,6 +227,17 @@ RzModule* RzEngine::resolveModule(const std::string& name) {
 	}
 
 	return nullptr;
+}
+
+int RzEngine::getModuleIndex(RzModule* module)
+{
+    for (int i = 0; i < modules.size(); ++i)
+    {
+        if (modules[i].get() == module)
+            return i;
+    }
+
+    return -1;
 }
 
 void RzEngine::registerTypeField(const std::string& typeName, const std::string& decl, int offset) {

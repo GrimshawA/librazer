@@ -34,8 +34,6 @@ public:
 
     std::string fullName;
 
-    // Remove us
-    RzType::MethodInfo* method = nullptr;
     RzFunction* func = nullptr;
 };
 

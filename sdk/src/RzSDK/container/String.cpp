@@ -41,7 +41,7 @@ void registerString(RzModule* mod) {
         g.pushObject(result);
     });
 
-    mod->registerMethod2("String", "test", AutoMethodWrapper<decltype(&RzString::test), &RzString::test>::Invoke);
+    //mod->registerMethod2("String", "test", AutoMethodWrapper<decltype(&RzString::test), &RzString::test>::Invoke);
 }
 
 RzString::RzString() {

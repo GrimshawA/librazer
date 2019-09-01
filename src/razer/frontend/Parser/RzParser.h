@@ -121,7 +121,7 @@ public:
 		aeNodeExpr* parse_identifier_subexpression();
 
 		/// We're about to read a function call, get it
-		aeNodeFunctionCall* parseFunctionCall();
+		RzCallNode* parseFunctionCall();
 
         SymbolTypename parseTypename();
 

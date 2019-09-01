@@ -1077,9 +1077,9 @@ aeNodeVarDecl* RzParser::parseVariableDecl()
 }
 
 /// We're about to read a function call, get it
-aeNodeFunctionCall* RzParser::parseFunctionCall()
+RzCallNode* RzParser::parseFunctionCall()
 {
-    aeNodeFunctionCall* funccall = new aeNodeFunctionCall();
+    RzCallNode* funccall = new RzCallNode();
     funccall->m_name = Tok.text;
     getNextToken();
 
@@ -1214,7 +1214,7 @@ aeNodeExpr* RzParser::parseIdentityExpression()
 
     if (Tok.type == RZTK_OPENPAREN)
     {
-        aeNodeFunctionCall* fCall = new aeNodeFunctionCall;
+        RzCallNode* fCall = new RzCallNode;
 
         getNextToken();
 
@@ -1409,7 +1409,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
     {
         IsFunctionCall = true;
 
-        aeNodeFunctionCall* funccall = new aeNodeFunctionCall();
+        RzCallNode* funccall = new RzCallNode();
         funccall->m_name = identifier.text;
         result_expr = funccall;
 
@@ -1417,7 +1417,7 @@ aeNodeExpr* RzParser::parse_identifier_subexpression()
         {
             for (std::size_t i = 0; i < TemplateTypeString.size(); ++i)
             {
-                aeNodeFunctionCall::TemplateTypeArgument tta;
+                RzCallNode::TemplateTypeArgument tta;
                 tta.TypeString = TemplateTypeString[i];
                 funccall->templateTypeArguments.push_back(tta);
             }

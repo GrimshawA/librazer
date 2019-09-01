@@ -41,12 +41,6 @@ RzFunction* RzCompiler::compileFunction(aeNodeFunction* functionNode)
 
 	m_caller = functionNode;
 
-	RzType::MethodInfo* methodInfo = m_currentStruct->getMethod(functionNode->m_name);
-	if (methodInfo)
-	{
-		methodInfo->offset = m_cursor;
-	}
-
 	function->m_offset = m_cursor;
 	function->m_absoluteName = symbol_prefix + functionNode->m_name;
 	function->m_module = m_module;

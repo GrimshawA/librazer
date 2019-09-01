@@ -113,6 +113,7 @@ public:
 	
 	/// Resolve to which module the symbol resolves to, e.g 'std.io.File' would resolve to 'std'
 	RzModule* resolveModule(const std::string& name);
+    int getModuleIndex(RzModule* module);
 
     /// Registers a native type to work with the language
     void registerTypeField(const std::string& typeName, const std::string& decl, int offset);

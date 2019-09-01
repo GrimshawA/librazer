@@ -30,7 +30,7 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 	if (thisVar._object->m_obj)
 	{
 		RzType* wrappedObjectType = thisVar._object->m_type;
-		RzType::MethodInfo* method = wrappedObjectType->getMethod(methodName);
+        auto* method = wrappedObjectType->getMethod(methodName);
 
 		if (!method)
 		{
@@ -53,14 +53,14 @@ inline static void ExecVariantCall(RzThreadContext& ctx, int identifierIndex)
 		}
 		else
 		{
-			RZLOG("Calling script function %s offset %d\n", methodName.c_str(), method->offset);
+//			RZLOG("Calling script function %s offset %d\n", methodName.c_str(), method->offset);
 
 			ctx.pc = ctx.cl->pc;
 			ctx.ebp = ctx.cl->ebp;			
 
 			RzStackFrame stackFrame;
 			stackFrame.name = methodName;
-			stackFrame.pc = method->offset - 1;
+            stackFrame.pc = method->m_offset - 1;
 			stackFrame.module = ctx.cl->module;
 			stackFrame.ebp = ctx.ebp;
 			//stackFrame.function = functionData;

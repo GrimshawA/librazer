@@ -14,10 +14,7 @@ class RzEngine;
 class RzVirtualMachine;
 class RzFunction;
 
-typedef void(*aeBindMethod)(RzGeneric);
 typedef void(*aeDestructorMethod)(void*);
-typedef void(*aeConstructorMethod)(void*, RzVirtualMachine*);
-typedef void(*RzTemplateConstructorMethod)(void*, RzVirtualMachine*, int);
 
 #define 	aeOFFSET(s, m)   ((size_t)(&reinterpret_cast<s*>(100000)->m)-100000)
 
@@ -48,23 +45,6 @@ public:
 	{
 		std::string name;
 		std::vector<EnumEntryInfo> entries;
-	};
-		
-	struct MethodInfo
-	{
-		std::string name; ///< The name by which the language knows it
-        std::vector<RzQualType> args; ///< The arguments it takes
-		int type;
-		int offset;
-        RzFunction* func = nullptr; // the vm function if applicable
-        bool native = false;
-
-		union
-		{
-			aeBindMethod methodCallback;
-            aeConstructorMethod constructorCallback;
-            RzTemplateConstructorMethod templatedConstructor;
-		};
 	};
 
 	struct ParentTypeInfo
@@ -121,7 +101,7 @@ public:
 	uint32_t getNumProtocols();
 		
 	/// Get a method with the given name, no overload resolution
-	MethodInfo* getMethod(const std::string& methodName) const;
+    RzFunction* getMethod(const std::string& methodName) const;
 
 	/// All and every type defined in aeon is script side
 	bool isScriptSide();
@@ -144,7 +124,7 @@ public:
 	aeBindMethod getNativeFunction(const std::string& name);
 
     /// Select the appropriate method to call based on name and arg list
-    MethodInfo selectMethod(const std::string& name, const std::vector<RzQualType>& argsList);
+    RzFunction* selectMethod(const std::string& name, const std::vector<RzQualType>& argsList);
 
 	/// Get the field information for a given type
 	aeField* getField(std::string name);
@@ -159,9 +139,6 @@ public:
 
 	/// Takes some input parameters and properly prepares the type for the new field
 	void createField(aeField fieldInfo);
-
-	/// Allow to register a host method into the type
-	void registerMethod(const std::string& name, void* funptr);
 
 	/// Allow to register a host class field
 	void registerField(const std::string& name, int offset);
@@ -181,10 +158,9 @@ public:
 	std::string                 m_namespace;
 	int                         m_id;
 	int                         m_localId;
-	bool                        m_allowPartialDeclaration;
 	bool                        m_isPolymorphic;
 	std::bitset<32>             m_flags;
-	std::vector<MethodInfo>     m_methods;
+    std::vector<RzFunction*>    m_methods;
 	std::vector<EnumInfo>       m_enums;
 
     std::vector<std::string>    m_templateParams;

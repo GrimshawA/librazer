@@ -105,9 +105,14 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
 
         if (dot.m_b->m_nodeType == AEN_FUNCTIONCALL)
         {
+            auto* callNode = static_cast<RzCallNode*>(dot.m_b);
+            auto* func = callNode->getFunction();
+
+            auto* funcValue = builder.makeFuncValue(func->getName());
+
             std::vector<IRValue*> args;
             args.push_back(compileExpression(dot.m_a));
-            return builder.createCall(nullptr, args);
+            return builder.createCall(funcValue, args);
         }
         else
         {

@@ -3,7 +3,7 @@
 #include "AEStructNode.h"
 #include <razer/frontend/compiler/RzCompiler.h>
 
-aeNodeFunctionCall::aeNodeFunctionCall()
+RzCallNode::RzCallNode()
 : aeNodeExpr()
 , m_function(nullptr)
 , m_fn(nullptr)
@@ -11,7 +11,12 @@ aeNodeFunctionCall::aeNodeFunctionCall()
 	m_nodeType = AEN_FUNCTIONCALL;
 }
 
-uint32_t aeNodeFunctionCall::getReturnTypeSize()
+RzFunction* RzCallNode::getFunction()
+{
+    return m_fn;
+}
+
+uint32_t RzCallNode::getReturnTypeSize()
 {
 	if (m_function)
 	{
@@ -19,7 +24,7 @@ uint32_t aeNodeFunctionCall::getReturnTypeSize()
 	}
 }
 
-RzQualType aeNodeFunctionCall::getArgType(uint32_t index)
+RzQualType RzCallNode::getArgType(uint32_t index)
 {
 	if (m_function)
 	{
@@ -28,12 +33,12 @@ RzQualType aeNodeFunctionCall::getArgType(uint32_t index)
 	return RzQualType();
 }
 
-bool aeNodeFunctionCall::hasLinkedFunction()
+bool RzCallNode::hasLinkedFunction()
 {
 	return (m_function);
 }
 
-std::string aeNodeFunctionCall::str() const
+std::string RzCallNode::str() const
 {
 	std::string s1 = m_name;
 	if (templateTypeArguments.size() > 0)
