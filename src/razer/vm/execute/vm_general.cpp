@@ -278,6 +278,8 @@ inline static void DoLoad(RzThreadContext& cx, int addressMode, int offset, int 
 {
     void* dataPtr = nullptr;
 
+    RzStackValue loadedValue;
+
     if (addressMode == AEK_THIS)
     {
         RzStackValue thisPtr = cx.pop_value();
@@ -286,6 +288,8 @@ inline static void DoLoad(RzThreadContext& cx, int addressMode, int offset, int 
     else if (addressMode == AEK_EBP)
     {
         dataPtr = cx.ebp + offset;
+        auto* dataValue = reinterpret_cast<RzStackValue*>(dataPtr);
+        loadedValue.ptr = dataValue->ptr;
     }
     else if (addressMode == AEK_ESP)
     {
@@ -297,10 +301,11 @@ inline static void DoLoad(RzThreadContext& cx, int addressMode, int offset, int 
         if (kind == AEP_PTR)
         {
             RzStackValue v;
-            memcpy(&v.ptr, dataPtr, sizeof(void*));
+            //memcpy(&v.ptr, dataPtr, sizeof(void*));
+            v.ptr = loadedValue.ptr;
             cx.push_value(v);
 
-            //RZLOG("LOADED PTR %x FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, ctx.ebp, ctx.relativeStackPointer());
+            RZLOG("OP_LOAD (PTR) %x. FROM ADDR %x EBP %x %d SP\n", v.ptr, dataPtr, cx.ebp, cx.relativeStackPointer());
         }
         else if (kind == AEP_INT32)
         {
@@ -319,6 +324,22 @@ inline static void DoLoad(RzThreadContext& cx, int addressMode, int offset, int 
         }
     }
 }
+
+/// Loads a ptr from stack and loads its value back on the stack
+inline static void DoDeref(RzThreadContext& cx, int kind, int offset, int x)
+{
+    RzStackValue sourcePtr = cx.pop_value();
+
+    if (kind == AEP_PTR)
+    {
+        RzStackValue destValue;
+        memcpy(&destValue.ptr, sourcePtr.ptr, sizeof(void*));
+        cx.push_value(destValue);
+
+        RZLOG("DEREF From addr %x loaded value ptr %x\n", sourcePtr.ptr, destValue.ptr);
+    }
+}
+
 
 inline static void DoLoadAddr(RzThreadContext& ctx, int addressMode, int offset, int x)
 {
@@ -383,6 +404,8 @@ inline static void DoDup(RzThreadContext& cx)
 
     cx.push_value(value);
     cx.push_value(value);
+
+    RZLOG("DoDup %x\n", value.ptr);
 }
 
 inline static void DoLogicalNot(RzThreadContext& ctx)

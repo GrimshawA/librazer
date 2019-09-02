@@ -5,6 +5,23 @@
 #include <razer/frontend/AST/Nodes.h>
 #include <unordered_map>
 
+struct ExpressionIntent
+{
+    enum Intents {
+        Read,
+        Write
+    };
+
+    ExpressionIntent() {}
+
+    ExpressionIntent(Intents intent)
+    {
+        intents = intent;
+    }
+
+    Intents intents = Write;
+};
+
 /*
  * This class converts a function in AST form to IR
  */
@@ -16,13 +33,13 @@ public:
     void compile();
 	void compileBlock(aeNodeBlock& blk);
 
-    IRValue* compileExpression(aeNodeExpr* expr);
+    IRValue* compileExpression(aeNodeExpr* expr, ExpressionIntent intent = {});
     IRValue* compileNewExpression(aeNodeNew& newNode);
 
 	void compileFor(aeNodeFor& forNode);
     void compileWhile(aeNodeWhile& whileNode);
 
-    IRValue* locateIdentifier(aeNodeIdentifier& identifier);
+    IRValue* locateIdentifier(aeNodeIdentifier& identifier, ExpressionIntent intent = {});
 
 private:
     aeNodeFunction& node;

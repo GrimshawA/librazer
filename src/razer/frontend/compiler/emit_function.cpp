@@ -80,7 +80,7 @@ void EmitFunction::compileBlock(aeNodeBlock& blk)
     scopeResolver.pop();
 }
 
-IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
+IRValue* EmitFunction::compileExpression(aeNodeExpr* expr, ExpressionIntent intent)
 {
     switch(expr->m_nodeType)
     {
@@ -111,7 +111,7 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
             auto* funcValue = builder.makeFuncValue(func->getName());
 
             std::vector<IRValue*> args;
-            args.push_back(compileExpression(dot.m_a));
+            args.push_back(compileExpression(dot.m_a, ExpressionIntent::Read));
             return builder.createCall(funcValue, args);
         }
         else
@@ -125,7 +125,7 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr)
 
     case AEN_IDENTIFIER: {
         auto& ident = static_cast<aeNodeIdentifier&>(*expr);
-        return locateIdentifier(ident);
+        return locateIdentifier(ident, intent);
     }
 
     case AEN_NEW: {
@@ -183,7 +183,7 @@ void EmitFunction::compileWhile(aeNodeWhile& whileNode)
     builder.createJumpStmt(label);
 }
 
-IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier)
+IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier, ExpressionIntent intent)
 {
     auto* local = scopeResolver.locate(identifier.m_name);
 
@@ -191,12 +191,18 @@ IRValue* EmitFunction::locateIdentifier(aeNodeIdentifier& identifier)
         return local;
 
     // At class scope?
+    IRValue* ret = nullptr;
     if (structNode && structNode->hasField(identifier.m_name))
     {
         int fieldIndex = structNode->getFieldIndex(identifier.m_name);
         //auto* fieldType = structNode->getFieldType(identifier.m_name);
-        return builder.createDestructure(structNode->m_typeInfo, fieldIndex, builder.func.args[0]);
+        ret = builder.createDestructure(structNode->m_typeInfo, fieldIndex, builder.func.args[0]);
     }
 
-    return nullptr;
+    if (intent.intents == ExpressionIntent::Read)
+    {
+        return builder.createLoad(ret);
+    }
+
+    return ret;
 }

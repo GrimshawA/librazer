@@ -62,8 +62,6 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
 
     if (myObject)
     {
-        printf("myObject = %x\n", myObject);
-
         RzVirtualMachine vm(ctx);
 
         if (opts.count("--dbg"))
@@ -71,9 +69,14 @@ int buildAndRun(const std::vector<std::string>& files, const rz::options_results
             debugger->run();
         }
 
-        vm.m_mainContext.pushObject(myObject);
-
         auto* cx = &vm.m_mainContext;
+
+        RzStackValue v;
+        v.ptr = myObject->m_obj;
+        cx->push_value(v);
+        //vm.m_mainContext.pushObject(myObject);
+
+
         auto* fun = ctx.getModule("test")->getFunction("App.main");
 
         RzCall(cx, fun);

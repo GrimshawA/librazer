@@ -52,7 +52,8 @@ enum EOpCodes
 	OP_JMP,            ///< jmp to an absolute location pc = x
 	OP_LOAD,           ///< Pushes the contents of local variable <index> to stack (integer)
 	OP_LOADADDR,       ///< Pushes the contents of local variable <index> to stack (integer)
-	OP_LOADK,          ///< load a constant into stack
+    OP_DEREF,
+    OP_LOADK,          ///< load a constant into stack
 	OP_LOADENUM,          ///< load a constant into stack
 	OP_MUL,            ///< mul stores in eax, ebx * ec
 	OP_DIV,            ///< 

@@ -24,6 +24,7 @@ public:
     IRValue* newObject(IRValue* typeValue);
     IRValue* createReturn();
     IRValue* createLabelStmt();
+    IRValue* createLoad(IRValue* ptr);
 
     IRValue* makeValue();
     IRValue* makeTempValue();

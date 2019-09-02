@@ -54,6 +54,10 @@ void CodeGenVM::build(IRFunction& func)
             buildStore(static_cast<IRInstructionStore&>(*inst));
             break;
 
+        case Load:
+            buildLoad(static_cast<IRInstructionLoad&>(*inst));
+            break;
+
         case Label:
             buildLabel(static_cast<IRInstructionLabel&>(*inst));
             break;
@@ -80,6 +84,11 @@ void CodeGenVM::buildStore(IRInstructionStore& inst)
 
 
     emitInstruction(OP_SET, 0, 0, AEP_PTR);
+}
+
+void CodeGenVM::buildLoad(IRInstructionLoad& inst)
+{
+    emitInstruction(OP_DEREF, AEP_PTR);
 }
 
 void CodeGenVM::buildCall(IRInstructionCall& inst)
@@ -136,7 +145,11 @@ void CodeGenVM::buildDestructure(IRInstructionDestructure& inst)
     // Actually do basePtr + offset
     //emitInstruction(OP_LOADADDR, AEK_THIS, 0, 0);
 
+    // Load the "this" value into the stack
     emitInstruction(OP_LOAD, AEK_EBP, offset, AEP_PTR);
+
+    // Actually destructure the member out of the "this" value
+    emitInstruction(OP_LOADADDR, AEK_THIS, memberOffset, 0);
 }
 
 void CodeGenVM::buildAlloc(IRInstructionStackAlloc& inst)

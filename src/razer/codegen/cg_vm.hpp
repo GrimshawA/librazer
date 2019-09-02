@@ -15,6 +15,7 @@ public:
     void build(IRFunction& func);
 
     void buildStore(IRInstructionStore& inst);
+    void buildLoad(IRInstructionLoad& inst);
     void buildCall(IRInstructionCall& inst);
     void buildLabel(IRInstructionLabel& inst);
     void buildJump(IRInstructionJump& inst);

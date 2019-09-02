@@ -76,6 +76,10 @@ void dispatch_execute(RzThreadContext& ctx)
                 DoLoadAddr(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end
 
+        vm_start(OP_DEREF)
+            DoDeref(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
+        vm_end
+
                 vm_start(OP_LOADK)
                 DoLoadConstant(ctx, inst.a.arg0, inst.a.arg1, inst.a.arg2);
         vm_end

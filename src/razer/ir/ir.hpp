@@ -65,6 +65,7 @@ namespace IR
         Store,
         Destructure,
         Label,
+        Load,
         Undefined
     };
 }
@@ -109,6 +110,30 @@ public:
     int fieldIndex;
     IRValue* ty = nullptr;
     IRValue* basePtr = nullptr;
+};
+
+class IRInstructionLoad : public IRInstruction
+{
+public:
+    explicit IRInstructionLoad()
+    {
+        type = IR::Load;
+    }
+
+    std::string prettyString() override {
+        std::stringstream str;
+        str << "'" << value << "' <- "
+            << "load "
+            << "'" << ptr << "'";
+
+        return str.str();
+    }
+
+    // The return value
+    IRValue* value = nullptr;
+
+    // The pointer value to load data from (dereference)
+    IRValue* ptr = nullptr;
 };
 
 class IRInstructionReturn : public IRInstruction

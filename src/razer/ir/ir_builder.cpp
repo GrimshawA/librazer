@@ -124,6 +124,18 @@ IRValue* IRBuilder::createLabelStmt()
     return labelValue;
 }
 
+IRValue* IRBuilder::createLoad(IRValue* ptr)
+{
+    auto* loadedValue = new IRValue();
+
+    auto* loadInst = new IRInstructionLoad();
+    loadInst->value = loadedValue;
+    loadInst->ptr = ptr;
+    func.instructions.push_back(loadInst);
+
+    return loadedValue;
+}
+
 IRValue* IRBuilder::makeValue()
 {
     return new IRValue();
