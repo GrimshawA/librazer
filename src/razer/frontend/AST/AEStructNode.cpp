@@ -94,6 +94,11 @@ bool AEStructNode::hasField(const std::string& name)
             return true;
     }
 
+    for (auto& member : m_members) {
+    	if (member->identifier == name)
+    		return true;
+    }
+
     return false;
 }
 
@@ -104,6 +109,11 @@ int AEStructNode::getFieldIndex(const std::string& name)
         if (m_fields[i]->name == name)
             return i;
     }
+
+	for (int i = 0; i < m_members.size(); ++i) {
+		if (m_members[i]->identifier == name)
+			return true;
+	}
 
     return -1;
 }

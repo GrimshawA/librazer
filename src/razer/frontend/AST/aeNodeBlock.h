@@ -11,8 +11,6 @@ public:
 
 	aeNodeBlock();
 
-    IRValue* emitIR(IRBuilder& builder);
-
     std::string str() const override;
 
 	virtual void printSelf(int tabs);

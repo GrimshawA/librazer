@@ -174,6 +174,9 @@ VariableStorageInfo RzCompiler::getVariable(std::string name)
             }
         }
 
+        if (!actualType)
+        	actualType = field->type;
+
         if (field)
         {
             // The variable we are referencing is a member of 'this'
@@ -386,6 +389,30 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
             irCtx.createExternalType(typeInfo);
         }
     }
+
+
+	auto getMemberType = [&](RzMemberNode* node) -> RzType*
+	{
+		if (node->entity->m_nodeType == AEN_IDENTIFIER) {
+			auto* ident = static_cast<aeNodeIdentifier*>(node->entity);
+			return m_env->getTypeInfo(ident->m_name);
+		}
+
+		return nullptr;
+	};
+
+	for (std::size_t i = 0; i < clss->m_members.size(); ++i) {
+		auto* ty = getMemberType(clss->m_members[i]);
+
+		aeField fld;
+		fld.name = clss->m_members[i]->identifier;
+		fld.type = ty;
+		fld.offset = fldOffset;
+
+		fldOffset += fld.type.getSize();
+
+		typeInfo->m_fields.push_back(fld);
+	}
 
     typeInfo->computeMetrics();
 
@@ -649,6 +676,18 @@ void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* func
 	emitDebugPrint("Constructor injected section begin");
     // This is where the initialization is done, before any user constructor instruction is executed
     AEStructNode* cl = getTopClassNode();
+
+    for (auto& member : cl->m_members)
+	{
+		if (member->entity->m_nodeType == AEN_IDENTIFIER) {
+			auto* ident = static_cast<aeNodeIdentifier*>(member->entity);
+			auto* memberType = m_env->getTypeInfo(ident->m_name);
+
+			aeNodeExpr* lhs = new aeNodeIdentifier(member->identifier);
+			aeNodeExpr* rhs = new aeNodeNew(ident);
+			node->m_block->prepend(new aeNodeBinaryOperator(lhs, rhs, "="));
+		}
+	}
 
     for (auto& field : cl->m_fields)
     {

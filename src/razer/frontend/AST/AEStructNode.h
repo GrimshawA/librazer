@@ -64,6 +64,26 @@ public:
 	AEFieldInitNode* initializer = nullptr;
 };
 
+/*
+ * Represents named entities within a class body
+ * <identifier> : <entity>
+ *
+ * where entity can be functions, expressions, types, etc
+ */
+class RzMemberNode : public AEBaseNode
+{
+public:
+	explicit RzMemberNode(const std::string& name, AEBaseNode* ent)
+	{
+		m_nodeType = AEN_MEMBER;
+		identifier = name;
+		entity = ent;
+	}
+
+	std::string identifier;
+	AEBaseNode* entity = nullptr;
+};
+
 class AETypeTrait : public AEBaseNode
 {
 public:
@@ -108,6 +128,7 @@ public:
 	std::vector<AEFieldNode*> m_fields;
 	std::vector<AEStructNode> innerClasses;
 	std::vector<std::unique_ptr<AEEnumNode>> m_enums;
+	std::vector<RzMemberNode*> m_members;
 	bool m_interface = false;
 	bool m_templated = false;
 	bool m_partial = false;

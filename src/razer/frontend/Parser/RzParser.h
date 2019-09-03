@@ -98,12 +98,12 @@ public:
         RzForBaseNode*           parseForLoop();
 		aeNodeWhile*             parseWhileLoop();
 		void                     parseClassBody(AEStructNode* classDeclNode);
+		RzMemberNode*            parseNamedMember(); // <identifier>: <entity>
 		AEFieldNode*             parseStructField();
         RzLetNode*               parseLet();
         RzOnNode*                parseOnStmt();
         RzAttributeNode*         parseAttribute();
 		aeNodeFunction*          parseLambdaFunction();
-		void                     parseClassMember(AEStructNode* classDeclNode);
 		aeNodeReturn*            parseReturn();
 		aeNodeBlock*             parseBlock();
 		aeNodeFunction*          parseFunction();

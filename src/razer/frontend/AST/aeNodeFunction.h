@@ -43,8 +43,6 @@ public:
 public:
 	aeNodeFunction();
 
-    IRValue* emitIR(IRBuilder& builder);
-
 	RzQualType getReturnType();
 
 	/// Get the fully qualified type of the parameter

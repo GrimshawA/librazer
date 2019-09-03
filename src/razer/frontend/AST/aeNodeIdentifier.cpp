@@ -12,13 +12,6 @@ aeNodeIdentifier::aeNodeIdentifier(const std::string& name)
     m_name = name;
 }
 
-IRValue* aeNodeIdentifier::emitIR(IRBuilder& builder)
-{
-    auto* val = builder.makeValue();
-    val->name = m_name;
-    return val;
-}
-
 std::string aeNodeIdentifier::str() const
 {
 	return m_name;

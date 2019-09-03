@@ -6,7 +6,7 @@ App: class {
 	function main() {
     	window.open();
 
-    	while (w.running())
+    	while (window.running())
     	{
     		window.poll();
     		window.display();

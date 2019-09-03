@@ -19,12 +19,6 @@ aeNodeFunction::aeNodeFunction()
 	is_anon = false;
 }
 
-IRValue* aeNodeFunction::emitIR(IRBuilder& builder)
-{
-    m_block->emitIR(builder);
-    return nullptr;
-}
-
 bool aeNodeFunction::isNonStaticMethod()
 {
     return (is_method && !is_static) || is_constructor;

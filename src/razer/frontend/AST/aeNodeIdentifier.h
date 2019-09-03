@@ -23,8 +23,6 @@ public:
 	aeNodeIdentifier();
     explicit aeNodeIdentifier(const std::string& name);
 
-    IRValue* emitIR(IRBuilder& builder);
-
 	std::string str() const;
 };
 

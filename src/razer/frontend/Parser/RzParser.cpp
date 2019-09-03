@@ -441,15 +441,38 @@ begin:
             AEEnumNode* e = parseEnum();
             classDeclNode->m_enums.emplace_back(e);
         }
-        else{
-            AEFieldNode* field = parseStructField();
+        else {
+            /*AEFieldNode* field = parseStructField();
             field->visibility = useVisib.empty() ? TokToVisib(currentDefaultAccessLevel) : TokToVisib(useVisib);
             useVisib.clear();
-            classDeclNode->m_fields.push_back(field);
+            classDeclNode->m_fields.push_back(field);*/
+
+            auto* member = parseNamedMember();
+            classDeclNode->m_members.push_back(member);
 
             skipNewlines();
         }
     }
+}
+
+RzMemberNode* RzParser::parseNamedMember()
+{
+	auto name = Tok.text;
+
+	getNextToken();
+
+	EXPECT(RZTK_COLON);
+
+	AEBaseNode* entity = nullptr;
+
+	if (Tok.type == RZTK_FUNCTION) {
+		entity = parseFunction();
+	}
+	else {
+		entity = parseExpression();
+	}
+
+	return new RzMemberNode(name, entity);
 }
 
 RzLetNode* RzParser::parseLet()
@@ -581,73 +604,6 @@ AEFieldNode* RzParser::parseStructField()
         }
     }
     return f.release();
-}
-
-void RzParser::parseClassMember(AEStructNode* classDeclNode)
-{
-    if (Tok.type == RZTK_CLASS || Tok.type == RZTK_STRUCT)
-    {
-        AEStructNode* classDecl = parseClass();
-        classDeclNode->add(classDecl);
-    }
-    else if (Tok.type == RZTK_ENUM)
-    {
-        AEEnumNode* enum_node = parseEnum();
-        classDeclNode->add(enum_node);
-    }
-    else if (Tok.type == RZTK_TYPEDEF)
-    {
-        /*getNextToken();
-        aeNodeTypedef* typedef_node = new aeNodeTypedef;
-        typedef_node->typeA = parseQualType();
-        typedef_node->typeB = parseQualType();
-        classDeclNode->add(typedef_node);*/
-    }
-    else if (Tok.type == RZTK_IDENTIFIER && Tok.text == classDeclNode->m_name)
-    {
-        // Constructor
-        aeNodeFunction* constructorDecl = new aeNodeFunction();
-        constructorDecl->m_name = classDeclNode->m_name;
-        getNextToken();
-        getNextToken();
-
-        constructorDecl->m_parameters = parseParamsList();
-        constructorDecl->m_block.reset(parseBlock());
-        classDeclNode->add(constructorDecl);
-        getNextToken();
-
-        //Log("After constructor %s", Tok.text.c_str());
-
-    }
-    else if (Tok.type == RZTK_TILDE)
-    {
-        if (getNextToken().text == classDeclNode->m_name)
-        {
-            aeNodeFunction* destructorDecl = new aeNodeFunction();
-            destructorDecl->m_name = std::string("~") + classDeclNode->m_name;
-            getNextToken();
-            getNextToken();
-            getNextToken();
-            destructorDecl->m_block.reset(parseBlock());
-            classDeclNode->add(destructorDecl);
-            getNextToken();
-        }
-    }
-    else if (Tok.type == RZTK_FUNCTION)
-    {
-        aeNodeFunction* funcDecl = parseFunction();
-        funcDecl->is_method = true;
-        funcDecl->is_static = false;
-        if (funcDecl->m_name == classDeclNode->m_name)
-            funcDecl->is_constructor = true;
-        classDeclNode->add(funcDecl);
-        getNextToken();
-    }
-    else
-    {
-        AEBaseNode* symbol = parseSymbol();
-        classDeclNode->add(symbol);
-    }
 }
 
 AEBaseNode* RzParser::parseSymbol()
@@ -916,10 +872,15 @@ void RzParser::print()
 aeNodeFunction* RzParser::parseFunction()
 {
     aeNodeFunction* funcDecl = new aeNodeFunction();
-    funcDecl->m_name = getNextToken().text;
+
+    getNextToken(); // get past the "function"
+
+    if (Tok.type == RZTK_IDENTIFIER) {
+		funcDecl->m_name = Tok.text;
+		getNextToken();
+    }
 
     // We're now in the (
-    getNextToken();
     getNextToken();
 
     while (Tok.type != RZTK_CLOSEPAREN)
