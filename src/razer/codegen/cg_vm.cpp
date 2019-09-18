@@ -1,4 +1,5 @@
 #include "cg_vm.hpp"
+#include <razer/vm/call_conv.h>
 #include <razer/runtime/RzEngine.h>
 
 #include <cassert>
@@ -105,6 +106,13 @@ void CodeGenVM::buildCall(IRInstructionCall& inst)
     moduleIndex = engine.getModuleIndex(vmFun->m_module);
     functionIndex = vmFun->m_module->getFunctionIndex(vmFun);
 
+    // We're stack based, left-to-right push?
+    auto* callConv = deduceCallConvention(inst);
+
+    callConv->iterateArgs(inst.args, [&](IRValue* arg) {
+        loadValueToStack(arg);
+    });
+
     if (vmFun->isNative())
         emitInstruction(OP_NATIVECALL, moduleIndex, functionIndex, 0);
     else
@@ -162,9 +170,18 @@ void CodeGenVM::buildAlloc(IRInstructionStackAlloc& inst)
         emitInstruction(OP_DUP);
 }
 
-void CodeGenVM::load(IRValue* value)
+void CodeGenVM::loadValueToStack(IRValue* value)
 {
-    emitInstruction(OP_LOAD, 0, 0, 0);
+    // Make a backtracker which finds the origin IRValue*
+    // and a list of instructions that transform it into what we need
+
+
+    if (dynamic_cast<IRValueInt*>(value))
+    {
+        IRValueInt* integer = static_cast<IRValueInt*>(value);
+        auto idx = engine.getIntegerLiteral(integer->value);
+        emitInstruction(OP_LOADK, AEK_INT, idx);
+    }
 }
 
 bool CodeGenVM::isArgument(IRValue* val)
@@ -190,6 +207,12 @@ int CodeGenVM::countReads(IRValue* val)
         c += inst->doesReadValue(val) ? 1 : 0;
     }
     return c;
+}
+
+RzCallConv* CodeGenVM::deduceCallConvention(IRInstructionCall& inst)
+{
+    static RzCallConv conv;
+    return &conv;
 }
 
 uint32_t CodeGenVM::emitInstruction(uint8_t opcode, int8_t arg0, int8_t arg1, int8_t arg2)

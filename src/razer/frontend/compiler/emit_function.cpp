@@ -112,6 +112,12 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr, ExpressionIntent inte
 
             std::vector<IRValue*> args;
             args.push_back(compileExpression(dot.m_a, ExpressionIntent::Read));
+
+            for (auto& callArg : callNode->m_args)
+            {
+                args.push_back(compileExpression(callArg));
+            }
+
             return builder.createCall(funcValue, args);
         }
         else
@@ -131,6 +137,11 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr, ExpressionIntent inte
     case AEN_NEW: {
         auto& ident = static_cast<aeNodeNew&>(*expr);
         return compileNewExpression(ident);
+    }
+
+    case AEN_INTEGER: {
+        auto& integer = static_cast<aeNodeInteger&>(*expr);
+        return builder.createIntLiteral(integer.value);
     }
 
 

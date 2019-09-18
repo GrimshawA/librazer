@@ -1,6 +1,11 @@
 #ifndef RZCALLCONV_H_
 #define RZCALLCONV_H_
 
+#include <vector>
+#include <functional>
+
+class IRValue;
+
 /*
  * Specificies the Razer calling convention used in the Razer VM
  *
@@ -19,6 +24,13 @@
  */
 class RzCallConv {
 public:
+
+    using ArgsVisitor = std::function<void(IRValue*)>;
+
+public:
+
+
+    void iterateArgs(const std::vector<IRValue*>& args, const ArgsVisitor& visitor);
 
     /// Takes the esp at the time of the "Call" order
     void* calculateFramePointer(void* esp);

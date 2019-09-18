@@ -25,6 +25,7 @@ public:
     IRValue* createReturn();
     IRValue* createLabelStmt();
     IRValue* createLoad(IRValue* ptr);
+    IRValue* createIntLiteral(int value);
 
     IRValue* makeValue();
     IRValue* makeTempValue();

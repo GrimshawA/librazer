@@ -136,6 +136,11 @@ IRValue* IRBuilder::createLoad(IRValue* ptr)
     return loadedValue;
 }
 
+IRValue* IRBuilder::createIntLiteral(int value)
+{
+    return new IRValueInt(value);
+}
+
 IRValue* IRBuilder::makeValue()
 {
     return new IRValue();

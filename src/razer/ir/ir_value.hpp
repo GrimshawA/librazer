@@ -44,4 +44,15 @@ public:
     RzType* type = nullptr;
 };
 
+class IRValueInt : public IRValue
+{
+public:
+    IRValueInt(int v)
+    {
+        value = v;
+    }
+
+    int value = 0;
+};
+
 #endif // IR_VALUE_HPP

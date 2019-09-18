@@ -5,6 +5,7 @@
 
 class RzEngine;
 class RzModule;
+class RzCallConv;
 
 class CodeGenVM
 {
@@ -22,7 +23,8 @@ public:
     void buildDestructure(IRInstructionDestructure& inst);
     void buildAlloc(IRInstructionStackAlloc& inst);
 
-    void load(IRValue* value);
+    // Does whatever is required to get the IR value on the stack
+    void loadValueToStack(IRValue* value);
 
 public: // Args related
     bool isArgument(IRValue* val);
@@ -30,6 +32,9 @@ public: // Args related
 
 public: // Value usage inspection
     int countReads(IRValue* val);
+
+public: // Call convention
+    RzCallConv* deduceCallConvention(IRInstructionCall& inst);
 
 public: // Bytecode emission
     uint32_t emitInstruction(uint8_t opcode, int8_t arg0 = 0, int8_t arg1 = 0, int8_t arg2 = 0);
