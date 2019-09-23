@@ -4,6 +4,17 @@
 
 #include <cassert>
 
+class ValueTracker
+{
+public:
+
+    /// For a given output value, track all the values needed to compute it
+    std::vector<IRValue*> find(IRValue* value)
+    {
+        return {};
+    }
+};
+
 CodeGenVM::CodeGenVM(RzEngine* e)
     : engine(*e)
 {
@@ -172,15 +183,23 @@ void CodeGenVM::buildAlloc(IRInstructionStackAlloc& inst)
 
 void CodeGenVM::loadValueToStack(IRValue* value)
 {
-    // Make a backtracker which finds the origin IRValue*
-    // and a list of instructions that transform it into what we need
-
-
     if (dynamic_cast<IRValueInt*>(value))
     {
         IRValueInt* integer = static_cast<IRValueInt*>(value);
         auto idx = engine.getIntegerLiteral(integer->value);
         emitInstruction(OP_LOADK, AEK_INT, idx);
+    }
+    else
+    {
+        // Make a backtracker which finds the origin IRValue*
+        // and a list of instructions that transform it into what we need
+        ValueTracker tracker;
+        auto values = tracker.find(value);
+
+        for (auto& val : values)
+        {
+            // emit necessary bytecode to fullfil this IR value (or instruction)
+        }
     }
 }
 
