@@ -17,6 +17,11 @@ RzVirtualMachine::RzVirtualMachine(RzEngine& context)
     m_mainContext.engine = &m_ctx;
 }
 
+RzVirtualMachine::~RzVirtualMachine()
+{
+
+}
+
 void RzVirtualMachine::execute(int functionId) {
 
 }

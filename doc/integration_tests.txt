@@ -1,0 +1,7 @@
+Integration tests
+==================
+
+A series of tests of increasing complexity to ensure things still work in an automated way.
+Each test is in a file int1.rz int2.rz etc and matches to a test_int1 unit test.
+
+This is probably the nicest way to develop and leaving complex programs for other bug hunting.

@@ -1,6 +1,7 @@
 #ifndef RZMODULE_H__
 #define RZMODULE_H__
 
+#include <razer/config.h>
 #include <razer/vm/InstructionSet.h>
 #include <razer/runtime/RzType.h>
 #include <razer/runtime/QualType.h>
@@ -41,7 +42,7 @@ typedef int FnIndex;
 	import a given module, it can use types in the imported module without ever explicitly doing
 	the import.
 */
-class RzModule
+class RZ_API RzModule
 {
 public:
 

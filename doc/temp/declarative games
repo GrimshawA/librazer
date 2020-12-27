@@ -11,13 +11,13 @@ apex.entity crossbow
 	skin: CrossBowSprite
 }
 
-apex.entity spear
+spear: apex.entity
 {
 	skin: SpearSprite
 	speed: 80
 }
 
-controller crossbow_controller
+crossbow_controller: controller
 {
 	pawn.angle: angleTo(pawn.position, input.touch.position)
 

@@ -1,6 +1,7 @@
 #ifndef RZENGINE_H__
 #define RZENGINE_H__
 
+#include <razer/config.h>
 #include <razer/vm/ThreadContext.h>
 #include <razer/runtime/QualType.h>
 #include <razer/runtime/RzType.h>
@@ -67,7 +68,7 @@ public:
 	The byte code the vm operates on lives in modules, which are all linked together under this environment.
 	This guarantees an easy gateway to load or compile programs, and once everything is ready, execute them.
 */
-class RzEngine
+class RZ_API RzEngine
 {
 public:
 
@@ -91,6 +92,7 @@ public:
 public:
 
 	RzEngine();
+    ~RzEngine();
 
 	void setDebugger(IDebugger* dbg);
 

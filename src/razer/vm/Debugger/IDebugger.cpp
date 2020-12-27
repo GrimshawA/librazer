@@ -1,5 +1,15 @@
 #include <razer/vm/Debugger/IDebugger.h>
 
+IDebugger::IDebugger()
+{
+
+}
+
+IDebugger::~IDebugger()
+{
+
+}
+
 void IDebugger::stepOver()
 {
 
@@ -28,4 +38,9 @@ void IDebugger::resume()
 int IDebugger::numThreads()
 {
 	return 0;
+}
+
+RzThreadContext* IDebugger::getCurrentContext()
+{
+    return ctx;
 }

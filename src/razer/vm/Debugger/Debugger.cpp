@@ -4,6 +4,11 @@
 #include <string>
 #include <iostream>
 
+Debugger::Debugger()
+{
+
+}
+
 void Debugger::onUncaughtExceptionThrown()
 {
 

@@ -1,0 +1,9 @@
+import std
+
+App: class {
+    function main() 
+    {
+        // Test should intercept the call with int parameter correct
+    	NativeFunc1(42);
+    }
+}

@@ -1,12 +1,13 @@
 #ifndef RzBuilder_h__
 #define RzBuilder_h__
 
+#include <razer/config.h>
 #include <vector>
 #include <string>
 
 class RzEngine;
 
-class RzBuilder
+class RZ_API RzBuilder
 {
 public:
 	class Batch

@@ -1,21 +1,23 @@
 #ifndef IDEBUGGER_H__
 #define IDEBUGGER_H__
 
+#include <razer/config.h>
+
 class RzThreadContext;
 
-class IDebugger
+class RZ_API IDebugger
 {
 public:
+    IDebugger();
+    virtual ~IDebugger();
+
 	virtual void onUncaughtExceptionThrown() { }
 	virtual void onInterrupted() { }
 	virtual void onBreakpoint()  { }
 
 	RzThreadContext* ctx = nullptr;
 
-	RzThreadContext* getCurrentContext()
-	{
-		return ctx;
-	}
+    RzThreadContext* getCurrentContext();
 
 protected:
 	// API for debugger impls

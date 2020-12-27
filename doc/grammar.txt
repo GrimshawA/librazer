@@ -14,8 +14,8 @@ function-declaration:
 
 new-expression:
 	new <primary-expression> 
-	new <primary-expression> <struct-body>
-	new <struct-body>
+	new <primary-expression> <init-block>
+	new <init-block>
 
 react-statement:
 	on <expression>: <block>

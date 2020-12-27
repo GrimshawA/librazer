@@ -1,6 +1,7 @@
 #ifndef RZTYPE_H__
 #define RZTYPE_H__
 
+#include <razer/config.h>
 #include <razer/runtime/QualType.h>
 #include <razer/runtime/Generic.h>
 #include <razer/runtime/aeSymbol.h>

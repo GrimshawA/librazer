@@ -1,6 +1,7 @@
 #include <razer/frontend/compiler/RzCompiler.h>
 #include <razer/frontend/compiler/TypeResolver.h>
 #include <razer/frontend/sema/dependency_analysis.h>
+#include <razer/frontend/sema/tree_link.h>
 #include <razer/ir/ir.hpp>
 
 #include <razer/vm/InstructionSet.h>
@@ -439,10 +440,14 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     {
         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
 
+        sema::tree_link linker;
+        linker.e = this->m_env;
+        linker.link(*funcNode);
+
         RzFunction* fn = compileFunction(funcNode);
         if (!fn) {
             RZLOG("Failed to compile function\n");
-            return RzCompileResult::aborted;
+            //return RzCompileResult::aborted;
         }
     }
 
@@ -490,6 +495,10 @@ RzCompileResult RzCompiler::compileStruct(AEStructNode* clss)
     {
         auto* funcNode = static_cast<aeNodeFunction*>(clss->m_functions[i].get());
 
+
+        // For now, lets skip the empty blocks to avoid clutter
+        if (funcNode->m_block->m_items.size() == 0)
+            continue;
 
         EmitFunction emitter (*funcNode, irCtx, clss);
         emitter.compile();
@@ -682,6 +691,10 @@ void RzCompiler::emitConstructorInjection(aeNodeFunction* node, RzFunction* func
 		if (member->entity->m_nodeType == AEN_IDENTIFIER) {
 			auto* ident = static_cast<aeNodeIdentifier*>(member->entity);
 			auto* memberType = m_env->getTypeInfo(ident->m_name);
+
+            if (memberType->isPrimitive()){
+                continue;
+            }
 
 			aeNodeExpr* lhs = new aeNodeIdentifier(member->identifier);
 			aeNodeExpr* rhs = new aeNodeNew(ident);

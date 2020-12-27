@@ -5,9 +5,11 @@
 #include <string>
 
 
-class Debugger : public IDebugger
+class RZ_API Debugger : public IDebugger
 {
 public:
+    explicit Debugger();
+
 	void onUncaughtExceptionThrown() override;
 	void onInterrupted() override;
 	void onBreakpoint() override;

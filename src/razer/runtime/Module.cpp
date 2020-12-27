@@ -127,8 +127,46 @@ int RzModule::identifierPoolIndex(const std::string& identifier) {
 	return m_identifierPool.size() - 1;
 }
 
-void RzModule::registerFunction(const std::string& sig, aeBindMethod fn) {
+void RzModule::registerFunction(const std::string& sig, aeBindMethod fnPtr) {
+    RzTokenParser lex; lex.tokenize(sig);
+    RzParser parser; parser.m_tokenizer = &lex; parser.i = 0; parser.ctx = m_context; parser.getNextToken();
 
+    RzQualType retType = parser.parseQualType();
+    std::string methodName = parser.Tok.text;
+
+    AENativeFunctionWrapper wrapper;
+    wrapper.f = fnPtr;
+    m_nativeFunctions.push_back(wrapper);
+
+
+    RzFunction fn;
+    fn.returnType = retType;
+    fn.m_name = methodName;
+    fn.m_absoluteName = methodName;
+    //fn.decl = name;
+    fn.fn = fnPtr;
+    fn.methodCallback = fnPtr;
+    fn.m_native = true;
+    fn.m_module = this;
+    parser.getNextToken();
+
+    while (parser.Tok.text != ")") {
+        parser.getNextToken();
+
+        if (parser.Tok.text == ")")
+            break;
+
+        RzQualType paramType = parser.parseQualType();
+        fn.params.push_back(paramType);
+        //printf("param %s\n", paramType.str().c_str());
+        if (parser.Tok.text != ",")
+            break;
+    }
+    m_functions.push_back(fn);
+
+    //typeInfo->m_methods.push_back(&m_functions.back());
+
+    RZLOG("EXPORTED FUNC %s: returns %s\n", fn.m_absoluteName.c_str(), fn.returnType.str().c_str());
 }
 
 void RzModule::registerGlobal(const std::string& sig, void* memory) {

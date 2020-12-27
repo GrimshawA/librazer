@@ -1,6 +1,7 @@
 #ifndef RZGENERIC_H__
 #define RZGENERIC_H__
 
+#include <razer/config.h>
 #include <string>
 #include <stdint.h>
 

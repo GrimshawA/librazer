@@ -80,6 +80,11 @@ RzParser::RzParser(const std::string& source)
     m_tokenizer->tokenize(source);
 }
 
+RzParser::~RzParser()
+{
+
+}
+
 AEStmtNode* RzParser::parseStatement()
 {
     switch (Tok.type)

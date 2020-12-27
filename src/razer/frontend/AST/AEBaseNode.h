@@ -49,7 +49,7 @@ class AEBaseNode
 {
 public:
 
-    virtual IRValue* emitIR(IRBuilder& builder) {}
+    virtual IRValue* emitIR(IRBuilder& builder) {return nullptr;}
 	
     void prepend(AEBaseNode* node)
     {

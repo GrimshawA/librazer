@@ -39,6 +39,11 @@ RzEngine::RzEngine()
 	registerTypedef("int32", "int");
 }
 
+RzEngine::~RzEngine()
+{
+
+}
+
 void RzEngine::setDebugger(IDebugger* dbg)
 {
 	_dbg = dbg;
@@ -166,12 +171,17 @@ AEObject* RzEngine::createObject(const std::string& typen)
 
             RZLOG("> createObject Allocated object %s of size %d at address %x\n", typen.c_str(), heap.type->getSize(), object->m_obj);
 
+            // Running constructor
             RzVirtualMachine vm(*this);
             std::string constructorName = std::string(typen + "." + typen);
 
 
             auto* cx = &vm.m_mainContext;
             auto* func = getModule("test")->getFunction(constructorName); // to test IR
+
+            // No constructor for this type
+            if (!func)
+                return object;
 
             RzStackValue thisVal;
             thisVal.ptr = object->m_obj;

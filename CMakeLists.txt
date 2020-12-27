@@ -1,16 +1,7 @@
 cmake_minimum_required(VERSION 2.8.11)
 project (RazerLanguage)
 
-#PYTHON_INCLUDE_DIR=/usr/include/python2.7 
-#PYTHON_LIBRARY=/usr/lib/python2.7/config/libpython2.7.so
-
-################################
-# GTest
-################################
-set (gtest_SOURCE_DIR 3rdparty/googletest)
-ADD_SUBDIRECTORY (3rdparty/googletest)
 enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
@@ -50,8 +41,13 @@ file(GLOB files ${lib_SRC} ${sdk_files})
 
 include_directories("src/" "sdk/src/")
 
-add_library(librazer SHARED ${files} src/razer/bind_utils.h)
-target_compile_definitions(librazer PRIVATE AVC=1 )
+add_definitions(-DRZ_STATIC)
+
+# librazer
+add_library(librazer STATIC ${files} src/razer/bind_utils.h)
+target_compile_definitions(librazer PRIVATE AVC=1
+    RZ_EXPORTS
+    RZ_STATIC)
 
 add_definitions("-DRAZER_SDL")
 target_link_libraries(librazer SDL2)

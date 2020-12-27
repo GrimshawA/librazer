@@ -1,6 +1,7 @@
 #ifndef aeon_parser_h__
 #define aeon_parser_h__
 
+#include <razer/config.h>
 #include <razer/frontend/AST/Nodes.h>
 #include <razer/runtime/RzValue.h>
 #include <razer/frontend/Parser/TokenParser.h>
@@ -40,7 +41,7 @@ class RzEngine;
 	Some of the functions have the node suffix while others have the value suffix. Nodes are always part of the AST,
 	while values are runtime variants, usable for other purposes.
 */
-class RzParser
+class RZ_API RzParser
 {
 public:
 	static std::shared_ptr<RzSourceUnit> getParseTree(const std::string& source, RzEngine& ctx);
@@ -70,6 +71,9 @@ public:
 
 		/// Create with a custom tokenizer
 		RzParser(const std::string& source);
+
+
+        ~RzParser();
 
         void                     startGather(RzTokenParser& lexer);
         bool                     startParse(RzTokenParser& lexer);

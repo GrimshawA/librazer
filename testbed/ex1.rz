@@ -1,0 +1,18 @@
+import std
+
+// integration test 1
+// Output: 4 
+
+App: class {
+	counter: int32
+
+    function main() 
+    {
+    	counter = 0;
+    	while (counter < 5)
+    	{
+    		counter = counter + 1;
+    	}
+    	print(counter);
+    }
+}

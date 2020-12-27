@@ -1,6 +1,7 @@
 #ifndef RZVIRTUALMACHINE_H__
 #define RZVIRTUALMACHINE_H__
 
+#include <razer/config.h>
 #include <razer/vm/ThreadHandler.h>
 #include <razer/runtime/Module.h>
 #include <razer/vm/ThreadContext.h>
@@ -38,10 +39,11 @@ class AEObject;
 	[Coroutines]
 	Coroutines are implemented by preservation of call state for restoration.
 */
-class RzVirtualMachine
+class RZ_API RzVirtualMachine
 {
 public:
     RzVirtualMachine(RzEngine& context);
+    ~RzVirtualMachine();
 
     RzEngine& getContext() const;
     RzThreadContext& getMainThread();

@@ -1,5 +1,7 @@
 #include "emit_function.hpp"
 
+#include <cassert>
+
 #include <razer/frontend/AST/aeNodeBlock.h>
 #include <razer/frontend/AST/Nodes.h>
 
@@ -52,6 +54,11 @@ void EmitFunction::compileBlock(aeNodeBlock& blk)
 
         case AEN_BINARYOP: {
             auto* result = compileExpression((aeNodeExpr*)stmt);
+            break;
+        }
+
+        case AEN_FUNCTIONCALL: {
+            auto* result = compileExpression(static_cast<aeNodeExpr*>(stmt));
             break;
         }
 
@@ -134,6 +141,20 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr, ExpressionIntent inte
         return locateIdentifier(ident, intent);
     }
 
+    case AEN_FUNCTIONCALL: {
+        auto* callNode = static_cast<RzCallNode*>(expr);
+        // TODO: the name is not enough for ambiguity resolution
+        auto* funcValue = builder.makeFuncValue(callNode->getFunction()->getName());
+
+        std::vector<IRValue*> args;
+        for (auto& callArg : callNode->m_args)
+        {
+            args.push_back(compileExpression(callArg));
+        }
+
+        return builder.createCall(funcValue, args);
+    }
+
     case AEN_NEW: {
         auto& ident = static_cast<aeNodeNew&>(*expr);
         return compileNewExpression(ident);
@@ -144,6 +165,8 @@ IRValue* EmitFunction::compileExpression(aeNodeExpr* expr, ExpressionIntent inte
         return builder.createIntLiteral(integer.value);
     }
 
+    default:
+        assert(false);
 
     }
 
